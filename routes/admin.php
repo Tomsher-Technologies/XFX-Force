@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\AbandonedCartController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\SpecificationController;
 
 
 Route::get('/admin/notifications', function () {
@@ -79,7 +80,7 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::get('/header', [WebsiteController::class, 'header'])->name('website.header');
         Route::get('/appearance', [WebsiteController::class, 'appearance'])->name('website.appearance');
-        
+
         Route::post('/home-slider/update-status', [HomeSliderController::class, 'updateStatus'])->name('home-slider.update-status');
         Route::get('/home-slider/delete/{id}', [HomeSliderController::class, 'destroy'])->name('home-slider.delete');
         Route::resource('home-slider', HomeSliderController::class);
@@ -92,7 +93,7 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::get('/subscribers', [PageController::class, 'subscribers'])->name('subscribers.index');
         Route::get('/subscribers/destroy/{id}', [PageController::class, 'subscribersDestroy'])->name('subscriber.destroy');
-    
+
         // Partners
         Route::resource('partners', PartnersController::class)->except('show');
 
@@ -205,7 +206,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/faqs/update', [FaqCategoryController::class, 'updateFaq'])->name('faqs.update');
 
     // Manage Blogs
-    
+
     Route::get('/blogs/all', [BlogController::class, 'index'])->name('blog.index');
     Route::get('/blog/create', [BlogController::class, 'create'])->name('blog.create');
     Route::post('/blog/store/', [BlogController::class, 'store'])->name('blog.store');
@@ -220,21 +221,32 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/configuration/service', [BusinessSettingsController::class, 'service_settings'])->name('configuration.service_settings');
 
-     //Reports
-     Route::get('/stock_report', [ReportController::class, 'stock_report'])->name('stock_report.index');
-     Route::get('/export-stock-report', [ReportController::class, 'exportStockReport'])->name('export.stock_report');
-     
-     Route::get('/in_house_sa le_report', [ReportController::class, 'in_house_sale_report'])->name('in_house_sale_report.index');
-     
-     Route::get('/wish_report', [ReportController::class, 'wish_report'])->name('wish_report.index');
-     Route::get('/export-wish-report', [ReportController::class, 'exportWishReport'])->name('export.wish_report');
- 
-     Route::get('/user_search_report', [ReportController::class, 'user_search_report'])->name('user_search_report.index');
-     Route::get('/export-search-report', [ReportController::class, 'exportSearchReport'])->name('export.search_report');
-     
-     Route::get('/abandoned-cart', [AbandonedCartController::class, 'index'])->name('abandoned-cart.index');
-     Route::get('/{cart}/abandoned-cart', [AbandonedCartController::class, 'view'])->name('abandoned-cart.view');
-     Route::get('/sales_report', [ReportController::class, 'sales_report'])->name('sales_report.index');
-     Route::get('/sales_orders/{id}/show', [ReportController::class, 'sales_orders_show'])->name('sales_orders.show');
-     Route::get('/export-sales-report', [ReportController::class, 'exportSalesReport'])->name('export.sales_report');
+    //Reports
+    Route::get('/stock_report', [ReportController::class, 'stock_report'])->name('stock_report.index');
+    Route::get('/export-stock-report', [ReportController::class, 'exportStockReport'])->name('export.stock_report');
+
+    Route::get('/in_house_sa le_report', [ReportController::class, 'in_house_sale_report'])->name('in_house_sale_report.index');
+
+    Route::get('/wish_report', [ReportController::class, 'wish_report'])->name('wish_report.index');
+    Route::get('/export-wish-report', [ReportController::class, 'exportWishReport'])->name('export.wish_report');
+
+    Route::get('/user_search_report', [ReportController::class, 'user_search_report'])->name('user_search_report.index');
+    Route::get('/export-search-report', [ReportController::class, 'exportSearchReport'])->name('export.search_report');
+
+    Route::get('/abandoned-cart', [AbandonedCartController::class, 'index'])->name('abandoned-cart.index');
+    Route::get('/{cart}/abandoned-cart', [AbandonedCartController::class, 'view'])->name('abandoned-cart.view');
+    Route::get('/sales_report', [ReportController::class, 'sales_report'])->name('sales_report.index');
+    Route::get('/sales_orders/{id}/show', [ReportController::class, 'sales_orders_show'])->name('sales_orders.show');
+    Route::get('/export-sales-report', [ReportController::class, 'exportSalesReport'])->name('export.sales_report');
+
+    // Specifications
+    Route::resource('specifications', SpecificationController::class);
+    Route::post(
+        'specifications/{id}/save-details',
+        [SpecificationController::class, 'saveSpecificationDetails']
+    )->name('specifications.saveSpecificationDetails');
+    Route::get(
+        '/specifications/{id}/details',
+        [SpecificationController::class, 'viewSpecificationDetails']
+    )->name('specifications.viewSpecificationDetails');
 });

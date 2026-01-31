@@ -57,6 +57,13 @@
                                 </li>
                             @endcanany    
 
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('specifications.index') }}"
+                                class="aiz-side-nav-link">
+                                    <span class="aiz-side-nav-text">Specifications</span>
+                                </a>
+                            </li>
+
                             @canany(['manage_brands'])
                                 <li class="aiz-side-nav-item">
                                     <a href="{{ route('brands.index') }}"
