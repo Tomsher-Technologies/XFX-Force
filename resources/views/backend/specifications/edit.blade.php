@@ -5,7 +5,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between">
         <h5>Specification Builder - <span class="font-italic">{{ $specification->main_title }}</span></h5>
-        <a href="{{ route('specifications.index') }}"
+        <a href="{{ route('specifications.index', ['page' => request('page')]) }}"
             class="btn btn-secondary btn-sm" title="Back to list">
             <i class="las la-arrow-left"></i>
         </a>
@@ -45,15 +45,14 @@
             <input type="hidden" name="main_specification_id" value="{{ $specification->id }}">
             <div id="main-wrapper">
                 <div class="p-3 main-block">
-                    <div class="row">
-                        <div class="col-md-6 text-end">
-                            <strong>Specifications</strong>
-                        </div>
-                        <div class="col-md-6 text-right">
-                            <button type="button" class="btn btn-success btn-xs add-level1">
-                                Add Specification
-                            </button>
-                        </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Specifications</strong>
+
+                        <!-- TOP BUTTON -->
+                        <button type="button" 
+                            class="btn btn-warning btn-xs add-level1 add-top d-none text-white fw-500">
+                            Add Specification
+                        </button>
                     </div>
                     <div class="level1-wrapper mt-3">
                         <!-- Specification Items list -->
@@ -133,13 +132,19 @@
                         @endforeach
                         <!-- End Specification Items list -->
                     </div>
+                    <div class="text-end mt-3 d-none" id="add-bottom-wrapper">
+                        <button type="button"
+                            class="btn btn-warning btn-xs add-level1 text-white fw-500">
+                            Add Specification
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="text-right {{ $items->count() ? '' : 'd-none' }}" id="form-actions">
                 <button type="submit" class="btn btn-primary btn-sm">
                     Save
                 </button>
-                <a href="{{ route('specifications.index') }}"
+                <a href="{{ route('specifications.index', ['page' => request('page')]) }}"
                     class="btn btn-cancel btn-sm">
                     Cancel
                 </a>
@@ -169,6 +174,7 @@
 
                         <div class="col-md-3">
                             <input type="number"
+                                value="0"
                                 min="0"
                                 name="specifications[main][children][${id}][sort_order]"
                                 class="form-control form-control-sm" placeholder="Sort Order">
@@ -196,6 +202,7 @@
                 </div>`;
             wrapper.insertAdjacentHTML("beforeend", html);
             document.getElementById("form-actions").classList.remove("d-none");
+            toggleAddButtonPosition();
         }
 
         /* ---- ADD LEVEL 3 ---- */
@@ -230,6 +237,7 @@
 
                 <div class="col-md-3">
                     <input type="number"
+                        value="0"
                         name="specifications[main][children][${parentId}][children][${id}][sort_order]"
                         class="form-control form-control-sm" placeholder="Sort Order" min="0">
                 </div>
@@ -264,22 +272,57 @@
         }
     }
 
+    function toggleAddButtonPosition() {
+
+    let count = document.querySelectorAll('.level1-block').length;
+
+    if(count === 0){
+        $('.add-top').removeClass('d-none');
+        $('#add-bottom-wrapper').addClass('d-none');
+    }else{
+        $('.add-top').addClass('d-none');
+        $('#add-bottom-wrapper').removeClass('d-none');
+    }
+}
+
+
     /** Removal blocks */
+    let pendingDeleteElement = null;
+    let headingElement = null;
     $(document).on('click', '.remove-level1', function() {
-
-        $(this).parents('.level1-block').remove();
-
-        toggleActions();
+        pendingDeleteElement = $(this).parents('.level1-block');
+        $('#delete-modal').modal('show');
     });
 
     $(document).on('click', '.remove-level2', function() {
-        let level1 = $(this).closest('.level1-block');
-        $(this).closest('.level2-block').remove();
-
-        if (level1.find('.level2-block').length === 0) {
-            level1.find('.level2-heading').remove();
-        }
+        pendingDeleteElement = $(this).closest('.level2-block');
+        headingElement =  $(this).closest('.level1-block');
+        $('#delete-modal').modal('show');
     });
+
+    $(document).on('click', '#delete-link', function(e) {
+        e.preventDefault();
+
+        if (pendingDeleteElement) {
+            pendingDeleteElement.remove();
+            pendingDeleteElement = null;
+        }
+        toggleAddButtonPosition();
+
+        if (headingElement && headingElement.find('.level2-block').length === 0) {
+            headingElement.find('.level2-heading').remove();
+        }
+
+        toggleActions();
+
+        $('#delete-modal').modal('hide');
+    });
+
+    toggleAddButtonPosition();
 </script>
 
+@endsection
+
+@section('modal')
+    @include('modals.delete_modal')
 @endsection

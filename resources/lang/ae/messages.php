@@ -64,6 +64,7 @@ return [
     'all_Products' => 'All Products',
     'category' => 'Category',
     'brand' => 'Brand',
+    'specifications' => 'Specifications',
     'attribute' => 'Attribute',
     'product_reviews' => 'Product Reviews',
     'staffs' => 'Staffs',

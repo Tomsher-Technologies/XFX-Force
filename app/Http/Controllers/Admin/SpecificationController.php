@@ -12,11 +12,29 @@ class SpecificationController extends Controller
     /**
      * Function to display a listing of the specifications.
      * 
+     * @param Request $request
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $specifications = Specification::latest()->paginate(10);
+        $query = Specification::query();
+
+        if ($request->filled('search')) {
+            $query->whereRaw(
+                '(main_title LIKE ? OR display_title LIKE ?)',
+                ["%{$request->search}%", "%{$request->search}%"]
+            );
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $specifications = $query
+            ->orderBy('id', 'asc')
+            ->paginate(10)
+            ->withQueryString();
+
         return view('backend.specifications.index', compact('specifications'));
     }
 
@@ -40,7 +58,8 @@ class SpecificationController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->back()->with('success', 'Saved successfully');
+        flash(trans('messages.specifications').trans('messages.created_msg'))->success();
+        return redirect()->route('specifications.index');
     }
 
     /**
@@ -177,8 +196,7 @@ class SpecificationController extends Controller
         Specification::findOrFail($id)->delete();
         Specification::destroy($id);
 
-        return redirect()
-            ->route('specifications.index')
-            ->with('success', 'Specification deleted successfully');
+        flash(trans('messages.specifications').trans('messages.deleted_msg'))->success();
+        return redirect()->route('specifications.index');
     }
 }
