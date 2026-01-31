@@ -249,4 +249,6 @@ Route::group(['middleware' => ['auth']], function () {
         '/specifications/{id}/details',
         [SpecificationController::class, 'viewSpecificationDetails']
     )->name('specifications.viewSpecificationDetails');
+
+    Route::get('/specifications/delete/{id}', [SpecificationController::class, 'destroy'])->name('specifications.delete');
 });

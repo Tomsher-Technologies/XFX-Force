@@ -3,6 +3,10 @@
 <div class="card">
     <div class="card-header">
         <h5>{{ $specification->display_title }}</h5>
+        <a href="{{ route('specifications.index', ['page' => request('page')]) }}"
+            class="btn btn-secondary btn-sm" title="Back to list">
+            <i class="las la-arrow-left"></i>
+        </a>
     </div>
     <div class="card-body">
         @if($items->isNotEmpty())
