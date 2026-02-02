@@ -251,4 +251,9 @@ Route::group(['middleware' => ['auth']], function () {
     )->name('specifications.viewSpecificationDetails');
 
     Route::get('/specifications/delete/{id}', [SpecificationController::class, 'destroy'])->name('specifications.delete');
+
+    // Attributes
+    Route::resource('attributes', AttributeController::class);
+    Route::get('/attributes/delete/{id}', [AttributeController::class, 'destroy'])->name('attributes.delete');
+
 });

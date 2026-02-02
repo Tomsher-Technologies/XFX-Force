@@ -58,7 +58,7 @@ class SpecificationController extends Controller
             'status' => $request->status,
         ]);
 
-        flash(trans('messages.specifications').trans('messages.created_msg'))->success();
+        flash(trans('messages.specifications') . trans('messages.created_msg'))->success();
         return redirect()->route('specifications.index');
     }
 
@@ -174,7 +174,7 @@ class SpecificationController extends Controller
      * @param int $id
      * @return \Illuminate\View\View
      */
-    public function viewSpecificationDetails(int $id)
+    public function show($id)
     {
         $specification = Specification::findOrFail($id);
         $items = SpecificationItem::with('subItems')
@@ -182,7 +182,7 @@ class SpecificationController extends Controller
             ->where('parent_id', 0)
             ->get();
 
-        return view('backend.specifications.details', compact('items', 'specification'));
+        return view('backend.specifications.show', compact('specification', 'items'));
     }
 
     /**
@@ -196,7 +196,7 @@ class SpecificationController extends Controller
         Specification::findOrFail($id)->delete();
         Specification::destroy($id);
 
-        flash(trans('messages.specifications').trans('messages.deleted_msg'))->success();
+        flash(trans('messages.specifications') . trans('messages.deleted_msg'))->success();
         return redirect()->route('specifications.index');
     }
 }

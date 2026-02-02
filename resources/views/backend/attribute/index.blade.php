@@ -2,116 +2,178 @@
 
 @section('content')
 
+@php
+$editAttribute = session('editAttribute');
+@endphp
+
 <div class="aiz-titlebar text-left mt-2 mb-3">
-	<div class="align-items-center">
-		<h1 class="h3">{{trans('messages.all') .' '.trans('messages.attributes')}}</h1>
-	</div>
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <h1 class="h3">Attributes</h1>
+        </div>
+        <div class="col text-right">
+            <button id="toggleForm" class="btn btn-primary btn-sm" data-url="{{ route('attributes.create') }}">
+                Add Attribute
+            </button>
+        </div>
+    </div>
 </div>
 
-<div class="row">
-	<div class="col-md-7">
-		<div class="card">
-			<div class="card-header">
-				<h5 class="mb-0 h6">{{ trans('messages.attributes')}}</h5>
-			</div>
-			<div class="card-body">
-				<table class="table aiz-table mb-0">
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>{{ trans('messages.name')}}</th>
-							<th>{{ trans('messages.values')}}</th>
-							<th>{{ trans('messages.status')}}</th>
-							<th class="text-right">{{ trans('messages.options')}}</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach($attributes as $key => $attribute)
-							<tr>
-								<td>{{$key+1}}</td>
-								<td>{{$attribute->name}}</td>
-								<td>
-									@foreach($attribute->attribute_values as $key => $value)
-									<span class="badge badge-inline badge-md bg-soft-dark">{{ $value->getTranslatedName(env('DEFAULT_LANGUAGE')) }}</span>
-									@endforeach
-									
-								</td>
-								<td>
-									<label class="aiz-switch aiz-switch-success mb-0">
-										<input type="checkbox" onchange="update_status(this)" value="{{ $attribute->id }}"
-											<?php if ($attribute->is_active == 1) {
-												echo 'checked';
-											} ?>>
-										<span></span>
-									</label>
-								</td>
-								<td class="text-right">
-									<a class="btn btn-soft-info btn-icon btn-circle" href="{{route('attributes.show', $attribute->id)}}" title="Attribute values">
-										<i class="las la-cog"></i>
-									</a>
-									<a class="btn btn-soft-primary btn-icon btn-circle" href="{{route('attributes.edit', ['id'=>$attribute->id, 'lang'=>env('DEFAULT_LANGUAGE')] )}}" title="Edit">
-										<i class="las la-edit"></i>
-									</a>
-									{{-- <a href="#" class="btn btn-soft-danger btn-icon btn-circle confirm-delete" data-href="{{route('attributes.destroy', $attribute->id)}}" title="Delete">
-										<i class="las la-trash"></i>
-									</a> --}}
-								</td>
-							</tr>
-						@endforeach
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-5">
-		<div class="card">
-			<div class="card-header">
-					<h5 class="mb-0 h6">{{ trans('messages.add').' '.trans('messages.new').' '.trans('messages.attribute') }}</h5>
-			</div>
-			<div class="card-body">
-				<form action="{{ route('attributes.store') }}" method="POST">
-					@csrf
-					<div class="form-group mb-3">
-						<label for="name">{{trans('messages.name')}}</label>
-						<input type="text" placeholder="{{ trans('messages.name')}}" id="name" name="name" class="form-control" required>
-					</div>
-					<div class="form-group mb-3 text-right">
-						<button type="submit" class="btn btn-info">{{trans('messages.Save')}}</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+@if(session('success'))
+<div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+{{-- CREATE FORM (HIDDEN INITIALLY) --}}
+<div id="createForm" style="display:none">
+    @include('backend.attribute.create')
 </div>
 
-
+<div class="card">
+    <div class="card-header">
+        <div class="w-100">
+            @include('backend.attribute.filter')
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th>Name</th>
+                    <th class="text-center">Status</th>
+                    <th width="10%" class="text-center">{{trans('messages.options')}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($attributes as $key => $row)
+                <tr>
+                    <td class="text-center">{{ $key + 1 + ($attributes->currentPage() - 1) * $attributes->perPage() }}</td>
+                    <td>{{ $row->name }}</td>
+                    <td class="text-center">
+                        @if($row->is_active)
+                        <span class="badge badge-success px-4 py-2">Active</span>
+                        @else
+                        <span class="badge badge-danger px-4 py-2">Inactive</span>
+                        @endif
+                    </td>
+                    <td class="d-flex gap-2 text-center">
+                        <a href="{{ route('attributes.show', [$row->id,'page' => request()->get('page')]) }}"
+                            class="btn btn-soft-primary btn-icon btn-circle btn-sm">
+                            <i class="las la-eye"></i>
+                        </a>
+                        <form method="POST" action=" style=" display:inline;">
+                            @csrf
+                            <input type="hidden" name="main_title" value="{{ $row->main_title }}">
+                            <input type="hidden" name="display_title" value="{{ $row->display_title }}">
+                            <input type="hidden" name="status" value="{{ $row->status }}">
+                            <a href="javascript:void(0)"
+                                data-url="{{ route('attributes.edit', [
+                                        'attribute' => $row->id,
+                                        'page' => request('page')
+                                ]) }}"
+                                class="btn btn-soft-primary btn-sm btn-circle btn-icon edit-btn">
+                                <i class="las la-edit"></i>
+                            </a>
+                        </form>
+                        <a href="javascript:void(0)" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{route('attributes.delete',$row->id)}}" title="Delete">
+                            <i class="las la-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <div class="aiz-pagination">
+            {{ $attributes->appends(request()->input())->links('pagination::bootstrap-5') }}
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('modal')
-    @include('modals.delete_modal')
+@include('modals.delete_modal')
 @endsection
 
 @section('script')
-    <script type="text/javascript">
-      
-        function update_status(el) {
-            if (el.checked) {
-                var status = 1;
-            } else {
-                var status = 0;
-            }
-            $.post('{{ route('attributes.status') }}', {
-                _token: '{{ csrf_token() }}',
-                id: el.value,
-                status: status
-            }, function(data) {
-                if (data == 1) {
-                    AIZ.plugins.notify('success', "{{ trans('messages.attribute').trans('messages.updated_msg') }}");
-                } else {
-                    AIZ.plugins.notify('danger', "{{ trans('messages.something_went_wrong')}}");
-                }
-            });
-        }
-    </script>
-@endsection
+<script>
+    $(function() {
+        toggleAddValueButtons();
 
+        $("#toggleForm").on("click", function() {
+            let url = $(this).data('url');
+            $("#createForm").load(url, function() {
+                $("#createForm").slideDown();
+                toggleAddValueButtons();
+            });
+
+        });
+
+        $(document).on('click', '#add-value', function() {
+
+            let row = `
+                <div class="row value-row mb-1">
+                    <div class="col-md-4">
+                        <input type="text"
+                            name="values[]"
+                            class="form-control form-control-sm" required>
+                    </div>
+
+                    <div class="col-md-2">
+                        <select name="value_status[]" class="form-control form-control-sm" required>
+                            <option value="">Select Status</option>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="button" class="remove-value border-0 bg-transparent">
+                            <i class="las la-trash text-danger"></i>
+                        </button>
+                    </div>
+                </div>`;
+
+            $("#values-wrapper").append(row);
+            toggleAddValueButtons();
+        });
+
+        $(document).on('click', '.edit-btn', function() {
+
+            let url = $(this).data('url');
+
+            $("#createForm").load(url, function() {
+                $("#createForm").slideDown();
+
+                $('html, body').animate({
+                    scrollTop: $("#createForm").offset().top - 80
+                }, 500);
+                toggleAddValueButtons();
+            });
+
+        });
+
+        $(document).on("click", ".remove-value", function() {
+            $(this).closest(".value-row").remove();
+            toggleAddValueButtons();
+        });
+
+        function toggleAddValueButtons() {
+
+            let count = $("#values-wrapper .value-row").length;
+
+            if (count === 0) {
+                $(".add-value-top").removeClass('d-none');
+                $(".add-value-bottom").addClass('d-none');
+            } else {
+                $(".add-value-top").addClass('d-none');
+                $(".add-value-bottom").removeClass('d-none');
+            }
+        }
+
+        $(document).on("click", "#cancelForm", function() {
+            $("#createForm").find("form")[0].reset();
+            $("#createForm").slideUp();
+        });
+    });
+</script>
+@endsection

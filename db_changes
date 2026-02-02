@@ -35,3 +35,7 @@ CREATE TABLE `specification_items` (
     REFERENCES `specifications` (`id`)
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Added By Swetha on 02/02/2026 ---
+
+ALTER TABLE `attribute_values` ADD `value` VARCHAR(255) NOT NULL AFTER `attribute_id`;

@@ -42,9 +42,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($specifications as $row)
+                @foreach($specifications as $key => $row)
                 <tr>
-                    <td class="text-center">{{ $row->id }}</td>
+                    <td class="text-center">{{ $key + 1 + ($specifications->currentPage() - 1) * $specifications->perPage() }}</td>
                     <td>{{ $row->main_title }}</td>
                     <td>{{ $row->display_title }}</td>
                     <td class="text-center">
@@ -55,7 +55,7 @@
                         @endif
                     </td>
                     <td class="d-flex gap-2 text-center">
-                        <a href="{{ route('specifications.viewSpecificationDetails', [$row->id,'page' => request()->get('page')]) }}"
+                        <a href="{{ route('specifications.show', [$row->id,'page' => request()->get('page')]) }}"
                             class="btn btn-soft-primary btn-icon btn-circle btn-sm">
                             <i class="las la-eye"></i>
                         </a>
@@ -70,8 +70,8 @@
                             </a>
                         </form>
                         <a href="javascript:void(0)" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{route('specifications.delete',$row->id)}}" title="Delete">
-                              <i class="las la-trash"></i>
-                          </a>
+                            <i class="las la-trash"></i>
+                        </a>
                     </td>
                 </tr>
                 @endforeach
