@@ -37,3 +37,34 @@
 .red{
     color: red !important;
 }
+
+.shadow-inset{
+    box-shadow: inset 0 2px 5px rgba(0,0,0,.08);
+}
+
+.gap-2{
+    gap: 0.5rem !important;
+}
+
+.level1-wrapper {
+    counter-reset: level1;
+}
+
+.level1-block {
+    counter-increment: level1;
+    position: relative;
+    padding-left: 35px;
+}
+
+.level1-block::before {
+    content: counter(level1) ".";
+    position: absolute;
+    left: -20px;
+    top: 33px;
+    font-weight: bold;
+    font-size: 16px;
+}
+.wh-12{
+    width: 12px;
+    height: 12px;
+}
