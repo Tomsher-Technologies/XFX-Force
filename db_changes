@@ -87,7 +87,23 @@ UPDATE `permissions` SET `sort_order` = '1' WHERE `permissions`.`id` = 3;
 UPDATE `permissions` SET `sort_order` = '2' WHERE `permissions`.`id` = 17;
 UPDATE `permissions` SET `sort_order` = '3' WHERE `permissions`.`id` = 5;
 UPDATE `permissions` SET `sort_order` = '4' WHERE `permissions`.`id` = 6;
-UPDATE `permissions` SET `sort_order` = '5' WHERE `permissions`.`id` = 4;
-UPDATE `permissions` SET `sort_order` = '6' WHERE `permissions`.`id` = 9;
+UPDATE `permissions` SET `sort_order` = '7' WHERE `permissions`.`id` = 4;
+UPDATE `permissions` SET `sort_order` = '8' WHERE `permissions`.`id` = 9;
+
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) 
+VALUES (NULL, NULL, 'manage_specifications', 'Manage Specifications', 'web', '1', '5', NULL, NULL);
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'view_specification', 'View Specification', 'web', '1', '50', NULL, NULL);
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'add_specification', 'Add Specification', 'web', '1', '50', NULL, NULL);
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'edit_specification', 'Edit Specification', 'web', '1', '50', NULL, NULL);
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'delete_specification', 'Delete Specification', 'web', '1', '50', NULL, NULL);
+
+
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, NULL, 'manage_attributes', 'Manage Attributes', 'web', '1', '6', NULL, NULL);
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'view_attribute', 'View Attribute', 'web', '1', '50', NULL, NULL);
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'add_attribute', 'Add Attribute', 'web', '1', '50', NULL, NULL);
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'edit_attribute', 'Edit Attribute', 'web', '1', '50', NULL, NULL);
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'delete_attribute', 'Delete Attribute', 'web', '1', '50', NULL, NULL);
+
+
 
 /* Jisha END */

@@ -76,7 +76,7 @@ class RoleController extends Controller
         $permission = CustomPermission::whereNull('parent_id')
                         ->with(['children' => function ($q) {
                             $q->where('is_active', 1);
-                        }])->where('is_active',1)->get();
+                        }])->where('is_active',1)->orderBy('sort_order')->get();
 
         $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
             ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
