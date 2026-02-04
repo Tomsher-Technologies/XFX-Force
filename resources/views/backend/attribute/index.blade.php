@@ -9,7 +9,7 @@ $editAttribute = session('editAttribute');
 <div class="aiz-titlebar text-left mt-2 mb-3">
     <div class="row align-items-center">
         <div class="col-auto">
-            <h1 class="h3">Attributes</h1>
+            <h5 class="h5">All Attributes</h5>
         </div>
         <div class="col text-right">
             <button id="toggleForm" class="btn btn-primary btn-sm" data-url="{{ route('attributes.create') }}">
@@ -35,7 +35,7 @@ $editAttribute = session('editAttribute');
         </div>
     </div>
     <div class="card-body">
-        <table class="table table-bordered">
+        <table class="table table-bordered aiz-table">
             <thead>
                 <tr>
                     <th class="text-center">#</th>
@@ -127,8 +127,8 @@ $editAttribute = session('editAttribute');
                     </div>
 
                     <div class="col-md-2">
-                        <button type="button" class="remove-value border-0 bg-transparent">
-                            <i class="las la-trash text-danger"></i>
+                        <button type="button" class="remove-value border-0 bg-transparent mt-2">
+                            <i class="las la-trash text-danger fs-20"></i>
                         </button>
                     </div>
                 </div>`;

@@ -3,39 +3,91 @@
 --
 -- Table structure for table `specifications`
 --
-CREATE TABLE `specifications` (
-  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `main_title` varchar(191) NOT NULL,
-  `display_title` varchar(191) DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT 1,
-  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
-  `updated_by` bigint(20) UNSIGNED DEFAULT NULL,
-  `created_at` timestamp NULL,
-  `updated_at` timestamp NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- CREATE TABLE `specifications` (
+--   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+--   `main_title` varchar(191) NOT NULL,
+--   `display_title` varchar(191) DEFAULT NULL,
+--   `status` tinyint(1) NOT NULL DEFAULT 1,
+--   `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+--   `updated_by` bigint(20) UNSIGNED DEFAULT NULL,
+--   `created_at` timestamp NULL,
+--   `updated_at` timestamp NULL,
+--   PRIMARY KEY (`id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `specification_items`
 --
-CREATE TABLE `specification_items` (
-  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `main_specification_id` bigint(20) UNSIGNED NOT NULL,
-  `parent_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-  `title` varchar(191) NOT NULL,
-  `display_title` varchar(191) DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT 1,
-  `sort_order` int(11) DEFAULT 0,
-  `created_at` timestamp NULL,
-  `updated_at` timestamp NULL,
-  PRIMARY KEY (`id`),
-  KEY `specification_items_main_specification_id_foreign` (`main_specification_id`),
-  CONSTRAINT `specification_items_main_specification_id_foreign`
-    FOREIGN KEY (`main_specification_id`)
-    REFERENCES `specifications` (`id`)
-    ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- CREATE TABLE `specification_items` (
+--   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+--   `main_specification_id` bigint(20) UNSIGNED NOT NULL,
+--   `parent_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+--   `title` varchar(191) NOT NULL,
+--   `display_title` varchar(191) DEFAULT NULL,
+--   `status` tinyint(1) NOT NULL DEFAULT 1,
+--   `sort_order` int(11) DEFAULT 0,
+--   `created_at` timestamp NULL,
+--   `updated_at` timestamp NULL,
+--   PRIMARY KEY (`id`),
+--   KEY `specification_items_main_specification_id_foreign` (`main_specification_id`),
+--   CONSTRAINT `specification_items_main_specification_id_foreign`
+--     FOREIGN KEY (`main_specification_id`)
+--     REFERENCES `specifications` (`id`)
+--     ON DELETE CASCADE
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Added By Swetha on 02/02/2026 ---
+-- -- Added By Swetha on 02/02/2026 ---
 
-ALTER TABLE `attribute_values` ADD `value` VARCHAR(255) NOT NULL AFTER `attribute_id`;
+-- ALTER TABLE `attribute_values` ADD `value` VARCHAR(255) NOT NULL AFTER `attribute_id`;
+
+
+
+
+
+/* Jisha START */
+
+ALTER TABLE `permissions` ADD `parent_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `id`;
+
+INSERT INTO `permissions` ( `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES
+(3, 'view_role', 'View Roles', 'web', 1, NULL, NULL),
+(3, 'add_role', 'Add Roles', 'web', 1, NULL, NULL),
+(3, 'edit_role', 'Edit Roles', 'web', 1, NULL, NULL),
+(17, 'view_staff', 'View Staff', 'web', 1, NULL, NULL),
+(17, 'add_staff', 'Add Staff', 'web', 1, NULL, NULL),
+(17, 'edit_staff', 'Edit Staff', 'web', 1, NULL, NULL);
+
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
+(NULL, '4', 'view_product', 'View Products', 'web', '1', NULL, NULL), 
+(NULL, '4', 'add_product', 'Add Product', 'web', '1', NULL, NULL), 
+(NULL, '4', 'edit_product', 'Edit Product', 'web', '1', NULL, NULL);
+
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
+(NULL, '5', 'view_category', 'View Categories', 'web', '1', NULL, NULL), 
+(NULL, '5', 'add_category', 'Add Category', 'web', '1', NULL, NULL), 
+(NULL, '5', 'edit_category', 'Edit Category', 'web', '1', NULL, NULL);
+
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
+(NULL, '6', 'view_brand', 'View Brands', 'web', '1', NULL, NULL), 
+(NULL, '6', 'add_brand', 'Add Brand', 'web', '1', NULL, NULL), 
+(NULL, '6', 'edit_brand', 'Edit Brand', 'web', '1', NULL, NULL);
+
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
+(NULL, '24', 'view_blog', 'View Blogs', 'web', '1', NULL, NULL), 
+(NULL, '24', 'add_blog', 'Add Blog', 'web', '1', NULL, NULL), 
+(NULL, '24', 'edit_blog', 'Edit Blog', 'web', '1', NULL, NULL);
+
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
+(NULL, '4', 'import_product', 'Import Products', 'web', '1', NULL, NULL);
+
+ALTER TABLE `permissions` ADD `sort_order` TINYINT(1) NOT NULL DEFAULT '0' AFTER `is_active`;
+
+UPDATE `permissions` SET `sort_order`='50' WHERE 1;
+
+UPDATE `permissions` SET `sort_order` = '1' WHERE `permissions`.`id` = 3;
+UPDATE `permissions` SET `sort_order` = '2' WHERE `permissions`.`id` = 17;
+UPDATE `permissions` SET `sort_order` = '3' WHERE `permissions`.`id` = 5;
+UPDATE `permissions` SET `sort_order` = '4' WHERE `permissions`.`id` = 6;
+UPDATE `permissions` SET `sort_order` = '5' WHERE `permissions`.`id` = 4;
+UPDATE `permissions` SET `sort_order` = '6' WHERE `permissions`.`id` = 9;
+
+/* Jisha END */
