@@ -18,6 +18,14 @@ use Illuminate\Support\Str;
 
 class ProductBulkUploadController extends Controller
 {
+     function __construct()
+    {
+        $this->middleware('auth');
+       
+        $this->middleware('permission:import_product',  ['only' => ['index','export','bulk_upload']]);
+    }
+
+
     public function index()
     {
         if (Auth::user()->user_type == 'admin' || Auth::user()->user_type == 'staff') {

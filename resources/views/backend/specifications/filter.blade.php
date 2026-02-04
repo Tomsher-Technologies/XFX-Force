@@ -8,7 +8,7 @@
                 value="{{ request('search') }}">
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-2">
             <select name="status" class="form-control form-control-sm">
                 <option value="">All Status</option>
                 <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Active</option>

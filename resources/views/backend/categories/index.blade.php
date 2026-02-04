@@ -4,53 +4,55 @@
 <div class="aiz-titlebar text-left mt-2 mb-3">
     <div class="row align-items-center">
         <div class="col-md-6">
-            <h1 class="h3">{{trans('messages.all') . ' '.trans('messages.categories')}}</h1>
+            <h5 class="h5">{{trans('messages.all') . ' '.trans('messages.categories')}}</h5>
         </div>
         <div class="col-md-6 text-md-right">
-            <a href="{{ route('categories.create') }}" class="btn btn-primary">
-                <span>{{trans('messages.add_new') . ' '.trans('messages.category')}}</span>
-            </a>
+            @can('add_category')
+                <a href="{{ route('categories.create') }}" class="btn btn-primary btn-sm">
+                    <span>{{trans('messages.add_new') . ' '.trans('messages.category')}}</span>
+                </a>
+            @endcan
         </div>
     </div>
 </div>
 <div class="card">
-    <div class="card-header d-block d-md-flex">
-        <h5 class="mb-0 h6 mr-4">{{ trans('messages.categories') }}</h5>
+    <form class="" id="sort_categories" action="" method="GET">
+        <div class="card-header row gutters-5">
         
-        <form class="" id="sort_categories" action="" method="GET" style="width: 100%">
-
-            <div class="row gutters-5">
-                <div class="col-md-4">
-                    <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" data-live-search="true"
-                        name="catgeory" id="" data-selected={{ $catgeory }}>
-                        <option value="0">All</option>
-                        @foreach (getAllCategories()->where('parent_id', 0) as $item)
-                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @if ($item->child)
-                                @foreach ($item->child as $cat)
-                                    @include('backend.categories.menu_child_category', [
-                                        'category' => $cat,
-                                        'selected_id' => 0,
-                                    ])
-                                @endforeach
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="" style="min-width: 200px;">
-                        <input type="text" class="form-control" id="search" name="search"@isset($sort_search) value="{{ $sort_search }}" @endisset placeholder="{{ trans('messages.type_name_enter') }}">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-info" type="submit">Filter</button>
-                    <a href="{{ route('categories.index') }}" class="btn btn-cancel">Reset</a>
+            {{-- <div class="col">
+                <h5 class="mb-md-0 h6">{{ trans('messages.categories') }}</h5>
+            </div> --}}
+            
+            <div class="col-md-4">
+                <select class="form-control form-control-sm aiz-selectpicker mb-md-0" data-live-search="true"
+                    name="catgeory" id="" data-selected={{ $catgeory }}>
+                    <option value="0">All</option>
+                    @foreach (getAllCategories()->where('parent_id', 0) as $item)
+                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @if ($item->child)
+                            @foreach ($item->child as $cat)
+                                @include('backend.categories.menu_child_category', [
+                                    'category' => $cat,
+                                    'selected_id' => 0,
+                                ])
+                            @endforeach
+                        @endif
+                    @endforeach
+                </select>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="" style="min-width: 200px;">
+                    <input type="text" class="form-control form-control-sm" id="search" name="search"@isset($sort_search) value="{{ $sort_search }}" @endisset placeholder="{{ trans('messages.type_name_enter') }}">
                 </div>
             </div>
 
-        </form>
-    </div>
+            <div class="col-md-4">
+                <button class="btn btn-info btn-sm" type="submit">Filter</button>
+                <a href="{{ route('categories.index') }}" class="btn btn-cancel btn-sm">Reset</a>
+            </div>
+        </div>
+    </form>
     <div class="card-body">
         <table class="table aiz-table mb-0">
             <thead>

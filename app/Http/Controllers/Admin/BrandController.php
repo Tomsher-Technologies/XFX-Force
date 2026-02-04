@@ -16,7 +16,9 @@ class BrandController extends Controller
     {
         $this->middleware('auth');
        
-        $this->middleware('permission:manage_brands', ['only' => ['index','create','store','edit','update','destroy']]);
+        $this->middleware('permission:manage_brands',  ['only' => ['index','destroy']]);
+        $this->middleware('permission:add_brand',  ['only' => ['create','store']]);
+        $this->middleware('permission:edit_brand',  ['only' => ['edit','update']]);
     }
 
     /**

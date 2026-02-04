@@ -36,11 +36,14 @@
                         <!--Submenu-->
                         <ul class="aiz-side-nav-list level-2">
                             @canany(['manage_products'])
-                                <li class="aiz-side-nav-item">
-                                    <a class="aiz-side-nav-link" href="{{ route('products.create') }}">
-                                        <span class="aiz-side-nav-text">{{ trans('messages.add_new_product')}}</span>
-                                    </a>
-                                </li>
+                                @can('add_product')
+                                    <li class="aiz-side-nav-item">
+                                        <a class="aiz-side-nav-link" href="{{ route('products.create') }}">
+                                            <span class="aiz-side-nav-text">{{ trans('messages.add_new_product')}}</span>
+                                        </a>
+                                    </li>
+                                @endcan
+                                
                                 <li class="aiz-side-nav-item">
                                     <a href="{{ route('products.all') }}" class="aiz-side-nav-link {{ areActiveRoutes(['products.all','products.edit']) }}">
                                         <span class="aiz-side-nav-text">{{  trans('messages.all_Products') }}</span>
@@ -80,7 +83,7 @@
                                 </li>
                             @endcanany
 
-                            @canany(['manage_products'])
+                            @canany(['import_product'])
                                 <li class="aiz-side-nav-item">
                                     <a href="{{ route('product_bulk_upload.index') }}" class="aiz-side-nav-link">
                                         <span class="aiz-side-nav-text">Bulk Import</span>
@@ -405,11 +408,14 @@
                             <span class="aiz-side-nav-arrow"></span>
                         </a>
                         <ul class="aiz-side-nav-list level-2">
-                            <li class="aiz-side-nav-item">
-                                <a href="{{ route('roles.create') }}" class="aiz-side-nav-link {{ areActiveRoutes(['roles.create']) }}">
-                                    <span class="aiz-side-nav-text">{{ trans('messages.add_new_role')}}</span>
-                                </a>
-                            </li>
+                            @can('add_role')
+                                <li class="aiz-side-nav-item">
+                                    <a href="{{ route('roles.create') }}" class="aiz-side-nav-link {{ areActiveRoutes(['roles.create']) }}">
+                                        <span class="aiz-side-nav-text">{{ trans('messages.add_new_role')}}</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('roles.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['roles.index','roles.edit']) }}">
                                     <span class="aiz-side-nav-text">{{ trans('messages.all_roles')}}</span>

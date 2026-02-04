@@ -4,13 +4,15 @@
     <div class="aiz-titlebar text-left mt-2 mb-3">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h5 class="h4">{{ trans('messages.all').' '.trans('messages.brands') }}</h5>
+                <h5 class="h5">{{ trans('messages.all').' '.trans('messages.brands') }}</h5>
             </div>
 
             <div class="col-md-6 text-md-right">
-                <a href="{{ route('brands.create') }}" class="btn btn-primary">
-                    <span>{{ trans('messages.add_new').' '.trans('messages.brand') }}</span>
-                </a>
+                @can('add_brand')
+                    <a href="{{ route('brands.create') }}" class="btn btn-primary btn-sm">
+                        <span>{{ trans('messages.add_new').' '.trans('messages.brand') }}</span>
+                    </a>
+                @endcan
             </div>
         </div>
     </div>
@@ -19,9 +21,9 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header row gutters-5">
-                    <div class="col text-center text-md-left">
+                    {{-- <div class="col text-center text-md-left">
                         <h5 class="mb-md-0 h6">{{ trans('messages.brands') }}</h5>
-                    </div>
+                    </div> --}}
                     <div class="col-md-4">
                         <form class="" id="sort_brands" action="" method="GET">
                             <div class="input-group input-group-sm">
@@ -61,14 +63,16 @@
                                         </label>
                                     </td>
                                     <td class="text-center">
-                                        <a class="btn btn-soft-primary btn-icon btn-circle"
-                                            href="{{ route('brands.edit', ['id' => $brand->id, 'lang' => env('DEFAULT_LANGUAGE')]) }}"
-                                            title="{{ trans('messages.edit') }}">
-                                            <i class="las la-edit"></i>
-                                        </a>
+                                        @can('edit_brand')
+                                            <a class="btn btn-soft-primary btn-icon btn-circle"
+                                                href="{{ route('brands.edit', ['id' => $brand->id, 'lang' => env('DEFAULT_LANGUAGE')]) }}"
+                                                title="{{ trans('messages.edit') }}">
+                                                <i class="las la-edit"></i>
+                                            </a>
+                                        @endcan
                                         {{-- <a href="#" class="btn btn-soft-danger btn-icon btn-circle confirm-delete" data-href="{{route('brands.destroy', $brand->id)}}" title="{{ trans('messages.Delete') }}">
-		                                <i class="las la-trash"></i>
-		                            </a> --}}
+                                            <i class="las la-trash"></i>
+                                        </a> --}}
                                     </td>
                                 </tr>
                             @endforeach
