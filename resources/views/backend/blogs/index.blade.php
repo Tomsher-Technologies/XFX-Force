@@ -4,11 +4,11 @@
     <div class="aiz-titlebar text-left mt-2 mb-3">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h5 class="h4">{{ trans('messages.all').' Blogs' }}</h5>
+                <h5 class="h5">{{ trans('messages.all').' Blogs' }}</h5>
             </div>
 
             <div class="col-md-6 text-md-right">
-                <a href="{{ route('blog.create') }}" class="btn btn-primary">
+                <a href="{{ route('blog.create') }}" class="btn btn-primary btn-sm">
                     <span>{{ trans('messages.add_new').' Blog' }}</span>
                 </a>
             </div>

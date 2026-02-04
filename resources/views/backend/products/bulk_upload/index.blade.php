@@ -16,7 +16,7 @@
             </div>
             <br>
             <div class="">
-                <a href="{{ asset('assets/download/product_bulk_demo.xlsx') }}" download><button class="btn btn-info">Download Excel File</button></a>
+                <a href="{{ asset('assets/download/product_bulk_demo.xlsx') }}" download><button class="btn btn-info btn-sm">Download Excel File</button></a>
             </div>
             {{-- <div class="alert" style="color: #004085;background-color: #cce5ff;border-color: #b8daff;margin-bottom:0;margin-top:10px;">
                 <strong>{{translate('Step 2')}}:</strong>
@@ -43,14 +43,14 @@
                     <div class="col-sm-9">
                         <div class="custom-file">
     						<label class="custom-file-label">
-    							<input type="file" name="bulk_file" class="custom-file-input" required>
+    							<input type="file" name="bulk_file" class="custom-file-input form-control form-control-sm" required>
     							<span class="custom-file-name">Choose File</span>
     						</label>
     					</div>
                     </div>
                 </div>
                 <div class="form-group mb-0">
-                    <button type="submit" class="btn btn-info">Upload File</button>
+                    <button type="submit" class="btn btn-info btn-sm">Upload File</button>
                 </div>
             </form>
         </div>

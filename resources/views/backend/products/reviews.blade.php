@@ -3,17 +3,17 @@
 @section('content')
     <div class="aiz-titlebar text-left mt-2 mb-3">
         <div class="align-items-center">
-            <h1 class="h3">Product Reviews</h1>
+            <h5 class="h5">Product Reviews</h5>
         </div>
     </div>
 
     <div class="card">
         <div class="card-header">
             <div class="row flex-grow-1">
-                <div class="col">
+                {{-- <div class="col">
                     <h5 class="mb-0 h6">Product Reviews</h5>
 
-                </div>
+                </div> --}}
                 <div class="col-md-6 col-xl-4 ml-auto mr-0">
                     <form class="" id="sort_by_rating" action="{{ route('reviews.index') }}" method="GET">
                         <div class="" style="min-width: 200px;">

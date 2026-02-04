@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth;
+use App\Models\CustomPermission;
 // use App\Models\UserTypes;
 use DB;
 use Validator;
@@ -23,7 +24,9 @@ class RoleController extends Controller
     {
         $this->middleware('auth');
        
-        $this->middleware('permission:manage_roles', ['only' => ['index','create','store','edit','update','destroy']]);
+        $this->middleware('permission:manage_roles',  ['only' => ['index','destroy']]);
+        $this->middleware('permission:add_role',  ['only' => ['create','store']]);
+        $this->middleware('permission:edit_role',  ['only' => ['edit','update']]);
     }
     
     public function index(Request $request)
@@ -32,22 +35,26 @@ class RoleController extends Controller
         return view('backend.roles_permissions.index',compact('roles'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
-
+    
     public function create()
     {
-        $permission = Permission::where('is_active',1)->get();
+        $permission = CustomPermission::whereNull('parent_id')
+                        ->with(['children' => function ($q) {
+                            $q->where('is_active', 1);
+                        }])->where('is_active',1)->orderBy('sort_order')->get();
         return view('backend.roles_permissions.create',compact('permission'));
     }
 
     public function store(Request $request)
     {
+
         $this->validate($request, [
             'name' => 'required|unique:roles,name',
             'permissions' => 'required',
         ]);
 
         $role = Role::create(['name' => $request->input('name')]);
-        $role->syncPermissions($request->input('permissions'));
+        $role->givePermissionTo($request->permissions);
 
         flash(trans('messages.role_create_message'))->success();
         return redirect()->route('roles.index');
@@ -66,7 +73,11 @@ class RoleController extends Controller
     public function edit($id)
     {
         $role = Role::find($id);
-        $permission = Permission::where('is_active',1)->get();
+        $permission = CustomPermission::whereNull('parent_id')
+                        ->with(['children' => function ($q) {
+                            $q->where('is_active', 1);
+                        }])->where('is_active',1)->get();
+
         $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
             ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
             ->all();
