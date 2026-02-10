@@ -7,7 +7,11 @@ use URL;
 
 class ProductStock extends Model
 {
-    protected $fillable = ['product_id', 'qty', 'price'];
+    // protected $fillable = ['product_id', 'qty', 'price', 'description'];
+    protected $fillable = [
+    'product_id', 'type', 'sku', 'qty', 'vat', 'status', 'price', 'offer_price', 'offer_tag', 'stock_description', 'image'
+];
+
     //
     public function product(){
     	return $this->belongsTo(Product::class);
@@ -22,4 +26,8 @@ class ProductStock extends Model
         return URL::to($path);
     }
 
+    public function attributes()
+    {
+        return $this->hasMany(ProductAttributes::class, 'product_varient_id');
+    }
 }

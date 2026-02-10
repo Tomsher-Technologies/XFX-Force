@@ -88,6 +88,7 @@
 
     <script src="{{ asset('assets/js/vendors.js') }}"></script>
     <script src="{{ asset('assets/js/aiz-core.js') }}"></script>
+    <script src="{{ asset('assets/js/custom.js') }}"></script>
 
     @yield('script')
 
@@ -97,22 +98,6 @@
         @endforeach
 
 
-        // if ($('#lang-change').length > 0) {
-        //     $('#lang-change .dropdown-menu a').each(function() {
-        //         $(this).on('click', function(e) {
-        //             e.preventDefault();
-        //             var $this = $(this);
-        //             var locale = $this.data('flag');
-        //             $.post('#', {
-        //                 _token: '{{ csrf_token() }}',
-        //                 locale: locale
-        //             }, function(data) {
-        //                 location.reload();
-        //             });
-
-        //         });
-        //     });
-        // }
 
         function menuSearch() {
             var filter, item;

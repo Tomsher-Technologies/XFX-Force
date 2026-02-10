@@ -156,8 +156,7 @@
 
                                         @if ($product->thumbnail_img)
                                             <div class="col-auto">
-                                                <img src="{{ get_product_image($product->thumbnail_img, '300') }}"
-                                                    alt="Image" class="size-50px img-fit">
+                                                <img src="{{ product_image_url($product->thumbnail_img, 300) }}" alt="Image" class="size-50px img-fit">
                                             </div>
                                         @endif
 
@@ -182,14 +181,13 @@
                                     @php
                                         $qty = 0;
                                         if ($product->product_type == 1) {
-                                            foreach ($product->stocks as $key => $stock) {
+                                            foreach ($product->stocks->where('type','variant') as $key => $stock) {
                                                 $qty += $stock->qty;
                                                 echo $stock->sku . ' - <b>' . $stock->qty . '</b><br>';
                                             }
                                         } else {
-                                            //$qty = $product->current_stock;
                                             $qty = optional($product->stocks->first())->qty;
-                                            echo '<b>'.$qty.'</b>';
+                                            echo $product->stocks->first()->sku . ' - <b>'.$qty.'</b>';
                                         }
                                     @endphp
                                     @if ($qty <= $product->low_stock_quantity)
