@@ -3,6 +3,7 @@
 --
 -- Table structure for table `specifications`
 --
+DROP TABLE IF EXISTS `specifications`;
 CREATE TABLE `specifications` (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `main_title` varchar(191) NOT NULL,
@@ -18,6 +19,7 @@ CREATE TABLE `specifications` (
 --
 -- Table structure for table `specification_items`
 --
+DROP TABLE IF EXISTS `specification_items`;
 CREATE TABLE `specification_items` (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `main_specification_id` bigint(20) UNSIGNED NOT NULL,
@@ -39,3 +41,53 @@ CREATE TABLE `specification_items` (
 -- Added By Swetha on 02/02/2026 ---
 
 ALTER TABLE `attribute_values` ADD `value` VARCHAR(255) NOT NULL AFTER `attribute_id`;
+
+-- Added By Swetha on 03/02/2026 ---
+ALTER TABLE products
+ADD COLUMN `condition` TINYINT NULL DEFAULT NULL COMMENT '\'0=New,1=Refurbished,2=Open Box\'' AFTER `slug`;
+
+
+ALTER TABLE products
+ADD COLUMN `estimated_delivery_date` DATE NULL
+AFTER `condition`;
+
+-- Added By Swetha on 05/02/2026
+ALTER TABLE `product_stocks` ADD `vat` FLOAT(5,2) NOT NULL DEFAULT '0.00' AFTER `qty`;
+ALTER TABLE `products` DROP `vat`;
+
+ALTER TABLE `products` ADD `tags` VARCHAR(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `brand_id`;
+ALTER TABLE `product_stocks` CHANGE `status` `status` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '0=>Draft, 1=>Published';
+ALTER TABLE `products` CHANGE `sku` `sku` VARCHAR(191) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+
+-- Added by swetha on 07/02/2026
+ALTER TABLE `products` ADD `product_length` VARCHAR(200) NULL DEFAULT NULL AFTER `return_refund`, ADD `product_width` VARCHAR(200) NULL DEFAULT NULL AFTER `product_length`, ADD `product_height` VARCHAR(200) NULL DEFAULT NULL AFTER `product_width`;
+ALTER TABLE `product_stocks` CHANGE `variant` `type` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `product_stocks` ADD `stock_description` TEXT NULL DEFAULT NULL AFTER `image`;
+
+DROP TABLE IF EXISTS `product_specification`;
+CREATE TABLE `product_specification` (`id` INT(11) NOT NULL AUTO_INCREMENT , `specification_id` INT(11) NOT NULL , `specification_item_id` INT(11) NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+
+-- Added by swetha on 09/02/2025
+ALTER TABLE `products` CHANGE `estimated_delivery_date` `estimated_delivery_days` INT(11) NULL DEFAULT NULL;
+ALTER TABLE `products` ADD `product_weight` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `product_height`;
+
+ALTER TABLE `products` CHANGE `published` `published` INT(11) NOT NULL DEFAULT '1' COMMENT '0->Draft, 1=> Published';
+ALTER TABLE `products` CHANGE `return_refund` `return_refund` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0->No, 1->yes';
+ALTER TABLE `product_specification` ADD `product_id` INT(11) NOT NULL AFTER `id`;
+ALTER TABLE `product_specification` CHANGE `specification_id` `specification_id` BIGINT(20) NOT NULL;
+ALTER TABLE `product_specification` CHANGE `specification_item_id` `specification_item_id` BIGINT(20) NOT NULL;
+ALTER TABLE `product_specification` CHANGE `specification_id` `specification_id` BIGINT(20) UNSIGNED NOT NULL;
+ALTER TABLE `product_specification` CHANGE `specification_item_id` `specification_item_id` BIGINT(20) UNSIGNED NOT NULL;
+
+ALTER TABLE product_specification 
+ADD CONSTRAINT fk_product_specification_product 
+FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE;
+
+ALTER TABLE product_specification 
+ADD CONSTRAINT fk_product_specification_specification 
+FOREIGN KEY (specification_id) REFERENCES specifications(id) ON DELETE CASCADE;
+
+ALTER TABLE product_specification 
+ADD CONSTRAINT fk_product_specification_item 
+FOREIGN KEY (specification_item_id) REFERENCES specification_items(id) ON DELETE CASCADE;

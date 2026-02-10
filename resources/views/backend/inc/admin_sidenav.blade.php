@@ -60,7 +60,7 @@
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('specifications.index') }}"
                                 class="aiz-side-nav-link">
-                                    <span class="aiz-side-nav-text">{{  trans('messages.specifications') }}</span>
+                                    <span class="aiz-side-nav-text">{{  trans('messages.specification') }}</span>
                                 </a>
                             </li>
 

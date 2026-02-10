@@ -20,6 +20,7 @@
     <?php
     $url = url()->full();
     ?>
+    
     <link rel="canonical" href="{{ url()->current() }}"/>
     <link href="{{ asset('dist/assets/app-97de3ed1.css') }}" rel="stylesheet">
      <link href="{{ asset('dist/assets/app-afc193cb.css') }}" rel="stylesheet">

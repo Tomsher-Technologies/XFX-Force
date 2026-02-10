@@ -749,3 +749,33 @@ function checkCartProduct($sku, $slug){
         }
     }
 }
+
+if (!function_exists('product_image_url')) {
+    /**
+     * Get the product image URL for a specific size.
+     *
+     * @param string $path  // stored path like 'products/11111/main/11111.png'
+     * @param int $size     // desired size e.g. 300, 500
+     * @return string
+     */
+    function product_image_url($path, $size = null)
+    {
+        if (!$path) return ''; // no image
+
+        // get directory, filename, extension
+        $info = pathinfo($path);
+
+        $dir = $info['dirname'];  // products/11111/main
+        $filename = $info['filename']; // 11111
+        $ext = $info['extension']; // png, jpg, etc
+
+        if ($size) {
+            $filename .= "_{$size}px"; // append size
+        }
+
+        $fullPath = $dir . '/' . $filename . '.' . $ext;
+
+        return Storage::url($fullPath); // returns /storage/products/11111/main/11111_300px.png
+    }
+}
+
