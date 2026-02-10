@@ -5,12 +5,14 @@
 <div class="aiz-titlebar text-left mt-2 mb-3">
 	<div class="row align-items-center">
 		<div class="col-md-6">
-			<h5 class="h4">{{trans('messages.all_staffs')}}</h5>
+			<h5 class="h5">{{trans('messages.all_staffs')}}</h5>
 		</div>
 		<div class="col-md-6 text-md-right">
-			<a href="{{ route('staffs.create') }}" class="btn btn-circle btn-info">
-				<span>{{trans('messages.add_new_staffs')}}</span>
-			</a>
+            @can('add_staff')
+                <a href="{{ route('staffs.create') }}" class="btn btn-circle btn-info btn-sm">
+                    <span>{{trans('messages.add_new_staffs')}}</span>
+                </a>
+            @endcan
 		</div>
 	</div>
 </div>
@@ -45,13 +47,15 @@
 								@endif
 							</td>
                             <td class="text-center">
+                                @can('edit_staff')
 		                            <a class="btn btn-soft-primary btn-icon btn-circle" href="{{route('staffs.edit', encrypt($staff->id))}}" title="{{ trans('messages.edit') }}">
 		                                <i class="las la-edit"></i>
 		                            </a>
 		                            <a href="#" class="btn btn-soft-danger btn-icon btn-circle confirm-delete" data-href="{{route('staffs.destroy', $staff->id)}}" title="{{ trans('messages.delete') }}">
 		                                <i class="las la-trash"></i>
 		                            </a>
-		                        </td>
+                                @endcan
+                            </td>
                         </tr>
                     @endif
                 @endforeach

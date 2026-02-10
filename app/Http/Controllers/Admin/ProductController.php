@@ -27,9 +27,16 @@ use Str;
 class ProductController extends Controller
 {
 
-    /**
-     * Function to list all products.
-     */
+    function __construct()
+    {
+        $this->middleware('auth');
+       
+        $this->middleware('permission:manage_products',  ['only' => ['all_products','destroy']]);
+        $this->middleware('permission:view_product',  ['only' => ['all_products']]);
+        $this->middleware('permission:add_product',  ['only' => ['create','store','downloadAndResizeImage']]);
+        $this->middleware('permission:edit_product',  ['only' => ['admin_product_edit','update','downloadAndResizeImage']]);
+    }
+
     public function all_products(Request $request)
     {
         $request->session()->put('last_url', url()->full());
@@ -86,12 +93,6 @@ class ProductController extends Controller
         return view('backend.products.index', compact('category', 'products', 'type', 'col_name', 'query', 'seller_id', 'sort_search'));
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $categories = Category::where('parent_id', 0)

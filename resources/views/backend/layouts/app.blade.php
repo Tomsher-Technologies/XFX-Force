@@ -31,9 +31,11 @@
     @yield('header')
     <style>
         body {
-            font-size: 14px;
+            font-size: 12px;
         }
     </style>
+
+    @yield('style')
     <script>
         var AIZ = AIZ || {};
         AIZ.local = {
@@ -73,7 +75,9 @@
                     @yield('content')
                 </div>
                 <div class="bg-white text-center py-3 px-15px px-lg-25px mt-auto">
-                    <p class="mb-0">&copy; {{ env('APP_NAME') }}</p>
+                    <p class="mb-0">
+                        &copy; {{ date('Y') }} {{ env('APP_NAME') }}. All rights reserved.
+                    </p>
                 </div>
             </div><!-- .aiz-main-content -->
         </div><!-- .aiz-content-wrapper -->

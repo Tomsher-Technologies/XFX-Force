@@ -5,7 +5,7 @@
 <div class="aiz-titlebar text-left mt-2 mb-3">
     <div class="row align-items-center">
         <div class="col-auto">
-            <h1 class="h3">Specifications</h1>
+            <h5 class="h5">All Specifications</h5>
         </div>
         <div class="col text-right">
             <button id="toggleForm" class="btn btn-primary btn-sm">
@@ -31,7 +31,7 @@
         </div>
     </div>
     <div class="card-body">
-        <table class="table table-bordered">
+        <table class="table table-bordered aiz-table">
             <thead>
                 <tr>
                     <th class="text-center">#</th>

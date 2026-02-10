@@ -3827,8 +3827,10 @@ input[type="number"] {
     -webkit-box-align: stretch;
     -ms-flex-align: stretch;
     align-items: stretch;
-    padding: 10px 25px;
-    font-size: 0.875rem;
+    /* padding: 10px 25px; */
+    /* font-size: 0.875rem; */
+    padding: 7px 25px;
+    font-size: 13px;
     font-weight: 400;
     color: #a2a3b7;
 }
@@ -4233,7 +4235,8 @@ input[type="number"] {
 /*form elements*/
 
 .form-control {
-    padding: 0.6rem 1rem;
+    /* padding: 0.6rem 1rem; */
+    padding: 0.4rem;;
     font-size: 0.875rem;
     height: calc(1.3125rem + 1.2rem + 2px);
     border: 1px solid #e2e5ec;
@@ -5394,9 +5397,12 @@ input[type="number"] {
     font-size: 0.8125rem;
 }
 .btn-sm.btn-icon {
-    padding: 0.416rem;
+    /* padding: 0.416rem;
     width: calc(2.02rem + 2px);
-    height: calc(2.02rem + 2px);
+    height: calc(2.02rem + 2px); */
+    padding: 0.3rem;
+    width: calc(1.52rem + 2px);
+    height: calc(1.52rem + 2px);
 }
 .btn-lg {
     padding: 0.75rem 1.5rem;
@@ -5607,7 +5613,13 @@ div.footable-loader > span.fooicon:after {
 }
 .aiz-table td,
 .aiz-table th {
-    padding: 1rem 0.75rem;
+    /* padding: 1rem 0.75rem; */
+    padding: 0.3rem;
+}
+
+.table td, .table th
+{
+    vertical-align: middle;
 }
 .aiz-table.table-bordered td,
 .aiz-table.table-bordered th {

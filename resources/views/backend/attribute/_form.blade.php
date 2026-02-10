@@ -59,8 +59,8 @@
             </div>
 
             <div class="col-md-2">
-                <button type="button" class="remove-value btn btn-link text-danger">
-                    <i class="las la-trash"></i>
+                <button type="button" class="remove-value border-0 bg-transparent mt-2">
+                    <i class="las la-trash text-danger fs-20"></i>
                 </button>
             </div>
         </div>

@@ -15,8 +15,11 @@ class StaffController extends Controller
     {
         $this->middleware('auth');
        
-        $this->middleware('permission:manage_staffs',  ['only' => ['index','create','store','edit','update','destroy']]);
+        $this->middleware('permission:manage_staffs',  ['only' => ['index','destroy']]);
+        $this->middleware('permission:add_staff',  ['only' => ['create','store']]);
+        $this->middleware('permission:edit_staff',  ['only' => ['edit','update']]);
     }
+
     /**
      * Display a listing of the resource.
      *

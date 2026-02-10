@@ -28,17 +28,17 @@
         cursor: sw-resize;
     }
 </style>
-    <div class="aiz-titlebar text-left mt-2 mb-3">
+    <div class="aiz-titlebar text-left mt-2 ">
         <div class="row align-items-center">
             <div class="col-auto">
-                <h1 class="h3">All products</h1>
+                <h5 class="h5">All products</h5>
             </div>
-            @if ($type != 'Seller')
+            @can('add_product')
                 <div class="col text-right">
-                    <a href="{{ route('products.create') }}" class="btn btn-circle btn-info">
+                    <a href="{{ route('products.create') }}" class="btn btn-circle btn-info btn-sm">
                         <span>Add New Product</span>
                     </a>
-                </div>
+                </div>    
             @endif
         </div>
     </div>
@@ -47,9 +47,9 @@
     <div class="card">
         <form class="" id="sort_products" action="" method="GET">
             <div class="card-header row gutters-5">
-                <div class="col">
-                    <h5 class="mb-md-0 h6">All Product</h5>
-                </div>
+                {{-- <div class="col">
+                    <h5 class="mb-md-0 h5">Products</h5>
+                </div> --}}
 
                
                 <div class="col-md-3 bootstrap-select">
@@ -108,8 +108,8 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <button class="btn btn-info " type="submit">Filter</button>
-                    <a href="{{ route('products.all') }}" class="btn btn-cancel">Reset</a>
+                    <button class="btn btn-info btn-sm" type="submit">Filter</button>
+                    <a href="{{ route('products.all') }}" class="btn btn-cancel btn-sm">Reset</a>
                 </div>
             </div>
 
@@ -194,48 +194,49 @@
                                         <span class="badge badge-inline badge-danger">Low</span>
                                     @endif
                                 </td>
-                                {{-- <td>
-                            <label class="aiz-switch aiz-switch-success mb-0">
-                                <input onchange="update_todays_deal(this)" value="{{ $product->id }}" type="checkbox" <?php if ($product->todays_deal == 1) {
-                                    echo 'checked';
-                                } ?> >
-                                <span class="slider round"></span>
-                            </label>
-                        </td> --}}
+                             
                                 <td class="text-center">
-                                    <label class="aiz-switch aiz-switch-success mb-0">
-                                        <input onchange="update_published(this)" value="{{ $product->id }}"
-                                            type="checkbox" <?php if ($product->published == 1) {
-                                                echo 'checked';
-                                            } ?>>
-                                        <span class="slider round"></span>
-                                    </label>
+                                    @can('edit_product')
+                                        <label class="aiz-switch aiz-switch-success mb-0">
+                                            <input onchange="update_published(this)" value="{{ $product->id }}"
+                                                type="checkbox" <?php if ($product->published == 1) {
+                                                    echo 'checked';
+                                                } ?>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    @else
+                                        @if ($product->published == 1)
+                                            <span class="badge badge-inline badge-success">Published</span>
+                                        @else
+                                            <span class="badge badge-inline badge-danger">Unpublished</span>
+                                        @endif
+                                    @endcan
+                                    
                                 </td>
-                                {{-- <td>
-                            <label class="aiz-switch aiz-switch-success mb-0">
-                                <input onchange="update_featured(this)" value="{{ $product->id }}" type="checkbox" <?php if ($product->featured == 1) {
-                                    echo 'checked';
-                                } ?> >
-                                <span class="slider round"></span>
-                            </label>
-                        </td> --}}
+                              
                                 <td class="text-center">
                                     {{-- <a class="btn btn-soft-success btn-icon btn-circle"
                                         href="{{ route('product', $product->slug) }}" target="_blank" title="View">
                                         <i class="las la-eye"></i>
                                     </a> --}}
-                                    <a class="btn btn-soft-primary btn-icon btn-circle"
-                                        href="{{ route('products.edit', ['id' => $product->id]) }}"
+                                    @can('edit_product')
+                                        <a class="btn btn-soft-primary btn-icon btn-circle" href="{{ route('products.edit', ['id' => $product->id, 'lang' => env('DEFAULT_LANGUAGE')]) }}"
                                         title="Edit">
-                                        <i class="las la-edit"></i>
-                                    </a>
-                                    {{-- <a class="btn btn-soft-warning btn-icon btn-circle" href="{{route('products.duplicate', ['id'=>$product->id, 'type'=>$type]  )}}" title="Duplicate">
-                                <i class="las la-copy"></i>
-                            </a> --}}
-                                    {{-- <a href="#" class="btn btn-soft-danger btn-icon btn-circle confirm-delete"
-                                        data-href="{{ route('products.destroy', $product->id) }}" title="Delete">
-                                        <i class="las la-trash"></i>
-                                    </a> --}}
+                                            <i class="las la-edit"></i>
+                                        </a>
+                                    @endcan
+                                    
+                                    @can('delete_product')
+                                        
+                                    
+                                        {{-- <a class="btn btn-soft-warning btn-icon btn-circle" href="{{route('products.duplicate', ['id'=>$product->id, 'type'=>$type]  )}}" title="Duplicate">
+                                            <i class="las la-copy"></i>
+                                        </a> --}}
+                                        {{-- <a href="#" class="btn btn-soft-danger btn-icon btn-circle confirm-delete"
+                                            data-href="{{ route('products.destroy', $product->id) }}" title="Delete">
+                                            <i class="las la-trash"></i>
+                                        </a> --}}
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach
@@ -270,24 +271,9 @@
 
         });
 
-        function update_todays_deal(el) {
-            if (el.checked) {
-                var status = 1;
-            } else {
-                var status = 0;
-            }
-            $.post('{{ route('products.todays_deal') }}', {
-                _token: '{{ csrf_token() }}',
-                id: el.value,
-                status: status
-            }, function(data) {
-                if (data == 1) {
-                    AIZ.plugins.notify('success', 'Todays Deal updated successfully');
-                } else {
-                    AIZ.plugins.notify('danger', 'Something went wrong');
-                }
-            });
-        }
+        $(document).ready(function() {
+            //$('#container').removeClass('mainnav-lg').addClass('mainnav-sm');
+        });
 
         function update_published(el) {
             if (el.checked) {
@@ -308,66 +294,11 @@
             });
         }
 
-        function update_approved(el) {
-            if (el.checked) {
-                var approved = 1;
-            } else {
-                var approved = 0;
-            }
-            $.post('{{ route('products.approved') }}', {
-                _token: '{{ csrf_token() }}',
-                id: el.value,
-                approved: approved
-            }, function(data) {
-                if (data == 1) {
-                    AIZ.plugins.notify('success', 'Product approval update successfully');
-                } else {
-                    AIZ.plugins.notify('danger', 'Something went wrong');
-                }
-            });
-        }
-
-        function update_featured(el) {
-            if (el.checked) {
-                var status = 1;
-            } else {
-                var status = 0;
-            }
-            $.post('{{ route('products.featured') }}', {
-                _token: '{{ csrf_token() }}',
-                id: el.value,
-                status: status
-            }, function(data) {
-                if (data == 1) {
-                    AIZ.plugins.notify('success', 'Featured products updated successfully');
-                } else {
-                    AIZ.plugins.notify('danger', 'Something went wrong');
-                }
-            });
-        }
+       
 
         function sort_products(el) {
             $('#sort_products').submit();
         }
 
-        function bulk_delete() {
-            var data = new FormData($('#sort_products')[0]);
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "{{ route('bulk-product-delete') }}",
-                type: 'POST',
-                data: data,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    if (response == 1) {
-                        location.reload();
-                    }
-                }
-            });
-        }
     </script>
 @endsection
