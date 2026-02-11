@@ -1,8 +1,6 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
     <div class="aiz-titlebar text-left mt-2 mb-3">
         <h5 class="mb-0 h6">{{ trans('messages.add').' '.trans('messages.new').' '.trans('messages.product') }}</h5>
     </div>
@@ -542,8 +540,6 @@
             }
         });
 
-
-
         $('.repeater').repeater({
             initEmpty: true,
             show: function() {
@@ -799,28 +795,23 @@ $(function() {
 
 // specification
 $(document).on('change', "select[name='specification_id[]']", function () {
-
     var specId = $(this).val();
     var $block = $(this).closest('.form-group');   // current block
     var $itemSelect = $block.find("select[name='specification_item_id[]']");
-
     if (specId) {
         $.ajax({
             url: "{{ route('specifications.items') }}",
             type: 'GET',
             data: { specification_id: specId },
             success: function (data) {
-
                 $itemSelect.empty();
                 $itemSelect.append(
                     "<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>"
                 );
-
                 data.forEach(function (item) {
                     $itemSelect.append(
                         '<option value="' + item.id + '">' + item.title + '</option>'
                     );
-
                     if (item.sub_items && item.sub_items.length) {
                         addSubItems(item.sub_items, $itemSelect, 1);
                     }
@@ -849,16 +840,12 @@ function addSubItems(items, $select, level) {
     });
 }
 
-
-
 $(document).on("click", ".add-more-specification", function () {
     var $block = $(this)
         .parents(".row")
         .siblings(".specification_block")
         .children()
         .first();
-
-    // work on a copy
     var $clone = $block.clone();
 
     // remove bootstrap-select wrappers from the clone

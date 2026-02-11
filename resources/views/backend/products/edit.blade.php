@@ -1,8 +1,6 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 <div class="aiz-titlebar text-left mt-2 mb-3">
     <h1 class="mb-0 h6">Edit Product</h5>
 </div>
@@ -204,24 +202,6 @@
                                                             @endphp
                                                         </select>
                                                     </div>
-                                                    <!-- <div class="col-md-4">
-                                                        <label class="col-from-label">{{ trans('messages.items') }}</label>
-                                                        <select class="form-control aiz-selectpicker"
-                                                                name="specification_item_id[]"
-                                                                data-live-search="true">
-                                                            <option value="">
-                                                                {{ trans('messages.select').' '.trans('messages.items') }}
-                                                            </option>
-
-                                                            @foreach ($specificationItems->where('main_specification_id', $ps->specification_id) as $specificationItem)
-                                                                <option value="{{ $specificationItem->id }}"
-                                                                    {{ $specificationItem->id == $ps->specification_item_id ? 'selected' : '' }}>
-                                                                    {{ $specificationItem->title }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div> -->
-
                                                     <div class="col-md-2">
                                                         <label class="d-block">&nbsp;</label>
                                                         <button type="button" class="remove-spec border-0 bg-transparent">
@@ -284,7 +264,6 @@
                                     <!-- specification block ends -->
                                         
                                     <div class="form-group row">
-                                        
                                         <div class="col-md-6">
                                             <label class="col-from-label">{{ trans('messages.tags') }}</label>
                                             <input type="text" class="form-control aiz-tag-input" name="tags[]"
@@ -299,7 +278,6 @@
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
-
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-md-3">
@@ -329,12 +307,10 @@
                                 <h5 class="mb-0 h6">{{ trans('messages.product').' '.trans('messages.images') }}</h5>
                             </div>
                             <div class="card-body">
-
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="signinSrEmail">{{ trans('messages.gallery_images') }}<small>({{ trans('messages.1000*1000') }})</small></label>
                                     <div class="col-md-8">
                                         <input type="file" name="gallery_images[]" multiple class="form-control" accept="image/*">
-
                                         @if ($product->photos)
                                         <div class="file-preview box sm">
                                             @php
@@ -346,7 +322,6 @@
                                                 <div
                                                     class="align-items-center align-self-stretch d-flex justify-content-center thumb">
                                                     <img src="{{ Storage::url($photo) }}" class="img-fit">
-                                                    
                                                 </div>
                                                 <div class="remove">
                                                     <button class="btn btn-link remove-galley"
@@ -383,10 +358,8 @@
                                         </div>
                                         @endif
                                     </div>
-
                                 </div>
                             </div>
-
                             {{-- <div class="form-group row">
                                     <label class="col-lg-3 col-from-label">{{translate('Thumbnail Image')}} <small>(290x300)</small></label>
                                 <div class="col-lg-8">
@@ -426,7 +399,6 @@
                                         data-format="DD-MM-Y HH:mm:ss" data-separator=" to " autocomplete="off">
                                     </div>
                                 </div>
-
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-from-label">{{ trans('messages.discount') }}</label>
                                     <div class="col-lg-6">
@@ -445,7 +417,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -500,8 +471,6 @@
                                         </select>
                                     </div>
                                 </div>
-
-                                
                                 <!-- Single type product block starts -->
                                 <div id="single-fields" class="shadow p-3" @if(isset($product) && $product->product_type == 1) style="display:none;" @endif>
                                     <div class="d-flex justify-content-between">    
@@ -555,8 +524,6 @@
                                     </div>
                                 </div>
                                 <!-- Single type product block ends -->
-                                
-
                                 <!-- Variant type product block starts -->
                                 <div id="variants-container" @if(isset($product) && $product->product_type == 0) style="display:none;" @endif>
                                     @foreach($product->stocks->where('type', 'variant')->values() as $index => $stock)
@@ -576,7 +543,6 @@
                                             <div class="variant-attributes">
                                                 <div class="form-group row">
                                                 @foreach($stock->attributes->sortBy('attribute_id') as $attrRow)
-                                                <!-- <div class="attr-row" data-attr="{{$attrRow->attribute_id}}"> -->
                                                     <div class="col-md-3 mb-1">
                                                         <label>
                                                             {{ $attrRow->attribute->name }}
@@ -596,7 +562,6 @@
 
                                                         </select>
                                                     </div>
-                                                <!-- </div> -->
                                                 @endforeach
                                                 </div>
                                             </div>
@@ -650,7 +615,6 @@
                                         Add Variant
                                     </button>
                                 </div>
-                                
                                 <!-- Variant type product block ends -->
                             </div>
                         </div>
@@ -684,14 +648,12 @@
                                             <div class="col-md-12">
                                                 <input type="text" class="form-control" name="tab_heading">
                                             </div>
-
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-md-12 col-from-label">{{ trans('messages.description') }}</label>
                                             <div class="col-md-12">
                                                 <textarea class="text-area" name="tab_description"></textarea>
                                             </div>
-
                                         </div>
                                         <div class="form-group row">
 
@@ -797,21 +759,19 @@
                                         <textarea name="twitter_description" rows="8" class="form-control">{{ $product->getSeoTranslation('twitter_description',$lang) }}</textarea>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
-                 <!-- new ui tab content end -->
-        </div>
-
-        <div class="col-12">
-            <div class="mb-3 text-right">
-                <button type="submit" name="button" class="btn btn-info">{{ trans('messages.update').' '.trans('messages.product') }}</button>
+                <!-- new ui tab content end -->
+            </div>
+            <div class="col-12">
+                <div class="mb-3 text-right">
+                    <button type="submit" name="button" class="btn btn-info">{{ trans('messages.update').' '.trans('messages.product') }}</button>
+                </div>
             </div>
         </div>
-</div>
-</form>
+    </form>
 </div>
 @endsection
 @section('styles')
@@ -827,8 +787,6 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
-    // Pass php data attributes to JS.
-    
     $('.remove-thumbnail').on('click', function() {
         thumbnail = $(this)
         $.ajax({
@@ -844,8 +802,8 @@
                 $(thumbnail).closest('.file-preview-item').remove();
             }
         });
-
     });
+
     $('.remove-galley').on('click', function() {
         thumbnail = $(this)
         $.ajax({
@@ -983,16 +941,19 @@ $tabs[$key]['tab_description'] = $tab->content;
             $("#single-fields").hide();
             $("#variant-fields").show();
             $(".variant-selector").show();
+            AIZ.plugins.textEditor();
         } else {
             $("#single-fields").show();
             $("#variant-fields").hide();
             $(".variant-selector").hide();
+            AIZ.plugins.textEditor();
         }
     });
 
+    // Pass php data attributes to JS.
     var attributes = @json($attributes);
 
-    // product type selection changes
+    // product type selection changes.
     $("#product_type").on("change", function () {
         if ($(this).val() == 1) { // Single → Variant
             $("#single-fields").hide();
@@ -1002,7 +963,7 @@ $tabs[$key]['tab_description'] = $tab->content;
             $("#variants-container").html("").show(); 
             AIZ.plugins.textEditor();
             addVariantBox();
-            
+            AIZ.plugins.textEditor();
         }
     });
 
@@ -1064,6 +1025,7 @@ $tabs[$key]['tab_description'] = $tab->content;
         `;
 
         $("#variants-container").append(html);
+        AIZ.plugins.textEditor();
         renderAttributesForBox(index);
     }
 
@@ -1139,93 +1101,85 @@ $tabs[$key]['tab_description'] = $tab->content;
         $('#product_type_hidden').val(this.value);
     }); 
 
-
-    
     // specification
-
     $(document).on('change', "select[name='specification_id[]']", function () {
+        var specId = $(this).val();
+        var $block = $(this).closest('.form-group');   // current block
+        var $itemSelect = $block.find("select[name='specification_item_id[]']");
 
-    var specId = $(this).val();
-    var $block = $(this).closest('.form-group');   // current block
-    var $itemSelect = $block.find("select[name='specification_item_id[]']");
+        if (specId) {
+            $.ajax({
+                url: "{{ route('specifications.items') }}",
+                type: 'GET',
+                data: { specification_id: specId },
+                success: function (data) {
 
-    if (specId) {
-        $.ajax({
-            url: "{{ route('specifications.items') }}",
-            type: 'GET',
-            data: { specification_id: specId },
-            success: function (data) {
-
-                $itemSelect.empty();
-                $itemSelect.append(
-                    "<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>"
-                );
-
-                data.forEach(function (item) {
+                    $itemSelect.empty();
                     $itemSelect.append(
-                        '<option value="' + item.id + '">' + item.title + '</option>'
+                        "<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>"
                     );
 
-                    if (item.sub_items && item.sub_items.length) {
-                        addSubItems(item.sub_items, $itemSelect, 1);
-                    }
-                });
+                    data.forEach(function (item) {
+                        $itemSelect.append(
+                            '<option value="' + item.id + '">' + item.title + '</option>'
+                        );
 
-                $itemSelect.selectpicker('refresh');
-            }
-        });
-    } else {
-        $itemSelect
-            .empty()
-            .append("<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>")
-            .selectpicker('refresh');
-    }
-});
+                        if (item.sub_items && item.sub_items.length) {
+                            addSubItems(item.sub_items, $itemSelect, 1);
+                        }
+                    });
 
-
-function addSubItems(items, $select, level) {
-    items.forEach(function(subItem) {
-        var prefix = '&nbsp;-'.repeat(level) + ' ';
-        $select.append('<option value="'+subItem.id+'">'+prefix+subItem.title+'</option>');
-
-        if(subItem.sub_items && subItem.sub_items.length) {
-            addSubItems(subItem.sub_items, $select, level + 1);
+                    $itemSelect.selectpicker('refresh');
+                }
+            });
+        } else {
+            $itemSelect
+                .empty()
+                .append("<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>")
+                .selectpicker('refresh');
         }
     });
-}
 
+    function addSubItems(items, $select, level) {
+        items.forEach(function(subItem) {
+            var prefix = '&nbsp;-'.repeat(level) + ' ';
+            $select.append('<option value="'+subItem.id+'">'+prefix+subItem.title+'</option>');
 
+            if(subItem.sub_items && subItem.sub_items.length) {
+                addSubItems(subItem.sub_items, $select, level + 1);
+            }
+        });
+    }
 
-$(document).on("click", ".add-more-specification", function () {
-    var $block = $(this)
-        .parents(".row")
-        .siblings(".specification_block")
-        .children()
-        .first();
+    $(document).on("click", ".add-more-specification", function () {
+        var $block = $(this)
+            .parents(".row")
+            .siblings(".specification_block")
+            .children()
+            .first();
 
-    // work on a copy
-    var $clone = $block.clone();
+        var $clone = $block.clone();
 
-    // remove bootstrap-select wrappers from the clone
-    $clone.find('.bootstrap-select').each(function () {
-        var $wrapper = $(this);
-        var $select  = $wrapper.find('select.aiz-selectpicker');
+        // remove bootstrap-select wrappers from the clone
+        $clone.find('.bootstrap-select').each(function () {
+            var $wrapper = $(this);
+            var $select  = $wrapper.find('select.aiz-selectpicker');
 
-        // move select out and remove wrapper
-        $wrapper.replaceWith($select);
+            // move select out and remove wrapper
+            $wrapper.replaceWith($select);
+        });
+
+        // reset values in the clone
+        $clone.find("select[name='specification_id[]']").val('');
+        $clone.find("select[name='specification_item_id[]']").empty()
+            .append("<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>");
+
+        // append clone
+        $(".specification_block").append($clone);
+
+        // initialize selectpicker only in the new clone
+        $clone.find('.aiz-selectpicker').selectpicker('render');
     });
-
-    // reset values in the clone
-    $clone.find("select[name='specification_id[]']").val('');
-    $clone.find("select[name='specification_item_id[]']").empty()
-        .append("<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>");
-
-    // append clone
-    $(".specification_block").append($clone);
-
-    // initialize selectpicker only in the new clone
-    $clone.find('.aiz-selectpicker').selectpicker('render');
-});
 
 
 </script>

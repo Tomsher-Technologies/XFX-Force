@@ -37,6 +37,11 @@ class ProductController extends Controller
         $this->middleware('permission:edit_product',  ['only' => ['admin_product_edit','update','downloadAndResizeImage']]);
     }
 
+    /**
+     * Function to list all products.
+     * 
+     * @param Request $request
+     */
     public function all_products(Request $request)
     {
         $request->session()->put('last_url', url()->full());
@@ -93,6 +98,9 @@ class ProductController extends Controller
         return view('backend.products.index', compact('category', 'products', 'type', 'col_name', 'query', 'seller_id', 'sort_search'));
     }
 
+    /**
+     * Function to load the create form. 
+     */
     public function create()
     {
         $categories = Category::where('parent_id', 0)
@@ -144,7 +152,7 @@ class ProductController extends Controller
         $product->category_id = $request->category_id;
         $product->brand_id = $request->brand_id;
         $product->user_id = Auth::user()->id;
-        // $product->sku = cleanSKU($skuMain);
+        $product->sku = cleanSKU($skuMain);
         $product->video_provider = $request->video_provider;
         $product->video_link = $request->video_link;
         $product->discount = $request->discount;
@@ -314,7 +322,7 @@ class ProductController extends Controller
             $product_stock->save();
 
             // Save the product SKU as the stock SKU
-            $product->sku = $product_stock->sku;
+            $product->sku = cleanSKU($request->sku ?? generateUniqueSKU());
             $product->save();
         }
 
@@ -344,7 +352,7 @@ class ProductController extends Controller
                 
                 // Set product SKU as the first variant stock SKU
                 if ($index === 0) {
-                    $product->sku = $stock->sku;
+                    $product->sku = cleanSKU($variantData['sku'] ?? generateUniqueSKU());
                     $product->save();
                 }
 
@@ -404,7 +412,19 @@ class ProductController extends Controller
         return view('backend.products.edit', compact('product', 'categories', 'tags', 'lang', 'productSpecifications', 'specifications', 'specificationItems'));
     }
 
-    public function downloadAndResizeImage($product_type, $imageUrl, $sku, $mainImage = false, $count = 1, $update = false)
+    /**
+     * Function to download and resize the image.
+     *
+     * @param mixed $product_type
+     * @param mixed $imageUrl
+     * @param mixed $sku
+     * @param bool $mainImage
+     * @param int $count
+     * @param bool $update
+     * @return string
+     * 
+     */
+    public function downloadAndResizeImage($product_type, $imageUrl, $sku, $mainImage = false, $count = 1, $update = false) : string
     {
         $data_url = '';
         $ext = $imageUrl->getClientOriginalExtension();
@@ -434,7 +454,6 @@ class ProductController extends Controller
 
         // Create Intervention Image instance
         $image = Image::make($imageContents);
-
         $sizes = config('app.img_sizes');
 
         foreach ($sizes as $size) {
@@ -455,7 +474,13 @@ class ProductController extends Controller
         return $data_url;
     }
 
-
+    /**
+     * Function to update the product.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -639,7 +664,6 @@ class ProductController extends Controller
             $product->save();
         }
 
-
         // save variant type product
         if ($request->product_type == 1 && $request->has('variants')) {
             foreach ($request->variants as $index=>$variantData) {
@@ -732,8 +756,13 @@ class ProductController extends Controller
         return view('partials.product_select', compact('products'));
     }
 
-
-    public function updatePublished(Request $request)
+    /**
+     * Function to update the published status of product.
+     *
+     * @param Request $request
+     * @return int
+     */
+    public function updatePublished(Request $request): int
     {
         $product = Product::findOrFail($request->id);
         $product->published = $request->status;
@@ -768,13 +797,9 @@ class ProductController extends Controller
             $sizes = config('app.img_sizes');
             foreach ($sizes as $size) {
                 $path = $info['dirname'] . '/' . $file_name . '_' . $size . 'px.' . $ext;
-                // if (Storage::exists($path)) {
-                //     Storage::delete($path);
-                // }
                 unlink($path);
             }
 
-            // Storage::delete($product->thumbnail_img);1
             unlink($fil_url);
             $product->thumbnail_img = null;
             $product->save();
