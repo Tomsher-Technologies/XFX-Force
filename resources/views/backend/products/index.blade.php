@@ -271,10 +271,6 @@
 
         });
 
-        $(document).ready(function() {
-            //$('#container').removeClass('mainnav-lg').addClass('mainnav-sm');
-        });
-
         function update_published(el) {
             if (el.checked) {
                 var status = 1;
@@ -293,8 +289,6 @@
                 }
             });
         }
-
-       
 
         function sort_products(el) {
             $('#sort_products').submit();

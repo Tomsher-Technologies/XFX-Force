@@ -4,8 +4,6 @@ function title_update(e) {
     $('#slug').val(title)
 }
 
-
-
 // remove variant
 $(document).on("click", ".remove-variant", function () {
     let container = $("#variants-container");
