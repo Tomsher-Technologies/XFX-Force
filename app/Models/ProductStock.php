@@ -9,7 +9,7 @@ class ProductStock extends Model
 {
     // protected $fillable = ['product_id', 'qty', 'price', 'description'];
     protected $fillable = [
-    'product_id', 'type', 'sku', 'qty', 'vat', 'status', 'price', 'offer_price', 'offer_tag', 'stock_description', 'image'
+    'product_id', 'type', 'sku', 'qty', 'vat', 'status', 'price', 'offer_price', 'offer_tag', 'stock_description', 'image', 'stock_title', 'model',
 ];
 
     //

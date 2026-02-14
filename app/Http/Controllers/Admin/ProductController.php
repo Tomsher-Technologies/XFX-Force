@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ImageHelper;
 use App\Http\Controllers\Controller;
 use App\Models\AttributeValue;
 use App\Models\Cart;
@@ -12,6 +13,7 @@ use App\Models\ProductSeo;
 use App\Models\ProductSpecification;
 use App\Models\ProductStock;
 use App\Models\ProductTabs;
+use App\Models\ProductWarranty;
 use App\Models\Specification;
 use App\Models\SpecificationItem;
 use Artisan;
@@ -20,7 +22,6 @@ use Carbon\Carbon;
 use Exception;
 use File;
 use Illuminate\Http\Request;
-use Image;
 use Storage;
 use Str;
 
@@ -30,11 +31,10 @@ class ProductController extends Controller
     function __construct()
     {
         $this->middleware('auth');
-       
         $this->middleware('permission:manage_products',  ['only' => ['all_products','destroy']]);
         $this->middleware('permission:view_product',  ['only' => ['all_products']]);
-        $this->middleware('permission:add_product',  ['only' => ['create','store','downloadAndResizeImage']]);
-        $this->middleware('permission:edit_product',  ['only' => ['admin_product_edit','update','downloadAndResizeImage']]);
+        $this->middleware('permission:add_product',  ['only' => ['create','store']]);
+        $this->middleware('permission:edit_product',  ['only' => ['admin_product_edit','update']]);
     }
 
     /**
@@ -143,8 +143,7 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        
+    { 
         // save product
         $skuMain = $request->input('sku') ?? generateUniqueSKU();
         $product = new Product;
@@ -178,6 +177,7 @@ class ProductController extends Controller
         $product->product_width = $request->product_width;
         $product->product_height = $request->product_height;
         $product->product_weight = $request->product_weight;
+        $product->description = $request->description;
         $product->return_refund = $request->input('return_refund');
 
         $tags = array();
@@ -201,7 +201,7 @@ class ProductController extends Controller
             }
 
             foreach ($request->file('gallery_images') as $key => $file) {
-                $gallery[] = $this->downloadAndResizeImage('main_product', $file, $product->sku, false, $count + $key);
+                $gallery[] = ImageHelper::downloadAndResizeImage('main_product', $file, $product->sku, false, $count + $key);
             }
             $product->photos = implode(',', array_merge($old_gallery, $gallery));
         }
@@ -223,7 +223,7 @@ class ProductController extends Controller
                     Storage::delete($product->thumbnail_img);
                 }
             }
-            $gallery = $this->downloadAndResizeImage('main_product', $request->file('thumbnail_image'), $product->sku, true);
+            $gallery =ImageHelper::downloadAndResizeImage('main_product', $request->file('thumbnail_image'), $product->sku, true);
             $product->thumbnail_img = $gallery;
         }
 
@@ -246,7 +246,6 @@ class ProductController extends Controller
             $specModel->specification_item_id = $itemId;
             $specModel->save();
         }
-
 
         // SEO
         $seo = ProductSeo::firstOrNew(['lang' => env('DEFAULT_LANGUAGE', 'en'), 'product_id' => $product->id]);
@@ -278,6 +277,20 @@ class ProductController extends Controller
             }
         }
 
+        // saving warranty
+        if ($request->has('extended_warranty')) {
+            foreach ($request->extended_warranty as $warranty) {
+                if (!empty($warranty['warranty_title']) && !empty($warranty['warranty_months'])) {
+                    $product->warranty()->create([
+                        'title' => $warranty['warranty_title'],
+                        'price' => $warranty['warranty_price'] ?? 0,
+                        'months' => $warranty['warranty_months'],
+                        'description' => $warranty['warranty_description'] ?? null,
+                    ]);
+                }
+            }
+        }
+
         // saving single type product
         if ($request->product_type == 0) {
             //save stock
@@ -286,13 +299,13 @@ class ProductController extends Controller
             $product_stock->type = 'single';
             $product_stock->sku = cleanSKU($request->sku ?? generateUniqueSKU());
             $product_stock->qty = $request->current_stock;
-            $product_stock->vat = $request->vat;
             $product_stock->status = $request->status ?? 1;
             $product_stock->stock_description = $request->stock_description;
-
+            $product_stock->model = $request->model;
+            $product_stock->stock_title = $request->stock_title;
             $product_stock->image = '';
             if ($request->hasFile('image')) {
-                $product_stock->image = $this->downloadAndResizeImage('sub_product', $request->file('image'), $product->sku, true);
+                $product_stock->image = ImageHelper::downloadAndResizeImage('sub_product', $request->file('image'), $product->sku, true);
             }
 
             $offertag = '';
@@ -334,20 +347,46 @@ class ProductController extends Controller
                 $stock->product_id = $product->id;
                 $stock->type = 'variant';
                 $stock->sku = cleanSKU($variantData['sku'] ?? generateUniqueSKU());
-                $stock->price = $variantData['price'];
                 $stock->qty = $variantData['current_stock'];
-                $stock->vat = $variantData['vat'];
                 $stock->status = $variantData['status'] ?? 1;
                 $stock->stock_description = $variantData['stock_description'] ?? '';
+                $stock->model = $variantData['model'] ?? '';
+                $stock->stock_title = $variantData['stock_title'] ?? '';
 
                 if (isset($variantData['image']) && $request->hasFile("variants.$index.image")) {
-                    $stock->image = $this->downloadAndResizeImage(
+                    $stock->image = ImageHelper::downloadAndResizeImage(
                         'sub_product', 
                         $request->file("variants.$index.image"), 
                         $product->sku, 
                         true
                     );
                 }
+
+                $offertag = '';
+                $productOrgPrice = $variantData['price'];
+                $discountPrice = $productOrgPrice;
+
+                if (
+                    $product->discount_start_date &&
+                    strtotime(date('d-m-Y H:i:s')) >= $product->discount_start_date &&
+                    strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date
+                ) {
+
+                    if ($product->discount_type == 'percent') {
+                        $discountPrice = $productOrgPrice - (($productOrgPrice * $product->discount) / 100);
+                        $offertag = $product->discount . '% OFF';
+                    }
+
+                    if ($product->discount_type == 'amount') {
+                        $discountPrice = $productOrgPrice - $product->discount;
+                        $offertag = 'AED ' . $product->discount . ' OFF';
+                    }
+                }
+
+                $stock->price = $productOrgPrice;
+                $stock->offer_price = $discountPrice;
+                $stock->offer_tag = $offertag;
+                
                 $stock->save();
                 
                 // Set product SKU as the first variant stock SKU
@@ -413,68 +452,6 @@ class ProductController extends Controller
     }
 
     /**
-     * Function to download and resize the image.
-     *
-     * @param mixed $product_type
-     * @param mixed $imageUrl
-     * @param mixed $sku
-     * @param bool $mainImage
-     * @param int $count
-     * @param bool $update
-     * @return string
-     * 
-     */
-    public function downloadAndResizeImage($product_type, $imageUrl, $sku, $mainImage = false, $count = 1, $update = false) : string
-    {
-        $data_url = '';
-        $ext = $imageUrl->getClientOriginalExtension();
-
-        // Generate timestamp once
-        $time = now()->format('Ymd_His');
-
-        if ($product_type == 'main_product') {
-            $path = 'products/' . $sku . '/main/';
-        } else {
-            $path = 'products/' . $sku . '/';
-        }
-
-        if ($mainImage) {
-            $filename = $path . $sku . '_' . $time . '.' . $ext;
-        } else {
-            $n = $sku . '_gallery_' . $count . '_' . $time;
-            $filename = $path . $n . '.' . $ext;
-        }
-
-        // Download the image
-        $imageContents = file_get_contents($imageUrl);
-
-        // Save original image
-        Storage::disk('public')->put($filename, $imageContents);
-        $data_url = $filename;
-
-        // Create Intervention Image instance
-        $image = Image::make($imageContents);
-        $sizes = config('app.img_sizes');
-
-        foreach ($sizes as $size) {
-            $resizedImage = $image->resize($size, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-
-            if ($mainImage) {
-                $filename2 = $path . $sku . '_' . $time . "_{$size}px." . $ext;
-            } else {
-                $n = $sku . '_gallery_' . $count . '_' . $time . "_{$size}px";
-                $filename2 = $path . $n . '.' . $ext;
-            }
-
-            Storage::disk('public')->put($filename2, $resizedImage->encode('jpg'));
-        }
-
-        return $data_url;
-    }
-
-    /**
      * Function to update the product.
      *
      * @param Request $request
@@ -526,6 +503,7 @@ class ProductController extends Controller
         $product->product_width = $request->product_width;
         $product->product_height = $request->product_height;
         $product->product_weight = $request->product_weight;
+        $product->description = $request->description;
         $product->return_refund = $request->input('return_refund');
 
         $gallery = [];
@@ -539,7 +517,7 @@ class ProductController extends Controller
             }
 
             foreach ($request->file('gallery_images') as $key => $file) {
-                $gallery[] = $this->downloadAndResizeImage('main_product', $file, $product->sku, false, $count + $key);
+                $gallery[] = ImageHelper::downloadAndResizeImage('main_product', $file, $product->sku, false, $count + $key);
             }
             $product->photos = implode(',', array_merge($old_gallery, $gallery));
         }
@@ -561,7 +539,7 @@ class ProductController extends Controller
                     Storage::disk('public')->delete(str_replace('storage/', '', $product->thumbnail_img));
                 }
             }
-            $gallery = $this->downloadAndResizeImage('main_product', $request->file('thumbnail_image'), $product->sku, true);
+            $gallery = ImageHelper::downloadAndResizeImage('main_product', $request->file('thumbnail_image'), $product->sku, true);
             $product->thumbnail_img = $gallery;
         }
         $product->save();
@@ -618,6 +596,22 @@ class ProductController extends Controller
             }
         }
 
+        // saving warranty
+        if ($request->has('extended_warranty')) {
+            ProductWarranty::where('product_id', $product->id)->delete();
+            foreach ($request->extended_warranty as $warranty) {
+                if (!empty($warranty['warranty_title']) && !empty($warranty['warranty_months'])) {
+                    $product->warranty()->create([
+                        'title'       => $warranty['warranty_title'],
+                        'price'       => $warranty['warranty_price'] ?? 0,
+                        'months'      => $warranty['warranty_months'],
+                        'description' => $warranty['warranty_description'] ?? null,
+                    ]);
+                }
+            }
+        }
+
+
         //save single type product
         if ($request->product_type == 0) {
             $product_stock = ProductStock::where('product_id', $product->id)->first();
@@ -625,13 +619,13 @@ class ProductController extends Controller
             $product_stock->type = 'single';
             $product_stock->sku = cleanSKU($request->sku ?? generateUniqueSKU());
             $product_stock->qty = $request->current_stock;
-            $product_stock->vat = $request->vat;
             $product_stock->status = $request->status ?? 1;
             $product_stock->stock_description = $request->stock_description;
+            $product_stock->model = $request->model;
+            $product_stock->stock_title = $request->stock_title; 
 
-            $product_stock->image = '';
             if ($request->hasFile('image')) {
-                $product_stock->image = $this->downloadAndResizeImage('sub_product', $request->file('image'), $product->sku, true);
+                $product_stock->image = ImageHelper::downloadAndResizeImage('sub_product', $request->file('image'), $product->sku, true);
             }
             $offertag = '';
             $productOrgPrice = $request->price;
@@ -675,20 +669,46 @@ class ProductController extends Controller
                 $stock->product_id = $product->id;
                 $stock->type = 'variant';
                 $stock->sku = cleanSKU($variantData['sku'] ?? generateUniqueSKU());
-                $stock->price = $variantData['price'];
                 $stock->qty = $variantData['current_stock'];
-                $stock->vat = $variantData['vat'];
                 $stock->status = $variantData['status'] ?? 1;
                 $stock->stock_description = $variantData['stock_description'] ?? '';
+                $stock->model = $variantData['model'] ?? '';
+                $stock->stock_title = $variantData['stock_title'] ?? '';
                 
                 if (isset($variantData['image']) && $request->hasFile("variants.$index.image")) {
-                    $stock->image = $this->downloadAndResizeImage(
+                    $stock->image = ImageHelper::downloadAndResizeImage(
                         'sub_product', 
                         $request->file("variants.$index.image"), 
                         $product->sku, 
                         true
                     );
                 }
+
+                $offertag = '';
+                $productOrgPrice = $variantData['price'];
+                $discountPrice = $productOrgPrice;
+
+                if (
+                    $product->discount_start_date &&
+                    strtotime(date('d-m-Y H:i:s')) >= $product->discount_start_date &&
+                    strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date
+                ) {
+
+                    if ($product->discount_type == 'percent') {
+                        $discountPrice = $productOrgPrice - (($productOrgPrice * $product->discount) / 100);
+                        $offertag = $product->discount . '% OFF';
+                    }
+
+                    if ($product->discount_type == 'amount') {
+                        $discountPrice = $productOrgPrice - $product->discount;
+                        $offertag = 'AED ' . $product->discount . ' OFF';
+                    }
+                }
+
+                $stock->price = $productOrgPrice;
+                $stock->offer_price = $discountPrice;
+                $stock->offer_tag = $offertag;
+                
                 $stock->save();
 
                 // Set product SKU as the first variant stock SKU

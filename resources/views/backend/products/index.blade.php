@@ -180,14 +180,16 @@
                                 <td class="text-center">
                                     @php
                                         $qty = 0;
-                                        if ($product->product_type == 1) {
-                                            foreach ($product->stocks->where('type','variant') as $key => $stock) {
-                                                $qty += $stock->qty;
-                                                echo $stock->sku . ' - <b>' . $stock->qty . '</b><br>';
+                                        if ($product->stocks && $product->stocks->count() > 0) {
+                                            if ($product->product_type == 1) {
+                                                foreach ($product->stocks->where('type','variant') as $key => $stock) {
+                                                    $qty += $stock->qty;
+                                                    echo $stock->sku . ' - <b>' . $stock->qty . '</b><br>';
+                                                }
+                                            } else {
+                                                $qty = optional($product->stocks->first())->qty;
+                                                echo $product->stocks->first()->sku . ' - <b>'.$qty.'</b>';
                                             }
-                                        } else {
-                                            $qty = optional($product->stocks->first())->qty;
-                                            echo $product->stocks->first()->sku . ' - <b>'.$qty.'</b>';
                                         }
                                     @endphp
                                     @if ($qty <= $product->low_stock_quantity)

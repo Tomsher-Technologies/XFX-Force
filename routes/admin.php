@@ -262,8 +262,6 @@ Route::group(['middleware' => ['auth']], function () {
 
 });
 
-
-
 Route::get('/env-check', function () {
     return [
         'php_version' => PHP_VERSION,
