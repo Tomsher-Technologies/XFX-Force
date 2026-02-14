@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\DB;
 
 class AttributeController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+
+        $this->middleware('permission:manage_attributes',  ['only' => ['index','destroy']]);
+        $this->middleware('permission:add_attribute',  ['only' => ['create','store']]);
+        $this->middleware('permission:edit_attribute',  ['only' => ['edit','update']]);
+    }
+
     /**
      * Function to display a listing of the attributes.
      * 

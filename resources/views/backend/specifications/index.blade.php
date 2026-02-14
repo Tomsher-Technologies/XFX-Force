@@ -7,11 +7,13 @@
         <div class="col-auto">
             <h5 class="h5">All Specifications</h5>
         </div>
+        @can('add_specification')
         <div class="col text-right">
             <button id="toggleForm" class="btn btn-primary btn-sm">
                 Add Specification
             </button>
         </div>
+        @endcan
     </div>
 </div>
 
@@ -59,6 +61,7 @@
                             class="btn btn-soft-primary btn-icon btn-circle btn-sm">
                             <i class="las la-eye"></i>
                         </a>
+                        @can('edit_specification')
                         <form method="POST" action="{{ route('specifications.update',$row->id) }}" style="display:inline;">
                             @csrf
                             <input type="hidden" name="main_title" value="{{ $row->main_title }}">
@@ -69,6 +72,7 @@
                                 <i class="las la-edit"></i>
                             </a>
                         </form>
+                        @endcan
                         <a href="javascript:void(0)" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{route('specifications.delete',$row->id)}}" title="Delete">
                             <i class="las la-trash"></i>
                         </a>
