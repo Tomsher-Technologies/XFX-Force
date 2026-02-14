@@ -179,3 +179,6 @@ CREATE TABLE IF NOT EXISTS `product_warranties` (
 ALTER TABLE `product_stocks` CHANGE `vat` `vat` FLOAT(5,2) NULL DEFAULT '0.00';
 
 ALTER TABLE `product_stocks` ADD `stock_title` VARCHAR(200) NULL DEFAULT NULL AFTER `status`, ADD `model` VARCHAR(200) NULL DEFAULT NULL AFTER `stock_title`;
+
+-- Added on 14/01/2026
+INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES ('45', '1'), ('46', '1'), ('47', '1'),('48', '1'),('49', '1'), ('50', '1'),('51', '1'),('52', '1'),('53', '1'),('54', '1');

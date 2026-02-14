@@ -9,6 +9,15 @@ use Illuminate\Http\Request;
 
 class SpecificationController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+
+        $this->middleware('permission:manage_specifications',  ['only' => ['index','destroy']]);
+        $this->middleware('permission:add_specification',  ['only' => ['create','store']]);
+        $this->middleware('permission:edit_specification',  ['only' => ['edit','update']]);
+    }
+
     /**
      * Function to display a listing of the specifications.
      * 

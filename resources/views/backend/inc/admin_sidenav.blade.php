@@ -26,7 +26,7 @@
                 <!-- @endif -->
                
                 <!-- Product -->
-                @canany(['manage_products', 'manage_categories', 'manage_brands', 'manage_attributes', 'product_reviews'])
+                @canany(['manage_products', 'manage_categories', 'manage_brands', 'manage_attributes', 'product_reviews', 'manage_specifications'])
                     <li class="aiz-side-nav-item">
                         <a href="#" class="aiz-side-nav-link">
                             <i class="las la-shopping-cart aiz-side-nav-icon"></i>
@@ -60,19 +60,23 @@
                                 </li>
                             @endcanany    
 
+                            @canany(['manage_specifications'])
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('specifications.index') }}"
                                 class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{  trans('messages.specification') }}</span>
                                 </a>
                             </li>
+                            @endcanany
 
+                            @canany(['manage_attributes'])
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('attributes.index') }}"
                                 class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{  trans('messages.attribute') }}</span>
                                 </a>
                             </li>
+                            @endcanany
 
                             @canany(['manage_brands'])
                                 <li class="aiz-side-nav-item">
