@@ -131,6 +131,11 @@
                 $("#search-menu").html('')
             }
         }
+
+        $('#toggleInstructions').on('click', function () {
+            $('#importInstructions').slideToggle();
+        });
+
     </script>
 
 </body>

@@ -28,7 +28,7 @@
                         <button class="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">Product Details</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">Product Description</button>
+                        <button class="nav-link" id="warranty-tab" data-bs-toggle="tab" data-bs-target="#warranty" type="button" role="tab">Extended Warranty</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="tabs-tab" data-bs-toggle="tab" data-bs-target="#tabs" type="button" role="tab">Product Tabs</button>
@@ -66,13 +66,13 @@
                                         <div class="col-lg-6">
                                             <label class="col-from-label">{{ trans('messages.product').' '.trans('messages.name') }} <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" class="form-control" name="name" placeholder="{{ trans('messages.product').' '.trans('messages.name') }}"
+                                            <input type="text" class="form-control form-control-sm" name="name" placeholder="{{ trans('messages.product').' '.trans('messages.name') }}"
                                                 value="{{ $product->getTranslation('name',$lang) }}" onkeyup="title_update(this)" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="col-form-label">{{ trans('messages.slug') }}<span class="text-danger">*</span></label>
                                             <input type="text" placeholder="{{ trans('messages.slug') }}" id="slug" name="slug" required
-                                                class="form-control" value="{{ $product->slug }}">
+                                                class="form-control form-control-sm" value="{{ $product->slug }}">
                                             @error('slug')
                                             <div class="alert alert-danger mt-1">{{ $message }}</div>
                                             @enderror
@@ -81,7 +81,7 @@
                                     <div class="form-group row" id="category">
                                         <div class="col-md-3">
                                             <label class="col-from-label">{{ trans('messages.category') }}<span class="text-danger">*</span></label>
-                                            <select class="form-control aiz-selectpicker" name="category_id" id="category_id"
+                                            <select class="form-control form-control-sm aiz-selectpicker" name="category_id" id="category_id"
                                                 data-selected="{{ $product->category_id }}" data-live-search="true" required>
                                                 @foreach ($categories as $category)
                                                 <option value="{{ $category->id }}">{{ $category->name }}
@@ -99,7 +99,7 @@
                                             @php
                                             $brands = \App\Models\Brand::where('is_active',1)->orderBy('name','asc')->get();
                                             @endphp
-                                            <select class="form-control aiz-selectpicker" name="brand_id" id="brand_id"
+                                            <select class="form-control form-control-sm aiz-selectpicker" name="brand_id" id="brand_id"
                                                 data-live-search="true">
                                                 <option value="">{{ trans('messages.select').' '.trans('messages.brand') }}</option>
                                                 @foreach ($brands as $brand)
@@ -113,7 +113,7 @@
                                                 {{ trans('messages.estimated_delivery_days') }}
                                             </label>
                                             <input type="text"
-                                                class="form-control"
+                                                class="form-control form-control-sm"
                                                 name="estimated_delivery_days"
                                                 value="{{ $product->estimated_delivery_days }}"
                                                 autocomplete="off"
@@ -123,7 +123,7 @@
                                             <label class="col-form-label">
                                                 {{ trans('messages.condition') }} <span class="text-danger">*</span>
                                             </label>
-                                            <select class="form-control aiz-selectpicker"
+                                            <select class="form-control form-control-sm aiz-selectpicker"
                                                 name="condition"
                                                 id="condition"
                                                 data-live-search="true">
@@ -156,7 +156,7 @@
                                                     <input type="hidden" name="product_spec_id[]" value="{{ $ps->id }}">
                                                     <div class="col-md-6">
                                                         <label class="col-from-label">{{ trans('messages.specification') }}</label>
-                                                        <select class="form-control aiz-selectpicker"
+                                                        <select class="form-control form-control-sm aiz-selectpicker"
                                                                 name="specification_id[]"
                                                                 data-live-search="true">
                                                             <option value="">
@@ -185,7 +185,7 @@
 
                                                     <div class="col-md-4">
                                                         <label class="col-from-label">{{ trans('messages.items') }}</label>
-                                                        <select class="form-control aiz-selectpicker"
+                                                        <select class="form-control form-control-sm aiz-selectpicker"
                                                                 name="specification_item_id[]"
                                                                 data-live-search="true">
                                                             <option value="">
@@ -215,7 +215,7 @@
                                             <div class="form-group row">
                                                 <div class="col-md-6">
                                                     <label class="col-from-label">{{ trans('messages.specification') }}</label>
-                                                    <select class="form-control aiz-selectpicker"
+                                                    <select class="form-control form-control-sm aiz-selectpicker"
                                                             name="specification_id[]"
                                                             data-live-search="true">
                                                         <option value="">
@@ -231,7 +231,7 @@
 
                                                 <div class="col-md-4">
                                                     <label class="col-from-label">{{ trans('messages.items') }}</label>
-                                                    <select class="form-control aiz-selectpicker"
+                                                    <select class="form-control form-control-sm aiz-selectpicker"
                                                             name="specification_item_id[]"
                                                             data-live-search="true">
                                                         <option value="">
@@ -266,7 +266,7 @@
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="col-from-label">{{ trans('messages.tags') }}</label>
-                                            <input type="text" class="form-control aiz-tag-input" name="tags[]"
+                                            <input type="text" class="form-control form-control-sm aiz-tag-input" name="tags[]"
                                                 placeholder="{{ trans('messages.type_hit_enter_add_tag') }}" value="{{ $product->tags }}">
                                             <small class="text-muted">{{ trans('messages.tag_details') }}</small>
                                         </div>
@@ -282,19 +282,25 @@
                                     <div class="form-group row">
                                         <div class="col-md-3">
                                             <label class="col-from-label">{{ trans('messages.product_length') }}</label>
-                                            <input type="text" class="form-control" name="product_length" value="{{ $product->product_length }}">
+                                            <input type="text" class="form-control form-control-sm" name="product_length" value="{{ $product->product_length }}">
                                         </div>
                                         <div class="col-md-3">
                                             <label class="col-from-label">{{ trans('messages.product_width') }}</label>
-                                            <input type="text" class="form-control" name="product_width" value="{{ $product->product_width }}">
+                                            <input type="text" class="form-control form-control-sm" name="product_width" value="{{ $product->product_width }}">
                                         </div>
                                         <div class="col-md-3">
                                             <label class="col-from-label">{{ trans('messages.product_height') }}</label>
-                                            <input type="text" class="form-control" name="product_height" value="{{ $product->product_height }}">
+                                            <input type="text" class="form-control form-control-sm" name="product_height" value="{{ $product->product_height }}">
                                         </div>
                                         <div class="col-md-3">
                                             <label class="col-from-label">{{ trans('messages.product_weight') }}</label>
-                                            <input type="text" class="form-control" name="product_weight" value="{{ $product->product_weight }}">
+                                            <input type="text" class="form-control form-control-sm" name="product_weight" value="{{ $product->product_weight }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-12">
+                                            <label class="col-from-label">{{trans('messages.description') }}</label>
+                                            <textarea class="aiz-text-editor" data-buttons='[["font", ["bold", "underline", "italic", "clear"]],["para", ["ul", "ol", "paragraph"]],["style", ["style"]],["color", ["color"]],["table", ["table"]],["insert", ["link", "picture", "video"]],["view", ["fullscreen", "codeview", "undo", "redo"]]]' data-min-height="300" name="description">{{ $product->description }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -310,7 +316,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="signinSrEmail">{{ trans('messages.gallery_images') }}<small>({{ trans('messages.1000*1000') }})</small></label>
                                     <div class="col-md-8">
-                                        <input type="file" name="gallery_images[]" multiple class="form-control" accept="image/*">
+                                        <input type="file" name="gallery_images[]" multiple class="form-control form-control-sm" accept="image/*">
                                         @if ($product->photos)
                                         <div class="file-preview box sm">
                                             @php
@@ -338,7 +344,7 @@
                                     <label class="col-md-3 col-form-label" for="signinSrEmail">{{ trans('messages.thumbnail_image') }}
                                         <small>({{ trans('messages.1000*1000') }})</small></label>
                                     <div class="col-md-8">
-                                        <input type="file" name="thumbnail_image" class="form-control" accept="image/*">
+                                        <input type="file" name="thumbnail_image" class="form-control form-control-sm" accept="image/*">
 
                                         @if ($product->thumbnail_img)
                                         <div class="file-preview box sm">
@@ -393,7 +399,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-from-label" for="start_date">{{ trans('messages.discount').' '.trans('messages.date').' '.trans('messages.range') }}</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control aiz-date-range"
+                                        <input type="text" class="form-control form-control-sm aiz-date-range"
                                             @if ($product->discount_start_date && $product->discount_end_date) value="{{ $start_date . ' to ' . $end_date }}" @endif
                                         name="date_range" placeholder="{{ trans('messages.select').' '.trans('messages.date') }}" data-time-picker="true"
                                         data-format="DD-MM-Y HH:mm:ss" data-separator=" to " autocomplete="off">
@@ -403,14 +409,14 @@
                                     <label class="col-lg-3 col-from-label">{{ trans('messages.discount') }}</label>
                                     <div class="col-lg-6">
                                         <input type="number" lang="en" min="0" step="0.01"
-                                            placeholder="{{ trans('messages.discount') }}" name="discount" class="form-control"
+                                            placeholder="{{ trans('messages.discount') }}" name="discount" class="form-control form-control-sm"
                                             value="{{ $product->discount }}">
                                     </div>
                                     <div class="col-lg-3">
-                                        <select class="form-control aiz-selectpicker" name="discount_type">
+                                        <select class="form-control form-control-sm aiz-selectpicker" name="discount_type">
                                             <option value="amount" <?php if ($product->discount_type == 'amount') {
                                                                         echo 'selected';
-                                                                    } ?>>{{ trans('messages.flat') }}</option>
+                                                                    } ?>>{{ trans('messages.amount') }}</option>
                                             <option value="percent" <?php if ($product->discount_type == 'percent') {
                                                                         echo 'selected';
                                                                     } ?>>{{ trans('messages.percent') }}</option>
@@ -431,7 +437,7 @@
                                         <label class="col-from-label">
                                             {{ trans('messages.product_type') }}
                                         </label>
-                                        <select class="form-control aiz-selectpicker"
+                                        <select class="form-control form-control-sm aiz-selectpicker"
                                             name="product_type"
                                             id="product_type" @if(isset($product) && $product->product_type == 1) disabled @endif>
 
@@ -455,7 +461,7 @@
                                         ->toArray();
                                         @endphp
                                         <label class="col-from-label">Select Variants</label>
-                                        <select class="form-control aiz-selectpicker"
+                                        <select class="form-control form-control-sm aiz-selectpicker"
                                             id="attribute_selector"
                                             name="attributes[]"
                                             multiple
@@ -477,39 +483,45 @@
                                         <strong>Single Product</strong>
                                         <label class="aiz-switch aiz-switch-success mb-0">
                                             <input type="hidden" name="status" value="0">
-                                            <input type="checkbox" name="status" value="1" {{ $product->stocks[0]->status == 1 ? 'checked' : '' }}>
+                                            <input type="checkbox" name="status" value="1" {{ $product->stocks->first()?->status == 1 ? 'checked' : '' }}>
                                             <span class="slider round"></span>
                                         </label>
                                     </div>
                                     <hr>
                                     <div class="form-group row">
                                         <div class="col-md-6">
+                                            <label class="col-from-label">{{ trans('messages.title') }} </label>
+                                            <input type="text" placeholder="{{ trans('messages.title') }}" name="stock_title" class="form-control form-control-sm" value="{{ $product->stocks->first()?->stock_title }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
                                             <label class="col-from-label">{{ trans('messages.sku') }} </label>
-                                            <input type="text" placeholder="{{ trans('messages.sku') }}" name="sku" class="form-control" value="{{ $product->stocks[0]->sku }}">
+                                            <input type="text" placeholder="{{ trans('messages.sku') }}" name="sku" class="form-control form-control-sm" value="{{ $product->stocks->first()?->sku }}">
                                         </div>
                                         <div class="col-md-6">
                                             <label class="col-from-label">{{ trans('messages.quantity') }} <span class="text-danger">*</span></label>
-                                            <input type="number" lang="en" min="0" value="{{ $product->stocks[0]->qty }}" name="current_stock" class="form-control" required>
+                                            <input type="number" lang="en" min="0" value="{{ $product->stocks->first()?->qty }}" name="current_stock" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="col-from-label">{{ trans('messages.price') }} <span class="text-danger">*</span></label>
-                                            <input type="number" lang="en" min="0" value="{{ $product->stocks[0]->price }}" step="0.01" placeholder="{{ trans('messages.price') }}" name="price" class="form-control" required>
+                                            <input type="number" lang="en" min="0" value="{{ $product->stocks->first()?->price }}" step="0.01" placeholder="{{ trans('messages.price') }}" name="price" class="form-control form-control-sm" required>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="col-from-label">{{ trans('messages.vat') }} (%) </label>
-                                            <input type="number" lang="en" min="0" value="{{ $product->stocks[0]->vat }}" step="0.01" placeholder="VAT" name="vat" class="form-control">
+                                            <label class="col-from-label">{{ trans('messages.model') }} </label>
+                                            <input type="text" placeholder="{{ trans('messages.model') }}" name="model" class="form-control form-control-sm" value="{{ $product->stocks->first()?->model }}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label>Variant Image</label>
-                                            <input type="file" name="image" class="form-control" accept="image/*">
+                                            <input type="file" name="image" class="form-control form-control-sm" accept="image/*">
 
-                                            @if(isset($product->stocks[0]->image) && $product->stocks[0]->image)
+                                            @if(isset($product->stocks->first()->image) && $product->stocks->first()->image)
                                             <div class="mt-2">
-                                                <img src="{{ Storage::url($product->stocks[0]->image) }}" class="img-fit size-50px" alt="Variant Image">
+                                                <img src="{{ Storage::url($product->stocks->first()->image) }}" class="img-fit size-50px" alt="Variant Image">
                                             </div>
                                             @endif
                                         </div>
@@ -518,7 +530,7 @@
                                         <label class="col-md-12 col-from-label">{{trans('messages.description') }}</label>
                                         <div class="col-md-12">
                                             <textarea class="aiz-text-editor" data-min-height="300" name="stock_description">
-                                                {{ $product->stocks[0]->stock_description }}
+                                                {{ $product->stocks->first()?->stock_description }}
                                             </textarea>
                                         </div>
                                     </div>
@@ -549,7 +561,7 @@
                                                         </label>
                                                         <select
                                                             name="variants[{{ $loop->parent->index }}][attributes][{{ $attrRow->attribute_id }}]"
-                                                            class="form-control">
+                                                            class="form-control form-control-sm">
 
                                                             <option value="">Select {{ $attrRow->attribute->name }}</option>
 
@@ -567,12 +579,18 @@
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-md-6">
+                                                    <label class="col-from-label">{{ trans('messages.title') }} </label>
+                                                    <input type="text" placeholder="{{ trans('messages.title') }}" name="variants[{{ $index }}][stock_title]" class="form-control form-control-sm" value="{{ $stock->stock_title }}">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-6">
                                                     <label class="col-from-label">{{ trans('messages.sku') }} </label>
-                                                    <input type="text" placeholder="{{ trans('messages.sku') }}" name="variants[{{ $index }}][sku]" class="form-control" value="{{ $stock->sku }}">
+                                                    <input type="text" placeholder="{{ trans('messages.sku') }}" name="variants[{{ $index }}][sku]" class="form-control form-control-sm" value="{{ $stock->sku }}">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="col-from-label">{{ trans('messages.quantity') }} <span class="text-danger">*</span></label>
-                                                    <input type="number" lang="en" min="0" step="0.01" placeholder="{{ trans('messages.quantity') }}" name="variants[{{ $index }}][current_stock]" class="form-control" required
+                                                    <input type="number" lang="en" min="0" step="0.01" placeholder="{{ trans('messages.quantity') }}" name="variants[{{ $index }}][current_stock]" class="form-control form-control-sm" required
                                                         value="{{ $stock->qty ?? 0 }}">
                                                 </div>
                                             </div>
@@ -580,17 +598,17 @@
                                             <div class="form-group row">
                                                 <div class="col-md-6">
                                                     <label class="col-from-label">{{ trans('messages.price') }} <span class="text-danger">*</span></label>
-                                                    <input type="number" lang="en" min="0" value="{{ $stock->price ?? 0 }}" step="0.01" placeholder="{{ trans('messages.price') }}" name="variants[{{ $index }}][price]" class="form-control" required>
+                                                    <input type="number" lang="en" min="0" value="{{ $stock->price ?? 0 }}" step="0.01" placeholder="{{ trans('messages.price') }}" name="variants[{{ $index }}][price]" class="form-control form-control-sm" required>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label class="col-from-label">{{ trans('messages.vat') }} (%)</label>
-                                                    <input type="number" lang="en" min="0" step="0.01" placeholder="VAT" name="variants[{{ $index }}][vat]" class="form-control" value="{{ $stock->vat }}">
+                                                    <label class="col-from-label">{{ trans('messages.model') }} </label>
+                                                    <input type="text" placeholder="{{ trans('messages.model') }}" name="variants[{{ $index }}][model]" class="form-control form-control-sm" value="{{ $stock->model }}">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-md-6">
                                                     <label>Variant Image</label>
-                                                    <input type="file" name="variants[{{ $index }}][image]" class="form-control" accept="image/*">
+                                                    <input type="file" name="variants[{{ $index }}][image]" class="form-control form-control-sm" accept="image/*">
                                                     @if(isset($stock->image) && $stock->image)
                                                     <div class="mt-2">
                                                         <img src="{{ Storage::url($stock->image) }}" class="img-fit size-50px" alt="Variant Image">
@@ -611,7 +629,7 @@
                                 <div class="text-right mb-3">
                                     <button type="button"
                                         id="add-variant"
-                                        class="btn btn-sm btn-primary" @if(isset($product) && $product->product_type == 0) style="display:none;" @endif>
+                                        class="btn btn-xs btn-primary" @if(isset($product) && $product->product_type == 0) style="display:none;" @endif>
                                         Add Variant
                                     </button>
                                 </div>
@@ -619,21 +637,82 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="description" role="tabpanel">
-                        <div class="card">
+                    <div class="tab-pane fade" id="warranty" role="tabpanel">
+                        <div class="card repeater">
                             <div class="card-header">
-                                <h5 class="mb-0 h6">{{ trans('messages.product').' '.trans('messages.description') }}</h5>
+                                <h5 class="mb-0 h6">{{ trans('messages.extended_warranty') }}</h5>
                             </div>
                             <div class="card-body">
-                                <div class="form-group row">
-                                    <label class="col-md-3 col-from-label">{{trans('messages.description') }}</label>
-                                    <div class="col-md-8">
-                                        <textarea class="aiz-text-editor" data-buttons='[["font", ["bold", "underline", "italic", "clear"]],["para", ["ul", "ol", "paragraph"]],["style", ["style"]],["color", ["color"]],["table", ["table"]],["insert", ["link", "picture", "video"]],["view", ["fullscreen", "codeview", "undo", "redo"]]]' data-min-height="300" name="description">{{ $product->getTranslation('description',$lang) }}</textarea>
+                                <div data-repeater-list="extended_warranty">
+
+                                    <!-- Existing warranties -->
+                                    @foreach($product->warranty as $warranty)
+                                        <div data-repeater-item class="existing-item">
+                                            <div class="form-group row">
+                                                <div class="col-md-4">
+                                                    <label>Title</label>
+                                                    <input type="text" name="warranty_title" class="form-control form-control-sm" value="{{ $warranty->title }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label>Price</label>
+                                                    <input type="text" name="warranty_price" class="form-control form-control-sm" value="{{ $warranty->price }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label>Months</label>
+                                                    <input type="text" name="warranty_months" class="form-control form-control-sm" value="{{ $warranty->months }}">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-12">
+                                                    <label>Description</label>
+                                                    <textarea name="warranty_description" class="form-control form-control-sm text-area" data-min-height="200">{{ $warranty->description }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-12 text-right">
+                                                    <input data-repeater-delete type="button" class="btn btn-danger btn-xs" value="Delete">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+
+                                    <!-- Empty template for new items -->
+                                    <div data-repeater-item class="template-item d-none">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <label>Title</label>
+                                                <input type="text" name="warranty_title" class="form-control form-control-sm">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Price</label>
+                                                <input type="text" name="warranty_price" class="form-control form-control-sm">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Months</label>
+                                                <input type="text" name="warranty_months" class="form-control form-control-sm">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-12">
+                                                <label>Description</label>
+                                                <textarea name="warranty_description" class="form-control form-control-sm text-area"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-12 text-right">
+                                                <input data-repeater-delete type="button" class="btn btn-danger btn-xs" value="Delete">
+                                            </div>
+                                        </div>
                                     </div>
+
                                 </div>
+
+                                <!-- Add button -->
+                                <input data-repeater-create type="button" class="btn btn-success btn-xs mt-2" value="Add Warranty">
                             </div>
                         </div>
                     </div>
+
                     <div class="tab-pane fade" id="tabs" role="tabpanel">
                         <div class="card repeater">
                             <div class="card-header">
@@ -646,7 +725,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-12 col-from-label">{{ trans('messages.heading') }}</label>
                                             <div class="col-md-12">
-                                                <input type="text" class="form-control" name="tab_heading">
+                                                <input type="text" class="form-control form-control-sm" name="tab_heading">
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -658,13 +737,13 @@
                                         <div class="form-group row">
 
                                             <div class="col-md-12 text-right">
-                                                <input data-repeater-delete type="button" class="btn btn-danger action-btn"
+                                                <input data-repeater-delete type="button" class="btn btn-xs btn-danger action-btn"
                                                     value="{{ trans('messages.delete') }}" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <input data-repeater-create type="button" class="btn btn-success action-btn "
+                                <input data-repeater-create type="button" class="btn btn-success btn-xs action-btn "
                                     value="{{ trans('messages.add') }}" />
                             </div>
                         </div>
@@ -678,7 +757,7 @@
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-from-label">{{ trans('messages.video').' '.trans('messages.provider') }}</label>
                                     <div class="col-lg-8">
-                                        <select class="form-control aiz-selectpicker" name="video_provider"
+                                        <select class="form-control form-control-sm aiz-selectpicker" name="video_provider"
                                             id="video_provider">
                                             <option value="youtube" <?php if ($product->video_provider == 'youtube') {
                                                                         echo 'selected';
@@ -693,7 +772,7 @@
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-from-label">{{ trans('messages.video').' '.trans('messages.link') }}</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" name="video_link"
+                                        <input type="text" class="form-control form-control-sm" name="video_link"
                                             value="{{ $product->video_link }}" placeholder="{{ trans('messages.video').' '.trans('messages.link') }}">
                                     </div>
                                 </div>
@@ -709,7 +788,7 @@
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-from-label">{{ trans('messages.meta_title') }}</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control"
+                                        <input type="text" class="form-control form-control-sm"
                                             value="{{ $product->getSeoTranslation('meta_title',$lang) }}" name="meta_title"
                                             placeholder="Meta Title">
                                     </div>
@@ -717,7 +796,7 @@
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-from-label">{{ trans('messages.meta_description') }}</label>
                                     <div class="col-lg-8">
-                                        <textarea name="meta_description" rows="8" class="form-control">{{ $product->getSeoTranslation('meta_description',$lang) }}</textarea>
+                                        <textarea name="meta_description" rows="8" class="form-control form-control-sm">{{ $product->getSeoTranslation('meta_description',$lang) }}</textarea>
                                     </div>
                                 </div>
 
@@ -725,7 +804,7 @@
                                     <label class="col-md-3 col-from-label">{{ trans('messages.meta_keywords') }}</label>
                                     <div class="col-md-8">
                                         {{-- data-max-tags="1" --}}
-                                        <input type="text" class="form-control aiz-tag-input" name="meta_keywords[]"
+                                        <input type="text" class="form-control form-control-sm aiz-tag-input" name="meta_keywords[]"
                                             placeholder="Type and hit enter to add a keyword"
                                             value="{{ $product->getSeoTranslation('meta_keywords',$lang) }}">
                                     </div>
@@ -734,21 +813,21 @@
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-from-label">{{ trans('messages.og_title') }}</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" name="og_title" placeholder="{{ trans('messages.og_title') }}"
+                                        <input type="text" class="form-control form-control-sm" name="og_title" placeholder="{{ trans('messages.og_title') }}"
                                             value="{{ $product->getSeoTranslation('og_title',$lang) }}">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-from-label">{{ trans('messages.og_description') }}</label>
                                     <div class="col-lg-8">
-                                        <textarea name="og_description" rows="8" class="form-control">{{ $product->getSeoTranslation('og_description',$lang)  }}</textarea>
+                                        <textarea name="og_description" rows="8" class="form-control form-control-sm">{{ $product->getSeoTranslation('og_description',$lang)  }}</textarea>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-from-label">{{ trans('messages.twitter_title') }}</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" name="twitter_title"
+                                        <input type="text" class="form-control form-control-sm" name="twitter_title"
                                             placeholder="{{ trans('messages.twitter_title') }}"
                                             value="{{ $product->getSeoTranslation('twitter_title',$lang) }}">
                                     </div>
@@ -756,7 +835,7 @@
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-from-label">{{ trans('messages.twitter_description') }}</label>
                                     <div class="col-lg-8">
-                                        <textarea name="twitter_description" rows="8" class="form-control">{{ $product->getSeoTranslation('twitter_description',$lang) }}</textarea>
+                                        <textarea name="twitter_description" rows="8" class="form-control form-control-sm">{{ $product->getSeoTranslation('twitter_description',$lang) }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -767,7 +846,7 @@
             </div>
             <div class="col-12">
                 <div class="mb-3 text-right">
-                    <button type="submit" name="button" class="btn btn-info">{{ trans('messages.update').' '.trans('messages.product') }}</button>
+                    <button type="submit" name="button" class="btn btn-info btn-sm">{{ trans('messages.update').' '.trans('messages.product') }}</button>
                 </div>
             </div>
         </div>
@@ -864,7 +943,8 @@ $tabs[$key]['tab_description'] = $tab->content;
     });
 
     var repeater = $('.repeater').repeater({
-        initEmpty: true,
+        
+        initEmpty: false,
         show: function() {
             note = $(this).find('.text-area').summernote({
                 toolbar: buttons,
@@ -926,6 +1006,27 @@ $tabs[$key]['tab_description'] = $tab->content;
         },
     });
 
+    // Initialize **existing items** separately **after DOM load**, but avoid cloning problems
+$(function() {
+    var textarea = $(this).find('.text-area');
+
+    if (!textarea.hasClass('summernote-initialized')) {
+        textarea.summernote({
+            toolbar: buttons,
+            height: 200,
+            callbacks: {
+                onImageUpload: function(data){ data.pop(); },
+                onPaste: function(e) {
+                    var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+                    e.preventDefault();
+                    document.execCommand('insertText', false, bufferText);
+                }
+            }
+        });
+        textarea.addClass('summernote-initialized');
+    }
+});
+
     repeater.setList({!!json_encode($tabs) !!});
 
     AIZ.plugins.tagify();
@@ -937,6 +1038,7 @@ $tabs[$key]['tab_description'] = $tab->content;
     });
 
     $(function () {
+        AIZ.plugins.textEditor();
         if ($("#product_type").val() == 1) {
             $("#single-fields").hide();
             $("#variant-fields").show();
@@ -984,34 +1086,40 @@ $tabs[$key]['tab_description'] = $tab->content;
             <div class="card mb-3 variant-box shadow" data-index="${index}">
                 <div class="card-header">
                     <h6>Product Variant ${index + 1}</h6>
-                    <button type="button" class="btn btn-sm btn-danger remove-variant">X</button>
+                    <button type="button" class="btn btn-xs btn-danger remove-variant">X</button>
                 </div>
                 <div class="card-body">
                     <div class="variant-attributes mb-3"><div class="form-group row"></div></div>
                     <div class="form-group row">
                         <div class="col-md-6">
+                            <label class="col-from-label">Title</label>
+                            <input type="text" name="variants[${index}][stock_title]" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
                             <label>SKU</label>
-                            <input type="text" name="variants[${index}][sku]" class="form-control">
+                            <input type="text" name="variants[${index}][sku]" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-6">
                             <label>Quantity</label>
-                            <input type="number" name="variants[${index}][current_stock]" class="form-control">
+                            <input type="number" name="variants[${index}][current_stock]" class="form-control form-control-sm">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-6">
                             <label>Price</label>
-                            <input type="number" name="variants[${index}][price]" class="form-control">
+                            <input type="number" name="variants[${index}][price]" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-6">
-                            <label>VAT</label>
-                            <input type="number" name="variants[${index}][vat]" class="form-control">
+                            <label>Model</label>
+                            <input type="text" name="variants[${index}][model]" class="form-control form-control-sm">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-6">
                             <label>Variant Image</label>
-                            <input type="file" name="variants[${index}][image]" class="form-control" accept="image/*">
+                            <input type="file" name="variants[${index}][image]" class="form-control form-control-sm" accept="image/*">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -1063,7 +1171,7 @@ $tabs[$key]['tab_description'] = $tab->content;
                 container.append(`
                     <div class="col-md-3 mb-1">
                         <label>${attr.name}</label>
-                        <select class="form-control" name="${selectName}">
+                        <select class="form-control form-control-sm" name="${selectName}">
                             ${options}
                         </select>
                     </div>
@@ -1088,7 +1196,7 @@ $tabs[$key]['tab_description'] = $tab->content;
             container.append(`
                 <div class="col-md-3 mb-1">
                     <label>${attr.name}</label>
-                    <select class="form-control"
+                    <select class="form-control form-control-sm"
                         name="variants[${index}][attributes][${attr.id}]">
                         ${options}
                     </select>

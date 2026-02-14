@@ -82,3 +82,7 @@
     border-color: #E10600;
     color: var(--white);
 }
+
+ol.lh18 li{
+    line-height: 1.8;
+}

@@ -158,3 +158,24 @@ INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is
 
 
 /* Jisha END */
+
+/*Swetha START*/
+
+-- Added on 13/02/2026
+ALTER TABLE `products` ADD `description` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `product_weight`;
+DROP TABLE IF EXISTS `product_warranties`;
+CREATE TABLE IF NOT EXISTS `product_warranties` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `product_id` int NOT NULL,
+  `title` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` double(20,2) NOT NULL DEFAULT '0.00',
+  `months` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ALTER TABLE `product_stocks` CHANGE `vat` `vat` FLOAT(5,2) NULL DEFAULT '0.00';
+
+ALTER TABLE `product_stocks` ADD `stock_title` VARCHAR(200) NULL DEFAULT NULL AFTER `status`, ADD `model` VARCHAR(200) NULL DEFAULT NULL AFTER `stock_title`;
