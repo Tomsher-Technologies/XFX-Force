@@ -3,34 +3,24 @@
 namespace App\Models;
 
 use App\Helpers\ImageHelper;
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CategoryTranslation;
-use App\Models\Brand;
-use App\Models\BrandTranslation;
 use App\Models\Product;
-use App\Models\ProductStock;
-use App\Models\ProductTranslation;
 use App\Models\ProductSeo;
-use App\Models\User;
-use App\Models\ProductTabs;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithValidation;
-use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Http;
+use App\Models\ProductStock;
 use Auth;
 use Carbon\Carbon;
-use File;
-use Image;
-use Mpdf\Tag\Tr;
-use Storage;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class ProductsImport implements ToCollection, WithHeadingRow, WithValidation
+class ProductsImport implements ToCollection, WithHeadingRow
 {
     private $rows = 0;
+    public $errorsList = [];
 
     private $year = 0;
     private $month = 0;
@@ -56,81 +46,122 @@ class ProductsImport implements ToCollection, WithHeadingRow, WithValidation
             'Open Box' => 2,
         ];
 
-        // rows with clean sku
         $rows = $rows->map(function ($row) {
             $row['sku'] = $this->cleanSKU($row['sku'] ?? '');
             $row['parent_sku'] = !empty($row['parent_sku'])
                 ? $this->cleanSKU($row['parent_sku'])
                 : null;
-
             return $row;
         });
 
-        // check duplicate with sku
-        $duplicateSkus = $rows->pluck('sku')
-            ->filter()
-            ->duplicates();
+        // Validation
+        $seenSkus = [];
+        $validRows = $rows->filter(function ($row, $index) use (&$seenSkus) {
+            $sku = $row['sku'] ?? null; 
+            $productName = $row['product_name'] ?? null;
+            $parentSku = $row['parent_sku'] ?? null;
 
-        if ($duplicateSkus->isNotEmpty()) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'sku' => 'Duplicate SKU(s) found in file: ' . $duplicateSkus->implode(', ')
-            ]);
-        }
+            // Skip empty SKU
+            if (empty($sku)) {
+                $this->errorsList[] = [
+                    'row' => $index + 2,
+                    'column' => 'SKU',
+                    'errors' => ["SKU is missing in the File. <strong>SKU: {$sku}</strong>"],
+                    'values' => $row
+                ];
+                return false;
+            }
 
-        // check duplicate with DB saved value.
-        $existingSkus = ProductStock::whereIn('sku', $rows->pluck('sku'))
-            ->pluck('sku');
+            // Duplicate in file
+            if (in_array($sku, $seenSkus)) {
+                $this->errorsList[] = [
+                    'row' => $index + 2,
+                    'column' => 'SKU',
+                    'errors' => ["Duplicate SKU in file: <strong>SKU: {$sku}</strong>"],
+                    'values' => $row
+                ];
+                return false;
+            }
+            $seenSkus[] = $sku;
 
-        if ($existingSkus->isNotEmpty()) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'sku' => 'These SKU(s) already exist in database: ' . $existingSkus->implode(', ')
-            ]);
-        }
+            // Database duplicate
+            if (Product::where('sku', $sku)->exists() || ProductStock::where('sku', $sku)->exists()) {
+                $this->errorsList[] = [
+                    'row' => $index + 2,
+                    'column' => 'SKU',
+                    'errors' => ["SKU already exists in database: <strong>SKU: {$sku}</strong>"],
+                    'values' => $row
+                ];
+                return false;
+            }
 
-        // grouping
-        $grouped = $rows->groupBy(function ($row) {
+            // Product Name missing 
+            if (empty($productName)) {
+                $this->errorsList[] = [
+                    'row' => $index + 2,
+                    'column' => 'Product Name',
+                    'errors' => ["Product Name is required. <strong>SKU: {$sku}</strong>"],
+                    'values' => $row
+                ];
+                return false;
+            }
+
+            return true;
+        })->values();
+
+        // Now process only $validRows
+        $grouped = $validRows->groupBy(function ($row) {
             return !empty($row['parent_sku'])
                 ? $row['parent_sku']
                 : $row['sku'];
         });
 
-        foreach ($grouped as $parentSku => $products) {
+        foreach ($grouped as $products) {
             // save product.
             $firstRow = $products->first();
-            $product = Product::create([
-                'sku' => $firstRow['parent_sku'] ?: $firstRow['sku'],
-                'name' =>  trim($this->pickLatestValue($products, 'product_name') ?? ''),
-                'video_provider' => trim($this->pickLatestValue($products, 'video_provider') ?? ''),
-                'video_link' => trim($this->pickLatestValue($products, 'video_link') ?? ''),
-                'category_id' => Category::where('name', $this->pickLatestValue($products, 'category'))->value('id'),
-                'brand_id' => Brand::where('name', $this->pickLatestValue($products, 'brand'))->value('id'),
-                'condition' => $conditionMap[trim($this->pickLatestValue($products, 'condition'))] ?? 0,
-                'product_length' => $this->pickLatestValue($products, 'length'),
-                'product_width' => $this->pickLatestValue($products, 'width'),
-                'product_height' => $this->pickLatestValue($products, 'height'),
-                'product_weight' => $this->pickLatestValue($products, 'weight'),
-                'estimated_delivery_days' => $this->pickLatestValue($products, 'est_delivery_days'),
-                'tags' => trim($this->pickLatestValue($products, 'tags') ?? ''),
-                'product_type' => $this->pickLatestValue($products, 'parent_sku') ? 1 : 0,
-                'return_refund' => strtolower(trim($this->pickLatestValue($products, 'return_refund') ?? '')) === 'yes' ? 1 : 0,
-                'published' => strtolower(trim($this->pickLatestValue($products, 'published') ?? '')) === 'no' ? 0 : 1,
-                'discount' => $this->pickLatestValue($products, 'discount_price'),
-                'discount_type' => $this->pickLatestValue($products, 'discount_type'),
-                'discount_start_date' => !empty($this->pickLatestValue($products, 'discount_start_date'))
-                    ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_start_date'))
-                    ->setTime(0, 0, 0)
-                    ->getTimestamp()
-                    : null,
 
-                'discount_end_date' => !empty($this->pickLatestValue($products, 'discount_end_date'))
-                    ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_end_date'))
-                    ->setTime(23, 59, 59)
-                    ->getTimestamp()
-                    : null,
-                'slug' => $this->productSlug(trim($this->pickLatestValue($products, 'product_name') ?? '')),
-                'description' => trim($this->pickLatestValue($products, 'description') ?? ''),
-                'updated_by' => Auth::user()->id,
-            ]);
+            $product = null;
+            if (!empty($firstRow['parent_sku'])) {
+                $product = Product::where('sku', $firstRow['parent_sku'])->first();
+            }
+
+            if (!$product) {
+                
+                $product = Product::create([
+                    'sku' => $firstRow['parent_sku'] ?: $firstRow['sku'],
+                    'name' =>  trim($this->pickLatestValue($products, 'product_name') ?? ''),
+                    'video_provider' => trim($this->pickLatestValue($products, 'video_provider') ?? ''),
+                    'video_link' => trim($this->pickLatestValue($products, 'video_link') ?? ''),
+                    'category_id' => Category::where('name', $this->pickLatestValue($products, 'category'))->value('id'),
+                    'brand_id' => Brand::where('name', $this->pickLatestValue($products, 'brand'))->value('id'),
+                    'condition' => $conditionMap[trim($this->pickLatestValue($products, 'condition'))] ?? 0,
+                    'product_length' => $this->pickLatestValue($products, 'length'),
+                    'product_width' => $this->pickLatestValue($products, 'width'),
+                    'product_height' => $this->pickLatestValue($products, 'height'),
+                    'product_weight' => $this->pickLatestValue($products, 'weight'),
+                    'estimated_delivery_days' => $this->pickLatestValue($products, 'est_delivery_days'),
+                    'tags' => trim($this->pickLatestValue($products, 'tags') ?? ''),
+                    'product_type' => $this->pickLatestValue($products, 'parent_sku') ? 1 : 0,
+                    'return_refund' => strtolower(trim($this->pickLatestValue($products, 'return_refund') ?? '')) === 'yes' ? 1 : 0,
+                    'published' => strtolower(trim($this->pickLatestValue($products, 'published') ?? '')) === 'no' ? 0 : 1,
+                    'discount' => $this->pickLatestValue($products, 'discount_price'),
+                    'discount_type' => $this->pickLatestValue($products, 'discount_type'),
+                    'discount_start_date' => !empty($this->pickLatestValue($products, 'discount_start_date'))
+                        ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_start_date'))
+                        ->setTime(0, 0, 0)
+                        ->getTimestamp()
+                        : null,
+
+                    'discount_end_date' => !empty($this->pickLatestValue($products, 'discount_end_date'))
+                        ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_end_date'))
+                        ->setTime(23, 59, 59)
+                        ->getTimestamp()
+                        : null,
+                    'slug' => $this->productSlug(trim($this->pickLatestValue($products, 'product_name') ?? '')),
+                    'description' => trim($this->pickLatestValue($products, 'description') ?? ''),
+                    'updated_by' => Auth::user()->id,
+                ]);
+            }
 
             // save specification
             if (!empty($firstRow['specification'])) {
@@ -350,12 +381,13 @@ class ProductsImport implements ToCollection, WithHeadingRow, WithValidation
      * 
      * @return array
      */
-    public function rules(): array
-    {
-        return [
-            '*.sku' => 'required|distinct',
-        ];
-    }
+    // public function rules(): array
+    // {
+    //     return [
+    //         '*.sku' => 'required|distinct',
+    //         '*.product_name' => 'required'
+    //     ];
+    // }
 
     /**
      * Custom validation message.
@@ -365,6 +397,7 @@ class ProductsImport implements ToCollection, WithHeadingRow, WithValidation
         return [
             '*.sku.required' => 'SKU is required.',
             '*.sku.distinct' => 'Duplicate SKU found in the file.',
+            '*.product_name.required' => 'Product Name is required.',
         ];
     }
 

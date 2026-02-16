@@ -30,36 +30,30 @@ class ProductBulkUploadController extends Controller
         return Excel::download(new ProductsExport, 'products_' . now()->format('Y-m-d_H-i-s') . '.xlsx');
     }
 
+    /**
+     * Handles bulk product upload via Excel file.
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function bulk_upload(Request $request)
     {
         $request->validate([
             'bulk_file' => 'required|mimes:xlsx,xls,csv'
         ]);
 
+        $errorsList = [];
         if ($request->hasFile('bulk_file')) {
             set_time_limit(1800);
-            try {
-                $import = new ProductsImport;
-                Excel::import($import, request()->file('bulk_file'));
-            } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-                $failures = $e->failures();
-                foreach ($failures as $failure) {
-                    $failure->values();
-                    $row = $failure->row();
-                    $column = $failure->attribute();
-                    $messages = implode(', ', $failure->errors());
-                    flash("Row $row, Column $column: $messages")->error();
-                }
-                return back()->withInput();
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                foreach ($e->errors() as $field => $messages) {
-                    foreach ($messages as $message) {
-                        flash($message)->error();
-                    }
-                }
-                return back()->withInput();
-            }
+            $import = new ProductsImport;
+            
+            Excel::import($import, $request->file('bulk_file'));
+            $errorsList = $import->errorsList;
         }
-        return back();
+
+        return back()->with([
+            'import_errors' => $errorsList,
+            'success' => 'Products imported successfully.'
+        ]);
     }
 }

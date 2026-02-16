@@ -130,4 +130,36 @@
         </div>
     </div>
 
+    @if(session('import_errors') && count(session('import_errors')) > 0)
+
+    <div class="alert">
+        <h5>Import Errors:</h5>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Row</th>
+                    <th>Column</th>
+                    <th>Error</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(session('import_errors') as $error)
+                    <tr class="alert-danger">
+                        <td>{{ $error['row'] ?? '-' }}</td>
+                        <td>{{ ucwords(str_replace('_', ' ', $error['column'])) }}</td>
+                        <td>
+                            @foreach($error['errors'] as $message)
+                                {!! $message !!} <br>
+                            @endforeach
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+@endif
+
+
 @endsection
