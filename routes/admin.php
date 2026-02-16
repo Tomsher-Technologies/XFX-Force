@@ -96,13 +96,13 @@ Route::group(['middleware' => ['auth']], function () {
 
         // Partners
         Route::resource('partners', PartnersController::class)->except('show');
+        
+    });
 
-        // Manage testimonials
+    // Manage testimonials
         Route::resource('testimonials', TestimonialController::class)->except('show');
         Route::get('/testimonials/delete/{id}', [TestimonialController::class, 'destroy'])->name('testimonials.delete');
         Route::post('/testimonials/update-status', [TestimonialController::class, 'updateStatus'])->name('testimonials.update-status');
-        
-    });
 
     // Brands
     Route::resource('brands', BrandController::class);

@@ -441,6 +441,7 @@ return [
     'title' => 'Title',
     'months' => 'Months',
     'model' => 'Model',
+    'testimonial' => 'Testimonial',
     '' => '',
     '' => '',
     '' => '',
