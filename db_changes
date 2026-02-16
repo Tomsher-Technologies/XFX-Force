@@ -182,3 +182,12 @@ ALTER TABLE `product_stocks` ADD `stock_title` VARCHAR(200) NULL DEFAULT NULL AF
 
 -- Added on 14/01/2026
 INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES ('45', '1'), ('46', '1'), ('47', '1'),('48', '1'),('49', '1'), ('50', '1'),('51', '1'),('52', '1'),('53', '1'),('54', '1');
+ALTER TABLE `testimonials` ADD `sub_title` VARCHAR(255) NULL DEFAULT NULL AFTER `title`;
+ALTER TABLE `testimonials` ADD `type` ENUM('text', 'video') NOT NULL DEFAULT 'text' AFTER sub_title;
+ALTER TABLE `testimonials` ADD `video_path` VARCHAR(255) NULL DEFAULT NULL AFTER `comment`;
+ALTER TABLE `testimonials` ADD `video_thumbnail` VARCHAR(255) NULL DEFAULT NULL AFTER `video_path`;
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, NULL, 'manage_testimonials', 'Manage Testimonials', 'web', '1', '1', NULL, NULL);
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '55', 'view_testimonials', 'View Testimonials', 'web', '1', '1', NULL, NULL);
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '55', 'add_testimonials', 'Add Testimonials', 'web', '1', '1', NULL, NULL);
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '55', 'edit_testimonials', 'Edit Testimonials', 'web', '1', '1', NULL, NULL);
+INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES ('55', '1'), ('56', '1'), ('57', '1'),('58', '1');

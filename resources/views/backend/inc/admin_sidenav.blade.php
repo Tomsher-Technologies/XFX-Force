@@ -139,6 +139,15 @@
                 </li>
                 @endcanany
 
+                @canany(['manage_testimonials'])
+                <li class="aiz-side-nav-item">
+                    <a href="{{ route('testimonials.index') }}" class="aiz-side-nav-link">
+                        <i class="las la-quote-right aiz-side-nav-icon"></i>
+                        <span class="aiz-side-nav-text">Testimonials</span>
+                    </a>
+                </li> 
+                @endcanany
+                
                 <li class="aiz-side-nav-item">
                     <a href="#" class="aiz-side-nav-link">
                         <i class="las la-file-alt aiz-side-nav-icon"></i>
@@ -351,11 +360,11 @@
                             </a>
                         </li>
 
-                        <li class="aiz-side-nav-item">
+                        <!-- <li class="aiz-side-nav-item">
                             <a href="{{ route('testimonials.index') }}" class="aiz-side-nav-link">
                                 <span class="aiz-side-nav-text">Testimonials</span>
                             </a>
-                        </li>
+                        </li> -->
 
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('shipping_configuration.index') }}" class="aiz-side-nav-link">

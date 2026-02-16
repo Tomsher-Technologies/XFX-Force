@@ -39,7 +39,7 @@
                         <span>Add New Product</span>
                     </a>
                 </div>    
-            @endif
+            @endcan
         </div>
     </div>
     <br>
@@ -216,13 +216,13 @@
                                     
                                 </td>
                               
-                                <td class="text-center">
-                                    {{-- <a class="btn btn-soft-success btn-icon btn-circle"
+                                <td class="d-flex gap-2 justify-content-center footable-last-visible">
+                                    {{-- <a class="btn btn-soft-success btn-icon btn-circle btn-sm"
                                         href="{{ route('product', $product->slug) }}" target="_blank" title="View">
                                         <i class="las la-eye"></i>
                                     </a> --}}
                                     @can('edit_product')
-                                        <a class="btn btn-soft-primary btn-icon btn-circle" href="{{ route('products.edit', ['id' => $product->id, 'lang' => env('DEFAULT_LANGUAGE')]) }}"
+                                        <a class="btn btn-soft-primary btn-icon btn-circle btn-sm" href="{{ route('products.edit', ['id' => $product->id, 'lang' => env('DEFAULT_LANGUAGE')]) }}"
                                         title="Edit">
                                             <i class="las la-edit"></i>
                                         </a>
