@@ -154,7 +154,7 @@
                                             @foreach($productSpecifications as $ps)
                                                 <div class="form-group row">
                                                     <input type="hidden" name="product_spec_id[]" value="{{ $ps->id }}">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label class="col-from-label">{{ trans('messages.specification') }}</label>
                                                         <select class="form-control form-control-sm aiz-selectpicker"
                                                                 name="specification_id[]"
@@ -203,6 +203,10 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-md-2">
+                                                        <label class="col-from-label">Sort Order</label>
+                                                        <input type="number" name="specification_sort_order[]" class="form-control form-control-sm" value="{{ $ps->sort_order ?? 0 }}">
+                                                    </div>
+                                                    <div class="col-md-2">
                                                         <label class="d-block">&nbsp;</label>
                                                         <button type="button" class="remove-spec border-0 bg-transparent">
                                                             <i class="las la-trash text-danger"></i>
@@ -213,7 +217,7 @@
 
                                             {{-- one empty row for "Add More" --}}
                                             <div class="form-group row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <label class="col-from-label">{{ trans('messages.specification') }}</label>
                                                     <select class="form-control form-control-sm aiz-selectpicker"
                                                             name="specification_id[]"
@@ -239,7 +243,13 @@
                                                         </option>
                                                     </select>
                                                 </div>
-
+                                                <div class="col-md-2">
+                                                    <label class="col-from-label">Sort Order</label>
+                                                    <input type="number" 
+                                                        name="specification_sort_order[]" 
+                                                        class="form-control form-control-sm" 
+                                                        value="0">
+                                                </div>
                                                 <div class="col-md-2">
                                                     <label class="d-block">&nbsp;</label>
                                                     <button type="button" class="remove-spec border-0 bg-transparent">
@@ -314,8 +324,8 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="signinSrEmail">{{ trans('messages.gallery_images') }}<small>({{ trans('messages.1000*1000') }})</small></label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
+                                        <label class="col-form-label" for="signinSrEmail">{{ trans('messages.gallery_images') }}<small>({{ trans('messages.1000*1000') }})</small></label>
                                         <input type="file" name="gallery_images[]" multiple class="form-control form-control-sm" accept="image/*">
                                         @if ($product->photos)
                                         <div class="file-preview box sm">
@@ -339,11 +349,9 @@
                                         </div>
                                         @endif
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="signinSrEmail">{{ trans('messages.thumbnail_image') }}
+                                    <div class="col-md-6">
+                                        <label class="col-form-label" for="signinSrEmail">{{ trans('messages.thumbnail_image') }}
                                         <small>({{ trans('messages.1000*1000') }})</small></label>
-                                    <div class="col-md-8">
                                         <input type="file" name="thumbnail_image" class="form-control form-control-sm" accept="image/*">
 
                                         @if ($product->thumbnail_img)
@@ -366,22 +374,6 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- <div class="form-group row">
-                                    <label class="col-lg-3 col-from-label">{{translate('Thumbnail Image')}} <small>(290x300)</small></label>
-                                <div class="col-lg-8">
-                                    <div id="thumbnail_img">
-                                        @if ($product->thumbnail_img != null)
-                                        <div class="col-md-4 col-sm-4 col-xs-6">
-                                            <div class="img-upload-preview">
-                                                <img loading="lazy" src="{{ uploaded_asset($product->thumbnail_img) }}" alt="" class="img-responsive">
-                                                <input type="hidden" name="previous_thumbnail_img" value="{{ $product->thumbnail_img }}">
-                                                <button type="button" class="btn btn-danger close-btn remove-files"><i class="fa fa-times"></i></button>
-                                            </div>
-                                        </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div> --}}
                         </div>
                     </div>
                     <div class="tab-pane fade" id="discount" role="tabpanel">
@@ -397,22 +389,22 @@
                                 @endphp
 
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-from-label" for="start_date">{{ trans('messages.discount').' '.trans('messages.date').' '.trans('messages.range') }}</label>
-                                    <div class="col-sm-9">
+                                    <div class="col-md-4">
+                                        <label class="col-from-label" for="start_date">{{ trans('messages.discount').' '.trans('messages.date').' '.trans('messages.range') }}</label>
                                         <input type="text" class="form-control form-control-sm aiz-date-range"
                                             @if ($product->discount_start_date && $product->discount_end_date) value="{{ $start_date . ' to ' . $end_date }}" @endif
                                         name="date_range" placeholder="{{ trans('messages.select').' '.trans('messages.date') }}" data-time-picker="true"
                                         data-format="DD-MM-Y HH:mm:ss" data-separator=" to " autocomplete="off">
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-lg-3 col-from-label">{{ trans('messages.discount') }}</label>
-                                    <div class="col-lg-6">
+                                    
+                                    <div class="col-md-4">
+                                        <label class="col-from-label">{{ trans('messages.discount') }}</label>
                                         <input type="number" lang="en" min="0" step="0.01"
                                             placeholder="{{ trans('messages.discount') }}" name="discount" class="form-control form-control-sm"
                                             value="{{ $product->discount }}">
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-md-4">
+                                        <label class="col-from-label">{{ trans('messages.discount').' '.trans('messages.type') }}</label>
                                         <select class="form-control form-control-sm aiz-selectpicker" name="discount_type">
                                             <option value="amount" <?php if ($product->discount_type == 'amount') {
                                                                         echo 'selected';
@@ -450,7 +442,7 @@
                                             </option>
 
                                         </select>
-                                        <input type="hidden" name="product_type" value="{{ $product->product_type }}">
+                                        <input type="hidden" name="product_type" value="{{ $product->product_type }}" id="product_type_hidden">
                                     </div>
                                     <div class="col-md-6 variant-selector"  style="display:none">
                                         @php
@@ -646,7 +638,7 @@
                                 <div data-repeater-list="extended_warranty">
 
                                     <!-- Existing warranties -->
-                                    @foreach($product->warranty as $warranty)
+                                    @foreach($product->warranties as $warranty)
                                         <div data-repeater-item class="existing-item">
                                             <div class="form-group row">
                                                 <div class="col-md-4">
@@ -677,7 +669,7 @@
                                     @endforeach
 
                                     <!-- Empty template for new items -->
-                                    <div data-repeater-item class="template-item d-none">
+                                    <div data-repeater-item class="template-item" style="display:none;">
                                         <div class="form-group row">
                                             <div class="col-md-4">
                                                 <label>Title</label>
@@ -944,7 +936,7 @@ $tabs[$key]['tab_description'] = $tab->content;
 
     var repeater = $('.repeater').repeater({
         
-        initEmpty: false,
+        // initEmpty: true,
         show: function() {
             note = $(this).find('.text-area').summernote({
                 toolbar: buttons,
@@ -1061,10 +1053,17 @@ $(function() {
             $("#single-fields").hide();
             $("#variant-fields").show();
             $(".variant-selector").show();
-            $("#add-variant").show()
+            $("#add-variant").show();
             $("#variants-container").html("").show(); 
             AIZ.plugins.textEditor();
             addVariantBox();
+            AIZ.plugins.textEditor();
+        } else { // Single
+            $("#single-fields").show();
+            $("#variant-fields").hide();
+            $(".variant-selector").hide();
+            $("#add-variant").hide();
+            $("#variants-container").html("");
             AIZ.plugins.textEditor();
         }
     });

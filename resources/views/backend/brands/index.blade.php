@@ -49,9 +49,12 @@
                             @foreach ($brands as $key => $brand)
                                 <tr>
                                     <td>{{ $key + 1 + ($brands->currentPage() - 1) * $brands->perPage() }}</td>
-                                    <td>{{ $brand->getTranslation('name') }}</td>
+                                    <td>{{ $brand->name }}</td>
                                     <td>
-                                        <img src="{{ uploaded_asset($brand->getTranslation('logo')) }}" alt="{{ trans('messages.brand') }}" class="h-50px">
+                                        <img 
+                                            src="{{ $brand->logo ? Storage::url($brand->logo) : asset('assets/img/placeholder.jpg') }}"
+                                            class="img-fit size-50px"
+                                            alt="Brand Logo" />
                                     </td>
                                     <td class="text-center">
                                         <label class="aiz-switch aiz-switch-success mb-0">

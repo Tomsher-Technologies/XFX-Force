@@ -38,58 +38,58 @@
 
 -- -- Added By Swetha on 02/02/2026 ---
 
-ALTER TABLE `attribute_values` ADD `value` VARCHAR(255) NOT NULL AFTER `attribute_id`;
+-- ALTER TABLE `attribute_values` ADD `value` VARCHAR(255) NOT NULL AFTER `attribute_id`;
 
 -- Added By Swetha on 03/02/2026 ---
-ALTER TABLE products
-ADD COLUMN `condition` TINYINT NULL DEFAULT NULL COMMENT '\'0=New,1=Refurbished,2=Open Box\'' AFTER `slug`;
+-- ALTER TABLE products
+-- ADD COLUMN `condition` TINYINT NULL DEFAULT NULL COMMENT '\'0=New,1=Refurbished,2=Open Box\'' AFTER `slug`;
 
 
-ALTER TABLE products
-ADD COLUMN `estimated_delivery_date` DATE NULL
-AFTER `condition`;
+-- ALTER TABLE products
+-- ADD COLUMN `estimated_delivery_date` DATE NULL
+-- AFTER `condition`;
 
 -- Added By Swetha on 05/02/2026
-ALTER TABLE `product_stocks` ADD `vat` FLOAT(5,2) NOT NULL DEFAULT '0.00' AFTER `qty`;
-ALTER TABLE `products` DROP `vat`;
+-- ALTER TABLE `product_stocks` ADD `vat` FLOAT(5,2) NOT NULL DEFAULT '0.00' AFTER `qty`;
+-- ALTER TABLE `products` DROP `vat`;
 
-ALTER TABLE `products` ADD `tags` VARCHAR(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `brand_id`;
-ALTER TABLE `product_stocks` CHANGE `status` `status` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '0=>Draft, 1=>Published';
-ALTER TABLE `products` CHANGE `sku` `sku` VARCHAR(191) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+-- ALTER TABLE `products` ADD `tags` VARCHAR(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `brand_id`;
+-- ALTER TABLE `product_stocks` CHANGE `status` `status` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '0=>Draft, 1=>Published';
+-- ALTER TABLE `products` CHANGE `sku` `sku` VARCHAR(191) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 
 -- Added by swetha on 07/02/2026
-ALTER TABLE `products` ADD `product_length` VARCHAR(200) NULL DEFAULT NULL AFTER `return_refund`, ADD `product_width` VARCHAR(200) NULL DEFAULT NULL AFTER `product_length`, ADD `product_height` VARCHAR(200) NULL DEFAULT NULL AFTER `product_width`;
-ALTER TABLE `product_stocks` CHANGE `variant` `type` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
-ALTER TABLE `product_stocks` ADD `stock_description` TEXT NULL DEFAULT NULL AFTER `image`;
 
-DROP TABLE IF EXISTS `product_specification`;
-CREATE TABLE `product_specification` (`id` INT(11) NOT NULL AUTO_INCREMENT , `specification_id` INT(11) NOT NULL , `specification_item_id` INT(11) NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+-- ALTER TABLE `products` ADD `product_length` VARCHAR(200) NULL DEFAULT NULL AFTER `return_refund`, ADD `product_width` VARCHAR(200) NULL DEFAULT NULL AFTER `product_length`, ADD `product_height` VARCHAR(200) NULL DEFAULT NULL AFTER `product_width`;
+-- ALTER TABLE `product_stocks` CHANGE `variant` `type` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+-- ALTER TABLE `product_stocks` ADD `stock_description` TEXT NULL DEFAULT NULL AFTER `image`;
+
+-- DROP TABLE IF EXISTS `product_specification`;
+-- CREATE TABLE `product_specification` (`id` INT(11) NOT NULL AUTO_INCREMENT , `specification_id` INT(11) NOT NULL , `specification_item_id` INT(11) NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
 
 -- Added by swetha on 09/02/2025
-ALTER TABLE `products` CHANGE `estimated_delivery_date` `estimated_delivery_days` INT(11) NULL DEFAULT NULL;
-ALTER TABLE `products` ADD `product_weight` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `product_height`;
 
-ALTER TABLE `products` CHANGE `published` `published` INT(11) NOT NULL DEFAULT '1' COMMENT '0->Draft, 1=> Published';
-ALTER TABLE `products` CHANGE `return_refund` `return_refund` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0->No, 1->yes';
-ALTER TABLE `product_specification` ADD `product_id` INT(11) NOT NULL AFTER `id`;
-ALTER TABLE `product_specification` CHANGE `specification_id` `specification_id` BIGINT(20) NOT NULL;
-ALTER TABLE `product_specification` CHANGE `specification_item_id` `specification_item_id` BIGINT(20) NOT NULL;
-ALTER TABLE `product_specification` CHANGE `specification_id` `specification_id` BIGINT(20) UNSIGNED NOT NULL;
-ALTER TABLE `product_specification` CHANGE `specification_item_id` `specification_item_id` BIGINT(20) UNSIGNED NOT NULL;
+-- ALTER TABLE `products` CHANGE `estimated_delivery_date` `estimated_delivery_days` INT(11) NULL DEFAULT NULL;
+-- ALTER TABLE `products` ADD `product_weight` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `product_height`;
+-- ALTER TABLE `products` CHANGE `published` `published` INT(11) NOT NULL DEFAULT '1' COMMENT '0->Draft, 1=> Published';
+-- ALTER TABLE `products` CHANGE `return_refund` `return_refund` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0->No, 1->yes';
+-- ALTER TABLE `product_specification` ADD `product_id` INT(11) NOT NULL AFTER `id`;
+-- ALTER TABLE `product_specification` CHANGE `specification_id` `specification_id` BIGINT(20) NOT NULL;
+-- ALTER TABLE `product_specification` CHANGE `specification_item_id` `specification_item_id` BIGINT(20) NOT NULL;
+-- ALTER TABLE `product_specification` CHANGE `specification_id` `specification_id` BIGINT(20) UNSIGNED NOT NULL;
+-- ALTER TABLE `product_specification` CHANGE `specification_item_id` `specification_item_id` BIGINT(20) UNSIGNED NOT NULL;
 
-ALTER TABLE product_specification 
-ADD CONSTRAINT fk_product_specification_product 
-FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE;
+-- ALTER TABLE product_specification 
+-- ADD CONSTRAINT fk_product_specification_product 
+-- FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE;
 
-ALTER TABLE product_specification 
-ADD CONSTRAINT fk_product_specification_specification 
-FOREIGN KEY (specification_id) REFERENCES specifications(id) ON DELETE CASCADE;
+-- ALTER TABLE product_specification 
+-- ADD CONSTRAINT fk_product_specification_specification 
+-- FOREIGN KEY (specification_id) REFERENCES specifications(id) ON DELETE CASCADE;
 
-ALTER TABLE product_specification 
-ADD CONSTRAINT fk_product_specification_item 
-FOREIGN KEY (specification_item_id) REFERENCES specification_items(id) ON DELETE CASCADE;
--- ALTER TABLE `attribute_values` ADD `value` VARCHAR(255) NOT NULL AFTER `attribute_id`;
+-- ALTER TABLE product_specification 
+-- ADD CONSTRAINT fk_product_specification_item 
+-- FOREIGN KEY (specification_item_id) REFERENCES specification_items(id) ON DELETE CASCADE;
 
 
 
@@ -180,7 +180,7 @@ ALTER TABLE `product_stocks` CHANGE `vat` `vat` FLOAT(5,2) NULL DEFAULT '0.00';
 
 ALTER TABLE `product_stocks` ADD `stock_title` VARCHAR(200) NULL DEFAULT NULL AFTER `status`, ADD `model` VARCHAR(200) NULL DEFAULT NULL AFTER `stock_title`;
 
--- Added on 14/01/2026
+-- Added on 14/02/2026
 INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES ('45', '1'), ('46', '1'), ('47', '1'),('48', '1'),('49', '1'), ('50', '1'),('51', '1'),('52', '1'),('53', '1'),('54', '1');
 ALTER TABLE `testimonials` ADD `sub_title` VARCHAR(255) NULL DEFAULT NULL AFTER `title`;
 ALTER TABLE `testimonials` ADD `type` ENUM('text', 'video') NOT NULL DEFAULT 'text' AFTER sub_title;
@@ -191,3 +191,64 @@ INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is
 INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '55', 'add_testimonials', 'Add Testimonials', 'web', '1', '1', NULL, NULL);
 INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '55', 'edit_testimonials', 'Edit Testimonials', 'web', '1', '1', NULL, NULL);
 INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES ('55', '1'), ('56', '1'), ('57', '1'),('58', '1');
+
+-- Added on 16/02/2026
+DROP TABLE IF EXISTS `brand_sections`;
+CREATE TABLE `brand_sections` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `brand_id` int(11) NOT NULL,
+  `title` varchar(191) DEFAULT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `image` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `updated_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL,
+ `updated_at` timestamp NULL,
+  PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `brand_sections` ADD CONSTRAINT `brand_ibfk_1` FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+ALTER TABLE `brands` ADD `slug` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `name`, ADD `logo` INT(11) NULL DEFAULT NULL AFTER `slug`;
+
+DROP TABLE IF EXISTS `brand_tabs`;
+CREATE TABLE `brand_tabs` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `brand_id` int(11) NOT NULL,
+  `name` varchar(191) DEFAULT NULL,
+  `title` varchar(191) DEFAULT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `image` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `updated_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL,
+ `updated_at` timestamp NULL,
+  PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `brand_tabs` ADD CONSTRAINT `brand_ibfk_2` FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
+ALTER TABLE `brand_sections` CHANGE `status` `status` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '1=>Active, 0=>Inactive';
+ALTER TABLE `brand_tabs` CHANGE `status` `status` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '1=>Active, 0=>Inactive ';
+
+-- Added on 17/02/2026
+ALTER TABLE `brand_tabs` ADD `sort_order` TINYINT(1) NOT NULL DEFAULT '0' AFTER `status`;
+ALTER TABLE `brands` ADD `products` TEXT NULL DEFAULT NULL AFTER `logo`;
+ALTER TABLE `brands` CHANGE `logo` `logo` VARCHAR(255) NULL DEFAULT NULL;
+
+-- Added on 18/02/2026
+ALTER TABLE `brand_translations`
+  DROP `lang`,
+  DROP `name`,
+  DROP `slug`,
+  DROP `logo`;
+  ALTER TABLE `product_specification` ADD `sort_order` TINYINT(1) NOT NULL DEFAULT '0' AFTER `specification_item_id`;
+
+-- Added on 19/02/2026
+INSERT INTO `pages` (`id`, `type`, `slug`, `image`, `image1`, `image2`, `image3`, `image4`, `image5`, `image6`, `image7`, `image8`, `image9`, `video`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'home', 'home', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+ALTER TABLE `testimonials`
+ADD COLUMN `video_source` VARCHAR(20) NULL AFTER `video_path`,
+ADD COLUMN `common_link` TEXT NULL AFTER `video_source`,
+ADD COLUMN `embed_link` TEXT NULL AFTER `common_link`;

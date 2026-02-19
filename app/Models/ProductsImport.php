@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Illuminate\Support\Facades\DB;
 
 class ProductsImport implements ToCollection, WithHeadingRow
 {
@@ -46,6 +47,7 @@ class ProductsImport implements ToCollection, WithHeadingRow
             'Open Box' => 2,
         ];
 
+        // Clean SKUs
         $rows = $rows->map(function ($row) {
             $row['sku'] = $this->cleanSKU($row['sku'] ?? '');
             $row['parent_sku'] = !empty($row['parent_sku'])
@@ -59,9 +61,7 @@ class ProductsImport implements ToCollection, WithHeadingRow
         $validRows = $rows->filter(function ($row, $index) use (&$seenSkus) {
             $sku = $row['sku'] ?? null; 
             $productName = $row['product_name'] ?? null;
-            $parentSku = $row['parent_sku'] ?? null;
 
-            // Skip empty SKU
             if (empty($sku)) {
                 $this->errorsList[] = [
                     'row' => $index + 2,
@@ -72,7 +72,6 @@ class ProductsImport implements ToCollection, WithHeadingRow
                 return false;
             }
 
-            // Duplicate in file
             if (in_array($sku, $seenSkus)) {
                 $this->errorsList[] = [
                     'row' => $index + 2,
@@ -84,18 +83,6 @@ class ProductsImport implements ToCollection, WithHeadingRow
             }
             $seenSkus[] = $sku;
 
-            // Database duplicate
-            if (Product::where('sku', $sku)->exists() || ProductStock::where('sku', $sku)->exists()) {
-                $this->errorsList[] = [
-                    'row' => $index + 2,
-                    'column' => 'SKU',
-                    'errors' => ["SKU already exists in database: <strong>SKU: {$sku}</strong>"],
-                    'values' => $row
-                ];
-                return false;
-            }
-
-            // Product Name missing 
             if (empty($productName)) {
                 $this->errorsList[] = [
                     'row' => $index + 2,
@@ -109,7 +96,6 @@ class ProductsImport implements ToCollection, WithHeadingRow
             return true;
         })->values();
 
-        // Now process only $validRows
         $grouped = $validRows->groupBy(function ($row) {
             return !empty($row['parent_sku'])
                 ? $row['parent_sku']
@@ -117,230 +103,250 @@ class ProductsImport implements ToCollection, WithHeadingRow
         });
 
         foreach ($grouped as $products) {
-            // save product.
-            $firstRow = $products->first();
 
-            $product = null;
-            if (!empty($firstRow['parent_sku'])) {
-                $product = Product::where('sku', $firstRow['parent_sku'])->first();
-            }
+            DB::beginTransaction();
+            try {
+                $firstRow = $products->first();
+                $skuToUse = $firstRow['parent_sku'] ?: $firstRow['sku'];
 
-            if (!$product) {
-                
-                $product = Product::create([
-                    'sku' => $firstRow['parent_sku'] ?: $firstRow['sku'],
-                    'name' =>  trim($this->pickLatestValue($products, 'product_name') ?? ''),
-                    'video_provider' => trim($this->pickLatestValue($products, 'video_provider') ?? ''),
-                    'video_link' => trim($this->pickLatestValue($products, 'video_link') ?? ''),
-                    'category_id' => Category::where('name', $this->pickLatestValue($products, 'category'))->value('id'),
-                    'brand_id' => Brand::where('name', $this->pickLatestValue($products, 'brand'))->value('id'),
-                    'condition' => $conditionMap[trim($this->pickLatestValue($products, 'condition'))] ?? 0,
-                    'product_length' => $this->pickLatestValue($products, 'length'),
-                    'product_width' => $this->pickLatestValue($products, 'width'),
-                    'product_height' => $this->pickLatestValue($products, 'height'),
-                    'product_weight' => $this->pickLatestValue($products, 'weight'),
-                    'estimated_delivery_days' => $this->pickLatestValue($products, 'est_delivery_days'),
-                    'tags' => trim($this->pickLatestValue($products, 'tags') ?? ''),
-                    'product_type' => $this->pickLatestValue($products, 'parent_sku') ? 1 : 0,
-                    'return_refund' => strtolower(trim($this->pickLatestValue($products, 'return_refund') ?? '')) === 'yes' ? 1 : 0,
-                    'published' => strtolower(trim($this->pickLatestValue($products, 'published') ?? '')) === 'no' ? 0 : 1,
-                    'discount' => $this->pickLatestValue($products, 'discount_price'),
-                    'discount_type' => $this->pickLatestValue($products, 'discount_type'),
-                    'discount_start_date' => !empty($this->pickLatestValue($products, 'discount_start_date'))
-                        ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_start_date'))
-                        ->setTime(0, 0, 0)
-                        ->getTimestamp()
-                        : null,
-
-                    'discount_end_date' => !empty($this->pickLatestValue($products, 'discount_end_date'))
-                        ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_end_date'))
-                        ->setTime(23, 59, 59)
-                        ->getTimestamp()
-                        : null,
-                    'slug' => $this->productSlug(trim($this->pickLatestValue($products, 'product_name') ?? '')),
-                    'description' => trim($this->pickLatestValue($products, 'description') ?? ''),
-                    'updated_by' => Auth::user()->id,
-                ]);
-            }
-
-            // save specification
-            if (!empty($firstRow['specification'])) {
-                $specs = explode(',', $firstRow['specification']);
-                foreach ($specs as $spec) {
-                    [$key, $value] = explode(':', $spec);
-                    ProductSpecification::create([
-                        'product_id' => $product->id,
-                        'specification_id' => Specification::where('main_title', trim($key))->value('id'),
-                        'specification_item_id' => SpecificationItem::where('title', trim($value))->value('id'),
-                    ]);
-                }
-            }
-
-            //save product seo
-            $keywords = array();
-            if (!empty($firstRow['meta_keywords'])) {
-                $keywords = array_map('trim', explode(',', $firstRow['meta_keywords']));
-            }
-
-            ProductSeo::create([
-                'product_id' => $product->id,
-                'meta_title' => $firstRow['meta_title'] ?? $product->name,
-                'meta_description' => $firstRow['meta_description'] ?? null,
-                'meta_keywords' => !empty($keywords) ? implode(',', $keywords) : null,
-                'og_title' => $firstRow['og_title'] ?? $product->name,
-                'og_description' => $firstRow['og_description'] ?? null,
-                'twitter_title' => $firstRow['twitter_title'] ?? $product->name,
-                'twitter_description' => $firstRow['twitter_description'] ?? null,
-            ]);
-
-            //save product tabs
-            $tabs = [];
-            foreach ($firstRow as $key => $value) {
-                if (preg_match('/tab_(\d+)_heading/', $key, $matches)) {
-                    $index = $matches[1];
-                    $heading = $value;
-                    $description = $firstRow['tab_' . $index . '_description'] ?? null;
-                    if (!empty($heading) && !empty($description)) {
-                        $tabs[] = [
-                            'heading' => $heading,
-                            'description' => $description,
-                        ];
-                    }
-                }
-            }
-            foreach ($tabs as $tab) {
-                $product->tabs()->create([
-                    'heading' => $tab['heading'],
-                    'content' => $tab['description'],
-                ]);
-            }
-
-            // Save Product Warranties from Excel
-            $warranties = [];
-
-            foreach ($firstRow as $key => $value) {
-                if (preg_match('/warranty_(\d+)_title/', $key, $matches)) {
-                    $index = $matches[1];
-                    $title = $value;
-                    $months = $firstRow['warranty_' . $index . '_months'] ?? null;
-
-                    // Only save if title and months are provided
-                    if (!empty($title) && !empty($months)) {
-                        $warranties[] = [
-                            'title'       => $title,
-                            'price'       => $firstRow['warranty_' . $index . '_price'] ?? 0,
-                            'months'      => $months,
-                            'description' => $firstRow['warranty_' . $index . '_description'] ?? null,
-                        ];
-                    }
-                }
-            }
-
-            // Insert into database
-            foreach ($warranties as $warranty) {
-                $product->warranty()->create([
-                    'title'       => $warranty['title'],
-                    'price'       => $warranty['price'],
-                    'months'      => $warranty['months'],
-                    'description' => $warranty['description'],
-                ]);
-            }
-
-
-
-            // save images (thumbnail and gallery)
-            if (isset($firstRow['url_1'])) {
-                $product->thumbnail_img = ImageHelper::downloadAndResizeImage(
-                    'main_product',
-                    $firstRow['url_1'],
-                    $product->sku,
-                    true
+                // Product save or update
+                $product = Product::updateOrCreate(
+                    ['sku' => $skuToUse],
+                    [
+                        'name' =>  trim($this->pickLatestValue($products, 'product_name') ?? ''),
+                        'video_provider' => trim($this->pickLatestValue($products, 'video_provider') ?? ''),
+                        'video_link' => trim($this->pickLatestValue($products, 'video_link') ?? ''),
+                        'category_id' => Category::where('name', $this->pickLatestValue($products, 'category'))->value('id'),
+                        'brand_id' => Brand::where('name', $this->pickLatestValue($products, 'brand'))->value('id'),
+                        'condition' => $conditionMap[trim($this->pickLatestValue($products, 'condition'))] ?? 0,
+                        'product_length' => $this->pickLatestValue($products, 'length'),
+                        'product_width' => $this->pickLatestValue($products, 'width'),
+                        'product_height' => $this->pickLatestValue($products, 'height'),
+                        'product_weight' => $this->pickLatestValue($products, 'weight'),
+                        'estimated_delivery_days' => $this->pickLatestValue($products, 'est_delivery_days'),
+                        'tags' => trim($this->pickLatestValue($products, 'tags') ?? ''),
+                        'product_type' => $this->pickLatestValue($products, 'parent_sku') ? 1 : 0,
+                        'return_refund' => strtolower(trim($this->pickLatestValue($products, 'return_refund') ?? '')) === 'yes' ? 1 : 0,
+                        'published' => strtolower(trim($this->pickLatestValue($products, 'published') ?? '')) === 'no' ? 0 : 1,
+                        'discount' => $this->pickLatestValue($products, 'discount_price'),
+                        'discount_type' => $this->pickLatestValue($products, 'discount_type'),
+                        'discount_start_date' => !empty($this->pickLatestValue($products, 'discount_start_date'))
+                            ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_start_date'))
+                            ->setTime(0, 0, 0)
+                            ->getTimestamp()
+                            : null,
+                        'discount_end_date' => !empty($this->pickLatestValue($products, 'discount_end_date'))
+                            ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_end_date'))
+                            ->setTime(23, 59, 59)
+                            ->getTimestamp()
+                            : null,
+                        'slug' => $this->productSlug(trim($this->pickLatestValue($products, 'product_name') ?? '')),
+                        'description' => trim($this->pickLatestValue($products, 'description') ?? ''),
+                        'updated_by' => Auth::user()->id,
+                    ]
                 );
-            }
 
-            $gallery = [];
-            if (isset($firstRow['url_2'])) {
-                if (!empty($firstRow['url_2'])) {
-                    $urls = explode(',', $firstRow['url_2']);
-                    foreach ($urls as $i => $url) {
-                        $url = trim($url);
-                        if (filter_var($url, FILTER_VALIDATE_URL)) {
-                            $gallery[] = ImageHelper::downloadAndResizeImage(
-                                'main_product',
-                                $url,
-                                $product->sku,
-                                false,
-                                $i + 1
-                            );
+                // Specifications save or update
+                $specificationValue = $this->pickLatestValue($products, 'specification');
+                if (!empty($specificationValue)) {
+
+                    ProductSpecification::where('product_id', $product->id)->delete();
+
+                    $specs = explode(',', $specificationValue);
+                    $lastSortOrder = 0;
+                    foreach ($specs as $index => $spec) {
+                        [$key, $value] = explode(':', $spec);
+                        $specificationId = Specification::where('main_title', trim($key))->value('id');
+                        $itemId = SpecificationItem::where('title', trim($value))->value('id');
+
+                        if (!$specificationId || !$itemId) continue;
+
+                        ProductSpecification::create([
+                            'product_id' => $product->id,
+                            'specification_id' => $specificationId,
+                            'specification_item_id' => $itemId,
+                            'sort_order' => $lastSortOrder + $index + 1,
+                        ]);
+                    }
+                }
+
+                // Save or update product SEO
+                $keywords = [];
+                if (!empty($firstRow['meta_keywords'])) {
+                    $keywords = array_map('trim', explode(',', $firstRow['meta_keywords']));
+                }
+
+                ProductSeo::updateOrCreate(
+                    ['product_id' => $product->id], // Match by product
+                    [
+                        'meta_title' => $firstRow['meta_title'] ?? $product->name,
+                        'meta_description' => $firstRow['meta_description'] ?? null,
+                        'meta_keywords' => !empty($keywords) ? implode(',', $keywords) : null,
+                        'og_title' => $firstRow['og_title'] ?? $product->name,
+                        'og_description' => $firstRow['og_description'] ?? null,
+                        'twitter_title' => $firstRow['twitter_title'] ?? $product->name,
+                        'twitter_description' => $firstRow['twitter_description'] ?? null,
+                    ]
+                );
+
+                //save product tabs
+                $tabs = [];
+                foreach ($firstRow as $key => $value) {
+                    if (preg_match('/tab_(\d+)_heading/', $key, $matches)) {
+                        $index = $matches[1];
+                        $heading = $value;
+                        $description = $firstRow['tab_' . $index . '_description'] ?? null;
+                        if (!empty($heading) && !empty($description)) {
+                            $tabs[] = [
+                                'heading' => $heading,
+                                'description' => $description,
+                            ];
                         }
                     }
                 }
-            }
-            $product->photos = implode(',', $gallery);
-            $product->save();
+                foreach ($tabs as $tab) {
+                    $product->tabs()->updateOrCreate(
+                        ['product_id' => $product->id], // Match by product
+                        [
+                            'heading' => $tab['heading'],
+                            'content' => $tab['description']
+                        ]
+                    );
+                }
 
-            // save stock
-            foreach ($products as $row) {
-                // offer price and tag 
-                $offertag = '';
-                $productOrgPrice = $row['price'];
-                $discountPrice = $productOrgPrice;
-                $now = time();
+                // Save Product Warranties from Excel
+                $warranties = [];
 
-                if (
-                    $product->discount_start_date &&
-                    $now >= (int) $product->discount_start_date &&
-                    $now <= (int) $product->discount_end_date
-                ) {
-                    if ($product->discount_type == 'percent') {
-                        $discountPrice = $productOrgPrice - (($productOrgPrice * $product->discount) / 100);
-                        $offertag = $product->discount . '% OFF';
-                    }
+                foreach ($firstRow as $key => $value) {
+                    if (preg_match('/warranty_(\d+)_title/', $key, $matches)) {
+                        $index = $matches[1];
+                        $title = $value;
+                        $months = $firstRow['warranty_' . $index . '_months'] ?? null;
 
-                    if ($product->discount_type == 'amount') {
-                        $discountPrice = $productOrgPrice - $product->discount;
-                        $offertag = 'AED ' . $product->discount . ' OFF';
+                        // Only save if title and months are provided
+                        if (!empty($title) && !empty($months)) {
+                            $warranties[] = [
+                                'title'       => $title,
+                                'price'       => $firstRow['warranty_' . $index . '_price'] ?? 0,
+                                'months'      => $months,
+                                'description' => $firstRow['warranty_' . $index . '_description'] ?? null,
+                            ];
+                        }
                     }
                 }
 
+                foreach ($warranties as $warranty) {
+                    $product->warranties()->updateOrCreate(
+                        ['product_id' => $product->id], // match by product
+                        [
+                            'title' => $warranty['title'], 
+                            'months' => $warranty['months'],
+                            'price' => $warranty['price'],
+                            'description' => $warranty['description'],
+                        ]
+                    );
+                }
 
-                $stock = ProductStock::create([
-                    'product_id' => $product->id,
-                    'sku' => $row['sku'],
-                    'qty' => $row['quantity'],
-                    'stock_title' => $row['title'],
-                    'model' => $row['model'],
-                    'stock_description' => $row['stock_description'],
-                    'status' => strtolower(trim($row['stock_status'] ?? '')) === 'inactive' ? 0 : 1,
-                    'type' => $row['parent_sku'] ? 'variant' : 'single',
-                    'image' => ImageHelper::downloadAndResizeImage('sub_product', $row['stock_image'], $product->sku, true),
-                    'price' => $productOrgPrice,
-                    'offer_price' => $discountPrice,
-                    'offer_tag' => $offertag,
-                ]);
+                // save images (thumbnail and gallery)
+                if (isset($firstRow['url_1'])) {
+                    $product->thumbnail_img = ImageHelper::downloadAndResizeImage(
+                        'main_product',
+                        $firstRow['url_1'],
+                        $product->sku,
+                        true
+                    );
+                }
 
-                // Save attributes for this stock
-                if (!empty($row['attribute'])) {
-                    $attributes = explode(',', $row['attribute']);
-                    foreach ($attributes as $attr) {
-                        if (strpos($attr, ':') !== false) {
-                            [$key, $value] = explode(':', $attr);
-                            $attributeId = Attribute::where('name', trim($key))->value('id');
-                            $attributeValueId = AttributeValue::where('value', trim($value))
-                                ->where('attribute_id', $attributeId)
-                                ->value('id');
-
-                            if ($attributeId && $attributeValueId) {
-                                ProductAttributes::create([
-                                    'product_id' => $product->id,
-                                    'product_varient_id' => $stock->id,
-                                    'attribute_id' => $attributeId,
-                                    'attribute_value_id' => $attributeValueId,
-                                ]);
+                $gallery = [];
+                if (isset($firstRow['url_2'])) {
+                    if (!empty($firstRow['url_2'])) {
+                        $urls = explode(',', $firstRow['url_2']);
+                        foreach ($urls as $i => $url) {
+                            $url = trim($url);
+                            if (filter_var($url, FILTER_VALIDATE_URL)) {
+                                $gallery[] = ImageHelper::downloadAndResizeImage(
+                                    'main_product',
+                                    $url,
+                                    $product->sku,
+                                    false,
+                                    $i + 1
+                                );
                             }
                         }
                     }
                 }
+                $product->photos = implode(',', $gallery);
+                $product->save();
+
+                // save stock
+                foreach ($products as $row) {
+                    $offertag = '';
+                    $productOrgPrice = $row['price'];
+                    $discountPrice = $productOrgPrice;
+                    $now = time();
+
+                    if ($product->discount_start_date && $now >= (int) $product->discount_start_date && $now <= (int) $product->discount_end_date) {
+                        if ($product->discount_type == 'percent') {
+                            $discountPrice = $productOrgPrice - (($productOrgPrice * $product->discount) / 100);
+                            $offertag = $product->discount . '% OFF';
+                        }
+                        if ($product->discount_type == 'amount') {
+                            $discountPrice = $productOrgPrice - $product->discount;
+                            $offertag = 'AED ' . $product->discount . ' OFF';
+                        }
+                    }
+
+                    $stock = ProductStock::updateOrCreate(
+                        ['product_id' => $product->id, 'sku' => $row['sku']], // Match by product + SKU
+                        [
+                            'qty' => $row['quantity'],
+                            'stock_title' => $row['title'],
+                            'model' => $row['model'],
+                            'stock_description' => $row['stock_description'],
+                            'status' => strtolower(trim($row['stock_status'] ?? '')) === 'inactive' ? 0 : 1,
+                            'type' => $row['parent_sku'] ? 'variant' : 'single',
+                            'image' => ImageHelper::downloadAndResizeImage('sub_product', $row['stock_image'], $product->sku, true),
+                            'price' => $productOrgPrice,
+                            'offer_price' => $discountPrice,
+                            'offer_tag' => $offertag,
+                        ]
+                    );
+
+                    // Save attributes for this stock
+                    if (!empty($row['attribute'])) {
+                        $attributes = explode(',', $row['attribute']);
+                        foreach ($attributes as $attr) {
+                            if (strpos($attr, ':') !== false) {
+                                [$key, $value] = explode(':', $attr);
+                                $attributeId = Attribute::where('name', trim($key))->value('id');
+                                $attributeValueId = AttributeValue::where('value', trim($value))
+                                    ->where('attribute_id', $attributeId)
+                                    ->value('id');
+
+                                if ($attributeId && $attributeValueId) {
+                                    ProductAttributes::updateOrCreate(
+                                        [
+                                            'product_id' => $product->id,
+                                            'product_varient_id' => $stock->id,
+                                            'attribute_id' => $attributeId,
+                                            'attribute_value_id' => $attributeValueId,
+                                        ],
+                                        [
+                                            'updated_at' => now()
+                                        ]
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+
+            DB::commit();
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                flash('Products imported Failed.')->error();
+                continue;
             }
         }
 
