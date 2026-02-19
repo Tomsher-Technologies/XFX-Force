@@ -68,3 +68,21 @@
     width: 12px;
     height: 12px;
 }
+
+.text-muted {
+    color: #6c757d70 !important;
+}
+
+#productTab.nav.nav-tabs .nav-item button.nav-link{
+    background-color: #fff !important;
+}
+
+#productTab.nav.nav-tabs .nav-item button.nav-link.active{
+    background-color: #E10600 !important;
+    border-color: #E10600;
+    color: var(--white);
+}
+
+ol.lh18 li{
+    line-height: 1.8;
+}

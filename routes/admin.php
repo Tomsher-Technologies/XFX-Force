@@ -102,13 +102,13 @@ Route::group(['middleware' => ['auth']], function () {
 
         // Partners
         Route::resource('partners', PartnersController::class)->except('show');
+        
+    });
 
-        // Manage testimonials
+    // Manage testimonials
         Route::resource('testimonials', TestimonialController::class)->except('show');
         Route::get('/testimonials/delete/{id}', [TestimonialController::class, 'destroy'])->name('testimonials.delete');
         Route::post('/testimonials/update-status', [TestimonialController::class, 'updateStatus'])->name('testimonials.update-status');
-        
-    });
 
     // Brands
     Route::resource('brands', BrandController::class);
@@ -258,8 +258,21 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/specifications/delete/{id}', [SpecificationController::class, 'destroy'])->name('specifications.delete');
 
+    Route::get('/specifications-items', [SpecificationController::class, 'getSpecificationItems'])->name('specifications.items');
+    
+
+
     // Attributes
     Route::resource('attributes', AttributeController::class);
     Route::get('/attributes/delete/{id}', [AttributeController::class, 'destroy'])->name('attributes.delete');
 
+});
+
+Route::get('/env-check', function () {
+    return [
+        'php_version' => PHP_VERSION,
+        'gd_loaded'   => extension_loaded('gd'),
+        'php_ini'     => php_ini_loaded_file(),
+        'php_binary' => PHP_BINARY,
+    ];
 });

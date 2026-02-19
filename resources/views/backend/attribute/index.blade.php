@@ -11,11 +11,13 @@ $editAttribute = session('editAttribute');
         <div class="col-auto">
             <h5 class="h5">All Attributes</h5>
         </div>
+        @can('add_attribute')
         <div class="col text-right">
             <button id="toggleForm" class="btn btn-primary btn-sm" data-url="{{ route('attributes.create') }}">
                 Add Attribute
             </button>
         </div>
+        @endcan
     </div>
 </div>
 
@@ -66,6 +68,7 @@ $editAttribute = session('editAttribute');
                             <input type="hidden" name="main_title" value="{{ $row->main_title }}">
                             <input type="hidden" name="display_title" value="{{ $row->display_title }}">
                             <input type="hidden" name="status" value="{{ $row->status }}">
+                            @can('edit_attribute')
                             <a href="javascript:void(0)"
                                 data-url="{{ route('attributes.edit', [
                                         'attribute' => $row->id,
@@ -74,6 +77,7 @@ $editAttribute = session('editAttribute');
                                 class="btn btn-soft-primary btn-sm btn-circle btn-icon edit-btn">
                                 <i class="las la-edit"></i>
                             </a>
+                            @endcan
                         </form>
                         <a href="javascript:void(0)" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{route('attributes.delete',$row->id)}}" title="Delete">
                             <i class="las la-trash"></i>

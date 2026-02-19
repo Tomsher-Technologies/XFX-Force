@@ -10,7 +10,7 @@ class Product extends Model
 {
 
     protected $fillable = [
-        'type', 'name', 'sku', 'slug', 'published', 'category_id', 'brand_id', 'photos', 'thumbnail_img', 'product_type', 'added_by', 'user_id', 'vat', 'video_provider', 'video_link', 'unit_price', 'variant_product', 'attributes', 'choice_options', 'variations', 'cash_on_delivery', 'current_stock', 'unit', 'min_qty', 'low_stock_quantity', 'discount', 'discount_type', 'discount_start_date', 'discount_end_date', 'tax', 'tax_type', 'shipping_type', 'shipping_cost', 'est_shipping_days', 'num_of_sale', 'rating', 'return_refund'
+        'type', 'name', 'sku', 'slug', 'published', 'category_id', 'brand_id', 'photos', 'thumbnail_img', 'product_type', 'added_by', 'user_id', 'vat', 'video_provider', 'video_link', 'unit_price', 'variant_product', 'attributes', 'choice_options', 'variations', 'cash_on_delivery', 'current_stock', 'unit', 'min_qty', 'low_stock_quantity', 'discount', 'discount_type', 'discount_start_date', 'discount_end_date', 'tax', 'tax_type', 'shipping_type', 'shipping_cost', 'est_shipping_days', 'num_of_sale', 'rating', 'return_refund', 'condition', 'estimated_delivery_days', 'product_length', 'product_width', 'product_height', 'product_weight', 'tags', 'description',
     ];
 
     protected $with = ['product_translations','seo'];
@@ -25,7 +25,7 @@ class Product extends Model
     public function getSeoTranslation($field = '', $lang = false)
     {
         $lang = $lang == false ? App::getLocale() : $lang;
-        $seo_translations = $this->seo->where('lang', $lang)->first();
+        $seo_translations = $this->seo->first();
         return $seo_translations != null ? $seo_translations->$field : $this->$field;
     }
 
@@ -100,6 +100,24 @@ class Product extends Model
     public function getMinPriceAttribute()
     {
         return $this->stocks->min('price');
+    }
+
+    
+    public function productAttributes()
+    {
+        return $this->hasMany(ProductAttributes::class, 'product_id');
+    }
+
+    public function warranty()
+    {
+        return $this->hasMany(ProductWarranty::class);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name' => 'required',
+        ];
     }
 
 }

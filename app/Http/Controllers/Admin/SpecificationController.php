@@ -9,6 +9,15 @@ use Illuminate\Http\Request;
 
 class SpecificationController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+
+        $this->middleware('permission:manage_specifications',  ['only' => ['index','destroy']]);
+        $this->middleware('permission:add_specification',  ['only' => ['create','store']]);
+        $this->middleware('permission:edit_specification',  ['only' => ['edit','update']]);
+    }
+
     /**
      * Function to display a listing of the specifications.
      * 
@@ -58,7 +67,7 @@ class SpecificationController extends Controller
             'status' => $request->status,
         ]);
 
-        flash(trans('messages.specifications') . trans('messages.created_msg'))->success();
+        flash(trans('messages.specification') . trans('messages.created_msg'))->success();
         return redirect()->route('specifications.index');
     }
 
@@ -196,7 +205,23 @@ class SpecificationController extends Controller
         Specification::findOrFail($id)->delete();
         Specification::destroy($id);
 
-        flash(trans('messages.specifications') . trans('messages.deleted_msg'))->success();
+        flash(trans('messages.specification') . trans('messages.deleted_msg'))->success();
         return redirect()->route('specifications.index');
+    }
+
+    /**
+     * Function to get the specification items
+     * 
+     * @param Request $request
+     */
+    public function getSpecificationItems(Request $request)
+    {
+        // dd($request);
+        $items = SpecificationItem::with('subItems')
+            ->where('main_specification_id', $request->specification_id)
+            ->where('parent_id', 0) // only top-level items
+            ->orderBy('sort_order')
+            ->get();
+        return response()->json($items->toArray());
     }
 }
