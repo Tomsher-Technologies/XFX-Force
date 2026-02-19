@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Testimonials;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\File;
+use Storage;
 
 class TestimonialController extends Controller
 {
@@ -49,7 +50,10 @@ class TestimonialController extends Controller
             'sub_title' => 'nullable|string|max:255',
             'type' => 'required|in:text,video',
             'comment' => 'required_if:type,text',
-            'video_file' => 'required_if:type,video|mimes:mp4,mov,avi|max:102400', // 100MB max
+            'video_source' => 'nullable|required_if:type,video',
+            'video_path' => 'nullable|required_if:video_source,upload|mimes:mp4,mov,avi',
+            'youtube_link' => 'nullable|required_if:video_source,youtube',
+            'youtube_embed' => 'nullable|required_if:video_source,youtube',
             'status' => 'required|in:0,1',
             'sort_order' => 'nullable|integer',
         ]);
@@ -62,9 +66,18 @@ class TestimonialController extends Controller
         $testimonial->sort_order = ($request->sort_order != '') ? $request->sort_order : 0;
         if($request->type === 'text'){
             $testimonial->comment = $request->comment;
-        } else if($request->type === 'video' && $request->hasFile('video_file')){
-            $path = $request->file('video_file')->store('testimonials/videos', 'public');
-            $testimonial->video_path = $path;
+        } else if($request->type === 'video'){
+            $testimonial->video_source = $request->video_source;
+
+            if($request->video_source == 'upload' && $request->hasFile('video_path')) {
+                $path = $request->file('video_path')->store('testimonials/videos', 'public');
+                $testimonial->video_path = $path;
+            }
+
+            if($request->video_source == 'youtube') {
+                $testimonial->common_link = $request->youtube_link;
+                $testimonial->embed_link = $request->youtube_embed;
+            }
         }
 
         $testimonial->save();
@@ -85,29 +98,65 @@ class TestimonialController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'sub_title' => 'nullable|string|max:255',
             'type' => 'required|in:text,video',
-            'comment' => 'required_if:type,text',
-            'video_file' => 'required_if:type,video|mimes:mp4,mov,avi|max:102400', // 100MB max
-            'status' => 'nullable|in:0,1',
-            'sort_order' => 'nullable|integer',
+            'sort_order'  => 'nullable|integer',
+            'video_path'  => 'nullable|file|mimes:mp4,mov,avi,webm',
+            'common_link' => 'nullable|url',
         ]);
 
         $testimonial->name = $request->name;
         $testimonial->sub_title = $request->sub_title;
         $testimonial->type = $request->type;
-        $testimonial->status = $request->has('status') ? 1 : 0;
-        $testimonial->sort_order = ($request->sort_order != '') ? $request->sort_order : 0;
-        if($request->type === 'text'){
-            $testimonial->comment = $request->comment;
-            $testimonial->video_path = null;
-        } else if($request->type === 'video' && $request->hasFile('video_file')){
-            $path = $request->file('video_file')->store('testimonials/videos', 'public');
-            $testimonial->video_path = $path;
-            $testimonial->comment = null;
+        $testimonial->sort_order = $request->sort_order ?? 0;
+        $testimonial->status     = $request->status ?? 0;
+
+        if ($request->type === 'text') {
+
+            // Delete old video if exists
+            if ($testimonial->video_path) {
+                Storage::disk('public')->delete($testimonial->video_path);
+            }
+
+            $testimonial->comment       = $request->comment;
+            $testimonial->video_source  = null;
+            $testimonial->video_path    = null;
+            $testimonial->common_link   = null;
+            $testimonial->embed_link    = null;
         }
 
-        // Save the changes
+        if ($request->type === 'video') {
+
+            $testimonial->video_source = $request->video_source;
+            $testimonial->comment      = null;
+
+            // NORMAL UPLOAD
+            if ($request->video_source === 'upload') {
+                if ($request->hasFile('video_path')) {
+                    // Delete old file
+                    if ($testimonial->video_path) {
+                        Storage::disk('public')->delete($testimonial->video_path);
+                    }
+                    $path = $request->file('video_path')->store('testimonials/videos', 'public');
+                    $testimonial->video_path = $path;
+                }
+
+                $testimonial->common_link = null;
+                $testimonial->embed_link  = null;
+            }
+
+            // YOUTUBE
+            if ($request->video_source === 'youtube') {
+                // Delete uploaded file if switching from normal upload
+                if ($testimonial->video_path) {
+                    Storage::disk('public')->delete($testimonial->video_path);
+                }
+
+                $testimonial->video_path  = null;
+                $testimonial->common_link = $request->common_link;
+                $testimonial->embed_link  = $request->embed_link;
+            }
+        }
+
         $testimonial->save();
 
         flash(trans('messages.testimonial') . ' ' . trans('messages.updated_msg'))->success();

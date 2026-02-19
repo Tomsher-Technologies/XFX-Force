@@ -120,7 +120,7 @@
                                     <div class="shadow p-2 bg-light">
                                         <div class="specification_block">
                                             <div class="form-group row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <label class="col-from-label">{{ trans('messages.specification') }}</label>
                                                     @php
                                                     $specifications = \App\Models\Specification::where('status',1)->orderBy('display_title','asc')->get();
@@ -138,6 +138,10 @@
                                                         <option value="">{{ trans('messages.select').' '.trans('messages.items') }}</option>
                                                         <!-- Options will be populated via AJAX -->
                                                     </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                   <label class="col-from-label">Sort Order</label>
+                                                    <input type="number" name="specification_sort_order[]" class="form-control form-control-sm" value="{{ old('specification_sort_order',0) }}">
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label class="d-block">&nbsp;</label>
@@ -247,7 +251,7 @@
                                                 placeholder="{{ trans('messages.discount') }}" name="discount" class="form-control form-control-sm">
                                         </div>
                                         <div class="col-md-4">
-                                            <label class="col-from-label">&nbsp;</label>
+                                            <label class="col-from-label">{{ trans('messages.discount').' '.trans('messages.type') }}</label>
                                             <select class="form-control form-control-sm aiz-selectpicker" name="discount_type">
                                                 <option value="amount">{{ trans('messages.amount') }}</option>
                                                 <option value="percent">{{ trans('messages.percent') }}</option>
@@ -910,6 +914,7 @@ $(document).on("click", ".add-more-specification", function () {
     $clone.find("select[name='specification_id[]']").val('');
     $clone.find("select[name='specification_item_id[]']").empty()
         .append("<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>");
+    $clone.find("input[name='specification_sort_order[]']").val('');
 
     // append clone
     $(".specification_block").append($clone);

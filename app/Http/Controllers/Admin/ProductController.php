@@ -232,9 +232,11 @@ class ProductController extends Controller
         //save product specification
         $specIds = $request->input('specification_id', []);
         $itemIds = $request->input('specification_item_id', []);
+        $sortOrders = $request->input('specification_sort_order', []);
 
         foreach ($specIds as $i => $specId) {
             $itemId = $itemIds[$i] ?? null;
+            $sortOrder  = $sortOrders[$i] ?? 0;
 
             if (!$specId || !$itemId) {
                 continue;
@@ -244,6 +246,7 @@ class ProductController extends Controller
             $specModel->product_id            = $product->id;
             $specModel->specification_id      = $specId;
             $specModel->specification_item_id = $itemId;
+            $specModel->sort_order            = $sortOrder;
             $specModel->save();
         }
 
@@ -281,7 +284,7 @@ class ProductController extends Controller
         if ($request->has('extended_warranty')) {
             foreach ($request->extended_warranty as $warranty) {
                 if (!empty($warranty['warranty_title']) && !empty($warranty['warranty_months'])) {
-                    $product->warranty()->create([
+                    $product->warranties()->create([
                         'title' => $warranty['warranty_title'],
                         'price' => $warranty['warranty_price'] ?? 0,
                         'months' => $warranty['warranty_months'],
@@ -547,10 +550,12 @@ class ProductController extends Controller
         //save product specification
         $specIds = $request->input('specification_id', []);
         $itemIds = $request->input('specification_item_id', []);
+        $sortOrders = $request->input('specification_sort_order', []);
 
         foreach ($specIds as $i => $specId) {
             $productSpecificationId = $request->input('product_spec_id', [])[$i] ?? null;
             $itemId = $itemIds[$i] ?? null;
+            $sortOrder  = $sortOrders[$i] ?? 0;
 
             if (!$specId || !$itemId) {
                 continue;
@@ -562,6 +567,7 @@ class ProductController extends Controller
             $specModel->product_id            = $product->id;
             $specModel->specification_id      = $specId;
             $specModel->specification_item_id = $itemId;
+            $specModel->sort_order            = $sortOrder;
             $specModel->save();
         }
 
@@ -601,7 +607,7 @@ class ProductController extends Controller
             ProductWarranty::where('product_id', $product->id)->delete();
             foreach ($request->extended_warranty as $warranty) {
                 if (!empty($warranty['warranty_title']) && !empty($warranty['warranty_months'])) {
-                    $product->warranty()->create([
+                    $product->warranties()->create([
                         'title'       => $warranty['warranty_title'],
                         'price'       => $warranty['warranty_price'] ?? 0,
                         'months'      => $warranty['warranty_months'],

@@ -108,7 +108,7 @@ class Product extends Model
         return $this->hasMany(ProductAttributes::class, 'product_id');
     }
 
-    public function warranty()
+    public function warranties()
     {
         return $this->hasMany(ProductWarranty::class);
     }
