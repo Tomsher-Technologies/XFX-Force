@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\AbandonedCartController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SpecificationController;
+use App\Http\Controllers\Admin\PcBuilderCategorySettingController;
 
 
 Route::get('/admin/notifications', function () {
@@ -64,6 +65,11 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('staffs', StaffController::class);
     Route::get('/staffs/destroy/{id}', [StaffController::class, 'destroy'])->name('staffs.destroy');
+
+    Route::get('pc-builder/categories', [PcBuilderCategorySettingController::class, 'index'])->name('pc-builder.categories');
+    Route::post('pc-builder/categories', [PcBuilderCategorySettingController::class, 'store'])->name('pc-builder.categories.store');
+
+
 
     Route::post('/banners/get_form', [Bannercontroller::class, 'get_form'])->name('banners.get_form');
     Route::get('/banners/destroy/{banner}', [Bannercontroller::class, 'destroy'])->name('banners.destroy');
