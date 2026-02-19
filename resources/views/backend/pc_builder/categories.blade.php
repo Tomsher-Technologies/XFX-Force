@@ -14,24 +14,24 @@
         {{-- EXISTING CATEGORIES --}}
         @foreach($settings as $setting)
         <div class="card shadow-sm mb-3 category-card" data-id="{{ $setting->category_id }}">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center w-50">
-                    <span class="drag-handle mr-2">☰</span>
-                    <select class=" form-control form-control-sm new-category-select" name="categories[{{ $setting->category_id }}][category_id]" required>
-                        <option value="">Select Category</option>
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat['id'] }}"
-                                {{ $cat['id'] == $setting->category_id ? 'selected' : '' }}>
-                                {{ $cat['name'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <button type="button" class="btn btn-outline-danger btn-sm remove-category">Remove</button>
-            </div>
-
             <div class="card-body">
                 <div class="form-row">
+                    <div class="form-group  d-flex align-items-center">
+                        <span class="drag-handle mr-2 mt-4">☰</span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="medium ">Category</label>
+                        <select class=" form-control form-control-sm new-category-select" name="categories[{{ $setting->category_id }}][category_id]" required>
+                            <option value="">Select Category</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat['id'] }}"
+                                    {{ $cat['id'] == $setting->category_id ? 'selected' : '' }}>
+                                    {{ $cat['name'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
                     <div class="form-group col-md-2">
                         <label class="medium ">Min Select</label>
                         <input type="number" class="form-control form-control-sm"
@@ -53,39 +53,8 @@
                             value="{{ $setting->sort_order }}">
                     </div>
 
-                    <div class="form-group col-md-2">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox"
-                                class="custom-control-input has-subcategories-checkbox"
-                                id="useSub{{ $setting->category_id }}"
-                                name="categories[{{ $setting->category_id }}][has_subcategories]"
-                                {{ $setting->has_subcategories ? 'checked' : '' }}>
-                            <label class="custom-control-label medium" for="useSub{{ $setting->category_id }}">
-                                Uses Subcategories
-                            </label>
-                        </div>
-                    </div>
-
-                    @php
-                        $selectedSubs = $setting->subcategories->pluck('id')->toArray();
-                    @endphp
-
-                    <div class="subcategories-container col-sm-4">
-                        @if($setting->category->childrenCategories->count())
-                            <div class="w-100">
-                                <label class="medium">Subcategories</label>
-                            </div>
-
-                            @foreach($setting->category->childrenCategories as $sub)
-                                <div class="custom-control custom-checkbox d-inline-flex align-items-center mr-4">
-                                    <input type="checkbox" class="custom-control-input subcat-checkbox" id="sub{{ $sub->id }}{{ $setting->category_id }}" name="categories[{{ $setting->category_id }}][subcategories][]" value="{{ $sub->id }}" {{ in_array($sub->id, $selectedSubs) ? 'checked' : '' }} {{ !$setting->has_subcategories ? 'disabled' : '' }}>
-                                    <label class="custom-control-label medium"
-                                        for="sub{{ $sub->id }}{{ $setting->category_id }}">
-                                        {{ $sub->name }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        @endif
+                    <div class="form-group col-md-2 m-auto">
+                        <button type="button" class="btn btn-outline-danger btn-sm remove-category mt-2">Remove</button>
                     </div>
                 </div>
 
@@ -183,16 +152,17 @@
 
             let html = `
             <div class="card shadow-sm mb-3 category-card" data-index="${newIndex}">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center w-50">
-                        <span class="drag-handle mr-2">☰</span>
-                        <div class="flex-grow-1">${select}</div>
-                    </div>
-                    <button type="button" class="btn btn-outline-danger btn-sm remove-category">Remove</button>
-                </div>
-
                 <div class="card-body">
                     <div class="form-row">
+
+                        <div class="form-group  d-flex align-items-center">
+                            <span class="drag-handle mr-2 mt-4">☰</span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="medium ">Category</label>
+                            ${select}
+                        </div>
+
                         <div class="form-group col-md-2">
                             <label class="medium ">Min Select</label>
                             <input type="number" name="categories[new${newIndex}][min_select]"
@@ -211,21 +181,9 @@
                                 class="form-control form-control-sm sort-order" value="0">
                         </div>
 
-                        <div class="form-group col-md-2">
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox"
-                                    class="custom-control-input has-subcategories-checkbox"
-                                    id="useSubNew${newIndex}"
-                                    name="categories[new${newIndex}][has_subcategories]"
-                                    disabled>
-                                <label class="custom-control-label medium " for="useSubNew${newIndex}">
-                                    Uses Subcategories
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="subcategories-container col-md-4">
-                            
+                       
+                        <div class="form-group col-md-2 m-auto">
+                            <button type="button" class="btn btn-outline-danger btn-sm remove-category">Remove</button>
                         </div>
                     </div>
                 </div>
@@ -245,74 +203,6 @@
             }
         });
 
-        /* LOAD SUBCATEGORIES */
-        document.addEventListener('change', e => {
-            // Category select change
-            if (e.target.matches('.new-category-select, select[name*="[category_id]"]')) {
-                let card = e.target.closest('.category-card');
-                let subContainer = card.querySelector('.subcategories-container');
-                let toggle = card.querySelector('.has-subcategories-checkbox');
-
-                if (!subContainer) return;
-                subContainer.innerHTML = '';
-
-                toggle.checked = false;
-                toggle.disabled = true;
-
-                let selectedValue = e.target.value;
-
-                // Prevent duplicate category selection
-                let duplicate = false;
-                $('.new-category-select').not(e.target).each(function() {
-                    if ($(this).val() == selectedValue && selectedValue !== "") {
-                        duplicate = true;
-                        return false;
-                    }
-                });
-                if (duplicate) {
-                    AIZ.plugins.notify('danger', 'This category is already selected in another section.');
-                    e.target.value = '';
-                    return;
-                }
-
-                let category = categories.find(c => c.id == selectedValue);
-                if (category && category.children?.length) {
-                    toggle.disabled = false;
-
-                    let html = '<div class="w-100"><label class="medium">Subcategories</label></div>';
-                    category.children.forEach(sub => {
-                        html += `
-                        <div class="custom-control custom-checkbox d-inline-flex align-items-center mr-4">
-                            <input type="checkbox"
-                                class="custom-control-input subcat-checkbox" disabled
-                                id="newSub${sub.id}${card.dataset.index}"
-                                name="categories[new${card.dataset.index}][subcategories][]"
-                                value="${sub.id}">
-                            <label class="custom-control-label"
-                                for="newSub${sub.id}${card.dataset.index}">
-                                ${sub.name}
-                            </label>
-                        </div>`;
-                    });
-                    subContainer.innerHTML = html;
-                }
-            }
-
-            // Toggle subcategories enable/disable
-            if (e.target.classList.contains('has-subcategories-checkbox')) {
-                let card = e.target.closest('.category-card');
-                let subCheckboxes = card.querySelectorAll('.subcat-checkbox');
-
-                if (e.target.checked) {
-                    subCheckboxes.forEach(cb => cb.disabled = false);
-                } else {
-                    subCheckboxes.forEach(cb => {
-                        cb.checked = false;
-                        cb.disabled = true;
-                    });
-                }
-            }
-        });
 
         /* FORM SUBMIT VALIDATION */
         $('#pcBuilderForm').on('submit', function (e) {
@@ -320,34 +210,6 @@
 
             let form = $(this);
             let valid = true;
-
-            $('.category-card').each(function () {
-                let card = $(this);
-                let toggle = card.find('.has-subcategories-checkbox');
-
-                if (toggle.length && toggle.is(':checked')) {
-                    let count = card.find('.subcat-checkbox:checked').length;
-                    if (count < 2) {
-                        let categoryName = card.find('.new-category-select option:selected').text();
-
-                        AIZ.plugins.notify('danger', `Category "${categoryName}" requires at least 2 subcategories.`);
-
-                        // Highlight the card
-                        card.css('border', '2px solid red');
-
-                        // Scroll to the card
-                        $('html, body').animate({
-                            scrollTop: card.offset().top - 100
-                        }, 500);
-
-                        valid = false;
-                        return false; // stop iteration
-                    } else {
-                        // remove highlight if valid
-                        card.css('border', '');
-                    }
-                }
-            });
 
             if (!valid) return;
 

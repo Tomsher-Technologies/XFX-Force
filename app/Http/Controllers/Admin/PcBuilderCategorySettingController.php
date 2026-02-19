@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\PcBuilderCategorySetting;
-use App\Models\PcBuilderSubcategory;
 use DB;
 
 class PcBuilderCategorySettingController extends Controller
@@ -24,8 +23,7 @@ class PcBuilderCategorySettingController extends Controller
             ->orderBy('name')
             ->get();
 
-        $settings = PcBuilderCategorySetting::with('subcategories')
-                                            ->orderBy('sort_order')
+        $settings = PcBuilderCategorySetting::orderBy('sort_order')
                                             ->get()
                                             ->keyBy('category_id');
 
@@ -50,10 +48,13 @@ class PcBuilderCategorySettingController extends Controller
         DB::beginTransaction();
 
         try {
+            $submittedCategoryIds = [];
 
             foreach ($request->categories as $key => $category) {
 
                 $categoryId = $category['category_id'] ?? $key;
+
+                $submittedCategoryIds[] = $categoryId;
 
                 $setting = PCBuilderCategorySetting::updateOrCreate(
                     ['category_id' => $categoryId],
@@ -61,14 +62,14 @@ class PcBuilderCategorySettingController extends Controller
                         'min_select' => $category['min_select'] ?? 0,
                         'max_select' => $category['max_select'] ?? null,
                         'sort_order' => $category['sort_order'] ?? 0,
-                        'has_subcategories' => isset($category['has_subcategories'])
+                        'has_subcategories' => 0
                     ]
                 );
 
-                // Sync subcategories
-                $setting->subcategories()->sync($category['subcategories'] ?? []);
             }
 
+            PCBuilderCategorySetting::whereNotIn('category_id', $submittedCategoryIds)->delete();
+            
             DB::commit();
 
             return response()->json([
