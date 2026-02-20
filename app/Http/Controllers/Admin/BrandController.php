@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Brand;
+use App\Models\BrandSection;
+use App\Models\BrandTab;
 use App\Models\BrandTranslation;
 use App\Models\Product;
-use Illuminate\Support\Str;
 use DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {
@@ -56,27 +58,28 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $request->validate([
             'name' => 'required',
             'slug' => 'required',
         ]);
-       
-        $brand               = new Brand;
-        $brand->name         = $request->name ?? NULL;
-        $brand->is_active    = $request->status;
+
+        $brand = new Brand;
+        $brand->name = $request->name ?? NULL;
+        $brand->is_active = $request->is_active;
+        if ($request->hasFile('logo')) {
+            $brand->logo = $request->logo->store('brand/images', 'public');
+        }
+        $slug = $request->slug ? Str::slug($request->slug, '-') : Str::slug($request->name, '-');
+        $slug = Str::lower($slug);
+        $same_slug_count = Brand::where('slug', 'LIKE', $slug . '%')->count();
+        $slug_suffix = $same_slug_count ? '-' . $same_slug_count + 1 : '';
+        $slug .= $slug_suffix;
+        $brand->slug = $slug;
         $brand->save();
 
-        $slug               = $request->slug ? Str::slug($request->slug, '-') : Str::slug($request->name, '-');
-        $slug               = Str::lower($slug);
-        $same_slug_count    = BrandTranslation::where('slug', 'LIKE', $slug . '%')->count();
-        $slug_suffix        = $same_slug_count ? '-' . $same_slug_count + 1 : '';
-        $slug              .= $slug_suffix;
-
-        $brand_translation                       = BrandTranslation::firstOrNew(['lang' => env('DEFAULT_LANGUAGE'), 'brand_id' => $brand->id]);
-        $brand_translation->name                 = $request->name;
-        $brand_translation->slug                 = $slug;
-        $brand_translation->logo                 = $request->logo;
+        // save brand seo
+        $brand_translation                       = BrandTranslation::firstOrNew(['brand_id' => $brand->id]);
         $brand_translation->meta_title           = $request->meta_title;
         $brand_translation->meta_description     = $request->meta_description;
         $brand_translation->meta_keywords        = $request->meta_keywords;
@@ -86,7 +89,54 @@ class BrandController extends Controller
         $brand_translation->twitter_description  = $request->twitter_description;
         $brand_translation->save();
 
-        flash(trans('messages.brand').trans('messages.created_msg'))->success();
+        // saving sections
+        if ($request->has('sections')) {
+            
+            foreach ($request->sections as $section) {
+
+                // Skip completely empty section
+                if (!empty($section['section_title'])) {
+                    $imagePath = "";
+                    if (isset($section['section_image']) && 
+                        $section['section_image'] instanceof \Illuminate\Http\UploadedFile) {
+                        $imagePath = $section['section_image']->store('brand_sections/images', 'public');
+                    }
+
+                    $brand->sections()->create([
+                        'title' => $section['section_title'] ?? "",
+                        'description' => $section['section_description'],
+                        'status' => $section['section_status'] ?? 0,
+                        'image' => $imagePath,
+                    ]);
+                }
+            }
+        }
+
+        // saving Tabs
+        if ($request->has('tabs')) {
+            foreach ($request->tabs as $tab) {
+
+                // Skip empty tab
+                if (!empty($tab['tab_name'])) {
+                    $tabImage = "";
+                    if (isset($tab['tab_image']) && 
+                        $tab['tab_image'] instanceof \Illuminate\Http\UploadedFile) {
+                        $tabImage = $tab['tab_image']->store('brand_tabs/images', 'public');
+                    }
+
+                    $brand->tabs()->create([
+                        'name' => $tab['tab_name'] ?? "",
+                        'title' => $tab['tab_title'] ?? "",
+                        'description' => $tab['tab_description'] ?? "",
+                        'status' => $tab['tab_status'] ?? 0,
+                        'sort_order' => $tab['tab_sort_order'] ?? 0,
+                        'image' => $tabImage,
+                    ]);
+                }
+            }
+        }
+
+        flash(trans('messages.brand') . trans('messages.created_msg'))->success();
         return redirect()->route('brands.index');
     }
 
@@ -111,7 +161,8 @@ class BrandController extends Controller
     {
         $lang   = $request->lang;
         $brand  = Brand::findOrFail($id);
-        return view('backend.brands.edit', compact('brand', 'lang'));
+        $products = Product::where('published', 1)->get();
+        return view('backend.brands.edit', compact('brand', 'lang', 'products'));
     }
 
     /**
@@ -130,24 +181,38 @@ class BrandController extends Controller
 
         $brand = Brand::findOrFail($id);
 
-        if ($request->lang == env("DEFAULT_LANGUAGE")) {
-            $brand->name         = $request->name;
-            $brand->is_active    = $request->status;
-            $brand->save();
+        $brand->name = $request->name ?? null;
+        $brand->is_active = $request->is_active ?? 0;
+
+        if ($request->hasFile('logo')) {
+            $brand->logo = $request->logo->store('brand/images', 'public');
         }
 
-        $slug = '';
-        if ($request->slug != null) {
-            $slug = strtolower(Str::slug($request->slug, '-'));
-            $same_slug_count = BrandTranslation::where('slug', 'LIKE', $slug . '%')->where('brand_id', '!=', $brand->id)->count();
-            $slug_suffix = $same_slug_count > 0 ? '-' . $same_slug_count + 1 : '';
-            $slug .= $slug_suffix;
+        // Slug handling
+        $slug = $request->slug
+            ? Str::slug($request->slug, '-')
+            : Str::slug($request->name, '-');
+
+        $slug = Str::lower($slug);
+
+        $same_slug_count = Brand::where('slug', 'LIKE', $slug . '%')
+            ->where('id', '!=', $brand->id)
+            ->count();
+
+        if ($same_slug_count > 0) {
+            $slug .= '-' . ($same_slug_count + 1);
         }
 
-        $brand_translation                       = BrandTranslation::firstOrNew(['lang' => $request->lang, 'brand_id' => $brand->id]);
-        $brand_translation->name                 = $request->name;
-        $brand_translation->slug                 = $slug;
-        $brand_translation->logo                 = $request->logo;
+        $brand->slug = $slug;
+
+        $brand->products = $request->products
+            ? json_encode($request->products)
+            : null;
+
+        $brand->save();
+
+        // saving seo details
+        $brand_translation                       = BrandTranslation::firstOrNew(['brand_id' => $brand->id]);
         $brand_translation->meta_title           = $request->meta_title;
         $brand_translation->meta_description     = $request->meta_description;
         $brand_translation->meta_keywords        = $request->meta_keywords;
@@ -157,8 +222,98 @@ class BrandController extends Controller
         $brand_translation->twitter_description  = $request->twitter_description;
         $brand_translation->save();
 
-        flash(trans('messages.brand').trans('messages.updated_msg'))->success();
-        return back();
+        // saving sections
+
+        $existingSectionIds = [];
+        if ($request->has('sections')) {
+            foreach ($request->sections as $index => $section) {
+                $sectionId = $section['id'] ?? null;
+
+                // Handle Image
+                $imagePath = null;
+                if ($request->hasFile("sections.$index.section_image")) {
+                    $imagePath = $request->file("sections.$index.section_image")
+                        ->store('brand_sections/images', 'public');
+                }
+
+                if ($sectionId) {
+                    // Update existing section
+                    $existingSection = BrandSection::find($sectionId);
+                    if ($existingSection) {
+                        $existingSection->update([
+                            'title'       => $section['section_title'] ?? "",
+                            'description' => $section['section_description'] ?? "",
+                            'status'      => $section['section_status'] ?? 0,
+                            'image'       => $imagePath ?? $existingSection->image,
+                        ]);
+                        $existingSectionIds[] = $existingSection->id;
+                    }
+
+                } else {
+                    // Create new section
+                    $newSection = $brand->sections()->create([
+                        'title'       => $section['section_title'] ?? "",
+                        'description' => $section['section_description'] ?? "",
+                        'status'      => $section['section_status'] ?? 0,
+                        'image'       => $imagePath ?? "",
+                    ]);
+
+                    $existingSectionIds[] = $newSection->id;
+                }
+            }
+        }
+
+        // Delete sections that were removed in the form
+        $brand->sections()
+            ->whereNotIn('id', $existingSectionIds)
+            ->delete();
+
+        // saving Tabs
+
+        $existingTabIds = [];
+        foreach ($request->tabs as $index => $tab) {
+            $tabId = $tab['id'] ?? null;
+            $imagePath = null;
+            if ($request->hasFile("tabs.$index.tab_image")) {
+                $imagePath = $request->file("tabs.$index.tab_image")
+                    ->store('brand_tabs/images', 'public');
+            }
+
+            if ($tabId) {
+                $existingTab = BrandTab::find($tabId);
+                if ($existingTab) {
+                    $existingTab->update([
+                        'name'        => $tab['tab_name'] ?? "",
+                        'title'       => $tab['tab_title'] ?? "",
+                        'description' => $tab['tab_description'] ?? "",
+                        'status'      => $tab['tab_status'] ?? 0,
+                        'image'       => $imagePath ?? $existingTab->image,
+                    ]);
+
+                    $existingTabIds[] = $existingTab->id;
+                }
+
+            } else {
+
+                $newTab = $brand->tabs()->create([
+                    'name'        => $tab['tab_name'] ?? "",
+                    'title'       => $tab['tab_title'] ?? "",
+                    'description' => $tab['tab_description'] ?? "",
+                    'status'      => $tab['tab_status'] ?? 0,
+                    'image'       => $imagePath ?? "",
+                ]);
+
+                $existingTabIds[] = $newTab->id;
+            }
+        }
+
+        $brand->tabs()
+            ->whereNotIn('id', $existingTabIds)
+            ->delete();
+
+        flash(trans('messages.brand') . trans('messages.updated_msg'))->success();
+
+        return redirect()->route('brands.index');
     }
 
     /**

@@ -24,9 +24,10 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
-                                    <th>Name </th>
+                                    <th>Name</th>
                                     <th class="text-left">Sub Title</th>
                                     <th class="text-center">Type</th>
+                                    <th class="text-center">Source</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Sort Order</th>
                                     <th class="text-center">Action</th>
@@ -40,7 +41,8 @@
                                             {{ $test->name }}
                                         </td>
                                         <td class="text-left">{{ $test->sub_title }}</td>
-                                        <td class="text-center">{{ $test->type }}</td>
+                                        <td class="text-center">{{ ucwords($test->type) }}</td>
+                                        <td class="text-center">{{ ucwords($test->video_source) }}</td>
                                         <td class="text-center">
                                             <label class="aiz-switch aiz-switch-success mb-0">
                                                 <input onchange="update_status(this)" value="{{ $test->id }}"

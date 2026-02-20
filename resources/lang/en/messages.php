@@ -442,6 +442,7 @@ return [
     'months' => 'Months',
     'model' => 'Model',
     'testimonial' => 'Testimonial',
+    'sections' => 'Sections',
     '' => '',
     '' => '',
     '' => '',
