@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Banner;
 use App\Models\Occasion;
-use App\Models\BannerTranslation;
 use App\Models\Product;
 use App\Models\Service;
 use Cache;
@@ -59,26 +58,19 @@ class Bannercontroller extends Controller
 
         $banner = Banner::create([
             'name' => $request->name,
-            // 'image' => $request->banner,
-            // 'mobile_image' => $request->mobile_banner,
-            // 'title' => $request->title,
-            // 'sub_title' => $request->sub_title,
-            // 'btn_text' => $request->btn_text,
             'link_type' => $request->link_type,
             'link_ref' => $request->link_type,
             'link_ref_id' => $request->link_ref_id,
             'link' => $request->link,
             'status' => $request->status,
+            'image'         => $request->banner,
+            'mobile_image'  => $request->mobile_banner,
+            'title'         => $request->title,
+            'sub_title'     => $request->sub_title,
+            'btn_text'      => $request->btn_text,
         ]);
 
-        $banner_translation                 = BannerTranslation::firstOrNew(['lang' => env('DEFAULT_LANGUAGE'), 'banner_id' => $banner->id]);
-        $banner_translation->image          = $request->banner;
-        $banner_translation->mobile_image   = $request->mobile_banner;
-        $banner_translation->title          = $request->title;
-        $banner_translation->sub_title      = $request->sub_title;
-        $banner_translation->btn_text       = $request->btn_text;
-        $banner_translation->save();
-
+     
         Artisan::call('cache:clear');
         flash(trans('messages.banner').' '.trans('messages.created_msg'))->success();
         return redirect()->route('banners.index');
@@ -139,17 +131,14 @@ class Bannercontroller extends Controller
             $banner->link_ref_id    = $request->link_ref_id;
             $banner->link           = $request->link;
             $banner->status         = $request->status;
+            $banner->image          = $request->banner;
+            $banner->mobile_image   = $request->mobile_banner;
+            $banner->title          = $request->title;
+            $banner->sub_title      = $request->sub_title;
+            $banner->btn_text       = $request->btn_text;
             $banner->save();
         }
        
-        $banner_translation                 = BannerTranslation::firstOrNew(['lang' => $request->lang, 'banner_id' => $banner->id]);
-        $banner_translation->image          = $request->banner;
-        $banner_translation->mobile_image   = $request->mobile_banner;
-        $banner_translation->title          = $request->title;
-        $banner_translation->sub_title      = $request->sub_title;
-        $banner_translation->btn_text       = $request->btn_text;
-        $banner_translation->save();
-
         Artisan::call('cache:clear');
         flash(trans('messages.banner').' '.trans('messages.updated_msg'))->success();
         return redirect()->route('banners.index');
@@ -184,9 +173,6 @@ class Bannercontroller extends Controller
         } elseif ($request->link_type == "brand") {
             $brands = Brand::select(['id', 'name'])->where('is_active', 1)->get();
             return view('partials.banners.banner_form_brand', compact('old_data', 'brands'));
-        }elseif ($request->link_type == "service") {
-            $services = Service::select(['id', 'name'])->where('status', 1)->get();
-            return view('partials.banners.banner_form_service', compact('old_data', 'services'));
         }else {
             return view('partials.banners.banner_form', compact('old_data'));
         }

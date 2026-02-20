@@ -90,6 +90,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/home-slider/update-status', [HomeSliderController::class, 'updateStatus'])->name('home-slider.update-status');
         Route::get('/home-slider/delete/{id}', [HomeSliderController::class, 'destroy'])->name('home-slider.delete');
         Route::resource('home-slider', HomeSliderController::class);
+        
 
         Route::resource('custom-pages', PageController::class);
         Route::get('/pages', [PageController::class, 'index'])->name('website.pages');

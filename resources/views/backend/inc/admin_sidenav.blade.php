@@ -2,7 +2,7 @@
     <div class="aiz-sidebar left c-scrollbar">
         <div class="aiz-side-nav-logo-wrap">
             <a href="{{ route('admin.dashboard') }}" class="d-block text-left">
-                <img class="mw-100" height="100" src="{{ asset('assets/img/logo-side.png') }}" 
+                <img class="mw-100" height="100" src="{{ asset('assets/img/logo-side.svg') }}" 
                         alt="{{ get_setting('site_name') }}">
             </a>
         </div>
@@ -380,12 +380,12 @@
                                 <span class="aiz-side-nav-text">General Settings</span>
                             </a>
                         </li>
-                        {{-- <li class="aiz-side-nav-item">
+                        <li class="aiz-side-nav-item">
                             <a href="{{ route('banners.index') }}"
                                 class="aiz-side-nav-link {{ areActiveRoutes(['banners.index', 'banners.create', 'banners.edit']) }}">
                                 <span class="aiz-side-nav-text">Banners</span>
                             </a>
-                        </li> --}}
+                        </li>
 
                         {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('partners.index') }}"
