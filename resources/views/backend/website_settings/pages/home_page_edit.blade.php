@@ -16,7 +16,7 @@
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-from-label">Home Sliders</label>
+                            <label class="col-form-label">Home Sliders</label>
                             <select name="home_slider[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['home_slider'] ?? []) }}">
                                 @foreach ($sliders as $key => $slider)
                                 <option value="{{ $slider->id }}">{{ $slider->name }}</option>
@@ -24,11 +24,11 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="col-from-label">Banners</label>
+                            <label class="col-form-label">Banners</label>
                             <select name="home_banners[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['home_banners'] ?? []) }}">
-                                <option value="1">Banner 1</option>
-                                <option value="2">Banner 2</option>
-                                <option value="3">Banner 3</option>
+                                @foreach ($banners as $key => $banner)
+                                <option value="{{ $banner->id }}">{{ $banner->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -42,11 +42,11 @@
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-from-label">Main Title</label>
+                            <label class="col-form-label">Main Title</label>
                             <input type="text" name="category_title" value="{{ $homeSettings['category_title'] ?? '' }}" class="form-control form-control-sm form-control form-control-sm">
                         </div>
                         <div class="col-md-6">
-                            <label class="col-from-label">Categories</label>
+                            <label class="col-form-label">Categories</label>
                             <select name="categories[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Categories" data-selected="{{ json_encode($homeSettings['categories'] ?? []) }}">
                                 @foreach ($categories as $key => $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -75,7 +75,7 @@
                         </div>
                     </div>
 
-                    {{-- ================= NEW ARRIVALS ================= --}}
+                    <!-- New Arrivals -->
                     <div class="new-arrival-repeater border shadow p-3 mb-3">
                         <strong>New Arrivals</strong>
                         <hr>
@@ -106,10 +106,26 @@
 
                                     <div class="col-md-3">
                                         <label>Image</label>
-                                        <input type="text"
-                                            name="featured_new_image"
-                                            value="{{ $item['featured_new_image'] ?? '' }}"
-                                            class="form-control form-control-sm">
+                                        <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">
+                                                    {{ trans('messages.browse') }}
+                                                </div>
+                                            </div>
+                                            <div class="form-control form-control-sm file-amount">
+                                                {{ isset($item['featured_new_image']) && $item['featured_new_image'] != '' ? basename($item['featured_new_image']) : trans('messages.choose_file') }}
+                                            </div>
+                                            <input type="hidden" name="featured_new_image" class="selected-files"
+                                                value="{{ $item['featured_new_image'] ?? '' }}">
+                                        </div>
+
+                                        <div class="file-preview box sm">
+                                            @if(isset($item['featured_new_image']) && $item['featured_new_image'] != '')
+                                                <div class="file-preview-item">
+                                                    <img src="{{ asset($item['featured_new_image']) }}" alt="image" class="img-thumbnail">
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
 
                                     <div class="col-md-3">
@@ -157,11 +173,15 @@
 
                                     <div class="col-md-3">
                                         <label>Image</label>
-                                        <input type="text"
-                                            name="featured_new_image"
-                                            class="form-control form-control-sm">
+                                        <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">{{ trans('messages.browse')}}</div>
+                                            </div>
+                                            <div class="form-control form-control-sm file-amount">{{ trans('messages.choose_file') }}</div>
+                                            <input type="hidden" name="featured_new_image" class="selected-files">
+                                        </div>
+                                        <div class="file-preview box sm"></div>
                                     </div>
-
                                     <div class="col-md-3">
                                         <label>Title</label>
                                         <input type="text"
@@ -201,7 +221,7 @@
 
                     <hr class="my-4">
 
-                    {{-- ================= POPULAR PRODUCTS ================= --}}
+                    <!-- Popular products section -->
                     <div class="popular-products-repeater border shadow p-3 mb-3">
                         <strong>Popular Products</strong>
                         <hr>
@@ -229,15 +249,29 @@
                                             @endforeach
                                         </select>
                                     </div>
-
                                     <div class="col-md-3">
                                         <label>Image</label>
-                                        <input type="text"
-                                            name="featured_popular_image"
-                                            value="{{ $item['featured_popular_image'] ?? '' }}"
-                                            class="form-control form-control-sm">
-                                    </div>
+                                        <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">
+                                                    {{ trans('messages.browse') }}
+                                                </div>
+                                            </div>
+                                            <div class="form-control form-control-sm file-amount">
+                                                {{ isset($item['featured_popular_image']) && $item['featured_popular_image'] != '' ? basename($item['featured_popular_image']) : trans('messages.choose_file') }}
+                                            </div>
+                                            <input type="hidden" name="featured_popular_image" class="selected-files"
+                                                value="{{ $item['featured_popular_image'] ?? '' }}">
+                                        </div>
 
+                                        <div class="file-preview box sm">
+                                            @if(isset($item['featured_popular_image']) && $item['featured_popular_image'] != '')
+                                                <div class="file-preview-item">
+                                                    <img src="{{ asset($item['featured_popular_image']) }}" alt="image" class="img-thumbnail">
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
                                     <div class="col-md-3">
                                         <label>Title</label>
                                         <input type="text"
@@ -283,9 +317,14 @@
 
                                     <div class="col-md-3">
                                         <label>Image</label>
-                                        <input type="text"
-                                            name="featured_popular_image"
-                                            class="form-control form-control-sm">
+                                        <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">{{ trans('messages.browse')}}</div>
+                                            </div>
+                                            <div class="form-control form-control-sm file-amount">{{ trans('messages.choose_file') }}</div>
+                                            <input type="hidden" name="featured_popular_image" class="selected-files">
+                                        </div>
+                                        <div class="file-preview box sm"></div>
                                     </div>
 
                                     <div class="col-md-3">
@@ -336,13 +375,13 @@
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-from-label">Main Title</label>
+                            <label class="col-form-label">Main Title</label>
                             <input type="text" name="upcoming_products_title" value="{{ $homeSettings['upcoming_products_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-from-label">New Arrivals</label>
+                            <label class="col-form-label">New Arrivals</label>
                             <select name="upcoming_new_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['upcoming_new_products'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -350,7 +389,7 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="col-from-label">Popular Products</label>
+                            <label class="col-form-label">Popular Products</label>
                             <select name="upcoming_popular_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['upcoming_popular_products'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -369,11 +408,11 @@
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-from-label">Main Title</label>
+                            <label class="col-form-label">Main Title</label>
                             <input type="text" name="middle_banner_title" value="{{ $homeSettings['middle_banner_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-6">
-                            <label class="col-from-label">Banners</label>
+                            <label class="col-form-label">Banners</label>
                             <select name="middle_banners[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['middle_banners'] ?? []) }}">
                                 <option value="1">Banner 1</option>
                                 <option value="2">Banner 2</option>
@@ -392,13 +431,13 @@
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-from-label">Main Title</label>
+                            <label class="col-form-label">Main Title</label>
                             <input type="text" name="middle_featured_products_title" value="{{ $homeSettings['middle_featured_products_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-from-label">New Arrivals</label>
+                            <label class="col-form-label">New Arrivals</label>
                             <select name="middle_featured_new_arrivals[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['middle_featured_new_arrivals'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -406,7 +445,7 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="col-from-label">Popular Products</label>
+                            <label class="col-form-label">Popular Products</label>
                             <select name="middle_featured_popular_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['middle_featured_popular_products'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -425,11 +464,11 @@
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-from-label">Main Title</label>
+                            <label class="col-form-label">Main Title</label>
                             <input type="text" name="middle_full_banner_title" value="{{ $homeSettings['middle_full_banner_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-6">
-                            <label class="col-from-label">Banners</label>
+                            <label class="col-form-label">Banners</label>
                             <select name="middle_full_banner[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['middle_full_banner'] ?? []) }}">
                                 <option value="1">Banner 1</option>
                                 <option value="2">Banner 2</option>
@@ -448,11 +487,11 @@
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-from-label">Main Title</label>
+                            <label class="col-form-label">Main Title</label>
                             <input type="text" name="best_deals_title" value="{{ $homeSettings['best_deals_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-6">
-                            <label class="col-from-label">Products</label>
+                            <label class="col-form-label">Products</label>
                             <select name="best_deals_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['best_deals_products'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -472,12 +511,12 @@
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-from-label">Main Title</label>
+                            <label class="col-form-label">Main Title</label>
                             <input type="text" name="product_gallery_title" value="{{ $homeSettings['product_gallery_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-6">
-                            <label class="col-from-label">Products</label>
-                            <select name="product_gallery_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['product_gallery_products'] ?? []) }}" data-max-options="1">
+                            <label class="col-form-label">Products <small>(Maximum 6 items allowed)</small></label>
+                            <select name="product_gallery_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['product_gallery_products'] ?? []) }}" data-max-options="6">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
                                 @endforeach
@@ -496,11 +535,11 @@
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label class="col-from-label">Main Title</label>
+                            <label class="col-form-label">Main Title</label>
                             <input type="text" name="graphic_cards_title" value="{{ $homeSettings['graphic_cards_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-6">
-                            <label class="col-from-label">Products</label>
+                            <label class="col-form-label">Products</label>
                             <select name="graphic_cards_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['graphic_cards_products'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -519,25 +558,25 @@
                 <div class="card-body">
                     <div class="form-group row">
                         <div class="col-md-3">
-                            <label class="col-from-label">Main Title</label>
+                            <label class="col-form-label">Main Title</label>
                             <input type="text" name="testimonials_title" value="{{ $homeSettings['testimonials_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-3">
-                            <label class="col-from-label">Rating Count</label>
+                            <label class="col-form-label">Rating Count</label>
                             <input type="text" name="testimonials_rating_count" value="{{ $homeSettings['testimonials_rating_count'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-3">
-                            <label class="col-from-label">Rating Title</label>
+                            <label class="col-form-label">Rating Title</label>
                             <input type="text" name="testimonials_rating_title" value="{{ $homeSettings['testimonials_rating_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-3">
-                            <label class="col-from-label">Customer Count</label>
+                            <label class="col-form-label">Customer Count</label>
                             <input type="text" name="testimonials_customer_count" value="{{ $homeSettings['testimonials_customer_count'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-3">
-                            <label class="col-from-label">Customer Title</label>
+                            <label class="col-form-label">Customer Title</label>
                             <input type="text" name="testimonials_customer_title" value="{{ $homeSettings['testimonials_customer_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                     </div>
@@ -551,36 +590,127 @@
                     <h6 class="mb-0">Footer Section</h6>
                 </div>
                 <div class="card-body">
-                    <div class="form-group row">
-                        <div class="col-md-3">
-                            <label class="col-from-label">Main Title</label>
-                            <input type="text" name="footer_title" value="{{ $homeSettings['footer_title'] ?? '' }}" class="form-control form-control-sm">
+                    <div class="footer-section-repeater">
+                        <div data-repeater-list="footers">
+
+                            @php
+                                $footers = $homeSettings['footers'] ?? [];
+                            @endphp
+
+                            @forelse($footers as $item)
+                                <div data-repeater-item class="border shadow p-3 mb-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <label>Main Title</label>
+                                            <input type="text" name="footer_title" value="{{ $item['footer_title'] ?? '' }}" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Image</label>
+                                            <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">
+                                                        {{ trans('messages.browse') }}
+                                                    </div>
+                                                </div>
+                                                <div class="form-control form-control-sm file-amount">
+                                                    {{ isset($item['footer_image']) && $item['footer_image'] != '' ? basename($item['footer_image']) : trans('messages.choose_file') }}
+                                                </div>
+                                                <input type="hidden" name="footer_image" class="selected-files" value="{{ $item['footer_image'] ?? '' }}">
+                                            </div>
+                                            <div class="file-preview box sm">
+                                                @if(isset($item['footer_image']) && $item['footer_image'] != '')
+                                                    <div class="file-preview-item">
+                                                        <img src="{{ asset($item['footer_image']) }}" alt="image" class="img-thumbnail">
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Content</label>
+                                            <input type="text" name="footer_content" value="{{ $item['footer_content'] ?? '' }}" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Button Text</label>
+                                            <input type="text" name="footer_button_text" value="{{ $item['footer_button_text'] ?? '' }}" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Button Link</label>
+                                            <input type="text" name="footer_button_link" value="{{ $item['footer_button_link'] ?? '' }}" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <label class="d-block">&nbsp;</label>
+                                            <button type="button" data-repeater-delete class="btn btn-danger btn-icon btn-sm">
+                                                <i class="las la-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div data-repeater-item class="border shadow p-3 mb-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <label>Main Title</label>
+                                            <input type="text" name="footer_title" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Image</label>
+                                            <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">
+                                                        {{ trans('messages.browse') }}
+                                                    </div>
+                                                </div>
+                                                <div class="form-control form-control-sm file-amount">{{ trans('messages.choose_file') }}</div>
+                                                <input type="hidden" name="footer_image" class="selected-files">
+                                            </div>
+                                            <div class="file-preview box sm"></div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Content</label>
+                                            <input type="text" name="footer_content" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Button Text</label>
+                                            <input type="text" name="footer_button_text" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Button Link</label>
+                                            <input type="text" name="footer_button_link" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <label class="d-block">&nbsp;</label>
+                                            <button type="button" data-repeater-delete class="btn btn-danger btn-icon btn-sm">
+                                                <i class="las la-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforelse
+
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-3">
-                            <label class="col-from-label">Image</label>
-                            <input type="file" name="footer_image" value="{{ $homeSettings['footer_image'] ?? '' }}" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="col-from-label">Content</label>
-                            <input type="text" name="footer_content" value="{{ $homeSettings['footer_content'] ?? '' }}" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="col-from-label">Button Text</label>
-                            <input type="text" name="footer_button_text" value="{{ $homeSettings['footer_button_text'] ?? '' }}" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="col-from-label">Button Link</label>
-                            <input type="text" name="footer_button_link" value="{{ $homeSettings['footer_button_link'] ?? '' }}" class="form-control form-control-sm">
+
+                        <div class="text-right">
+                            <button type="button" data-repeater-create class="btn btn-primary btn-xs">
+                                Add More Footer
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Home Footer section ends -->
 
-            <div class="text-right">
-                <button type="submit" class="btn btn-info">Update</button>
+            <div class="text-right mb-2">
+                <button type="submit" class="btn btn-info btn-sm">Update</button>
             </div>
         </form>
     </div>
@@ -589,17 +719,6 @@
 
 @section('script')
 <script type="text/javascript">
-    // $(document).ready(function() {
-    //     AIZ.plugins.bootstrapSelect('refresh');
-
-    //     $('.aiz-selectpicker').on('shown.bs.select', function() {
-    //         var select = $(this);
-    //         var selectedOptions = select.find('option:selected').detach();
-    //         select.prepend(selectedOptions);
-    //         select.selectpicker('refresh');
-    //     });
-    // });
-
     $('.remove-galley').on('click', function() {
         thumbnail = $(this)
         $.ajax({
@@ -625,41 +744,30 @@
     });
 </script>
 
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"
     integrity="sha512-foIijUdV0fR0Zew7vmw98E6mOWd9gkGWQBWaoA1EOFAx+pY+N8FmmtIYAVj64R98KeD2wzZh1aHK0JSpKmRH8w=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script type="text/javascript">
     $(function() {
+        function initAizRepeater(selector) {
+            $(selector).repeater({
+                initEmpty: false,
+                defaultValues: {},
+                show: function () {
+                    $(this).slideDown();
+                    $(this).find('.bootstrap-select').find('.btn.dropdown-toggle').remove();
+                    $(this).find('.aiz-selectpicker').selectpicker('refresh');
+                },
+                hide: function (deleteElement) {
+                    $(this).slideUp(deleteElement);
+                }
+            });
+        }
 
-        // Initialize New Arrivals Repeater
-        $('.new-arrival-repeater').repeater({
-            initEmpty: false,
-            defaultValues: {},
-            show: function() {
-                $(this).slideDown();
-                $(this).find('.bootstrap-select').find('.btn.dropdown-toggle').remove();
-                $(this).find('.aiz-selectpicker').selectpicker('refresh');
-            },
-            hide: function(deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        });
-
-        // Initialize Popular Products Repeater
-        $('.popular-products-repeater').repeater({
-            initEmpty: false,
-            defaultValues: {},
-            show: function() {
-                $(this).slideDown();
-                $(this).find('.bootstrap-select').find('.btn.dropdown-toggle').remove();
-                $(this).find('.aiz-selectpicker').selectpicker('refresh');
-            },
-            hide: function(deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        });
+        initAizRepeater('.new-arrival-repeater');
+        initAizRepeater('.popular-products-repeater');
+        initAizRepeater('.footer-section-repeater');
     });
 </script>
 @endsection

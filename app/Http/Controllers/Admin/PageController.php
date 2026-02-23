@@ -108,10 +108,10 @@ class PageController extends Controller
 
             $products = Product::select('id', 'name')->where('published',1)->get();
             $brands = Brand::where('is_active',1)->orderBy('name', 'asc')->get();
-            // $services = Service::where('status',1)->orderBy('name', 'asc')->get();
             $sliders = HomeSlider::where('status',1)->orderBy('sort_order', 'asc')->get();
+            $banners = Banner::where('status',1)->orderBy('name', 'asc')->get();
             
-            return view('backend.website_settings.pages.home_page_edit', compact('page', 'categories', 'brands', 'products', 'lang','page_id', 'sliders'));
+            return view('backend.website_settings.pages.home_page_edit', compact('page', 'categories', 'brands', 'products', 'lang','page_id', 'sliders', 'banners'));
             
           }
           else if ($id == 'blogs' || $id == 'product_list' || $id == 'service_list') {

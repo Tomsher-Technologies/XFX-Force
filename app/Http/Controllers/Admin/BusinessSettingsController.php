@@ -23,25 +23,7 @@ class BusinessSettingsController extends Controller
 
     public function update(Request $request)
     {
-        
-        $data = $request->except('_token', 'footer_image');
-
-        // Handle footer image upload
-        if ($request->hasFile('footer_image')) {
-            $image = $request->file('footer_image');
-            $imageName = time().'_'.$image->getClientOriginalName();
-            $image->move(public_path('uploads/page'), $imageName);
-
-            $data['footer_image'] = 'uploads/page/'.$imageName;
-        } else {
-            // keep old image if not replaced
-            $old = Page::where('type', 'home_page')->first();
-            if ($old) {
-                $oldData = json_decode($old->value, true);
-                $data['footer_image'] = $oldData['footer_image'] ?? null;
-            }
-        }
-
+        $data = $request->except('_token');
         Page::updateOrCreate(
             ['type' => 'home'],
             ['slug' => 'home', 'status' => 1, 'data' => json_encode($data)]
