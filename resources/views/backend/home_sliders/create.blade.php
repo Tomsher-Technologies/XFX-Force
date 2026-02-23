@@ -196,8 +196,8 @@
 
                         {{-- Submit --}}
                         <div class="form-group text-right mb-0">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                            <a href="{{ route('home-slider.index') }}" class="btn btn-cancel">
+                            <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                            <a href="{{ route('home-slider.index') }}" class="btn btn-cancel btn-sm">
                                 {{ trans('messages.cancel') }}
                             </a>
                         </div>

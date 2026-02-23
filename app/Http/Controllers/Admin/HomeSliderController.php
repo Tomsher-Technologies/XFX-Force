@@ -87,37 +87,61 @@ class HomeSliderController extends Controller
         return view('backend.home_sliders.edit', compact('homeSlider'));
     }
 
-    public function update(Request $request, HomeSlider $homeSlider)
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required',
-            'banner' => 'required',
-            'mobile_banner' => 'required',
-            'link_type' => 'required',
-            'status' => 'required',
-            'link' => 'nullable|required_if:link_type,external',
-            'link_ref_id' => 'nullable|required_if:link_type,product,category',
-        ],[
-            'link.required_if' => "Please enter a valid link",
-            'link_ref_id.required_if' => "Please enter an option",
+            'slider_type' => 'required|in:image,video',
+            'name'        => 'required',
+            'btn_text'    => 'nullable|string|max:255',
+
+            'banner'        => 'required_if:slider_type,image',
+            'mobile_banner' => 'required_if:slider_type,image',
+
+            'video'         => 'required_if:slider_type,video',
+            'mobile_video'  => 'required_if:slider_type,video',
+
+            'link_type'     => 'required',
+            'link'          => 'nullable|required_if:link_type,external',
+            'link_ref_id'   => 'nullable|required_if:link_type,product,category',
+            'status'        => 'required',
         ]);
 
+        $slider = HomeSlider::findOrFail($id);
 
-        $homeSlider->update([
-            'name' => $request->name,
-            'image' => $request->banner,
-            'mobile_image' => $request->mobile_banner,
-            'link_type' => $request->link_type,
-            'link_ref' => $request->link_type,
-            'link_ref_id' => $request->link_ref_id,
-            'link' => $request->link,
-            'sort_order' => $request->sort_order,
-            'status' => $request->status,
-        ]);
+        $slider->name        = $request->name;
+        $slider->title       = $request->title;
+        $slider->sub_title   = $request->sub_title;
+        $slider->slider_type = $request->slider_type;
+        $slider->btn_text    = $request->btn_text;
+        $slider->link_type   = $request->link_type;
+        $slider->sort_order  = $request->sort_order;
+        $slider->status      = $request->status;
+
+        if ($request->slider_type === 'image') {
+            $slider->image        = $request->banner;
+            $slider->mobile_image = $request->mobile_banner;
+            $slider->video        = null;
+            $slider->mobile_video = null;
+        } else {
+            $slider->video        = $request->video;
+            $slider->mobile_video = $request->mobile_video;
+            $slider->image        = null;
+            $slider->mobile_image = null;
+        }
+
+        if ($request->link_type === 'external') {
+            $slider->link = $request->link;
+            $slider->link_ref_id = null;
+        } else {
+            $slider->link = null;
+            $slider->link_ref_id = $request->link_ref_id;
+        }
+
+        $slider->save();
 
         Cache::forget('homeSlider');
 
-        flash(trans('messages.slider').' '.trans('messages.updated_msg'))->success();
+        flash(trans('messages.slider').' updated successfully')->success();
         return redirect()->route('home-slider.index');
     }
 
