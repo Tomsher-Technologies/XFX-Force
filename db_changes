@@ -178,6 +178,8 @@ INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is
 ALTER TABLE `banners` ADD `image` INT NULL DEFAULT NULL AFTER `name`, ADD `mobile_image` INT NULL DEFAULT NULL AFTER `image`, ADD `title` VARCHAR(255) NULL DEFAULT NULL AFTER `mobile_image`, ADD `sub_title` VARCHAR(255) NULL DEFAULT NULL AFTER `title`, ADD `btn_text` VARCHAR(255) NULL DEFAULT NULL AFTER `sub_title`;
 
 DROP TABLE banner_translations;
+
+ALTER TABLE `home_sliders` ADD `slider_type` ENUM('video','image') NULL DEFAULT NULL AFTER `name`, ADD `video` VARCHAR(255) NULL DEFAULT NULL AFTER `slider_type`, ADD `mobile_video` VARCHAR(255) NULL DEFAULT NULL AFTER `video`;
 /* Jisha END */
 /* Jisha END */
 

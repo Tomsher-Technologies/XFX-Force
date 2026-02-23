@@ -16,15 +16,7 @@ class HomeSlider extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'image',
-        'mobile_image',
-        'link_type',
-        'link_ref',
-        'link_ref_id',
-        'link',
-        'sort_order',
-        'status',
+        'name', 'slider_type', 'video', 'mobile_video', 'image', 'mobile_image', 'title', 'sub_title', 'btn_text', 'link_type', 'link_ref', 'link_ref_id', 'link', 'sort_order', 'status'
     ];
 
     public function mainImage()

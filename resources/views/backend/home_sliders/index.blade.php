@@ -10,7 +10,7 @@
                         <h1 class="h3">{{ trans('messages.all').' '.trans('messages.sliders') }}</h1>
                     </div>
                     <div class="col-md-6 text-md-right">
-                        <a href="{{ route('home-slider.create') }}" class="btn btn-primary">
+                        <a href="{{ route('home-slider.create') }}" class="btn btn-primary btn-sm">
                             <span>{{ trans('messages.add_new').' '.trans('messages.sliders') }}</span>
                         </a>
                     </div>
@@ -65,12 +65,12 @@
                                             </label>
                                         </td>
                                         <td class="text-center">
-                                            <a class="btn btn-soft-primary btn-icon btn-circle"
+                                            <a class="btn btn-soft-primary btn-icon btn-circle btn-sm"
                                                 href="{{ route('home-slider.edit', $slider) }}" title="Edit">
                                                 <i class="las la-edit"></i>
                                             </a>
                                             <a href="#"
-                                                class="btn btn-soft-danger btn-icon btn-circle confirm-delete"
+                                                class="btn btn-soft-danger btn-icon btn-circle confirm-delete btn-sm"
                                                 data-href="{{ route('home-slider.delete', $slider->id) }}" title="Delete">
                                                 <i class="las la-trash"></i>
                                             </a>

@@ -336,6 +336,20 @@
                         <span class="aiz-side-nav-arrow"></span>
                     </a>
                     <ul class="aiz-side-nav-list level-2">
+
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('banners.index') }}"
+                                class="aiz-side-nav-link {{ areActiveRoutes(['banners.index', 'banners.create', 'banners.edit']) }}">
+                                <span class="aiz-side-nav-text">Banners</span>
+                            </a>
+                        </li>
+
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('home-slider.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['home-slider.index', 'home-slider.create', 'home-slider.edit']) }}">
+                                <span class="aiz-side-nav-text">Home Page Sliders</span>
+                            </a>
+                        </li>
+
                         {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('website.header') }}" class="aiz-side-nav-link">
                                 <span class="aiz-side-nav-text">Header</span>
@@ -346,28 +360,27 @@
                                 <span class="aiz-side-nav-text">Menus</span>
                             </a>
                         </li> --}}
-                        <li class="aiz-side-nav-item">
-                            <a href="{{ route('website.footer', ['lang' => App::getLocale()]) }}"
-                                class="aiz-side-nav-link {{ areActiveRoutes(['website.footer']) }}">
-                                <span class="aiz-side-nav-text">Footer</span>
-                            </a>
-                        </li>
+                        
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('website.pages') }}"
                                 class="aiz-side-nav-link {{ areActiveRoutes(['website.pages', 'custom-pages.create', 'custom-pages.edit']) }}">
                                 <span class="aiz-side-nav-text">Pages</span>
                             </a>
                         </li>
+
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('website.footer', ['lang' => App::getLocale()]) }}"
+                                class="aiz-side-nav-link {{ areActiveRoutes(['website.footer']) }}">
+                                <span class="aiz-side-nav-text">Footer</span>
+                            </a>
+                        </li>
+                        
                         {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('website.appearance') }}" class="aiz-side-nav-link">
                                 <span class="aiz-side-nav-text">Appearance</span>
                             </a>
                         </li> --}}
-                        <li class="aiz-side-nav-item">
-                            <a href="{{ route('home-slider.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['home-slider.index', 'home-slider.create', 'home-slider.edit']) }}">
-                                <span class="aiz-side-nav-text">Home Page Sliders</span>
-                            </a>
-                        </li>
+                        
 
                         <!-- <li class="aiz-side-nav-item">
                             <a href="{{ route('testimonials.index') }}" class="aiz-side-nav-link">
@@ -380,12 +393,7 @@
                                 <span class="aiz-side-nav-text">General Settings</span>
                             </a>
                         </li>
-                        <li class="aiz-side-nav-item">
-                            <a href="{{ route('banners.index') }}"
-                                class="aiz-side-nav-link {{ areActiveRoutes(['banners.index', 'banners.create', 'banners.edit']) }}">
-                                <span class="aiz-side-nav-text">Banners</span>
-                            </a>
-                        </li>
+                        
 
                         {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('partners.index') }}"
