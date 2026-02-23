@@ -25,9 +25,14 @@ class HomeSliderController extends Controller
     {
 
         $request->validate([
+            'slider_type' => 'required|in:image,video',
+            'btn_text'    => 'nullable|string|max:255',
             'name' => 'required',
-            'banner' => 'required',
-            'mobile_banner' => 'required',
+            'banner'        => 'required_if:slider_type,image',
+            'mobile_banner' => 'required_if:slider_type,image',
+
+            'video'         => 'required_if:slider_type,video',
+            'mobile_video'  => 'required_if:slider_type,video',
             'link_type' => 'required',
             'status' => 'required',
             'link' => 'nullable|required_if:link_type,external',
@@ -37,17 +42,39 @@ class HomeSliderController extends Controller
             'link_ref_id.required_if' => "Please enter an option",
         ]);
 
-        $slider = HomeSlider::create([
-            'name' => $request->name,
-            'image' => $request->banner,
-            'mobile_image' => $request->mobile_banner,
-            'link_type' => $request->link_type,
-            'link_ref' => $request->link_type,
-            'link_ref_id' => $request->link_ref_id,
-            'link' => $request->link,
-            'sort_order' => $request->sort_order,
-            'status' => $request->status,
-        ]);
+        $slider = new HomeSlider();
+        $slider->name        = $request->name;
+        $slider->title        = $request->title;
+        $slider->sub_title    = $request->sub_title;
+        $slider->slider_type = $request->slider_type;
+        $slider->btn_text    = $request->btn_text;
+        $slider->link_type   = $request->link_type;
+        $slider->sort_order  = $request->sort_order;
+        $slider->status      = $request->status;
+
+        if ($request->slider_type === 'image') {
+            $slider->image        = $request->banner;
+            $slider->mobile_image = $request->mobile_banner;
+            $slider->video         = null;
+            $slider->mobile_video  = null;
+        }
+
+        if ($request->slider_type === 'video') {
+            $slider->video         = $request->video;
+            $slider->mobile_video  = $request->mobile_video;
+            $slider->image        = null;
+            $slider->mobile_image = null;
+        }
+
+        if ($request->link_type === 'external') {
+            $slider->link = $request->link;
+            $slider->link_ref_id = null;
+        } else {
+            $slider->link = null;
+            $slider->link_ref_id = $request->link_ref_id;
+        }
+
+        $slider->save();
 
         Cache::forget('homeSlider');
 
