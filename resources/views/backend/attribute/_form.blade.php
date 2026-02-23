@@ -33,11 +33,12 @@
             <h6>Attribute Values</h6>
         </div>
         <div class="col-md-2 text-right add-value-top d-none">
-            <button type="button" id="add-value" class="btn btn-success btn-xs mb-2">
+            <button type="button" id="add-value" class="btn btn-success btn-xs">
                 Add Value
             </button>
         </div>
     </div>
+    <hr>
 
     <div id="values-wrapper">
 

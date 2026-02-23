@@ -276,3 +276,17 @@ ALTER TABLE `home_sliders` ADD `slider_type` ENUM('video','image') NULL DEFAULT 
 -- ADD COLUMN `video_source` VARCHAR(20) NULL AFTER `video_path`,
 -- ADD COLUMN `common_link` TEXT NULL AFTER `video_source`,
 -- ADD COLUMN `embed_link` TEXT NULL AFTER `common_link`;
+
+-- Added on 20/02/2026
+
+DROP TABLE IF EXISTS `pages`;
+CREATE TABLE pages (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `type` VARCHAR(50) NOT NULL,
+    `slug` VARCHAR(255) NOT NULL,
+    `page_key` VARCHAR(100) UNIQUE,
+    `data` LONGTEXT,
+    `status` tinyint(1) NOT NULL DEFAULT '1',
+    `created_at` TIMESTAMP NULL,
+    `updated_at` TIMESTAMP NULL
+);

@@ -86,3 +86,11 @@
 ol.lh18 li{
     line-height: 1.8;
 }
+
+.form-control-sm {
+    height: calc(1.2rem + 0.8rem + 2px) !important;
+}
+
+.bootstrap-select.form-control-sm .dropdown-toggle {
+    height: calc(1.2rem + 0.8rem + 2px) !important;
+}
