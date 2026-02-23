@@ -4,20 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 
-use Illuminate\Http\Request;
+use App\Models\Banner;
+use App\Models\Brand;
+use App\Models\BusinessSetting;
+use App\Models\Category;
+use App\Models\Contacts;
+use App\Models\HomeSlider;
+use App\Models\Occasion;
 use App\Models\Page;
 use App\Models\PageTranslation;
-use App\Models\Category;
-use App\Models\Brand;
-use App\Models\Occasion;
-use App\Models\BusinessSetting;
-use App\Models\Banner;
 use App\Models\Product;
-use App\Models\Contacts;
 use App\Models\Service;
 use App\Models\Subscriber;
-use Storage;
 use File;
+use Illuminate\Http\Request;
+use Storage;
 
 class PageController extends Controller
 {
@@ -107,9 +108,10 @@ class PageController extends Controller
 
             $products = Product::select('id', 'name')->where('published',1)->get();
             $brands = Brand::where('is_active',1)->orderBy('name', 'asc')->get();
-            $services = Service::where('status',1)->orderBy('name', 'asc')->get();
+            // $services = Service::where('status',1)->orderBy('name', 'asc')->get();
+            $sliders = HomeSlider::where('status',1)->orderBy('sort_order', 'asc')->get();
             
-            return view('backend.website_settings.pages.home_page_edit', compact('page', 'services', 'categories', 'brands', 'products', 'lang','page_id'));
+            return view('backend.website_settings.pages.home_page_edit', compact('page', 'categories', 'brands', 'products', 'lang','page_id', 'sliders'));
             
           }
           else if ($id == 'blogs' || $id == 'product_list' || $id == 'service_list') {
@@ -140,7 +142,7 @@ class PageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+
         $page = Page::findOrFail($id);
         if ($page) {
             if ($request->hasfile('image')) {
