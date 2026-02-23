@@ -10,7 +10,7 @@
                         <h1 class="h3">{{trans('messages.all').' '.trans('messages.banners')}}</h1>
                     </div>
                     <div class="col-md-6 text-md-right">
-                        <a href="{{ route('banners.create') }}" class="btn btn-primary">
+                        <a href="{{ route('banners.create') }}" class="btn btn-primary btn-sm">
                             <span>{{trans('messages.add_new').' '.trans('messages.banner')}}</span>
                         </a>
                     </div>
@@ -24,8 +24,9 @@
                         <table class="table aiz-table mb-0">
                             <thead>
                                 <tr>
+                                    <th class="text-center">#</th>
                                     <th >{{trans('messages.name')}}</th>
-                                    <th >{{trans('messages.image')}}</th>
+                                    <th class="text-center">{{trans('messages.image')}}</th>
                                     {{-- <th >Banner Position</th> --}}
                                     <th class="text-center">{{trans('messages.link_type')}}</th>
                                     <th class="text-center">{{trans('messages.status')}}</th>
@@ -35,18 +36,19 @@
                             <tbody>
                                 @foreach ($banners as $key => $banner)
                                     <tr>
+                                        <td class="text-center">
+                                            {{ $key + 1 + ($banners->currentPage() - 1) * $banners->perPage() }}
+                                        </td>
                                         <td>
                                            {{ $banner->name }} 
                                         </td>
-                                        <td>
-                                            <div class="row gutters-5 w-200px  mw-100">
-                                                @if ($banner->getTranslation('image'))
-                                                    <div class="col-auto">
-                                                        <img src="{{ uploaded_asset($banner->getTranslation('image')) }}" alt="Image"
-                                                            class="img-fit">
-                                                    </div>
-                                                @endif
-                                            </div>
+                                        <td class="text-center">
+                                            @if ($banner->image)
+                                                <div class="col-auto">
+                                                    <img src="{{ uploaded_asset($banner->image) }}" alt="Image"
+                                                        class="img-fit">
+                                                </div>
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             <span class="text-capitalize">{{ $banner->link_type }} </span>
@@ -61,12 +63,12 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            <a class="btn btn-soft-primary btn-icon btn-circle"
+                                            <a class="btn btn-soft-primary btn-sm btn-icon btn-circle"
                                                 href="{{ route('banners.edit', ['id' => $banner->id, 'lang' => env('DEFAULT_LANGUAGE')]) }}" title="{{trans('messages.edit')}}">
                                                 <i class="las la-edit"></i>
                                             </a>
                                             <a href="#"
-                                                class="btn btn-soft-danger btn-icon btn-circle confirm-delete"
+                                                class="btn btn-soft-danger btn-sm btn-icon btn-circle confirm-delete"
                                                 data-href="{{ route('banners.destroy', $banner) }}"
                                                 title="{{trans('messages.delete')}}">
                                                 <i class="las la-trash"></i>

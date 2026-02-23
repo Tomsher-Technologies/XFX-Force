@@ -97,161 +97,183 @@
 
 /* Jisha START */
 
-ALTER TABLE `permissions` ADD `parent_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `id`;
+-- ALTER TABLE `permissions` ADD `parent_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `id`;
 
-INSERT INTO `permissions` ( `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES
-(3, 'view_role', 'View Roles', 'web', 1, NULL, NULL),
-(3, 'add_role', 'Add Roles', 'web', 1, NULL, NULL),
-(3, 'edit_role', 'Edit Roles', 'web', 1, NULL, NULL),
-(17, 'view_staff', 'View Staff', 'web', 1, NULL, NULL),
-(17, 'add_staff', 'Add Staff', 'web', 1, NULL, NULL),
-(17, 'edit_staff', 'Edit Staff', 'web', 1, NULL, NULL);
+-- INSERT INTO `permissions` ( `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES
+-- (3, 'view_role', 'View Roles', 'web', 1, NULL, NULL),
+-- (3, 'add_role', 'Add Roles', 'web', 1, NULL, NULL),
+-- (3, 'edit_role', 'Edit Roles', 'web', 1, NULL, NULL),
+-- (17, 'view_staff', 'View Staff', 'web', 1, NULL, NULL),
+-- (17, 'add_staff', 'Add Staff', 'web', 1, NULL, NULL),
+-- (17, 'edit_staff', 'Edit Staff', 'web', 1, NULL, NULL);
 
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
-(NULL, '4', 'view_product', 'View Products', 'web', '1', NULL, NULL), 
-(NULL, '4', 'add_product', 'Add Product', 'web', '1', NULL, NULL), 
-(NULL, '4', 'edit_product', 'Edit Product', 'web', '1', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
+-- (NULL, '4', 'view_product', 'View Products', 'web', '1', NULL, NULL), 
+-- (NULL, '4', 'add_product', 'Add Product', 'web', '1', NULL, NULL), 
+-- (NULL, '4', 'edit_product', 'Edit Product', 'web', '1', NULL, NULL);
 
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
-(NULL, '5', 'view_category', 'View Categories', 'web', '1', NULL, NULL), 
-(NULL, '5', 'add_category', 'Add Category', 'web', '1', NULL, NULL), 
-(NULL, '5', 'edit_category', 'Edit Category', 'web', '1', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
+-- (NULL, '5', 'view_category', 'View Categories', 'web', '1', NULL, NULL), 
+-- (NULL, '5', 'add_category', 'Add Category', 'web', '1', NULL, NULL), 
+-- (NULL, '5', 'edit_category', 'Edit Category', 'web', '1', NULL, NULL);
 
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
-(NULL, '6', 'view_brand', 'View Brands', 'web', '1', NULL, NULL), 
-(NULL, '6', 'add_brand', 'Add Brand', 'web', '1', NULL, NULL), 
-(NULL, '6', 'edit_brand', 'Edit Brand', 'web', '1', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
+-- (NULL, '6', 'view_brand', 'View Brands', 'web', '1', NULL, NULL), 
+-- (NULL, '6', 'add_brand', 'Add Brand', 'web', '1', NULL, NULL), 
+-- (NULL, '6', 'edit_brand', 'Edit Brand', 'web', '1', NULL, NULL);
 
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
-(NULL, '24', 'view_blog', 'View Blogs', 'web', '1', NULL, NULL), 
-(NULL, '24', 'add_blog', 'Add Blog', 'web', '1', NULL, NULL), 
-(NULL, '24', 'edit_blog', 'Edit Blog', 'web', '1', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
+-- (NULL, '24', 'view_blog', 'View Blogs', 'web', '1', NULL, NULL), 
+-- (NULL, '24', 'add_blog', 'Add Blog', 'web', '1', NULL, NULL), 
+-- (NULL, '24', 'edit_blog', 'Edit Blog', 'web', '1', NULL, NULL);
 
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
-(NULL, '4', 'import_product', 'Import Products', 'web', '1', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
+-- (NULL, '4', 'import_product', 'Import Products', 'web', '1', NULL, NULL);
 
-ALTER TABLE `permissions` ADD `sort_order` TINYINT(1) NOT NULL DEFAULT '0' AFTER `is_active`;
+-- ALTER TABLE `permissions` ADD `sort_order` TINYINT(1) NOT NULL DEFAULT '0' AFTER `is_active`;
 
-UPDATE `permissions` SET `sort_order`='50' WHERE 1;
+-- UPDATE `permissions` SET `sort_order`='50' WHERE 1;
 
-UPDATE `permissions` SET `sort_order` = '1' WHERE `permissions`.`id` = 3;
-UPDATE `permissions` SET `sort_order` = '2' WHERE `permissions`.`id` = 17;
-UPDATE `permissions` SET `sort_order` = '3' WHERE `permissions`.`id` = 5;
-UPDATE `permissions` SET `sort_order` = '4' WHERE `permissions`.`id` = 6;
-UPDATE `permissions` SET `sort_order` = '7' WHERE `permissions`.`id` = 4;
-UPDATE `permissions` SET `sort_order` = '8' WHERE `permissions`.`id` = 9;
+-- UPDATE `permissions` SET `sort_order` = '1' WHERE `permissions`.`id` = 3;
+-- UPDATE `permissions` SET `sort_order` = '2' WHERE `permissions`.`id` = 17;
+-- UPDATE `permissions` SET `sort_order` = '3' WHERE `permissions`.`id` = 5;
+-- UPDATE `permissions` SET `sort_order` = '4' WHERE `permissions`.`id` = 6;
+-- UPDATE `permissions` SET `sort_order` = '7' WHERE `permissions`.`id` = 4;
+-- UPDATE `permissions` SET `sort_order` = '8' WHERE `permissions`.`id` = 9;
 
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) 
-VALUES (NULL, NULL, 'manage_specifications', 'Manage Specifications', 'web', '1', '5', NULL, NULL);
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'view_specification', 'View Specification', 'web', '1', '50', NULL, NULL);
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'add_specification', 'Add Specification', 'web', '1', '50', NULL, NULL);
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'edit_specification', 'Edit Specification', 'web', '1', '50', NULL, NULL);
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'delete_specification', 'Delete Specification', 'web', '1', '50', NULL, NULL);
-
-
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, NULL, 'manage_attributes', 'Manage Attributes', 'web', '1', '6', NULL, NULL);
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'view_attribute', 'View Attribute', 'web', '1', '50', NULL, NULL);
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'add_attribute', 'Add Attribute', 'web', '1', '50', NULL, NULL);
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'edit_attribute', 'Edit Attribute', 'web', '1', '50', NULL, NULL);
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'delete_attribute', 'Delete Attribute', 'web', '1', '50', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) 
+-- VALUES (NULL, NULL, 'manage_specifications', 'Manage Specifications', 'web', '1', '5', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'view_specification', 'View Specification', 'web', '1', '50', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'add_specification', 'Add Specification', 'web', '1', '50', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'edit_specification', 'Edit Specification', 'web', '1', '50', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'delete_specification', 'Delete Specification', 'web', '1', '50', NULL, NULL);
 
 
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, NULL, 'manage_attributes', 'Manage Attributes', 'web', '1', '6', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'view_attribute', 'View Attribute', 'web', '1', '50', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'add_attribute', 'Add Attribute', 'web', '1', '50', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'edit_attribute', 'Edit Attribute', 'web', '1', '50', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '50', 'delete_attribute', 'Delete Attribute', 'web', '1', '50', NULL, NULL);
 
+
+/*-----------------------09/02/2026----------------------*/
+CREATE TABLE `pc_builder_category_settings` (
+    `id` INT NOT NULL AUTO_INCREMENT , 
+    `category_id` INT NULL DEFAULT NULL , 
+    `min_select` INT NOT NULL DEFAULT '1' , 
+    `max_select` INT NULL DEFAULT NULL , 
+    `has_subcategories` TINYINT(1) NOT NULL DEFAULT '0' , 
+    `sort_order` INT NOT NULL DEFAULT '0' , 
+    `status` TINYINT(1) NOT NULL DEFAULT '1' , 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `pc_builder_category_settings` ADD FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+
+
+INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, NULL, 'manage_pc_builder', 'Manage PC Builder', 'web', '1', '0', NULL, NULL);
+
+ALTER TABLE `banners` ADD `image` INT NULL DEFAULT NULL AFTER `name`, ADD `mobile_image` INT NULL DEFAULT NULL AFTER `image`, ADD `title` VARCHAR(255) NULL DEFAULT NULL AFTER `mobile_image`, ADD `sub_title` VARCHAR(255) NULL DEFAULT NULL AFTER `title`, ADD `btn_text` VARCHAR(255) NULL DEFAULT NULL AFTER `sub_title`;
+
+DROP TABLE banner_translations;
+/* Jisha END */
 /* Jisha END */
 
 /*Swetha START*/
 
 -- Added on 13/02/2026
-ALTER TABLE `products` ADD `description` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `product_weight`;
-DROP TABLE IF EXISTS `product_warranties`;
-CREATE TABLE IF NOT EXISTS `product_warranties` (
-  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-  `product_id` int NOT NULL,
-  `title` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `price` double(20,2) NOT NULL DEFAULT '0.00',
-  `months` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `product_id` (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-ALTER TABLE `product_stocks` CHANGE `vat` `vat` FLOAT(5,2) NULL DEFAULT '0.00';
+-- ALTER TABLE `products` ADD `description` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `product_weight`;
+-- DROP TABLE IF EXISTS `product_warranties`;
+-- CREATE TABLE IF NOT EXISTS `product_warranties` (
+--   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+--   `product_id` int NOT NULL,
+--   `title` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+--   `price` double(20,2) NOT NULL DEFAULT '0.00',
+--   `months` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+--   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+--   `created_at` timestamp NULL DEFAULT NULL,
+--   `updated_at` timestamp NULL DEFAULT NULL,
+--   PRIMARY KEY (`id`),
+--   KEY `product_id` (`product_id`)
+-- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ALTER TABLE `product_stocks` CHANGE `vat` `vat` FLOAT(5,2) NULL DEFAULT '0.00';
 
-ALTER TABLE `product_stocks` ADD `stock_title` VARCHAR(200) NULL DEFAULT NULL AFTER `status`, ADD `model` VARCHAR(200) NULL DEFAULT NULL AFTER `stock_title`;
+-- ALTER TABLE `product_stocks` ADD `stock_title` VARCHAR(200) NULL DEFAULT NULL AFTER `status`, ADD `model` VARCHAR(200) NULL DEFAULT NULL AFTER `stock_title`;
 
 -- Added on 14/02/2026
-INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES ('45', '1'), ('46', '1'), ('47', '1'),('48', '1'),('49', '1'), ('50', '1'),('51', '1'),('52', '1'),('53', '1'),('54', '1');
-ALTER TABLE `testimonials` ADD `sub_title` VARCHAR(255) NULL DEFAULT NULL AFTER `title`;
-ALTER TABLE `testimonials` ADD `type` ENUM('text', 'video') NOT NULL DEFAULT 'text' AFTER sub_title;
-ALTER TABLE `testimonials` ADD `video_path` VARCHAR(255) NULL DEFAULT NULL AFTER `comment`;
-ALTER TABLE `testimonials` ADD `video_thumbnail` VARCHAR(255) NULL DEFAULT NULL AFTER `video_path`;
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, NULL, 'manage_testimonials', 'Manage Testimonials', 'web', '1', '1', NULL, NULL);
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '55', 'view_testimonials', 'View Testimonials', 'web', '1', '1', NULL, NULL);
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '55', 'add_testimonials', 'Add Testimonials', 'web', '1', '1', NULL, NULL);
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '55', 'edit_testimonials', 'Edit Testimonials', 'web', '1', '1', NULL, NULL);
-INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES ('55', '1'), ('56', '1'), ('57', '1'),('58', '1');
+-- INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES ('45', '1'), ('46', '1'), ('47', '1'),('48', '1'),('49', '1'), ('50', '1'),('51', '1'),('52', '1'),('53', '1'),('54', '1');
+-- ALTER TABLE `testimonials` ADD `sub_title` VARCHAR(255) NULL DEFAULT NULL AFTER `title`;
+-- ALTER TABLE `testimonials` ADD `type` ENUM('text', 'video') NOT NULL DEFAULT 'text' AFTER sub_title;
+-- ALTER TABLE `testimonials` ADD `video_path` VARCHAR(255) NULL DEFAULT NULL AFTER `comment`;
+-- ALTER TABLE `testimonials` ADD `video_thumbnail` VARCHAR(255) NULL DEFAULT NULL AFTER `video_path`;
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, NULL, 'manage_testimonials', 'Manage Testimonials', 'web', '1', '1', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '55', 'view_testimonials', 'View Testimonials', 'web', '1', '1', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '55', 'add_testimonials', 'Add Testimonials', 'web', '1', '1', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '55', 'edit_testimonials', 'Edit Testimonials', 'web', '1', '1', NULL, NULL);
+-- INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES ('55', '1'), ('56', '1'), ('57', '1'),('58', '1');
 
 -- Added on 16/02/2026
-DROP TABLE IF EXISTS `brand_sections`;
-CREATE TABLE `brand_sections` (
-  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `brand_id` int(11) NOT NULL,
-  `title` varchar(191) DEFAULT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `image` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT 1,
-  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
-  `updated_by` bigint(20) UNSIGNED DEFAULT NULL,
-  `created_at` timestamp NULL,
- `updated_at` timestamp NULL,
-  PRIMARY KEY (`id`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- DROP TABLE IF EXISTS `brand_sections`;
+-- CREATE TABLE `brand_sections` (
+--   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+--   `brand_id` int(11) NOT NULL,
+--   `title` varchar(191) DEFAULT NULL,
+--   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+--   `image` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+--   `status` tinyint(1) NOT NULL DEFAULT 1,
+--   `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+--   `updated_by` bigint(20) UNSIGNED DEFAULT NULL,
+--   `created_at` timestamp NULL,
+--  `updated_at` timestamp NULL,
+--   PRIMARY KEY (`id`)
+--  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-ALTER TABLE `brand_sections` ADD CONSTRAINT `brand_ibfk_1` FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
-ALTER TABLE `brands` ADD `slug` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `name`, ADD `logo` INT(11) NULL DEFAULT NULL AFTER `slug`;
+-- ALTER TABLE `brand_sections` ADD CONSTRAINT `brand_ibfk_1` FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+-- ALTER TABLE `brands` ADD `slug` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `name`, ADD `logo` INT(11) NULL DEFAULT NULL AFTER `slug`;
 
-DROP TABLE IF EXISTS `brand_tabs`;
-CREATE TABLE `brand_tabs` (
-  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `brand_id` int(11) NOT NULL,
-  `name` varchar(191) DEFAULT NULL,
-  `title` varchar(191) DEFAULT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `image` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT 1,
-  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
-  `updated_by` bigint(20) UNSIGNED DEFAULT NULL,
-  `created_at` timestamp NULL,
- `updated_at` timestamp NULL,
-  PRIMARY KEY (`id`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- DROP TABLE IF EXISTS `brand_tabs`;
+-- CREATE TABLE `brand_tabs` (
+--   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+--   `brand_id` int(11) NOT NULL,
+--   `name` varchar(191) DEFAULT NULL,
+--   `title` varchar(191) DEFAULT NULL,
+--   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+--   `image` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+--   `status` tinyint(1) NOT NULL DEFAULT 1,
+--   `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+--   `updated_by` bigint(20) UNSIGNED DEFAULT NULL,
+--   `created_at` timestamp NULL,
+--  `updated_at` timestamp NULL,
+--   PRIMARY KEY (`id`)
+--  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-ALTER TABLE `brand_tabs` ADD CONSTRAINT `brand_ibfk_2` FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+-- ALTER TABLE `brand_tabs` ADD CONSTRAINT `brand_ibfk_2` FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
-ALTER TABLE `brand_sections` CHANGE `status` `status` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '1=>Active, 0=>Inactive';
-ALTER TABLE `brand_tabs` CHANGE `status` `status` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '1=>Active, 0=>Inactive ';
+-- ALTER TABLE `brand_sections` CHANGE `status` `status` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '1=>Active, 0=>Inactive';
+-- ALTER TABLE `brand_tabs` CHANGE `status` `status` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '1=>Active, 0=>Inactive ';
 
--- Added on 17/02/2026
-ALTER TABLE `brand_tabs` ADD `sort_order` TINYINT(1) NOT NULL DEFAULT '0' AFTER `status`;
-ALTER TABLE `brands` ADD `products` TEXT NULL DEFAULT NULL AFTER `logo`;
-ALTER TABLE `brands` CHANGE `logo` `logo` VARCHAR(255) NULL DEFAULT NULL;
+-- -- Added on 17/02/2026
+-- ALTER TABLE `brand_tabs` ADD `sort_order` TINYINT(1) NOT NULL DEFAULT '0' AFTER `status`;
+-- ALTER TABLE `brands` ADD `products` TEXT NULL DEFAULT NULL AFTER `logo`;
+-- ALTER TABLE `brands` CHANGE `logo` `logo` VARCHAR(255) NULL DEFAULT NULL;
 
--- Added on 18/02/2026
-ALTER TABLE `brand_translations`
-  DROP `lang`,
-  DROP `name`,
-  DROP `slug`,
-  DROP `logo`;
-  ALTER TABLE `product_specification` ADD `sort_order` TINYINT(1) NOT NULL DEFAULT '0' AFTER `specification_item_id`;
+-- -- Added on 18/02/2026
+-- ALTER TABLE `brand_translations`
+--   DROP `lang`,
+--   DROP `name`,
+--   DROP `slug`,
+--   DROP `logo`;
+--   ALTER TABLE `product_specification` ADD `sort_order` TINYINT(1) NOT NULL DEFAULT '0' AFTER `specification_item_id`;
 
--- Added on 19/02/2026
-INSERT INTO `pages` (`id`, `type`, `slug`, `image`, `image1`, `image2`, `image3`, `image4`, `image5`, `image6`, `image7`, `image8`, `image9`, `video`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'home', 'home', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- -- Added on 19/02/2026
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `image`, `image1`, `image2`, `image3`, `image4`, `image5`, `image6`, `image7`, `image8`, `image9`, `video`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'home', 'home', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-ALTER TABLE `testimonials`
-ADD COLUMN `video_source` VARCHAR(20) NULL AFTER `video_path`,
-ADD COLUMN `common_link` TEXT NULL AFTER `video_source`,
-ADD COLUMN `embed_link` TEXT NULL AFTER `common_link`;
+-- ALTER TABLE `testimonials`
+-- ADD COLUMN `video_source` VARCHAR(20) NULL AFTER `video_path`,
+-- ADD COLUMN `common_link` TEXT NULL AFTER `video_source`,
+-- ADD COLUMN `embed_link` TEXT NULL AFTER `common_link`;
 
 -- Added on 20/02/2026
 

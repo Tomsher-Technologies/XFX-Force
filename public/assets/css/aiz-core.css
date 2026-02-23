@@ -124,7 +124,7 @@ pre {
 
 .img-fit {
     max-height: 100%;
-    width: 100%;
+    width: 100px;
     object-fit: cover;
 }
 
@@ -4480,7 +4480,7 @@ input[type="number"] {
 }
 
 .input-group-text {
-    padding: 0.6rem 1rem;
+    padding: 0.5rem 1rem;
     font-size: 0.875rem;
     line-height: 1.5;
     color: #74788d;
@@ -7324,3 +7324,4 @@ ul.social.colored [class*="linkedin"] {
 [dir="rtl"] .badge-custom{
     border-radius: 50em 0 0 50em;
 }
+

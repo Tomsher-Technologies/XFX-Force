@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\AbandonedCartController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SpecificationController;
+use App\Http\Controllers\Admin\PcBuilderCategorySettingController;
 
 
 Route::get('/admin/notifications', function () {
@@ -65,6 +66,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('staffs', StaffController::class);
     Route::get('/staffs/destroy/{id}', [StaffController::class, 'destroy'])->name('staffs.destroy');
 
+    Route::get('pc-builder/categories', [PcBuilderCategorySettingController::class, 'index'])->name('pc-builder.categories');
+    Route::post('pc-builder/categories', [PcBuilderCategorySettingController::class, 'store'])->name('pc-builder.categories.store');
+
+
+
     Route::post('/banners/get_form', [Bannercontroller::class, 'get_form'])->name('banners.get_form');
     Route::get('/banners/destroy/{banner}', [Bannercontroller::class, 'destroy'])->name('banners.destroy');
     Route::resource('banners', Bannercontroller::class)->except(['show', 'destroy']);
@@ -84,6 +90,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/home-slider/update-status', [HomeSliderController::class, 'updateStatus'])->name('home-slider.update-status');
         Route::get('/home-slider/delete/{id}', [HomeSliderController::class, 'destroy'])->name('home-slider.delete');
         Route::resource('home-slider', HomeSliderController::class);
+        
 
         Route::resource('custom-pages', PageController::class);
         Route::get('/pages', [PageController::class, 'index'])->name('website.pages');
