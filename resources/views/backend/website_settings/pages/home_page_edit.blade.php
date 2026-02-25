@@ -412,7 +412,7 @@
                             <input type="text" name="middle_banner_title" value="{{ $homeSettings['middle_banner_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-6">
-                            <label class="col-form-label">Banners</label>
+                            <label class="col-form-label">Banners <small>(814*256)</small></label>
                             <select name="middle_banners[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['middle_banners'] ?? []) }}">
                                 @foreach ($banners as $key => $banner)
                                 <option value="{{ $banner->id }}">{{ $banner->name }}</option>
@@ -468,7 +468,7 @@
                             <input type="text" name="middle_full_banner_title" value="{{ $homeSettings['middle_full_banner_title'] ?? '' }}" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-6">
-                            <label class="col-form-label">Banners</label>
+                            <label class="col-form-label">Banners <small>(1642*256)</small></label>
                             <select name="middle_full_banner[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['middle_full_banner'] ?? []) }}">
                                 @foreach ($banners as $key => $banner)
                                 <option value="{{ $banner->id }}">{{ $banner->name }}</option>
