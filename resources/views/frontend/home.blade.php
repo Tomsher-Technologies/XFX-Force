@@ -10,6 +10,7 @@
                 <div class="swiper-slide" data-swiper-autoplay="8000">
                     <div class="slide-inner slide-bg-image">
 
+                    @if($slider->slider_type == 'image')
                         <picture class="h-full">
                             @if($slider->mobileImage)
                                 <source media="(max-width: 600px)"
@@ -22,6 +23,12 @@
                                     alt="{{ $slider->title }}">
                             @endif
                         </picture>
+                    @elseif($slider->slider_type == 'video')
+
+                        <video playsinline webkit-playsinline muted autoplay loop>
+                            <source src="{{ $slider->mainVideo ? Storage::url($slider->mainVideo->file_name) : '' }}" type="video/mp4" />
+                        </video>
+                    @endif
 
                         <div class="meta absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-center w-full px-[16px]">
                             <div data-swiper-parallax="-400"
@@ -30,18 +37,9 @@
                                 <h1 class="banner-caption text-center text-[35px] md:text-[90px] uppercase w-[70%] md:w-[40%] leading-[1]">
                                     {{ $slider->name }}
                                 </h1>
-                                <a href="{{ $slider->link ?? '#' }}" target="_blank"
-                                    class="btn btn-cta !rounded-full !text-[#000000] !text-[15px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium">
-                                        <!-- {{ $slider->button_text }} -->
-                                          START BUILDING
-                                    </a>
-
-                                <!-- @if($slider->button_link)
-                                    <a href="{{ $slider->button_link }}"
-                                    class="btn btn-cta !rounded-full !text-[#000000] !text-[15px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium">
-                                        {{ $slider->button_text }}
-                                    </a>
-                                @endif -->
+                                <a href="#"
+                                        class="btn btn-cta !rounded-full !text-[#000000] !text-[15px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium"
+                                        title="">{{$slider->btn_text ?? 'START BUILDING'}}</a>
 
                             </div>
                         </div>
@@ -443,13 +441,6 @@
 
     <div class="section-title mb-[30px] relative flex flex-col md:flex-row items-center md:items-end justify-between">
         <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{$page_content['best_deals_title']}}</h3>
-        <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] md:mr-[150px] justify-center md:justify-end align-center">
-            <!-- <div class="flex gap-[20px] tab-container">
-                <button class="tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="true">New Arrivals</button>
-                <button class="tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="false">Popular Items</button>
-            </div> -->
-            <!-- <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden md:block"></div> -->
-        </div>
     </div>
 
     <div class="swiper productswiper relative">
@@ -513,13 +504,6 @@
 
     <div class="section-title mb-[30px] relative flex flex-col md:flex-row items-center md:items-end justify-between">
         <h3 class="w-full text-[30px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{$page_content['graphic_cards_title']}}</h3>
-        <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] md:mr-[150px] justify-center md:justify-end align-center">
-            <!-- <div class="flex gap-[20px] tab-container">
-                <button class="tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="true">New Arrivals</button>
-                <button class="tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="false">Popular Items</button>
-            </div>
-            <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden md:block"></div> -->
-        </div>
     </div>
 
     <div class="swiper productswiper relative">
@@ -592,7 +576,6 @@
                                         $embedUrl .= $separator . "autoplay=1&mute=1&loop=1&playlist={$videoId}&controls=0&modestbranding=1&rel=0";
                                     @endphp
                                     <a href="{{ $testimonial->common_link }}" class="glightbox block relative group h-full w-full">
-                                        <!-- <iframe src="https://www.youtube.com/embed/{{ $videoId }}?autoplay=1&mute=1&loop=1&playlist={{ $videoId }}&controls=0&modestbranding=1&rel=0&enablejsapi=1" class="h-full w-full object-cover pointer-events-none scale-200" allow="autoplay"></iframe> -->
                                         <iframe src="{{ $embedUrl }}" class="h-full w-full object-cover pointer-events-none scale-200" allow="autoplay"></iframe>
 
                                 @elseif($testimonial->video_source === 'upload')
@@ -645,14 +628,6 @@
                                                     <span id="userName" class="text-white font-medium text-[18px]">{{$testimonialsText->name}}</span>
                                                     <p class="text-[#898989] font-medium text-[15px]">{{$testimonialsText->sub_title}}</p>
                                                 </div>
-                                                <!-- <script>
-                                                    (function() {
-                                                        const name = document.getElementById('userName').textContent.trim();
-                                                        if (name) {
-                                                            document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
-                                                        }
-                                                    })();
-                                                </script> -->
                                             </div>
                                         </div>
                                     </div>

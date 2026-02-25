@@ -50,6 +50,13 @@
                                                         <img src="{{ uploaded_asset($slider->image) }}" alt="Image"
                                                             class="img-fit">
                                                     </div>
+                                                @elseif ($slider->video)
+                                                    <div class="col-auto">
+                                                        <video width="100%" height="auto" controls class="img-fit">
+                                                            <source src="{{ uploaded_asset($slider->video) }}" type="video/mp4">
+                                                            Your browser does not support the video tag.
+                                                        </video>
+                                                    </div>
                                                 @endif
                                             </div>
                                         </td>
