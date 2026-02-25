@@ -93,4 +93,9 @@ class Category extends Model
          }
      }
 
+    public function iconImage()
+    {
+        return $this->hasOne(Upload::class, 'id', 'icon');
+    }
+
 }

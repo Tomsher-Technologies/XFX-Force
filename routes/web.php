@@ -13,6 +13,7 @@ use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\ForgotPasswordController;
 use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Frontend\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +30,7 @@ Route::get('/', [FrontendController::class, 'home'])->name('home');
 
 
 Route::group(['middleware' => ['auth']], function () {
-
+    Route::get('/', [HomeController::class, 'index'])->name('home');
    
 });
 

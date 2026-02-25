@@ -79,7 +79,7 @@
                                     </div>
                                     <div class="form-control file-amount">{{ trans('messages.choose_file') }}</div>
                                     <input type="hidden" name="icon" class="selected-files"
-                                        value="{{ $category->getTranslation('icon', $lang) }}">
+                                        value="{{ $category->icon }}">
                                 </div>
                                 <div class="file-preview box sm">
                                 </div>

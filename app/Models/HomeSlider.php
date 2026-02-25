@@ -45,11 +45,6 @@ class HomeSlider extends Model
             return route('products.index', [
                 'brand' => $product
             ]);
-        } elseif ($this->link_ref == 'service' && $this->link_ref_id !== null) {
-            $product = Service::where('id', $this->link_ref_id)->select('slug')->first()->slug;
-            return route('services.show', [
-                'slug' => $product
-            ]);
         } elseif ($this->link_ref == 'external' && $this->link !== null) {
             return $this->link;
         } else {
@@ -72,14 +67,7 @@ class HomeSlider extends Model
             }else{
                 return '#';
             }
-        } elseif ($this->link_ref == 'offer' && $this->link_ref_id !== null) {
-            $product = Offers::where('id', $this->link_ref_id)->select('slug')->first();
-            if($product){
-                return $product->slug;
-            }else{
-                return '#';
-            }
-        }  elseif ($this->link_ref == 'brand' && $this->link_ref_id !== null) {
+        } elseif ($this->link_ref == 'brand' && $this->link_ref_id !== null) {
             $product = Brand::where('id', $this->link_ref_id)->select('slug')->first();
             if($product){
                 return $product->slug;

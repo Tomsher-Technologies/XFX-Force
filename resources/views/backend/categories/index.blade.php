@@ -82,9 +82,9 @@
                         </td>
 
                         <td>
-                            @if ($category->getTranslation('icon') != null)
+                            @if ($category->icon != null)
                                 <span class="avatar avatar-square avatar-xs">
-                                    <img src="{{ uploaded_asset($category->getTranslation('icon')) }}" alt="{{trans('messages.icon')}}">
+                                    <img src="{{ uploaded_asset($category->icon) }}" alt="{{trans('messages.icon')}}">
                                 </span>
                             @else
                                 —
