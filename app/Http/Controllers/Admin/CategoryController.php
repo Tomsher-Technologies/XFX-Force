@@ -61,6 +61,7 @@ class CategoryController extends Controller
         $category               = new Category;
         $category->name         = $request->name ?? NULL;
         $category->parent_id    = $request->parent_id;
+        $category->icon         = $request->icon;
         if ($request->parent_id != "0") {
             $parent = Category::find($request->parent_id);
             $category->level = $parent->level + 1;
@@ -77,7 +78,6 @@ class CategoryController extends Controller
         $category_translation                       = CategoryTranslation::firstOrNew(['lang' => env('DEFAULT_LANGUAGE'), 'category_id' => $category->id]);
         $category_translation->name                 = $request->name;
         $category_translation->slug                 = $slug;
-        $category_translation->icon                 = $request->icon;
         $category_translation->meta_title           = $request->meta_title;
         $category_translation->meta_description     = $request->meta_description;
         $category_translation->meta_keyword         = $request->meta_keywords;
@@ -119,7 +119,9 @@ class CategoryController extends Controller
         ]);
 
         if ($request->lang == env("DEFAULT_LANGUAGE")) {
+            
             $category->name         = $request->name;
+            $category->icon         = $request->icon;
             $previous_level = $category->level;
             if ($request->parent_id != "0") {
                 $category->parent_id = $request->parent_id;
@@ -155,7 +157,6 @@ class CategoryController extends Controller
         $category_translation                       = CategoryTranslation::firstOrNew(['lang' => $request->lang, 'category_id' => $category->id]);
         $category_translation->name                 = $request->name;
         $category_translation->slug                 = $slug;
-        $category_translation->icon                 = $request->icon;
         $category_translation->meta_title           = $request->meta_title;
         $category_translation->meta_description     = $request->meta_description;
         $category_translation->meta_keyword         = $request->meta_keywords;

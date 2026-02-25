@@ -120,4 +120,9 @@ class Product extends Model
         ];
     }
 
+    public function specifications()
+    {
+        return $this->hasMany(ProductSpecification::class, 'product_id');
+    }
+
 }

@@ -24,8 +24,8 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="col-form-label">Banners</label>
-                            <select name="home_banners[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['home_banners'] ?? []) }}">
+                            <label class="col-form-label">Banners <small>(select at least 3 options)</small></label>
+                            <select name="home_banners[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['home_banners'] ?? []) }}" data-max-options="3">
                                 @foreach ($banners as $key => $banner)
                                 <option value="{{ $banner->id }}">{{ $banner->name }}</option>
                                 @endforeach
@@ -414,9 +414,9 @@
                         <div class="col-md-6">
                             <label class="col-form-label">Banners</label>
                             <select name="middle_banners[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['middle_banners'] ?? []) }}">
-                                <option value="1">Banner 1</option>
-                                <option value="2">Banner 2</option>
-                                <option value="3">Banner 3</option>
+                                @foreach ($banners as $key => $banner)
+                                <option value="{{ $banner->id }}">{{ $banner->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -470,9 +470,9 @@
                         <div class="col-md-6">
                             <label class="col-form-label">Banners</label>
                             <select name="middle_full_banner[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['middle_full_banner'] ?? []) }}">
-                                <option value="1">Banner 1</option>
-                                <option value="2">Banner 2</option>
-                                <option value="3">Banner 3</option>
+                                @foreach ($banners as $key => $banner)
+                                <option value="{{ $banner->id }}">{{ $banner->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>

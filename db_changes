@@ -157,27 +157,27 @@
 
 
 /*-----------------------09/02/2026----------------------*/
-CREATE TABLE `pc_builder_category_settings` (
-    `id` INT NOT NULL AUTO_INCREMENT , 
-    `category_id` INT NULL DEFAULT NULL , 
-    `min_select` INT NOT NULL DEFAULT '1' , 
-    `max_select` INT NULL DEFAULT NULL , 
-    `has_subcategories` TINYINT(1) NOT NULL DEFAULT '0' , 
-    `sort_order` INT NOT NULL DEFAULT '0' , 
-    `status` TINYINT(1) NOT NULL DEFAULT '1' , 
-    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-    PRIMARY KEY (`id`)) ENGINE = InnoDB;
+-- CREATE TABLE `pc_builder_category_settings` (
+--     `id` INT NOT NULL AUTO_INCREMENT , 
+--     `category_id` INT NULL DEFAULT NULL , 
+--     `min_select` INT NOT NULL DEFAULT '1' , 
+--     `max_select` INT NULL DEFAULT NULL , 
+--     `has_subcategories` TINYINT(1) NOT NULL DEFAULT '0' , 
+--     `sort_order` INT NOT NULL DEFAULT '0' , 
+--     `status` TINYINT(1) NOT NULL DEFAULT '1' , 
+--     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+--     `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+--     PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
-ALTER TABLE `pc_builder_category_settings` ADD FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+-- ALTER TABLE `pc_builder_category_settings` ADD FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 
 
-INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, NULL, 'manage_pc_builder', 'Manage PC Builder', 'web', '1', '0', NULL, NULL);
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, NULL, 'manage_pc_builder', 'Manage PC Builder', 'web', '1', '0', NULL, NULL);
 
-ALTER TABLE `banners` ADD `image` INT NULL DEFAULT NULL AFTER `name`, ADD `mobile_image` INT NULL DEFAULT NULL AFTER `image`, ADD `title` VARCHAR(255) NULL DEFAULT NULL AFTER `mobile_image`, ADD `sub_title` VARCHAR(255) NULL DEFAULT NULL AFTER `title`, ADD `btn_text` VARCHAR(255) NULL DEFAULT NULL AFTER `sub_title`;
+-- ALTER TABLE `banners` ADD `image` INT NULL DEFAULT NULL AFTER `name`, ADD `mobile_image` INT NULL DEFAULT NULL AFTER `image`, ADD `title` VARCHAR(255) NULL DEFAULT NULL AFTER `mobile_image`, ADD `sub_title` VARCHAR(255) NULL DEFAULT NULL AFTER `title`, ADD `btn_text` VARCHAR(255) NULL DEFAULT NULL AFTER `sub_title`;
 
-DROP TABLE banner_translations;
+-- DROP TABLE banner_translations;
 /* Jisha END */
 /* Jisha END */
 
@@ -288,3 +288,6 @@ CREATE TABLE pages (
     `created_at` TIMESTAMP NULL,
     `updated_at` TIMESTAMP NULL
 );
+
+-- Added on 24/02/2026
+ALTER TABLE `categories` ADD `icon` INT NULL DEFAULT NULL AFTER `name`;
