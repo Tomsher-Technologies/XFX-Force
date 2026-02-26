@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Home')
+@section('title', 'Custom Gaming PCs & High-End Hardware in UAE')
 @section('content')
 <section class="home-slider">
     <div class="hero-slider">
@@ -119,7 +119,7 @@
                 @foreach($newArrivals as $item)
                 <div class="swiper-slide" data-swiper-autoplay="8000">
                     <div class="gamepc-card relative border rounded-[20px] overflow-hidden min-h-[500px]">
-                        <img src="{{ $newUploads[$item['featured_new_image']] ? Storage::url($newUploads[$item['featured_new_image']]->file_name) : asset('assets/images/default.png') }}" class="absolute object-cover object-center w-full h-full"
+                        <img src="{{ $newUploads[$item['featured_new_image']] ? Storage::url($newUploads[$item['featured_new_image']]->file_name) : asset('assets/img/placeholder.jpg') }}" class="absolute object-cover object-center w-full h-full"
                             alt="{{ $item['featured_new_title'] ?? '' }}" title="{{ $item['featured_new_title'] ?? '' }}">
                         <div
                             class="content h-full w-full z-[1] absolute flex flex-col items-start justify-end gap-[20px] p-[30px]">
@@ -131,7 +131,7 @@
                             $productSpecifications = \App\Models\ProductSpecification::where(
                                 'product_id',
                                 $item['featured_new_product_id']
-                            )->with('specification')->get();
+                            )->with(['specification','specificationItem'])->get();
                             @endphp
                             <div class="specifications w-full transition-all duration-600 ease">
                                 <ul class="m-[0] w-full">
@@ -139,7 +139,11 @@
                                         @if($productSpecification->specification)
                                         <li
                                             class="text-white w-full uppercase text-[15px] font-medium py-[10px] border-b-1 border-[#ffffff30]">
-                                            {{ $productSpecification->specification->main_title }}</li>
+                                            {{ $productSpecification->specification->main_title }} 
+                                            @if($productSpecification->specificationItem)
+                                                 {{ $productSpecification->specificationItem->title }}
+                                            @endif
+                                        </li>
                                         @endif
                                     @endforeach
                                 </ul>
@@ -164,7 +168,7 @@
                 @foreach($popularItems as $item)
                 <div class="swiper-slide" data-swiper-autoplay="8000">
                     <div class="gamepc-card relative border rounded-[20px] overflow-hidden min-h-[500px]">
-                        <img src="{{ $popularUploads[$item['featured_popular_image']] ? Storage::url($popularUploads[$item['featured_popular_image']]->file_name) : asset('assets/images/default.png') }}" class="absolute object-cover object-center w-full h-full"
+                        <img src="{{ $popularUploads[$item['featured_popular_image']] ? Storage::url($popularUploads[$item['featured_popular_image']]->file_name) : asset('assets/img/placeholder.jpg') }}" class="absolute object-cover object-center w-full h-full"
                             alt="{{ $item['featured_popular_title'] ?? '' }}" title="{{ $item['featured_popular_title'] ?? '' }}">
                         <div
                             class="content h-full w-full z-[1] absolute flex flex-col items-start justify-end gap-[20px] p-[30px]">
@@ -233,7 +237,7 @@
                     $firstStock = $product->stocks->first();
                 @endphp
                 <div class="swiper-slide" data-swiper-autoplay="8000">
-                    <a href="#" class="product-card relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
+                    <a href="{{ route('product.details', $product->id) }}" class="product-card relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
                         <div class="product-img h-[230px] w-full relative z-[1]">
                             <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1" title="Upcoming Product 1">
                             <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">new arrival</badge>
@@ -269,7 +273,7 @@
                     $firstStock = $product->stocks->first();
                 @endphp
                 <div class="swiper-slide" data-swiper-autoplay="8000">
-                    <a href="#" class="product-card relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
+                    <a href="{{ route('product.details', $product->id) }}" class="product-card relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
                         <div class="product-img h-[230px] w-full relative z-[1]">
                             <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1" title="Upcoming Product 1">
                             <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">popular</badge>
@@ -337,7 +341,7 @@
                     $firstStock = $product->stocks->first();
                 @endphp
                 <div class="swiper-slide" data-swiper-autoplay="8000">
-                    <a href="#"
+                    <a href="{{ route('product.details', $product->id) }}"
                         class="product-card relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
                         <div class="product-img h-[230px] w-full relative z-[1]">
                             <img src="{{ Storage::url($product->thumbnail_img) }}"
@@ -383,7 +387,7 @@
                     $firstStock = $product->stocks->first();
                 @endphp
                 <div class="swiper-slide" data-swiper-autoplay="8000">
-                    <a href="#"
+                    <a href="{{ route('product.details', $product->id) }}"
                         class="product-card relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
                         <div class="product-img h-[230px] w-full relative z-[1]">
                             <img src="{{ Storage::url($product->thumbnail_img) }}"
@@ -451,7 +455,7 @@
                 $firstStock = $product->stocks->first();
             @endphp
             <div class="swiper-slide" data-swiper-autoplay="8000">
-                <a href="#"
+                <a href="{{ route('product.details', $product->id) }}"
                     class="product-card relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
                     <div class="product-img h-[230px] w-full relative z-[1]">
                         <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1" title="Upcoming Product 1">
@@ -491,7 +495,7 @@
             <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-center object-cover w-full h-full top-0 left-0 transition-all duration-600 group-hover:scale-110" alt="pro build 01" title="pro build 01">
             <div class="content flex flex-col md:flex-row items-end justify-end md:justify-between gap-[20px] md:gap-[30px] relative z-[1] w-full h-full bg-gradient-to-b from-transparent to-[#0000008a] p-[30px]">
                 <h6 class="text-white text-[20px] font-medium w-full md:w-fit text-center">{{ $product->name }}</h6>
-                <a href="#" class="w-full md:w-fit text-center text-black text-[13px] md:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[15px] rounded-full transition-all duration-600 group-hover:bg-[#2A7CFF] group-hover:text-white">Shop Now</a>
+                <a href="{{ route('product.details', $product->id) }}" class="w-full md:w-fit text-center text-black text-[13px] md:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[15px] rounded-full transition-all duration-600 group-hover:bg-[#2A7CFF] group-hover:text-white">Shop Now</a>
             </div>
         </div>
         @endforeach
@@ -514,7 +518,7 @@
                 $firstStock = $product->stocks->first();
             @endphp
             <div class="swiper-slide" data-swiper-autoplay="8000">
-                <a href="#"
+                <a href="{{ route('product.details', $product->id) }}"
                     class="product-card relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
                     <div class="product-img h-[230px] w-full relative z-[1]">
                         <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-cover object-center w-full h-full"

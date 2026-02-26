@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="overflow-x-hidden">
+<html lang="en" class="!overflow-x-hidden">
 
 <head>
     <meta charset="UTF-8" />
@@ -12,7 +12,7 @@
     <link rel="dns-prefetch" href="https://pcgarage.me/" />
 
     <!-- Page Title -->
-    <title>PC Garage | Custom Gaming PCs & High-End Hardware in UAE</title>
+    <title>PC Garage | @yield('title', 'Default Site Title')</title>
     <!-- //Page Title -->
 
     <meta name="description" content="Elevate your gameplay with PC Garage, the UAE’s premier hub for custom gaming PCs. Shop NVIDIA RTX & AMD graphics cards, high-end processors, and pre-built rigs. Dominate the leaderboard with fast UAE delivery. Build your dream PC today!" />
@@ -84,7 +84,7 @@
 
 </head>
 
-<body class="m-[0] overflow-x-hidden">
+<body class="m-[0] bg-[#0F161B]">
     <!-- Header -->
     @include('frontend.layouts.header')
 
@@ -101,6 +101,7 @@
     <script src="{{ asset('assets/js/main-slider.js') }}"></script>
     <script src="{{ asset('assets/js/theme-script.js') }}"></script>
     <script src="{{ asset('assets/js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('assets/js/elements@1.js') }}" type="module"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
 
     <script>
@@ -117,38 +118,7 @@
             }
         });
 
-        $('.tab-btn').click(function() {
 
-            var target = $(this).data('target');
-
-            // Hide all tab contents
-            $('#newArrivals, #popularItems').addClass('hidden');
-
-            // Show selected content
-            $(target).removeClass('hidden');
-
-            // Update Swiper after showing
-            setTimeout(function () {
-                if (typeof Swiper !== 'undefined') {
-                    document.querySelectorAll('.gamepcswiper').forEach(function (el) {
-                        if (el.swiper) {
-                            el.swiper.update();
-                        }
-                    });
-                }
-            }, 10);
-
-            // // Reset all buttons
-            // $('.tab-btn')
-            //     .removeClass('bg-white text-black')
-            //     .addClass('bg-transparent text-[#ffffff30]');
-
-            // // Activate clicked button
-            // $(this)
-            //     .removeClass('bg-transparent text-[#ffffff30]')
-            //     .addClass('bg-white text-black');
-
-        });
     </script>
     <!--//script-->
 </body>

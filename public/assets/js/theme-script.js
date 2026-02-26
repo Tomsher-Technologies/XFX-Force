@@ -42,7 +42,10 @@ var swiper = new Swiper(".gamepcswiper", {
   slidesPerView: 4,
   spaceBetween: 15,
   grabCursor: true,
-  pagination: false,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
   loop: false,
   speed: 5000,
   freeMode: false,
@@ -65,7 +68,10 @@ var swiper = new Swiper(".productswiper", {
   slidesPerView: 5,
   spaceBetween: 15,
   grabCursor: true,
-  pagination: true,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
   dots: true,
   loop: true,
   speed: 5000,
@@ -75,6 +81,30 @@ var swiper = new Swiper(".productswiper", {
     prevEl: ".swiper-button-prev",
     nextEl: ".swiper-button-next",
   },
+  autoplay: { delay: 3000, disableOnInteraction: false },
+  allowTouchMove: true,
+  breakpoints: {
+    640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
+    768: { slidesPerView: 2, spaceBetween: 15 },
+    1024: { slidesPerView: 3, spaceBetween: 15 },
+    1280: { slidesPerView: 4, spaceBetween: 15 },
+  },
+});
+
+var swiper = new Swiper(".equipmentswiper", {
+  slidesPerView: 4,
+  spaceBetween: 15,
+  grabCursor: true,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
+  dots: true,
+  loop: false,
+  speed: 5000,
+  freeMode: false,
+  parallax: true,
+  navigation: false,
   autoplay: { delay: 3000, disableOnInteraction: false },
   allowTouchMove: true,
   breakpoints: {
@@ -185,9 +215,9 @@ var swiper = new Swiper(".video-testimonials", {
   spaceBetween: 0,
   grabCursor: true,
   pagination: {
-        el: ".swiper-pagination",
-        dynamicBullets: true,
-      },
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
   loop: true,
   speed: 3000,
   freeMode: false,
@@ -208,7 +238,10 @@ var swiper = new Swiper(".g-testimonials", {
   slidesPerView: 1,
   spaceBetween: 50,
   grabCursor: true,
-  pagination: true,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
   loop: true,
   speed: 3000,
   freeMode: false,
@@ -231,6 +264,21 @@ var swiper = new Swiper(".aboutswiper", {
   freeMode: false,
   parallax: true,
   navigation: false,
+  autoplay: { delay: 5000, disableOnInteraction: false },
+  allowTouchMove: true,
+});
+
+var swiper = new Swiper(".singleprdswiper", {
+  slidesPerView: 1,
+  spaceBetween: 50,
+  grabCursor: true,
+  pagination: true,
+  dots: true,
+  loop: true,
+  speed: 3000,
+  freeMode: false,
+  parallax: true,
+  navigation: true,
   autoplay: { delay: 5000, disableOnInteraction: false },
   allowTouchMove: true,
 });
@@ -304,4 +352,6 @@ const checkExist = setInterval(() => {
     if (success || attempts > 20) clearInterval(checkExist);
 }, 100);
 });
+
+
 

@@ -508,4 +508,13 @@ class ProductController extends Controller
         return $products;
     }
 
+    public function show($id)
+    {
+        $product = Product::with('stocks')->findOrFail($id);
+        $page = Page::where('slug', 'home')->first();
+        $page_content = $page ? json_decode($page->data, true) : [];
+        $graphicCardProducts = Product::whereIn('id', $page_content['graphic_cards_products'] ?? [])->get();
+        return view('frontend.productDetails', compact('product','graphicCardProducts'));
+    }
+
 }
