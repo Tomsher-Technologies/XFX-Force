@@ -180,6 +180,11 @@
 -- DROP TABLE banner_translations;
 
 -- ALTER TABLE `home_sliders` ADD `slider_type` ENUM('video','image') NULL DEFAULT NULL AFTER `name`, ADD `video` VARCHAR(255) NULL DEFAULT NULL AFTER `slider_type`, ADD `mobile_video` VARCHAR(255) NULL DEFAULT NULL AFTER `video`;
+
+UPDATE `pages` SET `slug` = 'Home/Landing Page' WHERE `pages`.`id` = 1;
+
+
+
 /* Jisha END */
 /* Jisha END */
 
@@ -279,17 +284,17 @@
 
 -- Added on 20/02/2026
 
-DROP TABLE IF EXISTS `pages`;
-CREATE TABLE pages (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `type` VARCHAR(50) NOT NULL,
-    `slug` VARCHAR(255) NOT NULL,
-    `page_key` VARCHAR(100) UNIQUE,
-    `data` LONGTEXT,
-    `status` tinyint(1) NOT NULL DEFAULT '1',
-    `created_at` TIMESTAMP NULL,
-    `updated_at` TIMESTAMP NULL
-);
+-- DROP TABLE IF EXISTS `pages`;
+-- CREATE TABLE pages (
+--     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+--     `type` VARCHAR(50) NOT NULL,
+--     `slug` VARCHAR(255) NOT NULL,
+--     `page_key` VARCHAR(100) UNIQUE,
+--     `data` LONGTEXT,
+--     `status` tinyint(1) NOT NULL DEFAULT '1',
+--     `created_at` TIMESTAMP NULL,
+--     `updated_at` TIMESTAMP NULL
+-- );
 
--- Added on 24/02/2026
-ALTER TABLE `categories` ADD `icon` INT NULL DEFAULT NULL AFTER `name`;
+-- -- Added on 24/02/2026
+-- ALTER TABLE `categories` ADD `icon` INT NULL DEFAULT NULL AFTER `name`;

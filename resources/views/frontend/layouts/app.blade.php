@@ -5,51 +5,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="robots" content="noindex, nofollow">
     <link rel="preconnect" href="https://pcgarage.me/" />
     <link rel="dns-prefetch" href="https://pcgarage.me/" />
-    <link rel="preconnect" href="https://pcgarage.me/" />
-    <link rel="dns-prefetch" href="https://pcgarage.me/" />
-
+  
     <!-- Page Title -->
     <title>PC Garage | Custom Gaming PCs & High-End Hardware in UAE</title>
     <!-- //Page Title -->
 
-    <meta name="description" content="Elevate your gameplay with PC Garage, the UAE’s premier hub for custom gaming PCs. Shop NVIDIA RTX & AMD graphics cards, high-end processors, and pre-built rigs. Dominate the leaderboard with fast UAE delivery. Build your dream PC today!" />
-    <meta name="keywords" content="custom gaming PC, gaming hardware UAE, RTX graphics card, AMD processor, pre-built gaming PC, high-end PC components, UAE gaming setup" />
-    <meta name="theme-color" content="#1a1a1a" />
-    <meta name="og:locale" content="en_US" />
-    <meta name="author" content="PC Garage" />
-    <meta name="publisher" content="PC Garage" />
-    <meta name="copyright" content="© 2026 PC Garage. All rights reserved" />
-    <meta name="revisit-after" content="7 days" />
-    <meta name="distribution" content="global" />
-    <meta name="google-site-verification" content="" />
-    <meta name="google-adsense-account" content="ca-pub-" />
-    <meta name="application-name" content="PC Garage" />
-    <meta name="apple-mobile-web-app-title" content="PC Garage" />
-    <link rel="alternate" hreflang="en" href="" />
-    <meta name="canonical" content="https://pcgarage.me/" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="PC Garage | Custom Gaming PCs & High-End Hardware in UAE">
-    <meta property="og:description" content="Elevate your gameplay with PC Garage, the UAE’s premier hub for custom gaming PCs. Shop NVIDIA RTX & AMD graphics cards, high-end processors, and pre-built rigs. Dominate the leaderboard with fast UAE delivery. Build your dream PC today!">
-    <meta property="og:image" content="https://pcgarage.me/src/images/preview-image.webp">
-    <meta property="og:url" content="https://pcgarage.me/">
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="PC Garage - Custom Gaming PCs & High-End Hardware in UAE" />
-    <meta property="og:site_name" content="PC Garage" />
-    <!--// Open Graph / Facebook -->
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="PC Garage | Custom Gaming PCs & High-End Hardware in UAE">
-    <meta name="twitter:description" content="Elevate your gameplay with PC Garage, the UAE’s premier hub for custom gaming PCs. Shop NVIDIA RTX & AMD graphics cards, high-end processors, and pre-built rigs. Dominate the leaderboard with fast UAE delivery. Build your dream PC today!">
-    <meta name="twitter:image" content="https://pcgarage.me/src/images/preview-image.webp">
-    <!--// Twitter -->
-
+     {!! SEO::generate() !!}
+    <?php
+    $url = url()->full();
+    ?>
+    
+    <link rel="canonical" href="{{ url()->current() }}"/>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    
     <!-- fav icon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/favicon.ico') }}">
     <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('assets/images/apple-icon-57x57.png') }}">
@@ -81,7 +53,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/glightbox.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/output.css') }}" />
     <!--//styles -->
-
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @yield('style')
 </head>
 
 <body class="m-[0] overflow-x-hidden">
@@ -151,6 +124,8 @@
         });
     </script>
     <!--//script-->
+
+    @yield('script')
 </body>
 
 </html>

@@ -18,7 +18,7 @@
             <table class="table aiz-table mb-0">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th class="text-center">#</th>
                         <th>{{ trans('messages.name') }}</th>
                         <th class="text-center">{{ trans('messages.actions') }}</th>
                     </tr>
@@ -26,14 +26,14 @@
                 <tbody>
                     @foreach ($pages as $key => $page)
                         <tr>
-                            <td>{{ $key + 1 }}</td>
+                            <td class="text-center">{{ $key + 1 }}</td>
 
                             <td>
                                 {{ $page->slug }}
                             </td>
 
                             <td class="text-center">
-                                <a href="{{route('custom-pages.edit', ['id'=>$page->type, 'lang'=>env('DEFAULT_LANGUAGE')] )}}" class="btn btn-icon btn-circle btn-soft-primary" title="Edit">
+                                <a href="{{route('custom-pages.edit', ['id'=>$page->type, 'lang'=>env('DEFAULT_LANGUAGE')] )}}" class="btn btn-sm btn-icon btn-circle btn-soft-primary" title="Edit">
                                     <i class="las la-pen"></i>
                                 </a>
                             </td>
