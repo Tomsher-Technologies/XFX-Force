@@ -76,10 +76,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#000000">
 
     <!-- styles -->
-    <link rel="stylesheet" href="{{ asset('assets/css/swiper.min.css') }}" />
+    <!-- <link rel="stylesheet" href="{{ asset('assets/css/swiper.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/glightbox.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/output.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/glightbox.min.css') }}" /> -->
+    
+   @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <!--//styles -->
 
 </head>
@@ -96,12 +98,16 @@
     <!-- Footer -->
     @include('frontend.layouts.footer')
     <!--script-->
+
     <script src="{{ asset('assets/js/jquery-3.6.1.min.js') }}"></script>
-    <script src="{{ asset('assets/js/swiper.min.js') }}"></script>
+
+    <!-- <script src="{{ asset('assets/js/jquery-3.6.1.min.js') }}"></script> -->
+    <!-- <script src="{{ asset('assets/js/swiper.min.js') }}"></script>
     <script src="{{ asset('assets/js/main-slider.js') }}"></script>
     <script src="{{ asset('assets/js/theme-script.js') }}"></script>
-    <script src="{{ asset('assets/js/glightbox.min.js') }}"></script>
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="{{ asset('assets/js/glightbox.min.js') }}"></script>  -->
+
+
 
     <script>
         $(window).scroll(function() {

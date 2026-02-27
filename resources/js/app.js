@@ -7,6 +7,16 @@ import $ from 'jquery';
 
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
+import '../css/app.css';
+
+
+import './vendors/swiper.min.js';
+import './vendors/main-slider.js';
+import './vendors/theme-script.js';
+import './vendors/glightbox.min.js';
+
+
+
 
 window.$ = window.jQuery = $;
 window.toastr = toastr; // Make toastr globally available
@@ -225,3 +235,5 @@ function toggleFAQ(id, btn) {
         });
     });
 
+
+    
