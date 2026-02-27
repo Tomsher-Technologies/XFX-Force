@@ -26,5 +26,3 @@ module.exports = {
         require('@tailwindcss/typography'), // ✅ Typography plugin enabled
     ],
 };
-
-
