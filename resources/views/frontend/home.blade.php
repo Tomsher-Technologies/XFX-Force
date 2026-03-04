@@ -2,6 +2,8 @@
 
 @section('title', 'Custom Gaming PCs & High-End Hardware in UAE')
 @section('content')
+
+@if(!empty($sliders))
 <section class="home-slider">
     <div class="hero-slider">
         <div class="swiper-container swiper1">
@@ -53,9 +55,11 @@
         </div>
     </div>
 </section>
+@endif
 <!--//landning banner slider-->
 
 <!--3seg section-->
+@if(!empty($banners))
 <section class="bg-[#0F161B] px-[16px] md:px-[140px] rounded-t-[50px] relative z-[1] pt-[0px] pb-[0px] mt-[-50px]">
     <div class="flex flex-col md:grid md:grid-cols-[3fr_6fr_3fr] gap-[15px] top-[0px] md:top-[-100px] relative z-[1]">
 
@@ -71,12 +75,14 @@
         @endforeach
     </div>
 </section>
+@endif
 <!--3seg section-->
 
 <!--categories-->
+@if(!empty($categories))
 <section class="bg-[#0F161B] px-[16px] md:px-[140px] pt-[50px] pb-[50px] md:pb-[100px] relative border-b-1 border-[#ffffff10] md:border-hidden">
     <div class="section-title mb-[30px] relative">
-        <h3 class="text-[40px] md:text-[50px] text-[white] capitalize font-bold text-center md:text-left uppercase">{{ $page_content['category_title'] }}</h3>
+        <h3 class="text-[40px] md:text-[50px] text-[white] capitalize font-bold text-center md:text-left uppercase">{{ $page_content['category_title'] ?? ''}}</h3>
     </div>
     <div class="swiper categoryswiper relative">
         <div class="swiper-wrapper">
@@ -97,17 +103,33 @@
         </div>
     </div>
 </section>
+@endif
 <!--//categories-->
 
 <!--special gaming pc-->
-<section x-data="{ activeTab: 'newFeatured' }" class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] md:py-[100px] relative border-b-1 border-[#ffffff10] md:border-hidden">
+@if(!empty($newArrivals) || !empty($popularItems))
+@php
+    // Determine which tab should be active by default
+    if(!empty($newArrivals)) {
+        $defaultTab = 'newFeatured';
+    } elseif(!empty($popularItems)) {
+        $defaultTab = 'popularFeatured';
+    } else {
+        $defaultTab = null; // no tab to show
+    }
+@endphp
+<section x-data="{ activeTab: '{{ $defaultTab }}' }" class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] md:py-[100px] relative border-b-1 border-[#ffffff10] md:border-hidden">
 
     <div class="section-title mb-[30px] relative flex flex-col md:flex-row items-center md:items-end justify-between">
-        <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{$page_content['featured_products_title']}}</h3>
+        <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{$page_content['featured_products_title'] ?? ''}}</h3>
         <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] md:mr-[150px] justify-center md:justify-end align-center">
             <div class="flex gap-[20px] tab-container">
+                @if(!empty($newArrivals))
                 <button  @click="activeTab='newFeatured'" class="tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer active-tab" data-active="true">New Arrivals</button>
+                @endif
+                @if(!empty($popularItems))
                 <button @click="activeTab='popularFeatured'" class="tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="false">Popular Items</button>
+                @endif
             </div>
             <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden md:block"></div>
         </div>
@@ -148,7 +170,7 @@
                                     @endforeach
                                 </ul>
                             </div>
-                            <a href="#"
+                            <a href="{{ route('product.details', $item['featured_new_product_id']) }}"
                                 class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] bg-white rounded-full transition-all duration-600 hover:bg-[#2a7cff] hover:text-white">shop
                                 now</a>
                         </div>
@@ -195,7 +217,7 @@
                                     @endforeach
                                 </ul>
                             </div>
-                            <a href="#"
+                            <a href="{{ route('product.details', $item['featured_popular_product_id']) }}"
                                 class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] bg-white rounded-full transition-all duration-600 hover:bg-[#2a7cff] hover:text-white">shop
                                 now</a>
                         </div>
@@ -210,19 +232,35 @@
         </div>
     </div>
 </section>
+@endif
 <!--//special gaming pc-->
 
 <!--upcoming products-->
-<section x-data="{ activeTab: 'newUpcoming' }" class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] relative" >
+@if(!empty($upcomingNewProducts) || !empty($upcomingPopularProducts))
+@php
+    // Determine which tab should be active by default
+    if(!empty($upcomingNewProducts)) {
+        $defaultTab = 'newUpcoming';
+    } elseif(!empty($upcomingPopularProducts)) {
+        $defaultTab = 'popularUpcoming';
+    } else {
+        $defaultTab = null; // no tab to show
+    }
+@endphp
+<section x-data="{ activeTab: '{{ $defaultTab }}' }" class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] relative" >
 
     <div class="section-title mb-[30px] relative flex flex-col md:flex-row items-center md:items-end justify-between">
-        <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{$page_content['upcoming_products_title']}}</h3>
+        <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{$page_content['upcoming_products_title'] ?? ''}}</h3>
         <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] md:mr-[150px] justify-center md:justify-end align-center">
             <div class="flex gap-[20px] tab-container">
+                @if(!empty($upcomingNewProducts))
                 <button @click="activeTab='newUpcoming'"
                         class="tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="true">New Arrivals</button>
-                <button @click="activeTab='popularUpcoming'" 
-                        class="tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="false">Popular Items</button>
+                @endif
+                @if(!empty($upcomingPopularProducts))
+                    <button @click="activeTab='popularUpcoming'" 
+                    class="tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="false">Popular Items</button>
+                @endif
             </div>
             <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden md:block"></div>
         </div>
@@ -240,7 +278,9 @@
                     <a href="{{ route('product.details', $product->id) }}" class="product-card relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
                         <div class="product-img h-[230px] w-full relative z-[1]">
                             <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1" title="Upcoming Product 1">
-                            <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">new arrival</badge>
+                            @if(!empty($firstStock->offer_tag))
+                            <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">{{ $firstStock->offer_tag }}</badge>
+                            @endif
                         </div>
                         <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1]">
                             <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2">{{ $product->name }}</h4>
@@ -276,7 +316,9 @@
                     <a href="{{ route('product.details', $product->id) }}" class="product-card relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
                         <div class="product-img h-[230px] w-full relative z-[1]">
                             <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1" title="Upcoming Product 1">
-                            <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">popular</badge>
+                            @if(!empty($firstStock->offer_tag))
+                            <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">{{ $firstStock->offer_tag }}</badge>
+                            @endif
                         </div>
                         <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1]">
                             <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2">{{ $product->name }}</h4>
@@ -300,9 +342,11 @@
         </div>
     </div>
 </section>
+@endif
 <!--//upcoming products-->
 
 <!--ads slider 01-->
+@if(!empty($middleBanners))
 <section class="bg-[#0F161B] px-[16px] md:px-[140px] py-[0px] md:py-[50px] relative">
     <div class="swiper adswipertwo overflow-hidden">
         <div class="swiper-wrapper">
@@ -315,17 +359,33 @@
         </div>
     </div>
 </section>
+@endif
 <!--//ads slider 01-->
 
 <!--Pre-built items-->
-<section x-data="{ activeTab: 'newMiddleProducts' }" class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] relative">
+@if(!empty($middleNewProducts) || !empty($middlePopularProducts))
+@php
+    // Determine which tab should be active by default
+    if(!empty($middleNewProducts)) {
+        $defaultTab = 'newMiddleProducts';
+    } elseif(!empty($middlePopularProducts)) {
+        $defaultTab = 'popularMiddleProducts';
+    } else {
+        $defaultTab = null; // no tab to show
+    }
+@endphp
+<section x-data="{ activeTab: '{{ $defaultTab }}' }" class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] relative">
 
     <div class="section-title mb-[30px] relative flex flex-col md:flex-row items-center md:items-end justify-between">
-        <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{ $page_content['middle_featured_products_title']}}</h3>
+        <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{ $page_content['middle_featured_products_title'] ?? ''}}</h3>
         <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] md:mr-[150px] justify-center md:justify-end align-center">
             <div class="flex gap-[20px] tab-container">
+                @if(!empty($middleNewProducts))
                 <button @click="activeTab='newMiddleProducts'" class="tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="true">New Arrivals</button>
+                @endif
+                @if(!empty($middlePopularProducts))
                 <button @click="activeTab='popularMiddleProducts'" class="tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="false">Popular Items</button>
+                @endif
             </div>
             <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden md:block"></div>
         </div>
@@ -347,9 +407,9 @@
                             <img src="{{ Storage::url($product->thumbnail_img) }}"
                                 class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1"
                                 title="Upcoming Product 1">
-                            <badge
-                                class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">
-                                new arrival</badge>
+                            @if(!empty($firstStock->offer_tag))
+                            <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">{{ $firstStock->offer_tag }}</badge>
+                            @endif
                         </div>
                         <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1]">
                             <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2">{{ $product->name }}</h4>
@@ -393,9 +453,9 @@
                             <img src="{{ Storage::url($product->thumbnail_img) }}"
                                 class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1"
                                 title="Upcoming Product 1">
-                            <badge
-                                class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">
-                                popular</badge>
+                            @if(!empty($firstStock->offer_tag))
+                            <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">{{ $firstStock->offer_tag }}</badge>
+                            @endif
                         </div>
                         <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1]">
                             <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2">{{ $product->name }}</h4>
@@ -423,9 +483,11 @@
         </div>
     </div>
 </section>
+@endif
 <!--//Pre-built items-->
 
 <!--ads slider 02-->
+@if(!empty($middleFullBanners))
 <section class="bg-[#0F161B] px-[16px] md:px-[140px] py-[0px] md:py-[50px] relative">
     <div class="swiper adswiperone overflow-hidden">
         <div class="swiper-wrapper">
@@ -438,13 +500,15 @@
         </div>
     </div>
 </section>
+@endif
 <!--//ads slider 02-->
 
 <!--Best Deals-->
+@if(!empty($bestDealsProducts))
 <section class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] relative border-b-1 border-[#ffffff10] md:border-hidden">
 
     <div class="section-title mb-[30px] relative flex flex-col md:flex-row items-center md:items-end justify-between">
-        <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{$page_content['best_deals_title']}}</h3>
+        <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{$page_content['best_deals_title'] ?? ''}}</h3>
     </div>
 
     <div class="swiper productswiper relative">
@@ -459,7 +523,9 @@
                     class="product-card relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
                     <div class="product-img h-[230px] w-full relative z-[1]">
                         <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1" title="Upcoming Product 1">
-                        <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">new arrival</badge>
+                        @if(!empty($firstStock->offer_tag))
+                        <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">{{ $firstStock->offer_tag }}</badge>
+                        @endif
                     </div>
                     <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1]">
                         <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2">{{ $product->name }}</h4>
@@ -482,16 +548,18 @@
         </div>
     </div>
 </section>
+@endif
 <!--//Best Deals-->
 
 <!--pro built items-->
+@if(!empty($popularGalleryProducts))
 <section class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] md:py-[100px] relative border-b-1 border-[#ffffff10] md:border-hidden">
     <div class="section-title mb-[30px] relative flex items-end justify-between">
-        <h3 class="text-[38px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">{{$page_content['product_gallery_title']}}</h3>
+        <h3 class="text-[38px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">{{$page_content['product_gallery_title'] ?? ''}}</h3>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-[15px]">
         @foreach($popularGalleryProducts as $product)
-        <div class="group ftr-card relative border rounded-[20px] overflow-hidden min-h-[415px] cursor-pointer">
+        <div class="group ftr-card relative border rounded-[20px] overflow-hidden min-h-[415px] cursor-pointer" onclick="window.location.href='{{ route('product.details', $product->id) }}'">
             <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-center object-cover w-full h-full top-0 left-0 transition-all duration-600 group-hover:scale-110" alt="pro build 01" title="pro build 01">
             <div class="content flex flex-col md:flex-row items-end justify-end md:justify-between gap-[20px] md:gap-[30px] relative z-[1] w-full h-full bg-gradient-to-b from-transparent to-[#0000008a] p-[30px]">
                 <h6 class="text-white text-[20px] font-medium w-full md:w-fit text-center">{{ $product->name }}</h6>
@@ -501,13 +569,15 @@
         @endforeach
     </div>
 </section>
+@endif
 <!--//pro built items-->
 
 <!--graphic cards-->
+@if(!empty($graphicCardProducts))
 <section class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] pb-[50px] md:pb-[100px] relative">
 
     <div class="section-title mb-[30px] relative flex flex-col md:flex-row items-center md:items-end justify-between">
-        <h3 class="w-full text-[30px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{$page_content['graphic_cards_title']}}</h3>
+        <h3 class="w-full text-[30px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">{{$page_content['graphic_cards_title'] ?? ''}}</h3>
     </div>
 
     <div class="swiper productswiper relative">
@@ -523,9 +593,9 @@
                     <div class="product-img h-[230px] w-full relative z-[1]">
                         <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-cover object-center w-full h-full"
                             alt="Upcoming Product 1" title="Upcoming Product 1">
-                        <badge
-                            class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">
-                            new arrival</badge>
+                        @if(!empty($firstStock->offer_tag))
+                        <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">{{ $firstStock->offer_tag }}</badge>
+                        @endif
                     </div>
                     <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1]">
                         <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2">{{ $product->name }}</h4>
@@ -553,21 +623,23 @@
     </div>
 
 </section>
+@endif
 <!--//graphic cards-->
 
 <!--testimonials-->
+@if(!empty($testimonialsVideo) || !empty($testimonialsText))
 <section class="bg-[#0F161B] px-[16px] md:px-[140px] relative">
     <div class="border-y-1 border-[#ffffff10] py-[50px] md:py-[100px]">
         <div class="section-title mb-[30px] relative flex items-center justify-center">
             <!-- <h3 class="text-[40px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">Trusted by the Pro <strong class="bg-gradient-to-tr from-[#3E81FF] to-white bg-clip-text text-transparent">Gaming</strong> Community!</h3> -->
 
-            <h3 class="text-[40px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">{{$page_content['testimonials_title'] ?? 'cxzcx'}}</h3>
+            <h3 class="text-[40px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">{{$page_content['testimonials_title'] ?? ''}}</h3>
         </div>
         <div class="flex flex-col md:grid grid-cols-6">
             <div class="col-span-4 col-start-1 md:col-start-2">
                 <div class="flex flex-col md:grid grid-cols-2 gap-[15px] md:gap-[30px]">
                     <div class="swiper video-testimonials h-[300px] md:h-full overflow-hidden relative cursor-none rounded-[20px]">
-
+                        @if(!empty($testimonialsVideo))
                         <div class="swiper-wrapper rounded-[20px] h-full">
                             @foreach($testimonialsVideo as $testimonial)
                             <div class="swiper-slide">
@@ -599,6 +671,7 @@
                             </div>
                             @endforeach           
                         </div>
+                        @endif
                         <div class="swiper-pagination absolute flex flex-start mt-[50px] !bottom-[30px] hidden md:block"></div>
                     </div>
 
@@ -607,20 +680,21 @@
                             <div class="flex flex-col gap-[10px] w-full">
                                 <div class="flex flex-row gap-[10px] justify-start items-center">
                                     <img src="{{ asset('assets/images/rating.svg') }}" alt="Rating" class="w-[25px] md:w-[40px] h-[40px]">
-                                    <h6 class="text-white text-[30px] md:text-[40px] font-medium leading-none">{{$page_content['testimonials_rating_count']}}</h6>
+                                    <h6 class="text-white text-[30px] md:text-[40px] font-medium leading-none">{{$page_content['testimonials_rating_count'] ?? ''}}</h6>
                                 </div>
-                                <span class="text-white text-[15px] font-normal">{{$page_content['testimonials_rating_title']}}</span>
+                                <span class="text-white text-[15px] font-normal">{{$page_content['testimonials_rating_title'] ?? ''}}</span>
                             </div>
                             <div class="divider w-[1px] bg-[#272930] h-full"></div>
                             <div class="flex flex-col gap-[10px] w-full">
                                 <div class="flex flex-row gap-[10px] justify-start items-center">
-                                    <h6 class="text-white text-[30px] md:text-[40px] font-medium leading-none">{{$page_content['testimonials_customer_count']}}</h6>
+                                    <h6 class="text-white text-[30px] md:text-[40px] font-medium leading-none">{{$page_content['testimonials_customer_count'] ?? ''}}</h6>
                                 </div>
-                                <span class="text-white text-[15px] font-normal">{{$page_content['testimonials_customer_title']}}</span>
+                                <span class="text-white text-[15px] font-normal">{{$page_content['testimonials_customer_title'] ?? ''}}</span>
                             </div>
                         </div>
                         <div class="g-review border rounded-[30px] border-[#272930] p-[30px] md:p-[40px] w-full h-full overflow-hidden">
                             <div class="swiper g-testimonials relative">
+                                @if(!empty($testimonialsText))
                                 <div class="swiper-wrapper">
                                     @foreach ($testimonialsText as $testimonialsText)    
                                     <div class="swiper-slide">
@@ -637,6 +711,7 @@
                                     </div>
                                     @endforeach
                                 </div>
+                                @endif
                                 <div class="swiper-pagination !relative flex justify-center mt-[50px] block md:hidden"></div>
                                 <div class="controls relative md:absolute mt-[30px] md:mt-[0px] right-[0px] bottom-[0px] flex items-center gap-[20px] justify-center md:justify-end hidden md:block">
                                     <div class="swiper-button-prev !top-[0] !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
@@ -650,9 +725,11 @@
         </div>
     </div>
 </section>
+@endif
 <!--//testimonials-->
 
 <!--about & Brands-->
+@if(!empty($homePageFooters))
 <section class="bg-[#0F161B] min-h-full md:min-h-[100vh] px-[16px] md:px-[140px] py-[50px] md:py-[100px] relative">
     <div class="swiper aboutswiper overflow-hidden min-h-full md:min-h-[100vh]">
         <div class="swiper-wrapper">
@@ -671,7 +748,7 @@
                     <img src="{{$footerImageUrl}}" alt="About PC Garage" title="About PC Garage" class="w-full md:w-[55%] h-auto relative md:absolute bottom-[0px] md:bottom-[-55%] left-[0px] md:left-[-20%] right-0 m-auto z-[0]">
                     <div class="grid col-span-3 col-start-3 mt-[0px] md:mt-[250px]">
                         <p class="text-white text-[15px] md:text-[18px] font-normal leading-[30px] md:leading-[35px] mb-[30px] md:mb-[50px] text-justify [text-align-last:center] md:text-left">{{ $footer['footer_content'] }}</p>
-                        <a href="#" class="w-full md:w-fit text-center text-black uppercase text-[13px] md:text-[14px] font-medium px-[30px] py-[15px] bg-white rounded-full transition-all duration-600 hover:bg-[#2a7cff] hover:text-white">{{$footer['footer_button_text']}}</a>
+                        <a href="{{$footer['footer_button_link']}}" class="w-full md:w-fit text-center text-black uppercase text-[13px] md:text-[14px] font-medium px-[30px] py-[15px] bg-white rounded-full transition-all duration-600 hover:bg-[#2a7cff] hover:text-white">{{$footer['footer_button_text']}}</a>
                     </div>
                 </div>
             </div>
@@ -680,5 +757,6 @@
         </div>
     </div>
 </section>
+@endif
 <!--//about & Brands-->
 @endsection

@@ -561,9 +561,7 @@ class ProductController extends Controller
                 continue;
             }
 
-            $specModel = !empty($productSpecificationId)
-                        ? ProductSpecification::find($productSpecificationId)
-                        : new ProductSpecification();
+            $specModel = ProductSpecification::findOrNew($productSpecificationId);
             $specModel->product_id            = $product->id;
             $specModel->specification_id      = $specId;
             $specModel->specification_item_id = $itemId;
@@ -739,6 +737,8 @@ class ProductController extends Controller
                     $product->sku = $stock->sku;
                     $product->save();
                 }
+
+                ProductAttributes::where('product_varient_id', $stock->id)->delete();
 
                 // Save attributes for this stock
                 if (isset($variantData['attributes'])) {

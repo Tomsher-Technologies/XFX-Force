@@ -30,9 +30,15 @@ Route::get('/', [FrontendController::class, 'home'])->name('home');
 
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.details');
-   
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/product/{id}', [ProductController::class, 'productDetails'])->name('product.details');
+    Route::get('/products', [ProductController::class, 'index'])->name('products');
+    Route::get('/get-variants-by-value', [ProductController::class, 'getVariantsByValue']);
+    Route::get('/getVarientDetails', [ProductController::class, 'getVarientDetails']);
+    Route::get('/getVariantState', [ProductController::class, 'getVariantState']);
+    Route::get('/cart', [CartController::class, 'index'])->name('cart');
+    Route::get('/addProductToCart', [CartController::class, 'addProductToCart']);
+    
 });
 
 
