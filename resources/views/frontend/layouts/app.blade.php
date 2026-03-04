@@ -78,10 +78,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
 
     <!-- styles -->
-    <link rel="stylesheet" href="{{ asset('assets/css/swiper.min.css') }}" />
+    <!-- <link rel="stylesheet" href="{{ asset('assets/css/swiper.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/glightbox.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/output.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/glightbox.min.css') }}" /> -->
+    
+   @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <!--//styles -->
 
 </head>
@@ -101,10 +103,10 @@
     <script src="//unpkg.com/alpinejs" defer></script>
     <script src="{{ asset('assets/js/jquery-3.6.1.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="{{ asset('assets/js/swiper.min.js') }}"></script>
+    <!-- <script src="{{ asset('assets/js/swiper.min.js') }}"></script>
     <script src="{{ asset('assets/js/main-slider.js') }}"></script>
     <script src="{{ asset('assets/js/theme-script.js') }}"></script>
-    <script src="{{ asset('assets/js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('assets/js/glightbox.min.js') }}"></script> -->
     <script src="{{ asset('assets/js/elements@1.js') }}" type="module"></script>
     <script>
         $(window).scroll(function() {
