@@ -31,4 +31,9 @@ class Brand extends Model
     {
         return $this->hasMany(BrandTab::class);
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

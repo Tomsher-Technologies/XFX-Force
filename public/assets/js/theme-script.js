@@ -42,7 +42,10 @@ var swiper = new Swiper(".gamepcswiper", {
   slidesPerView: 4,
   spaceBetween: 15,
   grabCursor: true,
-  pagination: false,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
   loop: false,
   speed: 5000,
   freeMode: false,
@@ -65,7 +68,10 @@ var swiper = new Swiper(".productswiper", {
   slidesPerView: 5,
   spaceBetween: 15,
   grabCursor: true,
-  pagination: true,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
   dots: true,
   loop: true,
   speed: 5000,
@@ -75,6 +81,30 @@ var swiper = new Swiper(".productswiper", {
     prevEl: ".swiper-button-prev",
     nextEl: ".swiper-button-next",
   },
+  autoplay: { delay: 3000, disableOnInteraction: false },
+  allowTouchMove: true,
+  breakpoints: {
+    640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
+    768: { slidesPerView: 2, spaceBetween: 15 },
+    1024: { slidesPerView: 3, spaceBetween: 15 },
+    1280: { slidesPerView: 4, spaceBetween: 15 },
+  },
+});
+
+var swiper = new Swiper(".equipmentswiper", {
+  slidesPerView: 4,
+  spaceBetween: 15,
+  grabCursor: true,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
+  dots: true,
+  loop: false,
+  speed: 5000,
+  freeMode: false,
+  parallax: true,
+  navigation: false,
   autoplay: { delay: 3000, disableOnInteraction: false },
   allowTouchMove: true,
   breakpoints: {
@@ -185,9 +215,9 @@ var swiper = new Swiper(".video-testimonials", {
   spaceBetween: 0,
   grabCursor: true,
   pagination: {
-        el: ".swiper-pagination",
-        dynamicBullets: true,
-      },
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
   loop: true,
   speed: 3000,
   freeMode: false,
@@ -208,7 +238,10 @@ var swiper = new Swiper(".g-testimonials", {
   slidesPerView: 1,
   spaceBetween: 50,
   grabCursor: true,
-  pagination: true,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
   loop: true,
   speed: 3000,
   freeMode: false,
@@ -231,6 +264,21 @@ var swiper = new Swiper(".aboutswiper", {
   freeMode: false,
   parallax: true,
   navigation: false,
+  autoplay: { delay: 5000, disableOnInteraction: false },
+  allowTouchMove: true,
+});
+
+var swiper = new Swiper(".singleprdswiper", {
+  slidesPerView: 1,
+  spaceBetween: 50,
+  grabCursor: true,
+  pagination: true,
+  dots: true,
+  loop: true,
+  speed: 3000,
+  freeMode: false,
+  parallax: true,
+  navigation: true,
   autoplay: { delay: 5000, disableOnInteraction: false },
   allowTouchMove: true,
 });
@@ -304,4 +352,129 @@ const checkExist = setInterval(() => {
     if (success || attempts > 20) clearInterval(checkExist);
 }, 100);
 });
+
+
+
+function toggleBilling() {
+    const isChecked = document.getElementById('billing-toggle').checked;
+    const billingSection = document.getElementById('billing-section');
+    
+    if (isChecked) {
+        billingSection.classList.add('hidden');
+    } else {
+        billingSection.classList.remove('hidden');
+        // Smooth scroll to the billing section for better UX
+        billingSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+
+
+/**
+ * MOBILE NAVIGATION CONTROLLER - FINAL STABLE VERSION
+ */
+
+function closeAllMobileSystems() {
+    // 1. Reset Sidebar
+    const sidebar = document.getElementById('mobile-sidebar');
+    if (sidebar) {
+        sidebar.classList.add('left-[-100%]');
+        sidebar.classList.remove('left-0');
+    }
+
+    // 2. Reset Main Overlay
+    const overlay = document.getElementById('sidebar-overlay');
+    if (overlay) {
+        overlay.classList.replace('opacity-100', 'opacity-0');
+        overlay.classList.replace('pointer-events-auto', 'pointer-events-none');
+    }
+
+    // 3. Reset Slide-up Panels
+    const panels = ['mobile-filter-panel', 'mobile-search-panel'];
+    panels.forEach(id => {
+        const p = document.getElementById(id);
+        if (p && !p.classList.contains('invisible')) {
+            const content = p.querySelector('div:last-child');
+            content.classList.replace('translate-y-0', 'translate-y-full');
+            setTimeout(() => {
+                p.classList.add('invisible', 'pointer-events-none');
+            }, 300);
+        }
+    });
+
+    document.body.style.overflow = 'auto';
+}
+
+function toggleMobileMenu(event) {
+    if (event) event.stopPropagation();
+    const sidebar = document.getElementById('mobile-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    const isOpening = sidebar.classList.contains('left-[-100%]');
+
+    if (isOpening) {
+        // Instant close others
+        document.querySelectorAll('.slide-up-panel').forEach(p => p.classList.add('invisible'));
+        
+        sidebar.classList.replace('left-[-100%]', 'left-0');
+        overlay.classList.replace('opacity-0', 'opacity-100');
+        overlay.classList.replace('pointer-events-none', 'pointer-events-auto');
+        document.body.style.overflow = 'hidden';
+    } else {
+        closeAllMobileSystems();
+    }
+}
+
+function toggleMobileWidget(panelId, event) {
+    if (event) event.stopPropagation();
+    
+    const panel = document.getElementById(panelId);
+    const content = panel.querySelector('div:last-child');
+
+    if (!panel.classList.contains('invisible')) {
+        closeAllMobileSystems();
+        return;
+    }
+
+    // Close everything else first
+    closeAllMobileSystems();
+
+    panel.classList.remove('invisible', 'pointer-events-none');
+    
+    // Smooth timing
+    setTimeout(() => {
+        content.classList.replace('translate-y-full', 'translate-y-0');
+    }, 10);
+
+    document.body.style.overflow = 'hidden';
+}
+
+// GLOBAL CLICK LISTENER: This ensures any click on a backdrop closes the system
+document.addEventListener('click', function(e) {
+    // Check if the clicked element is the overlay or a panel's backdrop
+    if (e.target.id === 'sidebar-overlay' || e.target.getAttribute('data-backdrop') === 'true') {
+        closeAllMobileSystems();
+    }
+});
+
+
+
+function handleSortClick(selectedBtn) {
+    // 1. Find all buttons in the sort container
+    const allSortBtns = document.querySelectorAll('.sort-btn');
+
+    // 2. Reset all buttons to "inactive" state
+    allSortBtns.forEach(btn => {
+        btn.classList.remove('border-[#2A7CFF]', 'text-[#2A7CFF]');
+        btn.classList.add('border-white/5', 'text-gray-400');
+    });
+
+    // 3. Set the clicked button to "active" state
+    selectedBtn.classList.remove('border-white/5', 'text-gray-400');
+    selectedBtn.classList.add('border-[#2A7CFF]', 'text-[#2A7CFF]');
+
+    // SEO/Ads Tip: You can trigger your filtering function here 
+    // or wait until they hit "Apply Filters"
+    console.log("Sorted by: " + selectedBtn.innerText);
+}
+
 

@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" class="overflow-x-hidden">
+<html lang="en" class="!overflow-x-hidden">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="robots" content="noindex, nofollow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="preconnect" href="https://pcgarage.me/" />
     <link rel="dns-prefetch" href="https://pcgarage.me/" />
     <link rel="preconnect" href="https://pcgarage.me/" />
     <link rel="dns-prefetch" href="https://pcgarage.me/" />
 
     <!-- Page Title -->
-    <title>PC Garage | Custom Gaming PCs & High-End Hardware in UAE</title>
+    <title>PC Garage | @yield('title', 'Default Site Title')</title>
     <!-- //Page Title -->
 
     <meta name="description" content="Elevate your gameplay with PC Garage, the UAE’s premier hub for custom gaming PCs. Shop NVIDIA RTX & AMD graphics cards, high-end processors, and pre-built rigs. Dominate the leaderboard with fast UAE delivery. Build your dream PC today!" />
@@ -75,6 +75,8 @@
     <meta name="msapplication-navbutton-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="#000000">
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
+
     <!-- styles -->
     <!-- <link rel="stylesheet" href="{{ asset('assets/css/swiper.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}" />
@@ -86,7 +88,7 @@
 
 </head>
 
-<body class="m-[0] overflow-x-hidden">
+<body class="m-[0] bg-[#0F161B]">
     <!-- Header -->
     @include('frontend.layouts.header')
 
@@ -98,64 +100,8 @@
     <!-- Footer -->
     @include('frontend.layouts.footer')
     <!--script-->
-
-    <script src="{{ asset('assets/js/jquery-3.6.1.min.js') }}"></script>
-
-    <!-- <script src="{{ asset('assets/js/jquery-3.6.1.min.js') }}"></script> -->
-    <!-- <script src="{{ asset('assets/js/swiper.min.js') }}"></script>
-    <script src="{{ asset('assets/js/main-slider.js') }}"></script>
-    <script src="{{ asset('assets/js/theme-script.js') }}"></script>
-    <script src="{{ asset('assets/js/glightbox.min.js') }}"></script>  -->
-
-
-
-    <script>
-        $(window).scroll(function() {
-            const header = $('#main-header');
-            if ($(this).scrollTop() > 50) {
-                // STYLE WHEN STICKY
-                header.addClass('bg-[#0b0b0b] shadow-xl border-b border-[#1E2529]')
-                    .removeClass('h-24 bg-transparent');
-            } else {
-                // ORIGINAL STYLE
-                header.addClass('h-24 bg-transparent')
-                    .removeClass('bg-[#0b0b0b] shadow-xl border-b border-[#1E2529]');
-            }
-        });
-
-        $('.tab-btn').click(function() {
-
-            var target = $(this).data('target');
-
-            // Hide all tab contents
-            $('#newArrivals, #popularItems').addClass('hidden');
-
-            // Show selected content
-            $(target).removeClass('hidden');
-
-            // Update Swiper after showing
-            setTimeout(function () {
-                if (typeof Swiper !== 'undefined') {
-                    document.querySelectorAll('.gamepcswiper').forEach(function (el) {
-                        if (el.swiper) {
-                            el.swiper.update();
-                        }
-                    });
-                }
-            }, 10);
-
-            // // Reset all buttons
-            // $('.tab-btn')
-            //     .removeClass('bg-white text-black')
-            //     .addClass('bg-transparent text-[#ffffff30]');
-
-            // // Activate clicked button
-            // $(this)
-            //     .removeClass('bg-transparent text-[#ffffff30]')
-            //     .addClass('bg-white text-black');
-
-        });
-    </script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="{{ asset('assets/js/elements@1.js') }}" type="module"></script>
     <!--//script-->
 </body>
 

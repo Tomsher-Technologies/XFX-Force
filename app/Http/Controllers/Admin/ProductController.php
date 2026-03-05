@@ -561,9 +561,7 @@ class ProductController extends Controller
                 continue;
             }
 
-            $specModel = !empty($productSpecificationId)
-                        ? ProductSpecification::find($productSpecificationId)
-                        : new ProductSpecification();
+            $specModel = ProductSpecification::findOrNew($productSpecificationId);
             $specModel->product_id            = $product->id;
             $specModel->specification_id      = $specId;
             $specModel->specification_item_id = $itemId;
@@ -620,6 +618,17 @@ class ProductController extends Controller
 
         //save single type product
         if ($request->product_type == 0) {
+
+            // If switching to single, remove all variant stocks.
+            ProductStock::where('product_id', $product->id)
+                ->where('type', 'variant')
+                ->delete();
+            // Remove variant attributes.
+            $variantStockIds = ProductStock::where('product_id', $product->id)
+                ->pluck('id');
+            ProductAttributes::whereIn('product_varient_id', $variantStockIds)->delete();
+            /** */
+
             $product_stock = ProductStock::where('product_id', $product->id)->first();
             $product_stock->product_id = $product->id;
             $product_stock->type = 'single';
@@ -666,6 +675,12 @@ class ProductController extends Controller
 
         // save variant type product
         if ($request->product_type == 1 && $request->has('variants')) {
+            // If switching to variant, remove single stock
+            ProductStock::where('product_id', $product->id)
+            ->where('type', 'single')
+            ->delete();
+            /** */
+
             foreach ($request->variants as $index=>$variantData) {
                 // Create product stock
                 $stock = !empty($variantData['stock_id'])
@@ -722,6 +737,8 @@ class ProductController extends Controller
                     $product->sku = $stock->sku;
                     $product->save();
                 }
+
+                ProductAttributes::where('product_varient_id', $stock->id)->delete();
 
                 // Save attributes for this stock
                 if (isset($variantData['attributes'])) {

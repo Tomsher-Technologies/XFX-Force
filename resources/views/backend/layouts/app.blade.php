@@ -136,6 +136,10 @@
             $('#importInstructions').slideToggle();
         });
 
+        $('button[data-dismiss="modal"]').click(function(){
+            $(this).parents('.modal').modal('hide');
+        })
+
     </script>
 
 </body>

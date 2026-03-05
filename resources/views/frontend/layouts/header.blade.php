@@ -44,7 +44,7 @@
                 </div>
 
                 <ul class="nav-menu items-center gap-[30px] list-none hidden md:flex items-center">
-                    <li><a href="#" class="text-[#ffffff] uppercase text-[14px] no-underline">Home</a></li>
+                    <li><a href="{{ route('home') }}" class="text-[#ffffff] uppercase text-[14px] no-underline">Home</a></li>
                     <li class="has-mega">
                         <a href="#" class="text-[#ffffff] uppercase text-[14px] no-underline flex gap-[10px]">Shop <img
                                 src="{{ asset('assets/images/caret-down.svg') }}" alt="Caret Down Icon" class="img-fluid"></a>

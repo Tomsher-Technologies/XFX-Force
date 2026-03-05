@@ -844,6 +844,7 @@ $(function() {
         }
         this.submit();
     });
+    $(".specification_block").children().first().find('.remove-spec').hide();
 });
 
 // specification
@@ -901,6 +902,7 @@ $(document).on("click", ".add-more-specification", function () {
         .first();
     var $clone = $block.clone();
 
+    $clone.find('.remove-spec').show();
     // remove bootstrap-select wrappers from the clone
     $clone.find('.bootstrap-select').each(function () {
         var $wrapper = $(this);
@@ -923,6 +925,25 @@ $(document).on("click", ".add-more-specification", function () {
     $clone.find('.aiz-selectpicker').selectpicker('render');
 });
 
+let pendingDeleteElement = null;
+$(document).on('click', '.remove-spec', function() {
+    pendingDeleteElement = $(this).parents('.form-group');
+    $('#delete-modal').modal('show');
+});
+
+$(document).on('click', '#delete-link', function(e) {
+    e.preventDefault();
+
+    if (pendingDeleteElement) {
+        pendingDeleteElement.remove();
+        pendingDeleteElement = null;
+    }
+    $('#delete-modal').modal('hide');
+})
+
 
 </script>
+@endsection
+@section('modal')
+    @include('modals.delete_modal')
 @endsection

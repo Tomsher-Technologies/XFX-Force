@@ -382,7 +382,7 @@
                     <div class="form-group row">
                         <div class="col-md-6">
                             <label class="col-form-label">New Arrivals</label>
-                            <select name="upcoming_new_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['upcoming_new_products'] ?? []) }}">
+                            <select name="upcoming_new_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['upcoming_new_products'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
                                 @endforeach
@@ -390,7 +390,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="col-form-label">Popular Products</label>
-                            <select name="upcoming_popular_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['upcoming_popular_products'] ?? []) }}">
+                            <select name="upcoming_popular_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['upcoming_popular_products'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
                                 @endforeach
@@ -438,7 +438,7 @@
                     <div class="form-group row">
                         <div class="col-md-6">
                             <label class="col-form-label">New Arrivals</label>
-                            <select name="middle_featured_new_arrivals[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['middle_featured_new_arrivals'] ?? []) }}">
+                            <select name="middle_featured_new_arrivals[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['middle_featured_new_arrivals'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
                                 @endforeach
@@ -446,7 +446,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="col-form-label">Popular Products</label>
-                            <select name="middle_featured_popular_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['middle_featured_popular_products'] ?? []) }}">
+                            <select name="middle_featured_popular_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['middle_featured_popular_products'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
                                 @endforeach
@@ -492,7 +492,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="col-form-label">Products</label>
-                            <select name="best_deals_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['best_deals_products'] ?? []) }}">
+                            <select name="best_deals_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['best_deals_products'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
                                 @endforeach
@@ -516,7 +516,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="col-form-label">Products <small>(Maximum 6 items allowed)</small></label>
-                            <select name="product_gallery_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['product_gallery_products'] ?? []) }}" data-max-options="6">
+                            <select name="product_gallery_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['product_gallery_products'] ?? []) }}" data-max-options="6">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
                                 @endforeach
@@ -540,7 +540,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="col-form-label">Products</label>
-                            <select name="graphic_cards_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['graphic_cards_products'] ?? []) }}">
+                            <select name="graphic_cards_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['graphic_cards_products'] ?? []) }}">
                                 @foreach ($products as $key => $product)
                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
                                 @endforeach
@@ -626,12 +626,6 @@
                                                 @endif
                                             </div>
                                         </div>
-
-                                        <div class="col-md-3">
-                                            <label>Content</label>
-                                            <input type="text" name="footer_content" value="{{ $item['footer_content'] ?? '' }}" class="form-control form-control-sm">
-                                        </div>
-
                                         <div class="col-md-3">
                                             <label>Button Text</label>
                                             <input type="text" name="footer_button_text" value="{{ $item['footer_button_text'] ?? '' }}" class="form-control form-control-sm">
@@ -640,6 +634,11 @@
                                         <div class="col-md-3">
                                             <label>Button Link</label>
                                             <input type="text" name="footer_button_link" value="{{ $item['footer_button_link'] ?? '' }}" class="form-control form-control-sm">
+                                        </div>
+                                        <div class="col-md-11">
+                                            <label>Content</label>
+                                            <textarea class="aiz-text-editor" data-min-height="80" name="footer_content">{{ $item['footer_content'] ?? '' }}</textarea>
+                                            <!-- <input type="text" name="footer_content" value="{{ $item['footer_content'] ?? '' }}" class="form-control form-control-sm"> -->
                                         </div>
 
                                         <div class="col-md-1">

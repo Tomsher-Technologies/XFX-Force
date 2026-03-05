@@ -28,6 +28,15 @@ class HomeSlider extends Model
         return $this->hasOne(Upload::class, 'id', 'mobile_image');
     }
 
+    public function mainVideo()
+    {
+        return $this->hasOne(Upload::class, 'id', 'video');
+    }
+    public function mobileVideo()
+    {
+        return $this->hasOne(Upload::class, 'id', 'mobile_video');
+    }
+
     public function getALink()
     {
         if ($this->link_ref == 'product' && $this->link_ref_id !== null) {

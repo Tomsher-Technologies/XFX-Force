@@ -1000,6 +1000,7 @@ $tabs[$key]['tab_description'] = $tab->content;
 
     // Initialize **existing items** separately **after DOM load**, but avoid cloning problems
 $(function() {
+    $(".specification_block").children().first().find('.remove-spec').hide();
     var textarea = $(this).find('.text-area');
 
     if (!textarea.hasClass('summernote-initialized')) {
@@ -1267,6 +1268,7 @@ $(function() {
 
         var $clone = $block.clone();
 
+        $clone.find('.remove-spec').show();
         // remove bootstrap-select wrappers from the clone
         $clone.find('.bootstrap-select').each(function () {
             var $wrapper = $(this);
@@ -1288,6 +1290,26 @@ $(function() {
         $clone.find('.aiz-selectpicker').selectpicker('render');
     });
 
+    let pendingDeleteElement = null;
+    $(document).on('click', '.remove-spec', function() {
+        pendingDeleteElement = $(this).parents('.form-group');
+        $('#delete-modal').modal('show');
+    });
+
+    $(document).on('click', '#delete-link', function(e) {
+        e.preventDefault();
+
+        if (pendingDeleteElement) {
+            pendingDeleteElement.remove();
+            pendingDeleteElement = null;
+        }
+        $('#delete-modal').modal('hide');
+    })
+
 
 </script>
+@endsection
+
+@section('modal')
+    @include('modals.delete_modal')
 @endsection

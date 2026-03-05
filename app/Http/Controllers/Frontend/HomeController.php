@@ -23,7 +23,7 @@ class HomeController extends Controller
         $slider_ids = $page_content['home_slider'] ?? [];
         $sliders = collect();
         if (!empty($slider_ids)) {
-            $sliders = HomeSlider::with(['mainImage', 'mobileImage'])
+            $sliders = HomeSlider::with(['mainImage', 'mobileImage', 'mainVideo', 'mobileVideo'])
                 ->whereIn('id', $slider_ids)
                 ->orderByRaw("FIELD(id," . implode(',', $slider_ids) . ")")
                 ->get();
