@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 
-@import './vendors/swiper.min.css';
+/* @import './vendors/swiper.min.css'; */
 @import './vendors/glightbox.min.css';
 @import './vendors/navbar.css';
 

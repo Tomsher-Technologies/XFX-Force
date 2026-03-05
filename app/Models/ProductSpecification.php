@@ -16,4 +16,9 @@ class ProductSpecification extends Model
     {
         return $this->belongsTo(Specification::class, 'specification_id');
     }
+
+    public function specificationItem()
+    {
+        return $this->belongsTo(SpecificationItem::class, 'specification_item_id');
+    }
 }

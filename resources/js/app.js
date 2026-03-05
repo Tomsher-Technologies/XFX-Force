@@ -1,20 +1,13 @@
 // import './bootstrap';
-
 import Alpine from 'alpinejs';
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 import $ from 'jquery';
 
+
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
-import '../css/app.css';
-
-
-import './vendors/swiper.min.js';
-import './vendors/main-slider.js';
-import './vendors/theme-script.js';
-import './vendors/glightbox.min.js';
-
+// import '../css/app.css';
 
 
 
@@ -24,32 +17,6 @@ window.toastr = toastr; // Make toastr globally available
 window.Alpine = Alpine;
 Alpine.start();
 
-document.addEventListener("DOMContentLoaded", function () {
-    // âœ… Hero Swiper with Lazy Loading & Fixed Navigation
-    new Swiper(".hero-swiper", {
-        loop: true,
-        autoplay: {
-            delay: 3000, // Adjust slide change speed
-            disableOnInteraction: false,
-        },
-        slidesPerView: 1,
-        spaceBetween: 0,
-        speed: 800,
-        effect: "slide",
-        lazy: {
-            loadPrevNext: true, // Preload next and previous images
-            loadPrevNextAmount: 2,
-        },
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true
-        },
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev"
-        }
-    });
-});
 
 // âœ… Categories Swiper
 new Swiper("#category-swiper", {
@@ -63,57 +30,27 @@ new Swiper("#category-swiper", {
     breakpoints: {
         640: { slidesPerView: 3 }, // Tablets
         1024: { slidesPerView: 4 }, // Laptops
-        1280: { slidesPerView: 6
+        1280: {
+            slidesPerView: 6
 
-         }  // Large Screens
+        }  // Large Screens
     },
-    // pagination: { 
-    //     el: "#category-swiper-pagination", 
-    //     clickable: true 
-    // }
+
 });
 
-// document.addEventListener('DOMContentLoaded', function () {
-//     const totalSlides = 4; // number of your slides
+const thumbSwiper = new Swiper('.product-thumbs-swiper', {
+    spaceBetween: 10,
+    slidesPerView: 4,
+    freeMode: true,
+    watchSlidesProgress: true,
+});
 
-//     const thumbsSwiper = new Swiper('.product-thumbs-swiper', {
-//         slidesPerView: 1,       // show only one thumb fully
-//         spaceBetween: 10,
-//         loop: true,
-//         loopedSlides: totalSlides,
-//         watchSlidesProgress: true,
-//         slideToClickedSlide: true,
-//     });
-
-//     const mainSwiper = new Swiper('.product-images-swiper', {
-//         slidesPerView: 1,
-//         spaceBetween: 10,
-//         loop: true,
-//         loopedSlides: totalSlides,
-//         navigation: {
-//             nextEl: '.swiper-button-next1',
-//             prevEl: '.swiper-button-prev1',
-//         },
-//         thumbs: {
-//             swiper: thumbsSwiper,
-//         },
-//     });
-// });
-
-
-    const thumbSwiper = new Swiper('.product-thumbs-swiper', {
-      spaceBetween: 10,
-      slidesPerView: 4,
-      freeMode: true,
-      watchSlidesProgress: true,
-    });
-
-    const mainSwiper = new Swiper('.product-images-swiper', {
-      spaceBetween: 10,
-      thumbs: {
+const mainSwiper = new Swiper('.product-images-swiper', {
+    spaceBetween: 10,
+    thumbs: {
         swiper: thumbSwiper,
-      },
-    });
+    },
+});
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -132,108 +69,999 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Cart
 
-document.addEventListener("DOMContentLoaded", function () {
-    const cartBtn = document.getElementById("cart-btn");
-    const cartDrawer = document.getElementById("cart-drawer");
-    const closeCart = document.getElementById("close-cart");
-
-    // Open Cart Drawer
-    cartBtn.addEventListener("click", () => {
-        cartDrawer.classList.remove("translate-x-full");
-        cartDrawer.classList.add("translate-x-0");
+document.addEventListener('DOMContentLoaded', function () {
+    var menu = [];
+    jQuery(".swiper-slide").each(function (index) {
+        menu.push(jQuery(this).find(".slide-inner").attr("data-text"));
     });
+    var interleaveOffset = 0.5;
+    var swiperOptions = {
+        loop: !1,
+        speed: 1000,
+        slidePerview: 1,
+        parallax: !0,
+        autoplay: { delay: 20000, disableOnInteraction: !1 },
+        watchSlidesProgress: !0,
+        pagination: { el: ".swiper-pagination", clickable: !0 },
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+        on: {
+            progress: function () {
+                var swiper = this;
+                for (var i = 0; i < swiper.slides.length; i++) {
+                    var slideProgress = swiper.slides[i].progress;
+                    var innerOffset = swiper.width * interleaveOffset;
+                    var innerTranslate = slideProgress * innerOffset;
+                    swiper.slides[i].querySelector(".slide-inner").style.transform =
+                        "translate3d(" + innerTranslate + "px, 0, 0)";
+                }
+            },
+            touchStart: function () {
+                var swiper = this;
+                for (var i = 0; i < swiper.slides.length; i++) {
+                    swiper.slides[i].style.transition = "";
+                }
+            },
+            setTransition: function (speed) {
+                var swiper = this;
+                for (var i = 0; i < swiper.slides.length; i++) {
+                    swiper.slides[i].style.transition = speed + "ms";
+                    swiper.slides[i].querySelector(".slide-inner").style.transition =
+                        speed + "ms";
+                }
+            },
+        },
+    };
+    var swiper = new Swiper(".swiper-container", swiperOptions);
 
-    // Close Cart Drawer
-    closeCart.addEventListener("click", () => {
-        cartDrawer.classList.remove("translate-x-0");
-        cartDrawer.classList.add("translate-x-full");
-    });
 });
 
+// product details svript
 
-import TomSelect from 'tom-select';
-import 'tom-select/dist/css/tom-select.css';
-
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".search-dropdown").forEach((el) => {
-        new TomSelect(el, {
-            maxItems: 1,
-            persist: false,
-            create: false,
-            placeholder: "Search...",
-        });
-    });
-});
-
-function toggleFAQ(id, btn) {
-    const faq = document.getElementById(id);
-    const arrow = btn.querySelector('.arrow');
-    
-    if (faq.classList.contains('hidden')) {
-        faq.classList.remove('hidden');
-        faq.style.maxHeight = faq.scrollHeight + 'px';
-        arrow.textContent = '-';
+$(window).scroll(function () {
+    const header = $('#main-header');
+    if ($(this).scrollTop() > 50) {
+        // STYLE WHEN STICKY
+        header.addClass('bg-[#0b0b0b] shadow-xl border-b border-[#1E2529]')
+            .removeClass('h-24 bg-transparent');
     } else {
-        faq.classList.add('hidden');
-        faq.style.maxHeight = '0px';
-        arrow.textContent = '+';
+        // ORIGINAL STYLE
+        header.addClass('h-24 bg-transparent')
+            .removeClass('bg-[#0b0b0b] shadow-xl border-b border-[#1E2529]');
+    }
+});
+
+// 1. Define the function globally immediately
+window.toggleModal = function () {
+    const overlay = document.getElementById('modal-overlay');
+    const container = document.getElementById('modal-container');
+
+    if (!overlay || !container) {
+        console.error("Modal elements not found in DOM!");
+        return;
+    }
+
+    const isHidden = overlay.classList.contains('hidden');
+
+    if (isHidden) {
+        console.log("Opening Modal...");
+        overlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        // Small delay to trigger Tailwind transitions
+        setTimeout(() => {
+            overlay.classList.add('opacity-100');
+            container.classList.add('scale-100');
+            container.classList.remove('scale-95');
+        }, 10);
+    } else {
+        console.log("Closing Modal...");
+        overlay.classList.remove('opacity-100');
+        container.classList.add('scale-95');
+        container.classList.remove('scale-100');
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }, 300);
+    }
+};
+
+// 2. Attach the click listener safely
+document.addEventListener('click', function (e) {
+    const overlay = document.getElementById('modal-overlay');
+    const container = document.getElementById('modal-container');
+
+    // Check if the user clicked EXACTLY the overlay (the dark part)
+    // and NOT the container (the white/dark box)
+    if (e.target === overlay && !container.contains(e.target)) {
+        window.toggleModal();
+    }
+});
+
+
+
+// --- SPECIFICATION MODAL LOGIC ---
+const sOverlay = document.getElementById('spec-modal-overlay');
+const sContainer = document.getElementById('spec-modal-container');
+
+function toggleSpecModal() {
+    const isHidden = sOverlay.classList.contains('hidden');
+    if (isHidden) {
+        sOverlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+            sOverlay.classList.add('opacity-100');
+            sContainer.classList.add('scale-100');
+            sContainer.classList.remove('scale-95');
+        }, 10);
+    } else {
+        sOverlay.classList.remove('opacity-100');
+        sContainer.classList.add('scale-95');
+        sContainer.classList.remove('scale-100');
+        setTimeout(() => {
+            sOverlay.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }, 300);
     }
 }
 
-// Cart
+// --- WARRANTY MODAL LOGIC ---
+const wOverlay = document.getElementById('warranty-modal-overlay');
+const wContainer = document.getElementById('warranty-modal-container');
+
+function toggleWarrantyModal() {
+    const isHidden = wOverlay.classList.contains('hidden');
+    if (isHidden) {
+        wOverlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+            wOverlay.classList.add('opacity-100');
+            wContainer.classList.add('scale-100');
+            wContainer.classList.remove('scale-95');
+        }, 10);
+    } else {
+        wOverlay.classList.remove('opacity-100');
+        wContainer.classList.add('scale-95');
+        wContainer.classList.remove('scale-100');
+        setTimeout(() => {
+            wOverlay.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }, 300);
+    }
+}
+
+// --- OUTSIDE CLICK CLOSING ---
+window.addEventListener('click', (e) => {
+    if (e.target === sOverlay) toggleSpecModal();
+    if (e.target === wOverlay) toggleWarrantyModal();
+});
 
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const accountBtn = document.getElementById("accont-btn");
-        const accountDrawer = document.getElementById("account-drawer");
-        const closeAccount = document.getElementById("close-account"); // Corrected ID
-        
-        if (accountBtn && accountDrawer && closeAccount) {
-            // Open drawer
-            accountBtn.addEventListener("click", function (event) {
-                event.preventDefault();
-                accountDrawer.classList.remove("translate-x-full"); // Slide in
-            });
+window.selectWarranty = function (selectedElement) {
+    // 1. Get all warranty cards
+    const cards = document.querySelectorAll('.warranty-card');
 
-            // Close drawer
-            closeAccount.addEventListener("click", function () {
-                accountDrawer.classList.add("translate-x-full"); // Slide out
-            });
-        }
-       
+    cards.forEach(card => {
+        // 2. Reset Styles to "Unselected"
+        card.classList.remove('border-2', 'border-[#2A7CFF]', 'bg-[#161B22]');
+        card.classList.add('border', 'border-gray-800', 'bg-[#282B3450]');
+
+        // 3. Hide Checkmark icons
+        const icon = card.querySelector('.check-icon');
+        if (icon) icon.classList.add('hidden');
     });
 
+    // 4. Apply "Selected" Styles to the clicked element
+    selectedElement.classList.add('border-2', 'border-[#2A7CFF]', 'bg-[#161B22]');
+    selectedElement.classList.remove('border', 'border-gray-800', 'bg-[#282B3450]');
+
+    // 5. Show the checkmark for the selected plan
+    const activeIcon = selectedElement.querySelector('.check-icon');
+    if (activeIcon) activeIcon.classList.remove('hidden');
+
+    console.log("Selected Warranty Plan:", selectedElement.querySelector('span').innerText);
+};
+
+// Warranty script end.
+
+// Cart page script
+const MINUS_ICON = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 12H4" /></svg>`;
+const TRASH_ICON = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>`;
+
+window.updateMultiQty = function (btn, change) {
+    // Find the container for THIS specific product
+    const container = btn.closest('.product-item');
+    const input = container.querySelector('.qty-input');
+    const iconWrapper = container.querySelector('.icon-wrapper');
+    const minusBtn = container.querySelector('.minus-btn');
+
+    let currentVal = parseInt(input.value);
+
+    // DELETE LOGIC: If qty is 1 and user clicks minus
+    if (currentVal === 1 && change === -1) {
+        if (confirm("Remove this item?")) {
+            container.style.opacity = '0.5';
+            container.style.pointerEvents = 'none';
+            console.log("Product removed from tracking.");
+        }
+        return;
+    }
+    const productId = container.dataset.productId;
+    const variantId = container.dataset.variantId;
+
+    let newVal = currentVal + change;
+    if (newVal < 1) newVal = 1;
+    addtoCart(productId, variantId, newVal);
+    input.value = newVal;
 
 
-   
-    document.addEventListener('DOMContentLoaded', function () {
-        new Swiper('.mySwiper', {
-            slidesPerView: 2,
-            spaceBetween: 20,
-            loop: true,
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            breakpoints: {
-                640: {
-                    slidesPerView: 2,
-                },
-                768: {
-                    slidesPerView: 3,
-                },
-                1024: {
-                    slidesPerView: 4,
-                },
+
+    // UI UPDATES for this specific card
+    if (newVal === 1) {
+        iconWrapper.innerHTML = TRASH_ICON;
+        minusBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
+        minusBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+    } else {
+        iconWrapper.innerHTML = MINUS_ICON;
+        minusBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
+        minusBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+    }
+
+    // Pulse animation
+    input.classList.add('text-[#2A7CFF]', 'scale-110');
+    setTimeout(() => input.classList.remove('text-[#2A7CFF]', 'scale-110'), 150);
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('billing-toggle');
+    const list = document.getElementById('address-list-container');
+    const overlay = document.getElementById('addr-modal-overlay');
+    const modal = document.getElementById('addr-modal-container');
+
+    // Stop if not on this page
+    if (!toggle || !list || !overlay || !modal) {
+        return;
+    }
+
+
+    if(toggle){
+        toggle.addEventListener('change', () => {
+            list.classList.toggle('hidden', toggle.checked);
+        });
+    }
+
+    window.openModal = () => {
+        overlay.classList.remove('hidden');
+        // FIX: Lock the body to prevent double scrollbars
+        document.body.style.overflow = 'hidden';
+
+        setTimeout(() => {
+            overlay.classList.add('opacity-100');
+            modal.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    };
+
+    window.closeModal = () => {
+        overlay.classList.remove('opacity-100');
+        modal.classList.remove('scale-100', 'opacity-100');
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+            // FIX: Restore scroll when closed
+            document.body.style.overflow = 'auto';
+        }, 300);
+    };
+
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('#open-address-modal')) openModal();
+        if (e.target.closest('#close-modal-x') || e.target.closest('#discard-btn') || e.target === overlay) closeModal();
+    });
+});
+
+// FILTER BLOCK JS
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('brand-search');
+    const categorySelect = document.getElementById('category-select');
+    const brandItems = document.querySelectorAll('.brand-item');
+
+    const runFilters = () => {
+        const query = searchInput.value.toLowerCase();
+        const selectedCat = categorySelect.value;
+
+        brandItems.forEach(item => {
+            const name = item.getAttribute('data-name').toLowerCase();
+            const cat = item.getAttribute('data-category');
+
+            const searchMatch = name.includes(query);
+            const catMatch = (selectedCat === 'all' || cat === selectedCat);
+
+            if (searchMatch && catMatch) {
+                item.style.display = 'flex';
+                item.classList.add('animate-fade-in');
+            } else {
+                item.style.display = 'none';
             }
         });
+    };
+    if(searchInput){
+        searchInput.addEventListener('input', runFilters);
+    }
+    if(categorySelect){
+        categorySelect.addEventListener('change', runFilters);
+    }
+});
+// FILTER BLOCK JS ends
+
+// /*******************Product variant selection script starts**************************************/
+document.addEventListener('DOMContentLoaded', () => {
+    const swiperInstance = document.querySelector('.singleprdswiper')?.swiper;
+    document.querySelectorAll('.variant-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const attributeId = btn.dataset.attrId;
+            const attributeValueId = btn.dataset.valueId;
+            const productId = btn.dataset.productId;
+            const clickedIndex = parseInt(btn.dataset.attrIndex);
+
+            // Activate clicked button
+            btn.classList.remove('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
+            btn.classList.add('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+
+            // Deactivate siblings
+            const siblings = btn.parentElement.querySelectorAll('.variant-btn');
+            siblings.forEach(function (sibling) {
+                if (sibling !== btn) {
+                    sibling.classList.remove('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+                    sibling.classList.add('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
+                }
+            });
+
+            // Disable all lower levels
+            document.querySelectorAll('.variant-btn').forEach(function (button) {
+                const btnIndex = parseInt(button.dataset.attrIndex);
+                if (btnIndex > clickedIndex) {
+                    button.disabled = true;
+                    button.classList.remove('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+                    button.classList.add('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
+                    button.style.opacity = '0.3';
+                    button.style.cursor = 'not-allowed';
+                }
+            });
+
+            fetch(`/get-variants-by-value?attribute_id=${attributeId}&value_id=${attributeValueId}&product_id=${productId}&selectedAttributes=${encodeURIComponent(JSON.stringify(getSelectedAttributes()))}`)
+                .then(response => response.json())
+                .then(response => {
+
+                    if (response.data && response.data.length > 0) {
+
+                        let grouped = {};
+
+                        response.data.forEach(function (v) {
+                            const selector = `.variant-btn[data-attr-id="${v.attribute_id}"][data-value-id="${v.value_id}"]`;
+                            const button = document.querySelector(selector);
+                            const btnIndex = button.dataset.attrIndex;
+
+                            if (!grouped[btnIndex]) grouped[btnIndex] = [];
+                            grouped[btnIndex].push(button);
+                        });
+
+                        Object.keys(grouped).forEach(function (level) {
+
+                            const buttons = grouped[level];
+
+                            const hasActive = buttons.some(b => b.classList.contains('active'));
+
+                            if (!hasActive && buttons.length > 0) {
+                                const firstBtn = buttons[0];
+                                firstBtn.classList.add('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+                                firstBtn.classList.remove('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
+                            }
+
+                            buttons.forEach(function (b) {
+                                b.disabled = false;
+                                b.style.opacity = '1';
+                                b.style.cursor = 'pointer';
+                            });
+
+                        });
+                    }
+
+                    document.querySelectorAll('.variant-btn.active').forEach(function (activeBtn) {
+                        const btnIndex = parseInt(activeBtn.dataset.attrIndex);
+                        if (btnIndex > clickedIndex) {
+                            activeBtn.click();
+                        }
+                    });
+
+                    getVarientDetails(productId);
+                })
+                .catch(err => console.error('AJAX error:', err));
+        });
+
     });
 
+    // Get Variant Details
+    function getVarientDetails(productId) {
+        let selectedAttributes = {};
+        document.querySelectorAll('.variant-list .variant-btn.active').forEach(function (btn) {
+            selectedAttributes[btn.dataset.attrId] = btn.dataset.valueId;
+        });
+        fetch(`/getVarientDetails?productId=${productId}&selectedAttributes=${encodeURIComponent(JSON.stringify(selectedAttributes))}`)
+            .then(response => response.json())
+            .then(response => {
+                if (response.success) {
+                    if (response.data.image && swiperInstance) {
+                        swiperInstance.removeAllSlides();
+                        swiperInstance.appendSlide(`
+                            <div class="swiper-slide" data-stock-id="${response.data.id}">
+                                <a href="/storage/${response.data.image}" class="glightbox">
+                                    <img src="/storage/${response.data.image}" 
+                                        class="w-full h-full object-cover object-center">
+                                </a>
+                            </div>
+                        `);
+                        swiperInstance.slideTo(0);
+                    }
 
+                    document.querySelector('.price span.main-price').textContent = response.data.price;
+                    document.querySelector('.offer-price').textContent = response.data.offer_price;
+                    document.querySelector('.variant-title').textContent = response.data.title;
+                    document.getElementById('stock_id').value = response.data.variant_id;
+
+                    if (response.data.availableQty <= 0) {
+                        document.querySelector(".out-of-stock-block").style.display = 'block';
+                        document.querySelector(".add-to-cart-block").style.display = 'none';
+                    } else {
+                        document.querySelector(".out-of-stock-block").style.display = 'none';
+                        document.querySelector(".add-to-cart-block").style.display = 'block';
+                    }
+                }
+            });
+    }
+
+    // Get selected attributes
+    function getSelectedAttributes() {
+        let selected = {};
+        document.querySelectorAll('.variant-btn.active').forEach(function (btn) {
+            selected[btn.dataset.attrId] = btn.dataset.valueId;
+        });
+        return selected;
+    }
+
+    // Load default variant
+    const mainProductInput = document.getElementById('main_product_id');
+    if (mainProductInput) {
+        getVarientDetails(mainProductInput.value);
+    }
+    const firstBtn = document.querySelector('.variant-group .variant-btn');
+    if (firstBtn) {
+        firstBtn.click();
+    }
+});
+
+// /**************************************Product variant selection script ends**************************************/
+
+
+// theme-script.js starts
+const trigger = document.getElementById("menuTrigger");
+const overlay = document.getElementById("megaOverlay");
+
+trigger.addEventListener("click", () => {
+  // Toggle the Morphing Icon
+  trigger.classList.toggle("active");
+
+  // Toggle the Mega Menu Visibility
+  overlay.classList.toggle("open");
+
+  // Prevent scrolling when menu is open
+  if (overlay.classList.contains("open")) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+});
+
+var swiper = new Swiper(".categoryswiper", {
+  slidesPerView: 7,
+  spaceBetween: 50,
+  grabCursor: true,
+  pagination: false,
+  loop: false,
+  speed: 5000,
+  parallax: false,
+  navigation: {
+    prevEl: ".swiper-button-prev",
+    nextEl: ".swiper-button-next",
+  },
+  autoplay: { delay: 3000, disableOnInteraction: false },
+  allowTouchMove: true,
+  breakpoints: {
+    640: { slidesPerView: 3, spaceBetween: 15 },
+    768: { slidesPerView: 3, spaceBetween: 15 },
+    1024: { slidesPerView: 4, spaceBetween: 30 },
+    1280: { slidesPerView: 4, spaceBetween: 30 },
+  },
+});
+
+var swiper = new Swiper(".gamepcswiper", {
+  slidesPerView: 4,
+  spaceBetween: 15,
+  grabCursor: true,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
+  loop: false,
+  speed: 5000,
+  freeMode: false,
+  parallax: true,
+  navigation: {
+    prevEl: ".swiper-button-prev",
+    nextEl: ".swiper-button-next",
+  },
+  autoplay: { delay: 3000, disableOnInteraction: false },
+  allowTouchMove: true,
+  breakpoints: {
+    640: { slidesPerView: 1, spaceBetween: 15 },
+    768: { slidesPerView: 2, spaceBetween: 15 },
+    1024: { slidesPerView: 4, spaceBetween: 15 },
+    1280: { slidesPerView: 4, spaceBetween: 15 },
+  },
+});
+
+var swiper = new Swiper(".productswiper", {
+  slidesPerView: 5,
+  spaceBetween: 15,
+  grabCursor: true,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
+  dots: true,
+  loop: true,
+  speed: 5000,
+  freeMode: false,
+  parallax: true,
+  navigation: {
+    prevEl: ".swiper-button-prev",
+    nextEl: ".swiper-button-next",
+  },
+  autoplay: { delay: 3000, disableOnInteraction: false },
+  allowTouchMove: true,
+  breakpoints: {
+    640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
+    768: { slidesPerView: 2, spaceBetween: 15 },
+    1024: { slidesPerView: 3, spaceBetween: 15 },
+    1280: { slidesPerView: 4, spaceBetween: 15 },
+  },
+});
+
+var swiper = new Swiper(".equipmentswiper", {
+  slidesPerView: 4,
+  spaceBetween: 15,
+  grabCursor: true,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
+  dots: true,
+  loop: false,
+  speed: 5000,
+  freeMode: false,
+  parallax: true,
+  navigation: false,
+  autoplay: { delay: 3000, disableOnInteraction: false },
+  allowTouchMove: true,
+  breakpoints: {
+    640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
+    768: { slidesPerView: 2, spaceBetween: 15 },
+    1024: { slidesPerView: 3, spaceBetween: 15 },
+    1280: { slidesPerView: 4, spaceBetween: 15 },
+  },
+});
+
+var swiper = new Swiper(".adswipertwo", {
+  slidesPerView: 2,
+  spaceBetween: 15,
+  grabCursor: true,
+  pagination: false,
+  loop: true,
+  speed: 5000,
+  freeMode: false,
+  parallax: true,
+  navigation: false,
+  autoplay: { delay: 3000, disableOnInteraction: false },
+  allowTouchMove: true,
+  breakpoints: {
+    640: { slidesPerView: 1, spaceBetween: 15 },
+    768: { slidesPerView: 1, spaceBetween: 30 },
+    1024: { slidesPerView: 2, spaceBetween: 30 },
+    1280: { slidesPerView: 2, spaceBetween: 30 },
+  },
+});
+
+var swiper = new Swiper(".adswiperone", {
+  slidesPerView: 1,
+  spaceBetween: 15,
+  grabCursor: true,
+  pagination: false,
+  loop: true,
+  speed: 5000,
+  freeMode: false,
+  parallax: true,
+  navigation: false,
+  autoplay: { delay: 3000, disableOnInteraction: false },
+  allowTouchMove: true,
+});
+
+var swiper = new Swiper(".promobnrswiper", {
+  slidesPerView: 1,
+  spaceBetween: 15,
+  grabCursor: true,
+  pagination: false,
+  loop: true,
+  speed: 5000,
+  freeMode: false,
+  parallax: true,
+  navigation: false,
+  autoplay: { delay: 3000, disableOnInteraction: false },
+  allowTouchMove: true,
+  breakpoints: {
+    640: { slidesPerView: 2, spaceBetween: 15 },
+    768: { slidesPerView: 2, spaceBetween: 30 },
+    1024: { slidesPerView: 4, spaceBetween: 30 },
+    1280: { slidesPerView: 4, spaceBetween: 30 },
+  },
+});
+
+// const buttons = document.querySelectorAll('.tab-btn');
+
+// buttons.forEach(btn => {
+//   btn.addEventListener('click', (e) => {
+//     // Remove active styles from all
+//     buttons.forEach(b => b.className = 'tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[14px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black] focus:bg-[white] focus:text-[black] active:bg-[white] active:text-[black]');
+
+//     // Add active styles to clicked
+//     e.target.className = 'tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[14px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black] focus:bg-[white] focus:text-[black] active:bg-[white] active:text-[black]';
+//   });
+// });
+
+// Select all buttons with the class 'tab-btn'
+const tabButtons = document.querySelectorAll(".tab-btn");
+
+const inactiveClasses =
+  "tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black]";
+const activeClasses =
+  "tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black]";
+
+tabButtons.forEach((btn) => {
+  btn.addEventListener("click", function (e) {
+    // 1. Find the parent container of the clicked button
+    const parentSection = this.closest(".flex"); // or use a specific class like '.tab-container'
+
+    // 2. Only find buttons within THIS specific section
+    const sectionButtons = parentSection.querySelectorAll(".tab-btn");
+
+    // 3. Reset only these buttons
+    sectionButtons.forEach((b) => {
+      b.className = inactiveClasses;
+      b.setAttribute("data-active", "false");
+    });
+
+    // 4. Set the clicked button to active
+    this.className = activeClasses;
+    this.setAttribute("data-active", "true");
+  });
+});
+
+
+var swiper = new Swiper(".video-testimonials", {
+  slidesPerView: 1,
+  spaceBetween: 0,
+  grabCursor: true,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
+  loop: true,
+  speed: 3000,
+  freeMode: false,
+  parallax: true,
+  effect: "fade",
+  navigation: false,
+  autoplay: { delay: 5000, disableOnInteraction: false },
+  allowTouchMove: true,
+  breakpoints: {
+    640: { slidesPerView: 1 },
+    768: { slidesPerView: 1 },
+    1024: { slidesPerView: 1 },
+    1280: { slidesPerView: 1 },
+  },
+});
+
+var swiper = new Swiper(".g-testimonials", {
+  slidesPerView: 1,
+  spaceBetween: 50,
+  grabCursor: true,
+  pagination: {
+    el: ".swiper-pagination",
+    dynamicBullets: true,
+  },
+  loop: true,
+  speed: 3000,
+  freeMode: false,
+  parallax: true,
+  navigation: {
+    prevEl: ".swiper-button-prev",
+    nextEl: ".swiper-button-next",
+  },
+  autoplay: { delay: 5000, disableOnInteraction: false },
+  allowTouchMove: true,
+});
+
+var swiper = new Swiper(".aboutswiper", {
+  slidesPerView: 1,
+  spaceBetween: 50,
+  grabCursor: true,
+  pagination: true,
+  loop: true,
+  speed: 3000,
+  freeMode: false,
+  parallax: true,
+  navigation: false,
+  autoplay: { delay: 5000, disableOnInteraction: false },
+  allowTouchMove: true,
+});
+
+var swiper = new Swiper(".singleprdswiper", {
+  slidesPerView: 1,
+  spaceBetween: 50,
+  grabCursor: true,
+  pagination: true,
+  dots: true,
+  loop: true,
+  speed: 3000,
+  freeMode: false,
+  parallax: true,
+  navigation: true,
+  autoplay: { delay: 5000, disableOnInteraction: false },
+  allowTouchMove: true,
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    // 1. Initialize Lightbox
+    const lightbox = GLightbox({
+        selector: '.glightbox',
+        touchNavigation: true,
+    });
+
+    // 2. Identify your background player
+    const bgPlayer = document.getElementById('bgPlayer');
+
+    // 3. Listen for Lightbox Opening
+    lightbox.on('open', () => {
+        // Send 'pauseVideo' command to the YouTube Iframe
+        bgPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    });
+
+    // 4. Listen for Lightbox Closing
+    lightbox.on('close', () => {
+        // Send 'playVideo' command to resume background playback
+        bgPlayer.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    });
+});
+
+lightbox.on('open', () => {
+    // Pause all iframes on the page to be safe
+    const allIframes = document.querySelectorAll('iframe');
+    allIframes.forEach(iframe => {
+        iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    });
+});
+
+lightbox.on('close', () => {
+    // Resume only the one in the visible swiper slide
+    const activeSlide = document.querySelector('.swiper-slide-active iframe');
+    if(activeSlide) {
+        activeSlide.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+const initializeAvatar = () => {
+    const nameElement = document.getElementById('userName');
+    const avatarElement = document.getElementById('userAvatar');
+
+    if (nameElement && avatarElement) {
+        // .innerText is more reliable for visible text than .textContent
+        const nameText = nameElement.innerText.trim();
+        
+        if (nameText && nameText !== "?") {
+            const firstLetter = nameText.charAt(0).toUpperCase();
+            avatarElement.innerText = firstLetter;
+            console.log("Avatar updated to:", firstLetter); // Check your console (F12)
+            return true; // Success
+        }
+    }
+    return false; // Not ready yet
+};
+
+// Try immediately, on load, and as a fallback interval
+window.addEventListener('load', initializeAvatar);
+
+// Fallback: Check every 100ms for 2 seconds (in case of slow loading)
+let attempts = 0;
+const checkExist = setInterval(() => {
+    const success = initializeAvatar();
+    attempts++;
+    if (success || attempts > 20) clearInterval(checkExist);
+}, 100);
+});
+
+
+
+function toggleBilling() {
+    const isChecked = document.getElementById('billing-toggle').checked;
+    const billingSection = document.getElementById('billing-section');
     
+    if (isChecked) {
+        billingSection.classList.add('hidden');
+    } else {
+        billingSection.classList.remove('hidden');
+        // Smooth scroll to the billing section for better UX
+        billingSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+
+
+/**
+ * MOBILE NAVIGATION CONTROLLER - FINAL STABLE VERSION
+ */
+
+function closeAllMobileSystems() {
+    // 1. Reset Sidebar
+    const sidebar = document.getElementById('mobile-sidebar');
+    if (sidebar) {
+        sidebar.classList.add('left-[-100%]');
+        sidebar.classList.remove('left-0');
+    }
+
+    // 2. Reset Main Overlay
+    const overlay = document.getElementById('sidebar-overlay');
+    if (overlay) {
+        overlay.classList.replace('opacity-100', 'opacity-0');
+        overlay.classList.replace('pointer-events-auto', 'pointer-events-none');
+    }
+
+    // 3. Reset Slide-up Panels
+    const panels = ['mobile-filter-panel', 'mobile-search-panel'];
+    panels.forEach(id => {
+        const p = document.getElementById(id);
+        if (p && !p.classList.contains('invisible')) {
+            const content = p.querySelector('div:last-child');
+            content.classList.replace('translate-y-0', 'translate-y-full');
+            setTimeout(() => {
+                p.classList.add('invisible', 'pointer-events-none');
+            }, 300);
+        }
+    });
+
+    document.body.style.overflow = 'auto';
+}
+
+function toggleMobileMenu(event) {
+    if (event) event.stopPropagation();
+    const sidebar = document.getElementById('mobile-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    const isOpening = sidebar.classList.contains('left-[-100%]');
+
+    if (isOpening) {
+        // Instant close others
+        document.querySelectorAll('.slide-up-panel').forEach(p => p.classList.add('invisible'));
+        
+        sidebar.classList.replace('left-[-100%]', 'left-0');
+        overlay.classList.replace('opacity-0', 'opacity-100');
+        overlay.classList.replace('pointer-events-none', 'pointer-events-auto');
+        document.body.style.overflow = 'hidden';
+    } else {
+        closeAllMobileSystems();
+    }
+}
+
+function toggleMobileWidget(panelId, event) {
+    if (event) event.stopPropagation();
+    
+    const panel = document.getElementById(panelId);
+    const content = panel.querySelector('div:last-child');
+
+    if (!panel.classList.contains('invisible')) {
+        closeAllMobileSystems();
+        return;
+    }
+
+    // Close everything else first
+    closeAllMobileSystems();
+
+    panel.classList.remove('invisible', 'pointer-events-none');
+    
+    // Smooth timing
+    setTimeout(() => {
+        content.classList.replace('translate-y-full', 'translate-y-0');
+    }, 10);
+
+    document.body.style.overflow = 'hidden';
+}
+
+// GLOBAL CLICK LISTENER: This ensures any click on a backdrop closes the system
+document.addEventListener('click', function(e) {
+    // Check if the clicked element is the overlay or a panel's backdrop
+    if (e.target.id === 'sidebar-overlay' || e.target.getAttribute('data-backdrop') === 'true') {
+        closeAllMobileSystems();
+    }
+});
+
+
+
+function handleSortClick(selectedBtn) {
+    // 1. Find all buttons in the sort container
+    const allSortBtns = document.querySelectorAll('.sort-btn');
+
+    // 2. Reset all buttons to "inactive" state
+    allSortBtns.forEach(btn => {
+        btn.classList.remove('border-[#2A7CFF]', 'text-[#2A7CFF]');
+        btn.classList.add('border-white/5', 'text-gray-400');
+    });
+
+    // 3. Set the clicked button to "active" state
+    selectedBtn.classList.remove('border-white/5', 'text-gray-400');
+    selectedBtn.classList.add('border-[#2A7CFF]', 'text-[#2A7CFF]');
+
+    // SEO/Ads Tip: You can trigger your filtering function here 
+    // or wait until they hit "Apply Filters"
+    console.log("Sorted by: " + selectedBtn.innerText);
+}
+
+
+// theme-script ends
+
+
+
+
+
+function addtoCart(productId, variantId, quantity) {
+    $.ajax({
+        url: '/addProductToCart',
+        type: 'GET',
+        data: {
+            productId: productId,
+            variantId: variantId,
+            quantity: quantity
+        },
+        success: function (response) {
+            console.log(response.data);
+            if (response.success) {
+                toastr.success(response.message, 'Success Title');
+            } else {
+                toastr.error(response.message, 'Error Title');
+            }
+
+            if (response.availableQty <= 0) {
+                $(".out-of-stock-block").show();
+                $(".add-to-cart-block").hide();
+            } else {
+                $(".out-of-stock-block").hide();
+                $(".add-to-cart-block").show();
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            // Display an error toast if the request fails
+            toastr.error(errorThrown, 'Error Title');
+        }
+    });
+};
+
+$('.add-to-cart').on('click', function () {
+    var productId = $('#main_product_id').val();
+    var variantId = $('#stock_id').val();
+    addtoCart(productId, variantId, 1)
+});
+
+
