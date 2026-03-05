@@ -465,11 +465,11 @@ Log::info($_REQUEST);
 
                                 <div id="brand-grid" class="grid grid-cols-2 max-h-[300px] overflow-y-auto custom-scrollbar divide-x-1 divide-[#1E2529]">
                                     @if(!empty($brands))
-                                        @foreach ($brands as $brand)
-                                        <div class="brand-item w-full cursor-pointer group p-4 transition-all flex items-center min-h-[90px] border border-[#1E2529] hover:bg-[#1E2529]/30" data-name="{{$brand->name}}" data-id="{{ $brand->id }}">
-                                            <img src="{{ $brand->logo ? Storage::url($brand->logo) : asset('assets/img/placeholder.jpg') }}" class="m-auto opacity-[0.5] group-hover:opacity-[1] transition-all duration-600">
-                                        </div>
-                                        @endforeach
+                                    @foreach ($brands as $brand)
+                                    <div class="brand-item w-full cursor-pointer group p-4 transition-all flex items-center min-h-[90px] border border-[#1E2529] hover:bg-[#1E2529]/30" data-name="{{$brand->name}}" data-id="{{ $brand->id }}">
+                                        <img src="{{ $brand->logo ? Storage::url($brand->logo) : asset('assets/img/placeholder.jpg') }}" class="m-auto opacity-[0.5] group-hover:opacity-[1] transition-all duration-600">
+                                    </div>
+                                    @endforeach
                                     @endif
                                 </div>
                                 <a href="#" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view all brands</a>
@@ -500,48 +500,36 @@ Log::info($_REQUEST);
                         <span class="text-[#898989] text-[14px]">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
                         <el-dropdown class="relative inline-block text-left">
                             <button class="group inline-flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white min-w-[230px]">
-                                <span class="mr-[10px] text-[14px] text-[#898989]">Sort by: 
+                                <span class="mr-[10px] text-[14px] text-[#898989]">Sort by:
                                     @switch($sort)
-                                        @case('oldest') Oldest @break
-                                        @case('newest') Newest @break
-                                        @case('price_low_high') Price: Low to High @break
-                                        @case('price_high_low') Price: High to Low @break
-                                        @default Oldest
+                                    @case('oldest') Oldest @break
+                                    @case('newest') Newest @break
+                                    @case('price_low_high') Price: Low to High @break
+                                    @case('price_high_low') Price: High to Low @break
+                                    @default Oldest
                                     @endswitch
-                                </span> 
+                                </span>
                                 <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="-mr-1 ml-1 size-5 shrink-0 text-gray-400 group-hover:text-gray-500">
                                     <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
                                 </svg>
                             </button>
                             <el-menu anchor="bottom end" popover class="m-0 w-40 origin-top-right rounded-md bg-white p-0 shadow-2xl ring-1 ring-black/5 transition [--anchor-gap:theme(spacing.2)] [transition-behavior:allow-discrete] focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
                                 <div class="py-1">
-                                    <a href="{{ route('products', ['sort'=>'oldest','view'=>request('view','gridview')]) }}" class="block px-4 py-2 text-sm font-medium text-gray-900 focus:bg-gray-100 focus:outline-none">Oldest</a>
-                                    <a href="{{ route('products', ['sort'=>'newest','view'=>request('view','gridview')]) }}" class="block px-4 py-2 text-sm text-gray-500 focus:bg-gray-100 focus:outline-none">Newest</a>
-                                    <a href="{{ route('products', ['sort'=>'price_low_high','view'=>request('view','gridview')]) }}" class="block px-4 py-2 text-sm text-gray-500 focus:bg-gray-100 focus:outline-none">Price: Low to High</a>
-                                    <a href="{{ route('products', ['sort'=>'price_high_low','view'=>request('view','gridview')]) }}" class="block px-4 py-2 text-sm text-gray-500 focus:bg-gray-100 focus:outline-none">Price: High to Low</a>
+                                    <a href="#" data-sort="oldest" class="sort-option block px-4 py-2 text-sm font-medium text-gray-900 focus:bg-gray-100 focus:outline-none">Oldest</a>
+                                    <a href="#" data-sort="newest" class="sort-option block px-4 py-2 text-sm text-gray-500 focus:bg-gray-100 focus:outline-none">Newest</a>
+                                    <a href="#" data-sort="price_low_high" class="sort-option block px-4 py-2 text-sm text-gray-500 focus:bg-gray-100 focus:outline-none">Price: Low to High</a>
+                                    <a href="#" data-sort="price_high_low" class="sort-option block px-4 py-2 text-sm text-gray-500 focus:bg-gray-100 focus:outline-none">Price: High to Low</a>
                                 </div>
                             </el-menu>
                         </el-dropdown>
 
                         <div id="view-switcher" class="button-group p-[5px] border border-[#282B34] rounded-[10px] gap-[5px]">
-                            <button @click="
-                                        activeTab='gridview';
-                                        window.location.search = new URLSearchParams({
-                                            sort: '{{ request('sort', 'oldest') }}',
-                                            view: 'gridview'
-                                        });
-                                    " type="button" class="view-btn active bg-[#282B34] group p-[15px] cursor-pointer hover:bg-[#282B34] rounded-[5px] active:bg-[#282B34] transition-all duration-600">
+                            <button @click="activeTab='gridview';filterProducts([], '', 'gridview')" :class="activeTab=='gridview' ? 'active bg-[#282B34]' : ''" type="button" class="view-btn group p-[15px] cursor-pointer hover:bg-[#282B34] rounded-[5px] active:bg-[#282B34] transition-all duration-600">
                                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M5.25 9.75C6.04565 9.75 6.80848 10.0663 7.37109 10.6289C7.9337 11.1915 8.25 11.9544 8.25 12.75V15C8.25 15.7956 7.9337 16.5585 7.37109 17.1211C6.80848 17.6837 6.04565 18 5.25 18H3C2.20435 18 1.44152 17.6837 0.878906 17.1211C0.316297 16.5585 0 15.7956 0 15V12.75C0 11.9544 0.316297 11.1915 0.878906 10.6289C1.44152 10.0663 2.20435 9.75 3 9.75H5.25ZM15 9.75C15.7956 9.75 16.5585 10.0663 17.1211 10.6289C17.6837 11.1915 18 11.9544 18 12.75V15C18 15.7956 17.6837 16.5585 17.1211 17.1211C16.5585 17.6837 15.7956 18 15 18H12.75C11.9544 18 11.1915 17.6837 10.6289 17.1211C10.0663 16.5585 9.75 15.7956 9.75 15V12.75C9.75 11.9544 10.0663 11.1915 10.6289 10.6289C11.1915 10.0663 11.9544 9.75 12.75 9.75H15ZM3 11.25C2.60218 11.25 2.22076 11.4081 1.93945 11.6895C1.65815 11.9708 1.5 12.3522 1.5 12.75V15C1.5 15.3978 1.65815 15.7792 1.93945 16.0605C2.22076 16.3419 2.60218 16.5 3 16.5H5.25C5.64782 16.5 6.02924 16.3419 6.31055 16.0605C6.59185 15.7792 6.75 15.3978 6.75 15V12.75C6.75 12.3522 6.59185 11.9708 6.31055 11.6895C6.02924 11.4081 5.64782 11.25 5.25 11.25H3ZM12.75 11.25C12.3522 11.25 11.9708 11.4081 11.6895 11.6895C11.4081 11.9708 11.25 12.3522 11.25 12.75V15C11.25 15.3978 11.4081 15.7792 11.6895 16.0605C11.9708 16.3419 12.3522 16.5 12.75 16.5H15C15.3978 16.5 15.7792 16.3419 16.0605 16.0605C16.3419 15.7792 16.5 15.3978 16.5 15V12.75C16.5 12.3522 16.3419 11.9708 16.0605 11.6895C15.7792 11.4081 15.3978 11.25 15 11.25H12.75ZM5.25 0C6.04565 0 6.80848 0.316297 7.37109 0.878906C7.9337 1.44152 8.25 2.20435 8.25 3V5.25C8.25 6.04565 7.9337 6.80848 7.37109 7.37109C6.80848 7.9337 6.04565 8.25 5.25 8.25H3C2.20435 8.25 1.44152 7.9337 0.878906 7.37109C0.316297 6.80848 0 6.04565 0 5.25V3C0 2.20435 0.316297 1.44152 0.878906 0.878906C1.44152 0.316297 2.20435 0 3 0H5.25ZM15 0C15.7956 0 16.5585 0.316297 17.1211 0.878906C17.6837 1.44152 18 2.20435 18 3V5.25C18 6.04565 17.6837 6.80848 17.1211 7.37109C16.5585 7.9337 15.7956 8.25 15 8.25H12.75C11.9544 8.25 11.1915 7.9337 10.6289 7.37109C10.0663 6.80848 9.75 6.04565 9.75 5.25V3C9.75 2.20435 10.0663 1.44152 10.6289 0.878906C11.1915 0.316297 11.9544 0 12.75 0H15ZM3 1.5C2.60218 1.5 2.22076 1.65815 1.93945 1.93945C1.65815 2.22076 1.5 2.60218 1.5 3V5.25C1.5 5.64782 1.65815 6.02924 1.93945 6.31055C2.22076 6.59185 2.60218 6.75 3 6.75H5.25C5.64782 6.75 6.02924 6.59185 6.31055 6.31055C6.59185 6.02924 6.75 5.64782 6.75 5.25V3C6.75 2.60218 6.59185 2.22076 6.31055 1.93945C6.02924 1.65815 5.64782 1.5 5.25 1.5H3ZM12.75 1.5C12.3522 1.5 11.9708 1.65815 11.6895 1.93945C11.4081 2.22076 11.25 2.60218 11.25 3V5.25C11.25 5.64782 11.4081 6.02924 11.6895 6.31055C11.9708 6.59185 12.3522 6.75 12.75 6.75H15C15.3978 6.75 15.7792 6.59185 16.0605 6.31055C16.3419 6.02924 16.5 5.64782 16.5 5.25V3C16.5 2.60218 16.3419 2.22076 16.0605 1.93945C15.7792 1.65815 15.3978 1.5 15 1.5H12.75Z" fill="#898989" class="group-hover:fill-white transition-all duration-600" />
                                 </svg>
                             </button>
-                            <button @click="
-                                        activeTab='listview';
-                                        window.location.search = new URLSearchParams({
-                                            sort: '{{ request('sort', 'oldest') }}',
-                                            view: 'listview'
-                                        });
-                                    " type="button" class="view-btn group p-[15px] cursor-pointer hover:bg-[#282B34] rounded-[5px] active:bg-[#282B34] transition-all duration-600">
+                            <button @click="activeTab='listview';filterProducts([], '', 'listview')" :class="activeTab=='listview' ? 'active bg-[#282B34]' : ''" type="button" class="view-btn group p-[15px] cursor-pointer hover:bg-[#282B34] rounded-[5px] active:bg-[#282B34] transition-all duration-600">
                                 <svg width="18" height="18" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M15 0H0V1.25H15V0Z" fill="#898989" class="group-hover:fill-white transition-all duration-600" />
                                     <path d="M15 6.25H0V7.50001H15V6.25Z" fill="#898989" class="group-hover:fill-white transition-all duration-600" />
@@ -572,4 +560,203 @@ Log::info($_REQUEST);
 </section>
 <!--//product listing-->
 
+<script>
+    // FILTER SCRIPT
+
+    // Filtering products based on the price range
+    document.addEventListener('DOMContentLoaded', () => {
+        const minInput = document.getElementById('range-min');
+        const maxInput = document.getElementById('range-max');
+        const minLabel = document.getElementById('min-price');
+        const maxLabel = document.getElementById('max-price');
+        const progress = document.getElementById('slider-progress');
+
+        // STOP if slider does not exist on this page
+        if (!minInput || !maxInput || !minLabel || !maxLabel || !progress) {
+            return;
+        }
+
+        const priceGap = 500; // Minimum gap between handles
+
+        function updateSlider() {
+            let minVal = parseInt(minInput.value);
+            let maxVal = parseInt(maxInput.value);
+
+            // Logic to prevent handles from crossing
+            if (maxVal - minVal < priceGap) {
+                if (this.id === 'range-min') {
+                    minInput.value = maxVal - priceGap;
+                } else {
+                    maxInput.value = minVal + priceGap;
+                }
+            } else {
+                minLabel.textContent = minInput.value;
+                maxLabel.textContent = maxInput.value;
+                filterProducts();
+
+                // Calculate percentage for the blue progress bar
+                const minPercent = (minInput.value / minInput.max) * 100;
+                const maxPercent = 100 - (maxInput.value / maxInput.max) * 100;
+
+                progress.style.left = minPercent + "%";
+                progress.style.right = maxPercent + "%";
+            }
+
+        }
+
+        [minInput, maxInput].forEach(input => {
+            input.addEventListener('input', updateSlider);
+        });
+
+        // Run once on load to set initial state
+        updateSlider();
+    });
+
+    // FIltering based on the brand selected
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('brand-search');
+        const brandItems = document.querySelectorAll('.brand-item');
+
+        // Stop if not on this page
+        if (!searchInput || brandItems.length === 0) {
+            return;
+        }
+        let selectedBrands = [];
+
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                brandItems.forEach(item => {
+                    const brandName = item.getAttribute('data-name').toLowerCase();
+
+                    // Check if search query matches the brand name
+                    if (brandName.includes(query)) {
+                        item.style.display = 'flex'; // Show match
+                        item.classList.add('animate-fade-in'); // Optional: add a quick fade effect
+                    } else {
+                        item.style.display = 'none'; // Hide non-match
+                    }
+                });
+            });
+        }
+
+        // Handle selection (Active State)
+        brandItems.forEach(item => {
+            item.addEventListener('click', function() {
+                let brandId = item.getAttribute('data-id');
+                if (!brandId) return;
+
+                if (selectedBrands.includes(brandId)) {
+                    selectedBrands = selectedBrands.filter(id => id != brandId);
+                } else {
+                    selectedBrands.push(brandId);
+                }
+
+                this.classList.toggle('border-[#3E81FF]');
+                this.classList.toggle('bg-[#282B34]');
+                const img = this.querySelector('img');
+                img.classList.toggle('grayscale-0');
+                filterProducts(selectedBrands);
+            });
+        });
+    });
+
+    // Filtering based on the category selected
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('category-search');
+        const brandItems = document.querySelectorAll('.category-item');
+
+        // Stop if not on this page
+        if (!searchInput || brandItems.length === 0) {
+            return;
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                brandItems.forEach(item => {
+                    const brandName = item.getAttribute('data-name').toLowerCase();
+
+                    // Check if search query matches the brand name
+                    if (brandName.includes(query)) {
+                        item.style.display = 'flex'; // Show match
+                        item.classList.add('animate-fade-in'); // Optional: add a quick fade effect
+                    } else {
+                        item.style.display = 'none'; // Hide non-match
+                    }
+                });
+            });
+        }
+    });
+
+    // Filtering based on the sort order selected
+    document.addEventListener('DOMContentLoaded', () => {
+        const sortButton = document.querySelector('el-dropdown button');
+        const sortOptions = document.querySelectorAll('.sort-option');
+
+        sortOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault(); // prevent default link behavior
+
+                const sortValue = option.dataset.sort; // get the sort key
+                const sortText = option.textContent; // get display text
+
+                // Update button text
+                sortButton.querySelector('span').textContent = `Sort by: ${sortText}`;
+
+                // Call your filterProducts function with the selected sort
+                filterProducts([], sortValue, 'gridview'); // Pass default view or keep current view
+            });
+        });
+    });
+
+
+    // Filtering function
+    function filterProducts(selectedBrands = [], sort = "oldest", view = "gridview") {
+        const categories = Array.from(document.querySelectorAll('input[name="categories[]"]:checked'))
+            .map(el => el.value);
+
+        const min_price = parseInt(document.getElementById('min-price')?.textContent) || 0;
+        const max_price = parseInt(document.getElementById('max-price')?.textContent) || 300000;
+
+        // Get URL from Blade data attribute
+        const url = `/products`;
+
+        // Build query string
+        const params = new URLSearchParams({
+            min_price,
+            max_price,
+            sort,
+            view
+        });
+
+        // Add categories and brands
+        categories.forEach(cat => params.append('categories[]', cat));
+        selectedBrands.forEach(brand => params.append('brands[]', brand));
+
+        fetch(`${url}?${params.toString()}`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.text()) // assuming Laravel returns HTML
+            .then(html => {
+                document.getElementById('product-list-wrapper').innerHTML = html;
+            })
+            .catch(err => console.error('Filter products error:', err));
+    }
+
+    // Call filterProducts() on category,brand change 
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input[name="categories[]"], input[name="brands[]"]').forEach(input => {
+            input.addEventListener('change', () => filterProducts());
+        });
+
+        // Initial load
+        filterProducts();
+    });
+
+    // FILTER SCRIPT
+</script>
 @endsection

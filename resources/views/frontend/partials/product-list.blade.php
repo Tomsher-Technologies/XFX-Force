@@ -11,11 +11,11 @@
                                     $firstStock = $product->stocks->first();
                                 @endphp
                                 <div>
-                                    <a href="#" class="product-card w-full relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
+                                    <a href="{{ route('product.details', $product->id) }}" class="product-card w-full relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
                                         <div class="product-img h-[230px] w-full relative z-[1] bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]">
                                             <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1" title="Upcoming Product 1">
                                             @if(!empty($firstStock->offer_tag))
-                                            <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">{{$firstStock->offer_tag}}</badge>
+                                            <badge class="absolute top-[20px] left-[20px] bg-[#077F09] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">{{$firstStock->offer_tag}}</badge>
                                             @endif
                                         </div>
                                         <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1]">
@@ -45,7 +45,7 @@
                             // Get the first stock for this product
                             $firstStock = $product->stocks->first();
                         @endphp
-                        <div class="product-card-list grid grid-cols-4 overflow-hidden bg-black/30 backdrop-blur-[60px] rounded-[20px]">
+                        <div class="product-card-list grid grid-cols-4 overflow-hidden bg-black/30 backdrop-blur-[60px] rounded-[20px]" onclick="window.location= '{{ route('product.details', $product['id']) }}'" style="cursor: pointer;">
                             <div class="product-image col-span-1">
                                 <img src="{{ Storage::url($product->thumbnail_img) }}" alt="" title="" class="h-full w-full object-cover object-center">
                             </div>

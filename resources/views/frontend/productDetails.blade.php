@@ -273,7 +273,7 @@
                             <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-cover object-center w-full h-full"
                                 alt="Upcoming Product 1" title="Upcoming Product 1">
                             @if(!empty($firstStock->offer_tag))
-                            <badge class="absolute top-[20px] left-[20px] bg-[#2A7CFF] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">
+                            <badge class="absolute top-[20px] left-[20px] bg-[#077F09] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">
                                 {{$firstStock->offer_tag}}
                             </badge>
                             @endif

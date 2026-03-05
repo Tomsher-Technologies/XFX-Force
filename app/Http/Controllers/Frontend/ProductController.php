@@ -583,7 +583,7 @@ class ProductController extends Controller
         $valueId     = $request->value_id;
         $productId   = $request->product_id;
         $attributeId = $request->attribute_id;
-        $selectedAttributes = $request->selectedAttributes ?? [];
+        $selectedAttributes = json_decode($request->selectedAttributes, true) ?? [];
         
 
         // Step 1: Find matching variant IDs
@@ -624,7 +624,7 @@ class ProductController extends Controller
     public function getVarientDetails(Request $request){
        
         $productId   = $request->productId;
-        $selectedAttributes = $request->selectedAttributes;
+        $selectedAttributes = json_decode($request->selectedAttributes, true) ?? [];
 
         $variantIds = ProductAttributes::where('product_id', $productId)
             ->whereIn('attribute_id', array_keys($selectedAttributes))
