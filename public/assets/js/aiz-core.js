@@ -1680,6 +1680,8 @@ togglePassword.on('click', function (e) {
                     if ($(target).children().length <= max) {
                         $(target).append(content);
                         AIZ.plugins.bootstrapSelect();
+                    }else {                        
+                        AIZ.plugins.notify('danger', 'Maximum ' + max + ' items allowed.');
                     }
                 });
             });

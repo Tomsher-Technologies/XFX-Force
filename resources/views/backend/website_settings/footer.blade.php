@@ -5,23 +5,11 @@
     <div class="aiz-titlebar text-left mt-2 mb-3">
         <div class="row align-items-center">
             <div class="col">
-                <h1 class="h3">Website Footer</h1>
+                <h4 class="h5">Website Footer</h4>
             </div>
         </div>
     </div>
-    <ul class="nav nav-tabs nav-fill border-light">
-        {{-- @foreach (\App\Models\Language::all() as $key => $language)
-            <li class="nav-item">
-                <a class="nav-link text-reset @if ($language->code == $lang) active @else bg-soft-dark border-light border-left-0 @endif py-3"
-                    href="{{ route('website.footer', ['lang' => $language->code]) }}">
-                    <img src="{{ static_asset('assets/img/flags/' . $language->code . '.png') }}" height="11" class="mr-1">
-                    <span>{{ $language->name }}</span>
-                </a>
-            </li>
-        @endforeach --}}
-    </ul>
-
-    
+   
     <div class="card">
         <div class="card-header">
             <h6 class="fw-600 mb-0">Footer Widget</h6>
@@ -29,64 +17,18 @@
         <div class="card-body">
             <div class="row gutters-10">
 
-                <div class="col-lg-12 mx-auto">
+                
+
+                <div class="col-lg-6 mx-auto">
                     <div class="card shadow-none bg-light">
                         <div class="card-header">
-                            <h6 class="mb-0">Footer</h6>
+                            <h6 class="mb-0">Contact Info Widget</h6>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('business_settings.update') }}" method="POST"
+                            <form action="{{ route('business_settings.update_settings') }}" method="POST"
                                 enctype="multipart/form-data">
                                 @csrf
 
-                                <div class="form-group">
-                                    <label>Moving Text</label>
-                                    <input type="hidden" name="types[]" value="footer_moving_text">
-                                    <input type="text" class="form-control" placeholder="Enter.." name="footer_moving_text"
-                                        value="{{ get_setting('footer_moving_text') }}">
-                                </div>
-
-                                <div class="mb-3 mt-2">
-                                    <h6 class="mb-0">Newsletter Section</h6>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Title</label>
-                                    <input type="hidden" name="types[]" value="footer_newsletter_title">
-                                    <input type="text" class="form-control" placeholder="Enter.." name="footer_newsletter_title"
-                                        value="{{ get_setting('footer_newsletter_title') }}">
-                                </div>
-                                <div class="form-group">
-                                    <label>Subtitle</label>
-                                    <input type="hidden" name="types[]" value="footer_newsletter_subtitle">
-                                    <input type="text" class="form-control" placeholder="Enter.." name="footer_newsletter_subtitle"
-                                        value="{{ get_setting('footer_newsletter_subtitle') }}">
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Button Text</label>
-                                    <input type="hidden" name="types[][{{ $lang }}]" value="footer_newsletter_button">
-                                    <input type="text" class="form-control" placeholder="Enter.." name="footer_newsletter_button"
-                                        value="{{ get_setting('footer_newsletter_button') }}">
-                                </div>
-                                
-                                <div class="text-right">
-                                    <button type="submit" class="btn btn-primary">Update</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6">
-                    <div class="card shadow-none bg-light">
-                        <div class="card-header">
-                            <h6 class="mb-0">About Widget</h6>
-                        </div>
-                        <div class="card-body">
-                            <form action="{{ route('business_settings.update') }}" method="POST"
-                                enctype="multipart/form-data">
-                                @csrf
                                 <div class="form-group">
                                     <label class="form-label" for="signinSrEmail">Footer Logo</label>
                                     <div class="input-group " data-toggle="aizuploader" data-type="image">
@@ -100,30 +42,6 @@
                                     </div>
                                     <div class="file-preview"></div>
                                 </div>
-                                <div class="form-group">
-                                    <label>About description</label>
-                                    <input type="hidden" name="types[][{{ $lang }}]" value="about_us_description">
-                                    <textarea class="form-control" name="about_us_description" rows="5" placeholder="Type.." >{!! get_setting('about_us_description', null, $lang) !!}
-                                    </textarea>
-                                </div>
-                                
-                                <div class="text-right">
-                                    <button type="submit" class="btn btn-primary">Update</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 mx-auto">
-                    <div class="card shadow-none bg-light">
-                        <div class="card-header">
-                            <h6 class="mb-0">Contact Info Widget</h6>
-                        </div>
-                        <div class="card-body">
-                            <form action="{{ route('business_settings.update') }}" method="POST"
-                                enctype="multipart/form-data">
-                                @csrf
 
                                 <div class="form-group">
                                     <label>Contact Title</label>
@@ -167,23 +85,123 @@
                     </div>
                 </div>
 
-                <div class="col-lg-12 d-none">
+                <div class="col-lg-6 mx-auto">
+                    <div class="card shadow-none bg-light ">
+                        <div class="card-header">
+                            <h6 class="mb-0">Other Details </h6>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('business_settings.update_settings') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+
+                                <div class="form-group">
+                                    <label class="form-label" for="signinSrEmail">Payment Image</label>
+                                    <div class="input-group " data-toggle="aizuploader" data-type="image">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
+                                        </div>
+                                        <div class="form-control file-amount">Choose File</div>
+                                        <input type="hidden" name="types[]" value="footer_payment_logo">
+                                        <input type="hidden" name="footer_payment_logo" class="selected-files"
+                                            value="{{ get_setting('footer_payment_logo') }}">
+                                    </div>
+                                    <div class="file-preview"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Copyright Text</label>
+                                    <input type="hidden" name="types[][{{ $lang }}]" value="frontend_copyright_text">
+                                    <input class="form-control" name="frontend_copyright_text" value="{!! get_setting('frontend_copyright_text', null, $lang) !!}">
+
+                                </div>
+
+                                <div class="form-group d-none">
+                                    <label>Social Links Title</label>
+                                    <div class="input-group form-group">
+                                        <input type="hidden" name="types[]" value="social_title">
+                                        <input type="text" class="form-control" placeholder="" name="social_title"
+                                            value="{{ get_setting('social_title') }}">
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                <label>Social Links</label>
+                                <div class="input-group form-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="lab la-facebook-f"></i></span>
+                                    </div>
+                                    <input type="hidden" name="types[]" value="facebook_link">
+                                    <input type="text" class="form-control" placeholder="http://" name="facebook_link"
+                                        value="{{ get_setting('facebook_link') }}">
+                                </div>
+                                <div class="input-group form-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="lab la-twitter"></i></span>
+                                    </div>
+                                    <input type="hidden" name="types[]" value="twitter_link">
+                                    <input type="text" class="form-control" placeholder="http://" name="twitter_link"
+                                        value="{{ get_setting('twitter_link') }}">
+                                </div>
+                                <div class="input-group form-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="lab la-instagram"></i></span>
+                                    </div>
+                                    <input type="hidden" name="types[]" value="instagram_link">
+                                    <input type="text" class="form-control" placeholder="http://" name="instagram_link"
+                                        value="{{ get_setting('instagram_link') }}">
+                                </div>
+                                <div class="input-group form-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="lab la-youtube"></i></span>
+                                    </div>
+                                    <input type="hidden" name="types[]" value="youtube_link">
+                                    <input type="text" class="form-control" placeholder="http://" name="youtube_link"
+                                        value="{{ get_setting('youtube_link') }}">
+                                </div>
+                                <div class="input-group form-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="lab la-linkedin-in"></i></span>
+                                    </div>
+                                    <input type="hidden" name="types[]" value="linkedin_link">
+                                    <input type="text" class="form-control" placeholder="http://" name="linkedin_link"
+                                        value="{{ get_setting('linkedin_link') }}">
+                                </div>
+                                <div class="input-group form-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="lab la-whatsapp"></i></span>
+                                    </div>
+                                    <input type="hidden" name="types[]" value="whatsapp_link">
+                                    <input type="text" class="form-control" placeholder="http://" name="whatsapp_link"
+                                        value="{{ get_setting('whatsapp_link') }}">
+                                </div>
+                                </div>
+
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 ">
                     <div class="card shadow-none bg-light">
                         <div class="card-header">
                             <h6 class="mb-0">Link Widget One</h6>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('business_settings.update') }}" method="POST"
+                            <form action="{{ route('business_settings.update_settings') }}" method="POST"
                                 enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
-                                    <label>Title (Translatable)</label>
+                                    <label>Title </label>
                                     <input type="hidden" name="types[][{{ $lang }}]" value="widget_one">
                                     <input type="text" class="form-control" placeholder="Widget title"
                                         name="widget_one" value="{{ get_setting('widget_one', null, $lang) }}">
                                 </div>
                                 <div class="form-group">
-                                    <label>Links - (Translatable Label)</label>
+                                    <label>Links </label>
                                     <div class="w3-links-target">
                                         <input type="hidden" name="types[][{{ $lang }}]"
                                             value="widget_one_labels">
@@ -234,7 +252,238 @@
     											</button>
     										</div>
     									</div>'
-                                        data-target=".w3-links-target">
+                                        data-target=".w3-links-target" data-max="8">
+                                        Add New
+                                    </button>
+                                </div>
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-none bg-light">
+                        <div class="card-header">
+                            <h6 class="mb-0">Link Widget Two</h6>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('business_settings.update_settings') }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <label>Title </label>
+                                    <input type="hidden" name="types[][{{ $lang }}]" value="widget_two">
+                                    <input type="text" class="form-control" placeholder="Widget title"
+                                        name="widget_two" value="{{ get_setting('widget_two', null, $lang) }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Links </label>
+                                    <div class="w3-links-target-2">
+                                        <input type="hidden" name="types[][{{ $lang }}]"
+                                            value="widget_two_labels">
+                                        <input type="hidden" name="types[]" value="widget_two_links">
+                                        @if (get_setting('widget_two_labels', null, $lang) != null && get_setting('widget_two_labels', null, $lang) != 'null')
+                                            @foreach (json_decode(get_setting('widget_two_labels', null, $lang), true) as $key => $value)
+                                                <div class="row gutters-5">
+                                                    <div class="col-4">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control"
+                                                                placeholder="Label"
+                                                                name="widget_two_labels[]" value="{{ $value }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control"
+                                                                placeholder="http://" name="widget_two_links[]"
+                                                                value="{{ json_decode(get_setting('widget_two_links'), true)[$key] }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <button type="button"
+                                                            class="mt-1 btn btn-icon btn-circle btn-soft-danger"
+                                                            data-toggle="remove-parent" data-parent=".row">
+                                                            <i class="las la-times"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                    <button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
+                                        data-content='<div class="row gutters-5">
+    										<div class="col-4">
+    											<div class="form-group">
+    												<input type="text" class="form-control" placeholder="Label" name="widget_two_labels[]">
+    											</div>
+    										</div>
+    										<div class="col">
+    											<div class="form-group">
+    												<input type="text" class="form-control" placeholder="http://" name="widget_two_links[]">
+    											</div>
+    										</div>
+    										<div class="col-auto">
+    											<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
+    												<i class="las la-times"></i>
+    											</button>
+    										</div>
+    									</div>'
+                                        data-target=".w3-links-target-2" data-max="8">
+                                        Add New
+                                    </button>
+                                </div>
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-none bg-light">
+                        <div class="card-header">
+                            <h6 class="mb-0">Link Widget Three</h6>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('business_settings.update_settings') }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <label>Title </label>
+                                    <input type="hidden" name="types[][{{ $lang }}]" value="widget_three">
+                                    <input type="text" class="form-control" placeholder="Widget title"
+                                        name="widget_three" value="{{ get_setting('widget_three', null, $lang) }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Links </label>
+                                    <div class="w3-links-target-3">
+                                        <input type="hidden" name="types[][{{ $lang }}]"
+                                            value="widget_three_labels">
+                                        <input type="hidden" name="types[]" value="widget_three_links">
+                                        @if (get_setting('widget_three_labels', null, $lang) != null && get_setting('widget_three_labels', null, $lang) != 'null')
+                                            @foreach (json_decode(get_setting('widget_three_labels', null, $lang), true) as $key => $value)
+                                                <div class="row gutters-5">
+                                                    <div class="col-4">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control"
+                                                                placeholder="Label"
+                                                                name="widget_three_labels[]" value="{{ $value }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control"
+                                                                placeholder="http://" name="widget_three_links[]"
+                                                                value="{{ json_decode(get_setting('widget_three_links'), true)[$key] }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <button type="button"
+                                                            class="mt-1 btn btn-icon btn-circle btn-soft-danger"
+                                                            data-toggle="remove-parent" data-parent=".row">
+                                                            <i class="las la-times"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                    <button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
+                                        data-content='<div class="row gutters-5">
+    										<div class="col-4">
+    											<div class="form-group">
+    												<input type="text" class="form-control" placeholder="Label" name="widget_three_labels[]">
+    											</div>
+    										</div>
+    										<div class="col">
+    											<div class="form-group">
+    												<input type="text" class="form-control" placeholder="http://" name="widget_three_links[]">
+    											</div>
+    										</div>
+    										<div class="col-auto">
+    											<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
+    												<i class="las la-times"></i>
+    											</button>
+    										</div>
+    									</div>'
+                                        data-target=".w3-links-target-3" data-max="8">
+                                        Add New
+                                    </button>
+                                </div>
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-none bg-light">
+                        <div class="card-header">
+                            <h6 class="mb-0">Link Widget Four</h6>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('business_settings.update_settings') }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <label>Title </label>
+                                    <input type="hidden" name="types[][{{ $lang }}]" value="widget_four">
+                                    <input type="text" class="form-control" placeholder="Widget title"
+                                        name="widget_four" value="{{ get_setting('widget_four', null, $lang) }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Links </label>
+                                    <div class="w3-links-target-4">
+                                        <input type="hidden" name="types[][{{ $lang }}]"
+                                            value="widget_four_labels">
+                                        <input type="hidden" name="types[]" value="widget_four_links">
+                                        @if (get_setting('widget_four_labels', null, $lang) != null && get_setting('widget_four_labels', null, $lang) != 'null')
+                                            @foreach (json_decode(get_setting('widget_four_labels', null, $lang), true) as $key => $value)
+                                                <div class="row gutters-5">
+                                                    <div class="col-4">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control"
+                                                                placeholder="Label"
+                                                                name="widget_four_labels[]" value="{{ $value }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control"
+                                                                placeholder="http://" name="widget_four_links[]"
+                                                                value="{{ json_decode(get_setting('widget_four_links'), true)[$key] }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <button type="button"
+                                                            class="mt-1 btn btn-icon btn-circle btn-soft-danger"
+                                                            data-toggle="remove-parent" data-parent=".row">
+                                                            <i class="las la-times"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                    <button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
+                                        data-content='<div class="row gutters-5">
+    										<div class="col-4">
+    											<div class="form-group">
+    												<input type="text" class="form-control" placeholder="Label" name="widget_four_labels[]">
+    											</div>
+    										</div>
+    										<div class="col">
+    											<div class="form-group">
+    												<input type="text" class="form-control" placeholder="http://" name="widget_four_links[]">
+    											</div>
+    										</div>
+    										<div class="col-auto">
+    											<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
+    												<i class="las la-times"></i>
+    											</button>
+    										</div>
+    									</div>'
+                                        data-target=".w3-links-target-4" data-max="8">
                                         Add New
                                     </button>
                                 </div>
@@ -249,294 +498,7 @@
         </div>
     </div>
 
-    <div class="col-md-12 ">
-		<div class="card">
-			<div class="card-header">
-				<h6 class="mb-0">Footer Menu Setting</h6>
-			</div>
-			<div class="card-body">
-				<form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
-					@csrf
-					
-					<div class="">
-                        <div class="form-group row">
-							<label class="col-md-3 col-from-label">Shop by Category Title</label>
-							<div class="col-md-8">
-								<div class="form-group">
-									<input type="hidden" name="types[]" value="footer_category_title_1">
-									<input type="text" class="form-control" placeholder="Shop by Category Title" name="footer_category_title_1" value="{{ get_setting('footer_category_title_1') }}">
-								</div>
-							</div>
-						</div>
-                    </div>
-
-					<div class="form-group ">
-						<label>Categories (Max 6)</label>
-						<div class="new_collection-categories-target">
-							<input type="hidden" name="types[]" value="footer_categories">
-							<input type="hidden" name="page_type" value="new_collection">
-							
-							@if (get_setting('footer_categories') != null && get_setting('footer_categories') != 'null')
-								@foreach (json_decode(get_setting('footer_categories'), true) as $key => $value)
-									<div class="row gutters-5">
-										<div class="col">
-											<div class="form-group">
-												<select class="form-control aiz-selectpicker" name="footer_categories[]" data-live-search="true" data-selected={{ $value }}
-													required>
-													<option value="">Select Category</option>
-													@foreach ($categories as $category)
-														<option value="{{ $category->id }}">{{ $category->name }}
-														</option>
-														@foreach ($category->childrenCategories as $childCategory)
-															@include('backend.categories.child_category', [
-																'child_category' => $childCategory,
-															])
-														@endforeach
-													@endforeach
-												</select>
-											</div>
-										</div>
-										<div class="col-auto">
-											<button type="button"
-												class="mt-1 btn btn-icon btn-circle btn-soft-danger"
-												data-toggle="remove-parent" data-parent=".row">
-												<i class="las la-times"></i>
-											</button>
-										</div>
-									</div>
-								@endforeach
-							@endif
-						</div>
-						<button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
-							data-content='<div class="row gutters-5">
-							<div class="col">
-								<div class="form-group">
-									<select class="form-control aiz-selectpicker" name="footer_categories[]" data-live-search="true" required>
-										<option value="">Select Category</option>
-										@foreach ($categories as $key => $category)
-										<option value="{{ $category->id }}">{{ $category->name }}</option>
-										@foreach ($category->childrenCategories as $childCategory)
-										@include('backend.categories.child_category', [
-											'child_category' => $childCategory,
-										])
-										@endforeach
-										@endforeach
-									</select>
-								</div>
-							</div>
-							<div class="col-auto">
-								<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
-									<i class="las la-times"></i>
-								</button>
-							</div>
-						</div>'
-							data-target=".new_collection-categories-target">
-							Add New
-						</button>
-					</div>
-
-
-					<div class="">
-                        <div class="form-group row">
-							<label class="col-md-3 col-from-label">Shop by Service Title</label>
-							<div class="col-md-8">
-								<div class="form-group">
-									<input type="hidden" name="types[]" value="footer_category_title_2">
-									<input type="text" class="form-control" placeholder="Enter" name="footer_category_title_2" value="{{ get_setting('footer_category_title_2') }}">
-								</div>
-							</div>
-						</div>
-                    </div>
-
-					<div class="form-group">
-						<label>Services (Max 6)</label>
-						<div class="home-brands-target">
-							<input type="hidden" name="types[]" value="footer_services">
-							<input type="hidden" name="page_type" value="footer_services">
-							
-							@if (get_setting('footer_services') != null && get_setting('footer_services') != 'null') 
-								@foreach (json_decode(get_setting('footer_services'), true) as $key => $value)
-									<div class="row gutters-5">
-										<div class="col">
-											<div class="form-group">
-												<select class="form-control aiz-selectpicker" name="footer_services[]"
-													data-live-search="true"  title="Select " data-selected={{ $value }}
-													required>
-												
-													@foreach ($services as $serv)
-														<option value="{{ $serv->id }}">{{ $serv->name }}
-														</option>
-													@endforeach
-												</select>
-											</div>
-										</div>
-										<div class="col-auto">
-											<button type="button"
-												class="mt-1 btn btn-icon btn-circle btn-soft-danger"
-												data-toggle="remove-parent" data-parent=".row">
-												<i class="las la-times"></i>
-											</button>
-										</div>
-									</div>
-								@endforeach
-							@endif
-						</div>
-						<button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
-							data-content='<div class="row gutters-5">
-							<div class="col">
-								<div class="form-group">
-									<select class="form-control aiz-selectpicker" name="footer_services[]" data-live-search="true"  title="Select " required>
-										
-										@foreach ($services as $key => $serv)
-										<option value="{{ $serv->id }}">{{ $serv->name }}</option>
-										@endforeach
-									</select>
-								</div>
-							</div>
-							<div class="col-auto">
-								<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
-									<i class="las la-times"></i>
-								</button>
-							</div>
-						</div>'
-							data-target=".home-brands-target">
-							Add New
-						</button>
-					</div>
-
-					<div class="">
-                        <div class="form-group row">
-							<label class="col-md-3 col-from-label">Resources Title</label>
-							<div class="col-md-8">
-								<div class="form-group">
-									<input type="hidden" name="types[]" value="footer_category_title_3">
-									<input type="text" class="form-control" placeholder="Enter.." name="footer_category_title_3" value="{{ get_setting('footer_category_title_3') }}">
-								</div>
-							</div>
-						</div>
-                    </div>
-
-                    <div class="">
-                        <div class="form-group row">
-							<label class="col-md-3 col-from-label">Company Title</label>
-							<div class="col-md-8">
-								<div class="form-group">
-									<input type="hidden" name="types[]" value="footer_category_title_4">
-									<input type="text" class="form-control" placeholder="Enter.." name="footer_category_title_4" value="{{ get_setting('footer_category_title_4') }}">
-								</div>
-							</div>
-						</div>
-                    </div>
-					
-					<div class="text-right">
-						<button type="submit" class="btn btn-primary">Update</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-
-    <div class="card">
-        <div class="card-header">
-            <h6 class="fw-600 mb-0">Footer Bottom</h6>
-        </div>
-        <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="card-body">
-                <div class="card shadow-none bg-light">
-                    <div class="card-header">
-                        <h6 class="mb-0">Copyright Widget </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Copyright Text</label>
-                            <input type="hidden" name="types[][{{ $lang }}]" value="frontend_copyright_text">
-                            <textarea class="form-control" name="frontend_copyright_text" rows="3">{!! get_setting('frontend_copyright_text', null, $lang) !!}
-                            </textarea>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="card shadow-none bg-light d-none">
-                    <div class="card-header">
-                        <h6 class="mb-0">Social Link Widget </h6>
-                    </div>
-                    <div class="card-body">
-                        
-
-                        <div class="form-group">
-                            <label>Social Links Title</label>
-                            <div class="input-group form-group">
-                                <input type="hidden" name="types[]" value="social_title">
-                                <input type="text" class="form-control" placeholder="" name="social_title"
-                                    value="{{ get_setting('social_title') }}">
-                                
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Social Links</label>
-                            <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="lab la-facebook-f"></i></span>
-                                </div>
-                                <input type="hidden" name="types[]" value="facebook_link">
-                                <input type="text" class="form-control" placeholder="http://" name="facebook_link"
-                                    value="{{ get_setting('facebook_link') }}">
-                            </div>
-                            <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="lab la-twitter"></i></span>
-                                </div>
-                                <input type="hidden" name="types[]" value="twitter_link">
-                                <input type="text" class="form-control" placeholder="http://" name="twitter_link"
-                                    value="{{ get_setting('twitter_link') }}">
-                            </div>
-                            <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="lab la-instagram"></i></span>
-                                </div>
-                                <input type="hidden" name="types[]" value="instagram_link">
-                                <input type="text" class="form-control" placeholder="http://" name="instagram_link"
-                                    value="{{ get_setting('instagram_link') }}">
-                            </div>
-                            <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="lab la-youtube"></i></span>
-                                </div>
-                                <input type="hidden" name="types[]" value="youtube_link">
-                                <input type="text" class="form-control" placeholder="http://" name="youtube_link"
-                                    value="{{ get_setting('youtube_link') }}">
-                            </div>
-                            <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="lab la-linkedin-in"></i></span>
-                                </div>
-                                <input type="hidden" name="types[]" value="linkedin_link">
-                                <input type="text" class="form-control" placeholder="http://" name="linkedin_link"
-                                    value="{{ get_setting('linkedin_link') }}">
-                            </div>
-                            <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="lab la-whatsapp"></i></span>
-                                </div>
-                                <input type="hidden" name="types[]" value="whatsapp_link">
-                                <input type="text" class="form-control" placeholder="http://" name="whatsapp_link"
-                                    value="{{ get_setting('whatsapp_link') }}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-
-                <div class="text-right">
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </div>
-            </div>
-        </form>
-    </div>
+ 
 @endsection
 
 
