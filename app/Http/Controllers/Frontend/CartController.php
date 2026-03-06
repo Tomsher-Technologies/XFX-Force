@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductStock;
 use App\Models\Coupon;
 use App\Models\CouponUsage;
+use App\Models\ProductWarranty;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Auth;
@@ -32,9 +33,7 @@ class CartController extends Controller
         $cartCount = $cartItems->sum('quantity');
         $shipping = 0;
         $tax = 0;
-        $warrantySum = $cartItems->sum(function ($cart) {
-            return optional($cart->product->warranties->first())->price ?? 0;
-        });
+        $warrantySum  = $cartItems->sum('warranty_price');
         $total = $offerSum + $tax + $shipping + $warrantySum;
 
         return view('frontend.cart', compact('cartItems', 'subtotal', 'discountSum','cartCount','tax', 'shipping', 'total', 'warrantySum'))
@@ -271,6 +270,27 @@ class CartController extends Controller
         ], 200);
     }
 
+    public function updateProductWarranty(Request $request)
+    {
+        $cartId = $request->cartId;
+        $warrantyId = $request->warrantyId;
+
+        $cart = Cart::where('id', $cartId)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $warranty = ProductWarranty::find($warrantyId);
+
+        $cart->warranty_id = $warranty->id;
+        $cart->warranty_price = $warranty->price ?? 0;
+        $cart->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Warranty updated',
+        ]);
+    }
+
     /**
      * Get cart summary details on page load or update or delete.
      *
@@ -293,12 +313,8 @@ class CartController extends Controller
         $shipping     = 0;
         $tax          = 0;
         $cartCount    = $cartItems->sum('quantity');
-
-        $defaultWarrantySum = $cartItems->sum(function ($cart) {
-            return optional($cart->product->warranties->first())->price ?? 0;
-        });
-
-        $total        = $offerSum + $tax + $shipping + $defaultWarrantySum;
+        $warrantySum  = $cartItems->sum('warranty_price');
+        $total        = $offerSum + $tax + $shipping + $warrantySum;
 
         
 
@@ -309,6 +325,7 @@ class CartController extends Controller
             'shipping'     => $shipping,
             'tax'   => $tax,
             'cart_count'   => $cartCount,
+            'warranty_sum' => $warrantySum,
             'total'        => $total,
         ];
     }

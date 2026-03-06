@@ -209,6 +209,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- WARRANTY MODAL LOGIC ---
+    const wOverlay = document.getElementById('warranty-modal-overlay');
+    const wContainer = document.getElementById('warranty-modal-container');
+    
+
+    // function toggleWarrantyModal() {
     window.toggleWarrantyModal = function () {
         const isHidden = wOverlay.classList.contains('hidden');
         if (isHidden) {
@@ -237,9 +242,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    window.selectWarranty = function (selectedElement) {
+    window.selectWarranty = async function (selectedElement) {
         // 1. Get all warranty cards
         const cards = document.querySelectorAll('.warranty-card');
+
+        // Get cart + warranty id from data attributes
+        const cartId = selectedElement.dataset.cartid;
+        const warrantyId = selectedElement.dataset.warrantyid;
 
         cards.forEach(card => {
             // 2. Reset Styles to "Unselected"
@@ -259,17 +268,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeIcon = selectedElement.querySelector('.check-icon');
         if (activeIcon) activeIcon.classList.remove('hidden');
 
-        console.log("Selected Warranty Plan:", selectedElement.querySelector('span').innerText);
+        // Update warranty in cart
+        const response = await fetch(`/updateProductWarranty?cartId=${cartId}&warrantyId=${warrantyId}`);
+        const data = await response.json();
+        if (data.status) {
+            updateCartSummary();
+        }
     };
-
-    const wOverlay = document.getElementById('warranty-modal-overlay');
-    const wContainer = document.getElementById('warranty-modal-container');
-    const wSelectorContainer = document.getElementById('warranty-selector-container');
-
-    if (wSelectorContainer && wSelectorContainer.firstElementChild) {
-        const firstCard = wSelectorContainer.firstElementChild;
-        selectWarranty(firstCard);
-    }
 });
 
 // Warranty script end.
@@ -1070,6 +1075,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (response.status) {
                         container.remove();
                         toastr.success(response.message, 'Success');
+                        console.log("AAAAAAAAAa");
                         updateCartSummary();
                     } else {
                         toastr.error(response.message, 'Error');
@@ -1087,6 +1093,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const response = await addToCart(productId, variantId, newVal, 'set');
         if (response.success) {
             input.value = newVal;
+             console.log("BBBBBBB");
             updateCartSummary();
 
             // UI UPDATES for this specific card
@@ -1106,7 +1113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    async function updateCartSummary(){
+    window.updateCartSummary = async function () {
         try {
             const response = await fetch('/getCartSummary');
             const data = await response.json();
@@ -1117,6 +1124,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('cart-total').innerText = data.total;
                 document.getElementById('cart-count').innerText = data.cart_count;
                 document.getElementById('cart-shipping').innerText = data.shipping;
+                document.getElementById('cart-warranty').innerText = data.warranty_sum;
+                
             }
         } catch (err) {
             console.error('Error fetching cart summary', err);

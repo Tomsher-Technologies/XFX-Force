@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/addProductToCart', [CartController::class, 'addProductToCart']);
     Route::get('/removeCartItem/{id}', [CartController::class, 'removeCartItem']);
     Route::get('/getCartSummary', [CartController::class, 'getCartSummary']);
+    Route::get('/updateProductWarranty', [CartController::class, 'updateProductWarranty']);
     
 });
 
