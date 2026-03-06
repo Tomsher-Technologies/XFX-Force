@@ -26,8 +26,10 @@
                                 <tr>
                                     <th class="text-center">#</th>
                                     <th>Name</th>
+                                    <th class="text-center">Slider Type</th>
+                                    
+                                    <th class="text-center">File</th>
                                     <th class="text-center">Link Type</th>
-                                    <th>Image</th>
                                     <th class="text-center">Sort Order</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Options</th>
@@ -41,24 +43,29 @@
                                             {{ $slider->name }}
                                         </td>
                                         <td class="text-center">
-                                            {{ ucfirst($slider->link_type) }}
+                                            {{ ucfirst($slider->slider_type) }}
                                         </td>
-                                        <td>
-                                            <div class="row gutters-5 w-200px w-md-300px mw-100">
-                                                @if ($slider->image)
-                                                    <div class="col-auto">
-                                                        <img src="{{ uploaded_asset($slider->image) }}" alt="Image"
-                                                            class="img-fit">
-                                                    </div>
-                                                @elseif ($slider->video)
-                                                    <div class="col-auto">
-                                                        <video width="100%" height="auto" controls class="img-fit">
-                                                            <source src="{{ uploaded_asset($slider->video) }}" type="video/mp4">
-                                                            Your browser does not support the video tag.
-                                                        </video>
-                                                    </div>
-                                                @endif
-                                            </div>
+                                        
+                                        <td class="text-center">
+                                            @if ($slider->image)
+                                                <div class="col-auto">
+                                                    <img src="{{ uploaded_asset($slider->image) }}" alt="Image"
+                                                        class="img-fit">
+                                                </div>
+                                            @endif
+
+                                            @if ($slider->video)
+                                                <div class="col-auto">
+                                                    <video controls style="max-width: 150px;">
+                                                        <source src="{{ uploaded_asset($slider->video) }}" type="video/mp4">
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                </div>
+                                            @endif
+                                        </td>
+
+                                        <td class="text-center">
+                                            {{ ucfirst($slider->link_type) }}
                                         </td>
                                         <td class="text-center">
                                             {{ $slider->sort_order }}

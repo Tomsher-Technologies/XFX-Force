@@ -33,7 +33,51 @@ class BusinessSettingsController extends Controller
         return back();
     }
 
-    
+     public function updateSettings(Request $request)
+    {
+        $lang = $request->lang ?? 'en';
+        if(!empty($request->types)){
+            foreach ($request->types as $key => $type) {
+                
+                if(gettype($type) == 'array'){
+                    $lang = array_key_first($type);
+                    $type = $type[$lang];
+                    $business_settings = BusinessSetting::where('type', $type)->where('lang',$lang)->first();
+                }else{
+                    $business_settings = BusinessSetting::where('type', $type)->first();
+                }
+
+                
+                if($business_settings!=null){
+                    if(gettype($request[$type]) == 'array'){
+                        $business_settings->value = json_encode($request[$type]);
+                    }
+                    else {
+                        $business_settings->value = $request[$type];
+                    }
+                    $business_settings->lang = $lang;
+                    $business_settings->save();
+                }
+                else{
+                    $business_settings = new BusinessSetting;
+                    $business_settings->type = $type;
+                    if(gettype($request[$type]) == 'array'){
+                        $business_settings->value = json_encode($request[$type]);
+                    }
+                    else {
+                        $business_settings->value = $request[$type];
+                    }
+                    $business_settings->lang = $lang;
+                    $business_settings->save();
+                }
+            }
+        }
+
+        Artisan::call('cache:clear');
+
+        flash(trans("messages.settings").' '.trans("messages.updated_msg"))->success();
+        return back();
+    }
 
     public function shipping_configuration(Request $request){
         return view('backend.general_settings.settings');
@@ -89,17 +133,41 @@ class BusinessSettingsController extends Controller
         return back();
     }
 
-    public function service_settings(Request $request)
+    public function vat_settings(Request $request)
     {
         BusinessSetting::updateOrCreate([
-            'type' => 'default_service_whatsapp'
+            'type' => 'default_vat'
         ], [
-            'value' => $request->default_service_whatsapp ?? NULL
+            'value' => $request->default_vat ?? 0
         ]);
 
         flash('Settings updated successfully')->success();
 
         Artisan::call('cache:clear');
+        return back();
+    }
+
+    public function pickup_settings(Request $request)
+    {
+        BusinessSetting::updateOrCreate(
+            ['type' => 'pickup_address'],
+            ['value' => $request->pickup_address]
+        );
+
+        BusinessSetting::updateOrCreate(
+            ['type' => 'pickup_latitude'],
+            ['value' => $request->pickup_latitude]
+        );
+
+        BusinessSetting::updateOrCreate(
+            ['type' => 'pickup_longitude'],
+            ['value' => $request->pickup_longitude]
+        );
+
+        flash('Pickup location updated successfully')->success();
+
+        Artisan::call('cache:clear');
+
         return back();
     }
 }

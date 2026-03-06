@@ -24,8 +24,7 @@ class WebsiteController extends Controller
 	{
 		$lang = $request->lang;
 		$categories = Category::where('is_active',1)->with('childrenCategories')->get();
-		$services = Service::where('status',1)->orderBy('name', 'asc')->get();
-		return view('backend.website_settings.footer', compact('lang','services','categories'));
+		return view('backend.website_settings.footer', compact('lang','categories'));
 	}
 	public function pages(Request $request)
 	{

@@ -26,8 +26,8 @@ use App\Http\Controllers\Frontend\HomeController;
 |
 */
 
-Route::get('/', [FrontendController::class, 'home'])->name('home');
-
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/login', [FrontendController::class, 'login'])->name('login');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');

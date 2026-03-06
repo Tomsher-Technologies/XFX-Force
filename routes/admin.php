@@ -189,6 +189,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/business-settings/update', [BusinessSettingsController::class, 'update'])->name('business_settings.update');
 
+    Route::post('/business-settings/update-settings', [BusinessSettingsController::class, 'updateSettings'])->name('business_settings.update_settings');
+
     // Manage services
 
     Route::get('/service/all', [ServiceController::class, 'index'])->name('service.index');
@@ -225,8 +227,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/configuration', [BusinessSettingsController::class, 'shipping_configuration'])->name('shipping_configuration.index');
     Route::post('/shipping_configuration/free_shipping', [BusinessSettingsController::class, 'freeshipping_settings'])->name('shipping_configuration.free_shipping');
     Route::post('/configuration/return', [BusinessSettingsController::class, 'return_settings'])->name('configuration.return_settings');
-
-    Route::post('/configuration/service', [BusinessSettingsController::class, 'service_settings'])->name('configuration.service_settings');
+    Route::post('/configuration/vat', [BusinessSettingsController::class, 'vat_settings'])->name('configuration.vat_settings');
+    Route::post('/configuration/pickup', [BusinessSettingsController::class, 'pickup_settings'])->name('configuration.pickup_settings');
 
     //Reports
     Route::get('/stock_report', [ReportController::class, 'stock_report'])->name('stock_report.index');
