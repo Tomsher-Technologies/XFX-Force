@@ -46,18 +46,9 @@
     <meta name="theme-color" content="#000000" />
     <meta name="msapplication-navbutton-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="#000000">
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
-
-    <!-- styles -->
-    <!-- <link rel="stylesheet" href="{{ asset('assets/css/swiper.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/glightbox.min.css') }}" /> -->
-    
-   @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <!--//styles -->
+   
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     @yield('style')
 </head>
 
