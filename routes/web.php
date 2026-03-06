@@ -38,6 +38,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/getVariantState', [ProductController::class, 'getVariantState']);
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
     Route::get('/addProductToCart', [CartController::class, 'addProductToCart']);
+    Route::get('/removeCartItem/{id}', [CartController::class, 'removeCartItem']);
+    Route::get('/getCartSummary', [CartController::class, 'getCartSummary']);
     
 });
 

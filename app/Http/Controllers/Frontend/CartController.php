@@ -16,90 +16,104 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cartItems = Cart::with(['product', 'product_stock'])
+        $cartItems = Cart::with(['product', 'product_stock', 'product.warranties'])
             ->where('user_id', auth()->id())
             ->where('status', 'pending')
             ->get()
             ->map(function ($item) {
-                $item->subtotal = $item->qty * $item->price;
+                $item->subtotal = $item->quantity * $item->price;
+                $item->offerSum = $item->quantity * $item->offer_price;
                 return $item;
             });
 
         $subtotal  = $cartItems->sum('subtotal');
-        $cartCount = $cartItems->sum('qty');
+        $offerSum  = $cartItems->sum('offerSum');
+        $discountSum = $subtotal - $offerSum;
+        $cartCount = $cartItems->sum('quantity');
+        $shipping = 0;
+        $tax = 0;
+        $warrantySum = $cartItems->sum(function ($cart) {
+            return optional($cart->product->warranties->first())->price ?? 0;
+        });
+        $total = $offerSum + $tax + $shipping + $warrantySum;
 
-        return view('frontend.cart', compact('cartItems', 'subtotal', 'cartCount'))
-            ->with('total', $subtotal);
+        return view('frontend.cart', compact('cartItems', 'subtotal', 'discountSum','cartCount','tax', 'shipping', 'total', 'warrantySum'))
+            ->with('total', $total);
     }
 
-    public function addProductToCart(Request $request){
+    public function addProductToCart(Request $request)
+    {
         $userId = Auth::id();
-        $variantId = $request->has('variantId') ? $request->variantId : '';
-        $productId = $request->has('productId') ? $request->productId : '';
+        $variantId = $request->variantId;
+        $productId = $request->productId;
         $requestedQty = $request->quantity ?? 1;
+        $mode = $request->mode ?? 'set';
 
-        // Get product stock
         $stock = ProductStock::findOrFail($variantId);
 
-        // Calculate already added quantity in cart (pending)
-        $cartQty = Cart::where('user_id', $userId)
-            ->where('product_stock_id', $variantId)
-            ->where('status', 'pending')
-            ->sum('quantity');
-
-        $availableQty = $stock->qty - $cartQty;
-
-        if ($availableQty <= 0) {
-            return response()->json([
-                'success' => false,
-                'message' => trans('messages.product_outofstock_msg').'!',
-                'availableQty' => $availableQty - $requestedQty,
-            ]);
-        }
-
-        // Limit requested quantity to available
-        if ($requestedQty > $availableQty) {
-            return response()->json([
-                'success' => false,
-                'message' => "Only {$availableQty} item(s) available for this variant.",
-                'availableQty' => $availableQty - $requestedQty,
-            ]);
-        }
-
-        // Check if cart already has this product variant for this user
         $cartItem = Cart::where('user_id', $userId)
             ->where('product_stock_id', $variantId)
             ->where('status', 'pending')
             ->first();
 
-        if ($cartItem) {
-            // Merge quantities
-            $cartItem->quantity += $requestedQty;
-            $cartItem->save();
+        $currentCartQty = $cartItem ? $cartItem->quantity : 0;
+
+        if ($mode === 'increment') {
+            $newQty = $currentCartQty + $requestedQty;
         } else {
-            // Create new cart entry
+            $newQty = $requestedQty;
+        }
+
+        // Remove item if qty becomes 0
+        if ($newQty <= 0) {
+            if ($cartItem) {
+                $cartItem->delete();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Item removed from cart',
+                'availableQty' => $stock->qty
+            ]);
+        }
+
+        // Stock validation
+        if ($newQty > $stock->qty) {
+            return response()->json([
+                'success' => false,
+                'message' => "Only {$stock->qty} item(s) available.",
+                'availableQty' => $stock->qty - $currentCartQty
+            ]);
+        }
+
+        if ($cartItem) {
+
+            $cartItem->quantity = $newQty;
+            $cartItem->save();
+
+        } else {
+
             Cart::create([
-                'user_id'    => $userId,
-                'product_id'  => $productId,
-                'product_stock_id'=> $variantId,
-                'quantity'    => $requestedQty,
-                'price'       => $stock->price ?? 0,
+                'user_id' => $userId,
+                'product_id' => $productId,
+                'product_stock_id' => $variantId,
+                'quantity' => $newQty,
+                'price' => $stock->price ?? 0,
                 'offer_price' => $stock->offer_price ?? 0,
-                'offer_tag'   => $stock->offer_tag ?? NULL,
-                // 'tax'         => $tax,
+                'offer_tag' => $stock->offer_tag ?? null,
                 'shipping_cost' => 0,
-                'status'     => 'pending',
+                'status' => 'pending',
             ]);
         }
 
         return response()->json([
             'success' => true,
             'message' => trans('messages.product_add_cart_success'),
-            'availableQty' => $availableQty - $requestedQty,
+            'availableQty' => $stock->qty - $newQty
         ]);
     }
 
-    public function addToCart(Request $request)
+    /*public function addToCart(Request $request)
     {
         $product_slug   = $request->has('product_slug') ? $request->product_slug : '';
         $sku            = $request->has('sku') ? $request->sku : '';
@@ -207,15 +221,12 @@ class CartController extends Controller
                 'cart_count' => $this->cartCount()
             ], 200); 
         }
-    }
+    }*/
 
     public function getCartDetails()
     {
         $lang = getActiveLanguage();
         $response = $this->index();
-        // echo '<pre>';
-        // print_r($response);
-        // die;
         return view('pages.cart',compact('response','lang'));
     }
 
@@ -239,105 +250,66 @@ class CartController extends Controller
 
     public function removeCartItem($id)
     {
-        $cart_id = $id;
         $user = getUser();
 
-        if ($cart_id != '' && $user['users_id'] != '') {
-            Cart::where([
-                $user['users_id_type'] => $user['users_id']
-            ])->where('id', $cart_id)->delete();
+        if ($id != '' && $user['users_id'] != '') {
 
-            $updatedCart = Cart::where($user['users_id_type'], $user['users_id'])->get(); // Example for authenticated user
-
-            // Return the updated cart summary
-            $summary = $this->getCartSummary($updatedCart);
+            // Delete the cart item
+            Cart::where([$user['users_id_type'] => $user['users_id']])
+                ->where('id', $id)
+                ->delete();
 
             return response()->json([
                 'status' => true,
                 'message' => trans('messages.cart_item_removed_success'),
-                'updatedCartSummary' => $summary
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => trans('messages.cart_item_not_found'),
             ], 200);
         }
+
+        return response()->json([
+            'status' => false,
+            'message' => trans('messages.cart_item_not_found'),
+        ], 200);
     }
 
-    private function getCartSummary($cartItems)
+    /**
+     * Get cart summary details on page load or update or delete.
+     *
+     * @return array
+     */
+    public function getCartSummary()
     {
-        $subTotal = $cartItems->sum('price');
-        $discount = 0; // Add logic for discount
-        $shipping = 0; // Add logic for shipping
-        $vatAmount = $subTotal * 0.05; // Example VAT
-        $total = $subTotal - $discount + $shipping + $vatAmount;
+        $cartItems = Cart::with(['product', 'product_stock', 'product.warranties'])
+                ->where('user_id', auth()->id())
+                ->where('status', 'pending')
+                ->get()
+                ->map(function ($item) {
+                    $item->subtotal = $item->quantity * $item->price;
+                    $item->offer_sum = $item->quantity * $item->offer_price;
+                    return $item;
+                });
+        $subTotal     = $cartItems->sum('subtotal');
+        $offerSum     = $cartItems->sum('offer_sum');
+        $discountSum  = $subTotal - $offerSum;
+        $shipping     = 0;
+        $tax          = 0;
+        $cartCount    = $cartItems->sum('quantity');
+
+        $defaultWarrantySum = $cartItems->sum(function ($cart) {
+            return optional($cart->product->warranties->first())->price ?? 0;
+        });
+
+        $total        = $offerSum + $tax + $shipping + $defaultWarrantySum;
+
+        
 
         return [
-            'sub_total' => $subTotal,
-            'discount' => $discount,
-            'shipping' => $shipping,
-            'vat_amount' => $vatAmount,
-            'total' => $total
+            'status' => true,
+            'sub_total'    => $subTotal,
+            'discount_sum' => $discountSum,
+            'shipping'     => $shipping,
+            'tax'   => $tax,
+            'cart_count'   => $cartCount,
+            'total'        => $total,
         ];
     }
-
-
-    public function changeQuantity(Request $request)
-    {
-        $cart_id    = $request->cart_id ?? '';
-        $quantity   = $request->quantity ?? '';
-        $action     = $request->action ?? '';
-        $user       = getUser();
-
-        if($cart_id != '' && $quantity != '' && $action != '' && $user['users_id'] != ''){
-            $cart = Cart::where([
-                $user['users_id_type'] => $user['users_id']
-            ])->with([
-                'product',
-                'product_stock',
-            ])->findOrFail($request->cart_id);
-    
-            $max_qty = $cart->product_stock->qty;
-
-            if ($action == 'plus') {           // Increase quantity of a product in the cart.
-                if ( $quantity <= $max_qty) {
-                    $cart->quantity = $quantity;   // Update quantity of a product in the cart.
-                    $cart->save();
-                    return response()->json([
-                        'status'    => true,
-                        'message'   => "Cart updated",
-                    ], 200);
-                }else{
-                    return response()->json([
-                        'status'    => false,
-                        'message'   => "Maximum quantity reached",
-                    ], 200);
-                }
-            }elseif($action == 'minus'){   // Decrease quantity of a product in the cart. If it reaches zero then delete that row from the table.
-                if($quantity < 1){
-                    Cart::where('id',$cart->id)->delete();
-                }else{
-                    $cart->quantity = $quantity;        // Update quantity of a product in the cart.
-                    $cart->save();
-                }
-                return response()->json([
-                    'status'    => true,
-                    'message'   => "Cart updated",
-                ], 200);
-            }else{
-                return response()->json([
-                    'status'    => false,
-                    'message'   => "Undefined action value",
-                ], 200);
-            }
-        } else {
-            return response()->json([
-                'status'    => false,
-                'message'   => "Missing data"
-            ], 200);
-        }
-    }
-
-    
 }

@@ -296,5 +296,8 @@ UPDATE `pages` SET `slug` = 'Home/Landing Page' WHERE `pages`.`id` = 1;
 --     `updated_at` TIMESTAMP NULL
 -- );
 
--- -- Added on 24/02/2026
+-- Added on 24/02/2026
 -- ALTER TABLE `categories` ADD `icon` INT NULL DEFAULT NULL AFTER `name`;
+
+-- -- Added on 06-03-2026
+-- ALTER TABLE `carts` ADD `warranty_id` INT NULL DEFAULT NULL AFTER `coupon_applied`, ADD `warranty_price` DOUBLE(20,2) NULL DEFAULT NULL AFTER `warranty_id`;
