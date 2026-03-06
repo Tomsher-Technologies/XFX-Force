@@ -247,8 +247,8 @@ class ProductController extends Controller
     {
         $product = Product::with([
             'stocks',
-            // 'stocks.attributes.attribute',
-            // 'stocks.attributes.value'
+            'stocks.attributes.attribute',
+            'stocks.attributes.value'
         ])->findOrFail($id);
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
@@ -258,7 +258,7 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        $sort = $request->get('sort', 'oldest');
+        $sort = $request->get('sort', 'newest');
         $view = $request->get('view', 'gridview');
 
         $products = Product::select('products.*')
@@ -283,8 +283,8 @@ class ProductController extends Controller
 
         // Sorting
         switch ($sort) {
-            case 'newest':
-                $products->orderBy('products.created_at', 'desc');
+            case 'oldest':
+                $products->orderBy('products.created_at', 'asc');
                 break;
             case 'price_low_high':
                 $products->orderBy('product_stocks.price', 'asc');
@@ -293,7 +293,7 @@ class ProductController extends Controller
                 $products->orderBy('product_stocks.price', 'desc');
                 break;
             default:
-                $products->orderBy('products.created_at', 'asc');
+                $products->orderBy('products.created_at', 'desc');
                 break;
         }
 
@@ -304,7 +304,7 @@ class ProductController extends Controller
         if ($products->isEmpty()) {
             if ($request->ajax()) {
                 return response()->json([
-                    '<p class="text-white">No Products Found!</p>',
+                    'No Products Found!',
                 ]);
             }
         }
