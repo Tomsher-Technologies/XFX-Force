@@ -506,7 +506,7 @@ Log::info($_REQUEST);
                                     @case('newest') Newest @break
                                     @case('price_low_high') Price: Low to High @break
                                     @case('price_high_low') Price: High to Low @break
-                                    @default Oldest
+                                    @default Newest
                                     @endswitch
                                 </span>
                                 <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="-mr-1 ml-1 size-5 shrink-0 text-gray-400 group-hover:text-gray-500">
@@ -515,8 +515,8 @@ Log::info($_REQUEST);
                             </button>
                             <el-menu anchor="bottom end" popover class="m-0 w-40 origin-top-right rounded-md bg-white p-0 shadow-2xl ring-1 ring-black/5 transition [--anchor-gap:theme(spacing.2)] [transition-behavior:allow-discrete] focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
                                 <div class="py-1">
-                                    <a href="#" data-sort="oldest" class="sort-option block px-4 py-2 text-sm font-medium text-gray-900 focus:bg-gray-100 focus:outline-none">Oldest</a>
-                                    <a href="#" data-sort="newest" class="sort-option block px-4 py-2 text-sm text-gray-500 focus:bg-gray-100 focus:outline-none">Newest</a>
+                                    <a href="#" data-sort="newest" class="sort-option block px-4 py-2 text-sm font-medium text-gray-900 focus:bg-gray-100 focus:outline-none">Newest</a>
+                                    <a href="#" data-sort="oldest" class="sort-option block px-4 py-2 text-sm text-gray-500 focus:bg-gray-100 focus:outline-none">Oldest</a>
                                     <a href="#" data-sort="price_low_high" class="sort-option block px-4 py-2 text-sm text-gray-500 focus:bg-gray-100 focus:outline-none">Price: Low to High</a>
                                     <a href="#" data-sort="price_high_low" class="sort-option block px-4 py-2 text-sm text-gray-500 focus:bg-gray-100 focus:outline-none">Price: High to Low</a>
                                 </div>
@@ -712,7 +712,7 @@ Log::info($_REQUEST);
 
 
     // Filtering function
-    function filterProducts(selectedBrands = [], sort = "oldest", view = "gridview") {
+    function filterProducts(selectedBrands = [], sort = "newest", view = "gridview") {
         const categories = Array.from(document.querySelectorAll('input[name="categories[]"]:checked'))
             .map(el => el.value);
 

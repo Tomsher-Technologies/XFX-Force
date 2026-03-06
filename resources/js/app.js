@@ -3,6 +3,8 @@ import Alpine from 'alpinejs';
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 import $ from 'jquery';
+import GLightbox from 'glightbox';
+import 'glightbox/dist/css/glightbox.min.css';
 
 
 import toastr from 'toastr';
@@ -178,88 +180,97 @@ document.addEventListener('click', function (e) {
 });
 
 
+// Cart page Specification and warranty popups
+document.addEventListener('DOMContentLoaded', () => {
+    // --- SPECIFICATION MODAL LOGIC ---
+    const sOverlay = document.getElementById('spec-modal-overlay');
+    const sContainer = document.getElementById('spec-modal-container');
 
-// --- SPECIFICATION MODAL LOGIC ---
-const sOverlay = document.getElementById('spec-modal-overlay');
-const sContainer = document.getElementById('spec-modal-container');
-
-function toggleSpecModal() {
-    const isHidden = sOverlay.classList.contains('hidden');
-    if (isHidden) {
-        sOverlay.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        setTimeout(() => {
-            sOverlay.classList.add('opacity-100');
-            sContainer.classList.add('scale-100');
-            sContainer.classList.remove('scale-95');
-        }, 10);
-    } else {
-        sOverlay.classList.remove('opacity-100');
-        sContainer.classList.add('scale-95');
-        sContainer.classList.remove('scale-100');
-        setTimeout(() => {
-            sOverlay.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }, 300);
+    // function toggleSpecModal() {
+    window.toggleSpecModal = function () {
+        const isHidden = sOverlay.classList.contains('hidden');
+        if (isHidden) {
+            sOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                sOverlay.classList.add('opacity-100');
+                sContainer.classList.add('scale-100');
+                sContainer.classList.remove('scale-95');
+            }, 10);
+        } else {
+            sOverlay.classList.remove('opacity-100');
+            sContainer.classList.add('scale-95');
+            sContainer.classList.remove('scale-100');
+            setTimeout(() => {
+                sOverlay.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
     }
-}
 
-// --- WARRANTY MODAL LOGIC ---
-const wOverlay = document.getElementById('warranty-modal-overlay');
-const wContainer = document.getElementById('warranty-modal-container');
-
-function toggleWarrantyModal() {
-    const isHidden = wOverlay.classList.contains('hidden');
-    if (isHidden) {
-        wOverlay.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        setTimeout(() => {
-            wOverlay.classList.add('opacity-100');
-            wContainer.classList.add('scale-100');
-            wContainer.classList.remove('scale-95');
-        }, 10);
-    } else {
-        wOverlay.classList.remove('opacity-100');
-        wContainer.classList.add('scale-95');
-        wContainer.classList.remove('scale-100');
-        setTimeout(() => {
-            wOverlay.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }, 300);
+    // --- WARRANTY MODAL LOGIC ---
+    window.toggleWarrantyModal = function () {
+        const isHidden = wOverlay.classList.contains('hidden');
+        if (isHidden) {
+            wOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                wOverlay.classList.add('opacity-100');
+                wContainer.classList.add('scale-100');
+                wContainer.classList.remove('scale-95');
+            }, 10);
+        } else {
+            wOverlay.classList.remove('opacity-100');
+            wContainer.classList.add('scale-95');
+            wContainer.classList.remove('scale-100');
+            setTimeout(() => {
+                wOverlay.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
     }
-}
 
-// --- OUTSIDE CLICK CLOSING ---
-window.addEventListener('click', (e) => {
-    if (e.target === sOverlay) toggleSpecModal();
-    if (e.target === wOverlay) toggleWarrantyModal();
-});
-
-
-window.selectWarranty = function (selectedElement) {
-    // 1. Get all warranty cards
-    const cards = document.querySelectorAll('.warranty-card');
-
-    cards.forEach(card => {
-        // 2. Reset Styles to "Unselected"
-        card.classList.remove('border-2', 'border-[#2A7CFF]', 'bg-[#161B22]');
-        card.classList.add('border', 'border-gray-800', 'bg-[#282B3450]');
-
-        // 3. Hide Checkmark icons
-        const icon = card.querySelector('.check-icon');
-        if (icon) icon.classList.add('hidden');
+    // --- OUTSIDE CLICK CLOSING ---
+    window.addEventListener('click', (e) => {
+        if (e.target === sOverlay) toggleSpecModal();
+        if (e.target === wOverlay) toggleWarrantyModal();
     });
 
-    // 4. Apply "Selected" Styles to the clicked element
-    selectedElement.classList.add('border-2', 'border-[#2A7CFF]', 'bg-[#161B22]');
-    selectedElement.classList.remove('border', 'border-gray-800', 'bg-[#282B3450]');
 
-    // 5. Show the checkmark for the selected plan
-    const activeIcon = selectedElement.querySelector('.check-icon');
-    if (activeIcon) activeIcon.classList.remove('hidden');
+    window.selectWarranty = function (selectedElement) {
+        // 1. Get all warranty cards
+        const cards = document.querySelectorAll('.warranty-card');
 
-    console.log("Selected Warranty Plan:", selectedElement.querySelector('span').innerText);
-};
+        cards.forEach(card => {
+            // 2. Reset Styles to "Unselected"
+            card.classList.remove('border-2', 'border-[#2A7CFF]', 'bg-[#161B22]');
+            card.classList.add('border', 'border-gray-800', 'bg-[#282B3450]');
+
+            // 3. Hide Checkmark icons
+            const icon = card.querySelector('.check-icon');
+            if (icon) icon.classList.add('hidden');
+        });
+
+        // 4. Apply "Selected" Styles to the clicked element
+        selectedElement.classList.add('border-2', 'border-[#2A7CFF]', 'bg-[#161B22]');
+        selectedElement.classList.remove('border', 'border-gray-800', 'bg-[#282B3450]');
+
+        // 5. Show the checkmark for the selected plan
+        const activeIcon = selectedElement.querySelector('.check-icon');
+        if (activeIcon) activeIcon.classList.remove('hidden');
+
+        console.log("Selected Warranty Plan:", selectedElement.querySelector('span').innerText);
+    };
+
+    const wOverlay = document.getElementById('warranty-modal-overlay');
+    const wContainer = document.getElementById('warranty-modal-container');
+    const wSelectorContainer = document.getElementById('warranty-selector-container');
+
+    if (wSelectorContainer && wSelectorContainer.firstElementChild) {
+        const firstCard = wSelectorContainer.firstElementChild;
+        selectWarranty(firstCard);
+    }
+});
 
 // Warranty script end.
 
@@ -267,49 +278,7 @@ window.selectWarranty = function (selectedElement) {
 const MINUS_ICON = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 12H4" /></svg>`;
 const TRASH_ICON = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>`;
 
-window.updateMultiQty = function (btn, change) {
-    // Find the container for THIS specific product
-    const container = btn.closest('.product-item');
-    const input = container.querySelector('.qty-input');
-    const iconWrapper = container.querySelector('.icon-wrapper');
-    const minusBtn = container.querySelector('.minus-btn');
 
-    let currentVal = parseInt(input.value);
-
-    // DELETE LOGIC: If qty is 1 and user clicks minus
-    if (currentVal === 1 && change === -1) {
-        if (confirm("Remove this item?")) {
-            container.style.opacity = '0.5';
-            container.style.pointerEvents = 'none';
-            console.log("Product removed from tracking.");
-        }
-        return;
-    }
-    const productId = container.dataset.productId;
-    const variantId = container.dataset.variantId;
-
-    let newVal = currentVal + change;
-    if (newVal < 1) newVal = 1;
-    addtoCart(productId, variantId, newVal);
-    input.value = newVal;
-
-
-
-    // UI UPDATES for this specific card
-    if (newVal === 1) {
-        iconWrapper.innerHTML = TRASH_ICON;
-        minusBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
-        minusBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
-    } else {
-        iconWrapper.innerHTML = MINUS_ICON;
-        minusBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
-        minusBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
-    }
-
-    // Pulse animation
-    input.classList.add('text-[#2A7CFF]', 'scale-110');
-    setTimeout(() => input.classList.remove('text-[#2A7CFF]', 'scale-110'), 150);
-};
 
 document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.getElementById('billing-toggle');
@@ -323,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    if(toggle){
+    if (toggle) {
         toggle.addEventListener('change', () => {
             list.classList.toggle('hidden', toggle.checked);
         });
@@ -362,6 +331,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const categorySelect = document.getElementById('category-select');
     const brandItems = document.querySelectorAll('.brand-item');
 
+    if (!searchInput && !categorySelect && brandItems.length === 0) return;
+
     const runFilters = () => {
         const query = searchInput.value.toLowerCase();
         const selectedCat = categorySelect.value;
@@ -381,10 +352,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
-    if(searchInput){
+    if (searchInput) {
         searchInput.addEventListener('input', runFilters);
     }
-    if(categorySelect){
+    if (categorySelect) {
         categorySelect.addEventListener('change', runFilters);
     }
 });
@@ -544,171 +515,171 @@ const trigger = document.getElementById("menuTrigger");
 const overlay = document.getElementById("megaOverlay");
 
 trigger.addEventListener("click", () => {
-  // Toggle the Morphing Icon
-  trigger.classList.toggle("active");
+    // Toggle the Morphing Icon
+    trigger.classList.toggle("active");
 
-  // Toggle the Mega Menu Visibility
-  overlay.classList.toggle("open");
+    // Toggle the Mega Menu Visibility
+    overlay.classList.toggle("open");
 
-  // Prevent scrolling when menu is open
-  if (overlay.classList.contains("open")) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "auto";
-  }
+    // Prevent scrolling when menu is open
+    if (overlay.classList.contains("open")) {
+        document.body.style.overflow = "hidden";
+    } else {
+        document.body.style.overflow = "auto";
+    }
 });
 
 var swiper = new Swiper(".categoryswiper", {
-  slidesPerView: 7,
-  spaceBetween: 50,
-  grabCursor: true,
-  pagination: false,
-  loop: false,
-  speed: 5000,
-  parallax: false,
-  navigation: {
-    prevEl: ".swiper-button-prev",
-    nextEl: ".swiper-button-next",
-  },
-  autoplay: { delay: 3000, disableOnInteraction: false },
-  allowTouchMove: true,
-  breakpoints: {
-    640: { slidesPerView: 3, spaceBetween: 15 },
-    768: { slidesPerView: 3, spaceBetween: 15 },
-    1024: { slidesPerView: 4, spaceBetween: 30 },
-    1280: { slidesPerView: 4, spaceBetween: 30 },
-  },
+    slidesPerView: 7,
+    spaceBetween: 50,
+    grabCursor: true,
+    pagination: false,
+    loop: false,
+    speed: 5000,
+    parallax: false,
+    navigation: {
+        prevEl: ".swiper-button-prev",
+        nextEl: ".swiper-button-next",
+    },
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    allowTouchMove: true,
+    breakpoints: {
+        640: { slidesPerView: 3, spaceBetween: 15 },
+        768: { slidesPerView: 3, spaceBetween: 15 },
+        1024: { slidesPerView: 5, spaceBetween: 30 },
+        1280: { slidesPerView: 7, spaceBetween: 30 },
+    },
 });
 
 var swiper = new Swiper(".gamepcswiper", {
-  slidesPerView: 4,
-  spaceBetween: 15,
-  grabCursor: true,
-  pagination: {
-    el: ".swiper-pagination",
-    dynamicBullets: true,
-  },
-  loop: false,
-  speed: 5000,
-  freeMode: false,
-  parallax: true,
-  navigation: {
-    prevEl: ".swiper-button-prev",
-    nextEl: ".swiper-button-next",
-  },
-  autoplay: { delay: 3000, disableOnInteraction: false },
-  allowTouchMove: true,
-  breakpoints: {
-    640: { slidesPerView: 1, spaceBetween: 15 },
-    768: { slidesPerView: 2, spaceBetween: 15 },
-    1024: { slidesPerView: 4, spaceBetween: 15 },
-    1280: { slidesPerView: 4, spaceBetween: 15 },
-  },
+    slidesPerView: 4,
+    spaceBetween: 15,
+    grabCursor: true,
+    pagination: {
+        el: ".swiper-pagination",
+        dynamicBullets: true,
+    },
+    loop: false,
+    speed: 5000,
+    freeMode: false,
+    parallax: true,
+    navigation: {
+        prevEl: ".swiper-button-prev",
+        nextEl: ".swiper-button-next",
+    },
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    allowTouchMove: true,
+    breakpoints: {
+        640: { slidesPerView: 1, spaceBetween: 15 },
+        768: { slidesPerView: 2, spaceBetween: 15 },
+        1024: { slidesPerView: 4, spaceBetween: 15 },
+        1280: { slidesPerView: 4, spaceBetween: 15 },
+    },
 });
 
 var swiper = new Swiper(".productswiper", {
-  slidesPerView: 5,
-  spaceBetween: 15,
-  grabCursor: true,
-  pagination: {
-    el: ".swiper-pagination",
-    dynamicBullets: true,
-  },
-  dots: true,
-  loop: true,
-  speed: 5000,
-  freeMode: false,
-  parallax: true,
-  navigation: {
-    prevEl: ".swiper-button-prev",
-    nextEl: ".swiper-button-next",
-  },
-  autoplay: { delay: 3000, disableOnInteraction: false },
-  allowTouchMove: true,
-  breakpoints: {
-    640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
-    768: { slidesPerView: 2, spaceBetween: 15 },
-    1024: { slidesPerView: 3, spaceBetween: 15 },
-    1280: { slidesPerView: 4, spaceBetween: 15 },
-  },
+    slidesPerView: 5,
+    spaceBetween: 15,
+    grabCursor: true,
+    pagination: {
+        el: ".swiper-pagination",
+        dynamicBullets: true,
+    },
+    dots: true,
+    loop: true,
+    speed: 5000,
+    freeMode: false,
+    parallax: true,
+    navigation: {
+        prevEl: ".swiper-button-prev",
+        nextEl: ".swiper-button-next",
+    },
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    allowTouchMove: true,
+    breakpoints: {
+        640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
+        768: { slidesPerView: 2, spaceBetween: 15 },
+        1024: { slidesPerView: 3, spaceBetween: 15 },
+        1280: { slidesPerView: 4, spaceBetween: 15 },
+    },
 });
 
 var swiper = new Swiper(".equipmentswiper", {
-  slidesPerView: 4,
-  spaceBetween: 15,
-  grabCursor: true,
-  pagination: {
-    el: ".swiper-pagination",
-    dynamicBullets: true,
-  },
-  dots: true,
-  loop: false,
-  speed: 5000,
-  freeMode: false,
-  parallax: true,
-  navigation: false,
-  autoplay: { delay: 3000, disableOnInteraction: false },
-  allowTouchMove: true,
-  breakpoints: {
-    640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
-    768: { slidesPerView: 2, spaceBetween: 15 },
-    1024: { slidesPerView: 3, spaceBetween: 15 },
-    1280: { slidesPerView: 4, spaceBetween: 15 },
-  },
+    slidesPerView: 4,
+    spaceBetween: 15,
+    grabCursor: true,
+    pagination: {
+        el: ".swiper-pagination",
+        dynamicBullets: true,
+    },
+    dots: true,
+    loop: false,
+    speed: 5000,
+    freeMode: false,
+    parallax: true,
+    navigation: false,
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    allowTouchMove: true,
+    breakpoints: {
+        640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
+        768: { slidesPerView: 2, spaceBetween: 15 },
+        1024: { slidesPerView: 3, spaceBetween: 15 },
+        1280: { slidesPerView: 4, spaceBetween: 15 },
+    },
 });
 
 var swiper = new Swiper(".adswipertwo", {
-  slidesPerView: 2,
-  spaceBetween: 15,
-  grabCursor: true,
-  pagination: false,
-  loop: true,
-  speed: 5000,
-  freeMode: false,
-  parallax: true,
-  navigation: false,
-  autoplay: { delay: 3000, disableOnInteraction: false },
-  allowTouchMove: true,
-  breakpoints: {
-    640: { slidesPerView: 1, spaceBetween: 15 },
-    768: { slidesPerView: 1, spaceBetween: 30 },
-    1024: { slidesPerView: 2, spaceBetween: 30 },
-    1280: { slidesPerView: 2, spaceBetween: 30 },
-  },
+    slidesPerView: 2,
+    spaceBetween: 15,
+    grabCursor: true,
+    pagination: false,
+    loop: true,
+    speed: 5000,
+    freeMode: false,
+    parallax: true,
+    navigation: false,
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    allowTouchMove: true,
+    breakpoints: {
+        640: { slidesPerView: 1, spaceBetween: 15 },
+        768: { slidesPerView: 1, spaceBetween: 30 },
+        1024: { slidesPerView: 2, spaceBetween: 30 },
+        1280: { slidesPerView: 2, spaceBetween: 30 },
+    },
 });
 
 var swiper = new Swiper(".adswiperone", {
-  slidesPerView: 1,
-  spaceBetween: 15,
-  grabCursor: true,
-  pagination: false,
-  loop: true,
-  speed: 5000,
-  freeMode: false,
-  parallax: true,
-  navigation: false,
-  autoplay: { delay: 3000, disableOnInteraction: false },
-  allowTouchMove: true,
+    slidesPerView: 1,
+    spaceBetween: 15,
+    grabCursor: true,
+    pagination: false,
+    loop: true,
+    speed: 5000,
+    freeMode: false,
+    parallax: true,
+    navigation: false,
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    allowTouchMove: true,
 });
 
 var swiper = new Swiper(".promobnrswiper", {
-  slidesPerView: 1,
-  spaceBetween: 15,
-  grabCursor: true,
-  pagination: false,
-  loop: true,
-  speed: 5000,
-  freeMode: false,
-  parallax: true,
-  navigation: false,
-  autoplay: { delay: 3000, disableOnInteraction: false },
-  allowTouchMove: true,
-  breakpoints: {
-    640: { slidesPerView: 2, spaceBetween: 15 },
-    768: { slidesPerView: 2, spaceBetween: 30 },
-    1024: { slidesPerView: 4, spaceBetween: 30 },
-    1280: { slidesPerView: 4, spaceBetween: 30 },
-  },
+    slidesPerView: 1,
+    spaceBetween: 15,
+    grabCursor: true,
+    pagination: false,
+    loop: true,
+    speed: 5000,
+    freeMode: false,
+    parallax: true,
+    navigation: false,
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    allowTouchMove: true,
+    breakpoints: {
+        640: { slidesPerView: 2, spaceBetween: 15 },
+        768: { slidesPerView: 2, spaceBetween: 30 },
+        1024: { slidesPerView: 4, spaceBetween: 30 },
+        1280: { slidesPerView: 4, spaceBetween: 30 },
+    },
 });
 
 // const buttons = document.querySelectorAll('.tab-btn');
@@ -727,111 +698,111 @@ var swiper = new Swiper(".promobnrswiper", {
 const tabButtons = document.querySelectorAll(".tab-btn");
 
 const inactiveClasses =
-  "tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black]";
+    "tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black]";
 const activeClasses =
-  "tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black]";
+    "tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black]";
 
 tabButtons.forEach((btn) => {
-  btn.addEventListener("click", function (e) {
-    // 1. Find the parent container of the clicked button
-    const parentSection = this.closest(".flex"); // or use a specific class like '.tab-container'
+    btn.addEventListener("click", function (e) {
+        // 1. Find the parent container of the clicked button
+        const parentSection = this.closest(".flex"); // or use a specific class like '.tab-container'
 
-    // 2. Only find buttons within THIS specific section
-    const sectionButtons = parentSection.querySelectorAll(".tab-btn");
+        // 2. Only find buttons within THIS specific section
+        const sectionButtons = parentSection.querySelectorAll(".tab-btn");
 
-    // 3. Reset only these buttons
-    sectionButtons.forEach((b) => {
-      b.className = inactiveClasses;
-      b.setAttribute("data-active", "false");
+        // 3. Reset only these buttons
+        sectionButtons.forEach((b) => {
+            b.className = inactiveClasses;
+            b.setAttribute("data-active", "false");
+        });
+
+        // 4. Set the clicked button to active
+        this.className = activeClasses;
+        this.setAttribute("data-active", "true");
     });
-
-    // 4. Set the clicked button to active
-    this.className = activeClasses;
-    this.setAttribute("data-active", "true");
-  });
 });
 
 
 var swiper = new Swiper(".video-testimonials", {
-  slidesPerView: 1,
-  spaceBetween: 0,
-  grabCursor: true,
-  pagination: {
-    el: ".swiper-pagination",
-    dynamicBullets: true,
-  },
-  loop: true,
-  speed: 3000,
-  freeMode: false,
-  parallax: true,
-  effect: "fade",
-  navigation: false,
-  autoplay: { delay: 5000, disableOnInteraction: false },
-  allowTouchMove: true,
-  breakpoints: {
-    640: { slidesPerView: 1 },
-    768: { slidesPerView: 1 },
-    1024: { slidesPerView: 1 },
-    1280: { slidesPerView: 1 },
-  },
+    slidesPerView: 1,
+    spaceBetween: 0,
+    grabCursor: true,
+    pagination: {
+        el: ".swiper-pagination",
+        dynamicBullets: true,
+    },
+    loop: true,
+    speed: 3000,
+    freeMode: false,
+    parallax: true,
+    effect: "fade",
+    navigation: false,
+    autoplay: { delay: 5000, disableOnInteraction: false },
+    allowTouchMove: true,
+    breakpoints: {
+        640: { slidesPerView: 1 },
+        768: { slidesPerView: 1 },
+        1024: { slidesPerView: 1 },
+        1280: { slidesPerView: 1 },
+    },
 });
 
 var swiper = new Swiper(".g-testimonials", {
-  slidesPerView: 1,
-  spaceBetween: 50,
-  grabCursor: true,
-  pagination: {
-    el: ".swiper-pagination",
-    dynamicBullets: true,
-  },
-  loop: true,
-  speed: 3000,
-  freeMode: false,
-  parallax: true,
-  navigation: {
-    prevEl: ".swiper-button-prev",
-    nextEl: ".swiper-button-next",
-  },
-  autoplay: { delay: 5000, disableOnInteraction: false },
-  allowTouchMove: true,
+    slidesPerView: 1,
+    spaceBetween: 50,
+    grabCursor: true,
+    pagination: {
+        el: ".swiper-pagination",
+        dynamicBullets: true,
+    },
+    loop: true,
+    speed: 3000,
+    freeMode: false,
+    parallax: true,
+    navigation: {
+        prevEl: ".swiper-button-prev",
+        nextEl: ".swiper-button-next",
+    },
+    autoplay: { delay: 5000, disableOnInteraction: false },
+    allowTouchMove: true,
 });
 
 var swiper = new Swiper(".aboutswiper", {
-  slidesPerView: 1,
-  spaceBetween: 50,
-  grabCursor: true,
-  pagination: true,
-  loop: true,
-  speed: 3000,
-  freeMode: false,
-  parallax: true,
-  navigation: false,
-  autoplay: { delay: 5000, disableOnInteraction: false },
-  allowTouchMove: true,
+    slidesPerView: 1,
+    spaceBetween: 50,
+    grabCursor: true,
+    pagination: true,
+    loop: true,
+    speed: 3000,
+    freeMode: false,
+    parallax: true,
+    navigation: false,
+    autoplay: { delay: 5000, disableOnInteraction: false },
+    allowTouchMove: true,
 });
 
 var swiper = new Swiper(".singleprdswiper", {
-  slidesPerView: 1,
-  spaceBetween: 50,
-  grabCursor: true,
-  pagination: true,
-  dots: true,
-  loop: true,
-  speed: 3000,
-  freeMode: false,
-  parallax: true,
-  navigation: true,
-  autoplay: { delay: 5000, disableOnInteraction: false },
-  allowTouchMove: true,
+    slidesPerView: 1,
+    spaceBetween: 50,
+    grabCursor: true,
+    pagination: true,
+    dots: true,
+    loop: true,
+    speed: 3000,
+    freeMode: false,
+    parallax: true,
+    navigation: true,
+    autoplay: { delay: 5000, disableOnInteraction: false },
+    allowTouchMove: true,
+});
+
+// 1. Initialize Lightbox
+const lightbox = GLightbox({
+    selector: '.glightbox',
+    touchNavigation: true,
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    // 1. Initialize Lightbox
-    const lightbox = GLightbox({
-        selector: '.glightbox',
-        touchNavigation: true,
-    });
-
     // 2. Identify your background player
     const bgPlayer = document.getElementById('bgPlayer');
 
@@ -859,40 +830,40 @@ lightbox.on('open', () => {
 lightbox.on('close', () => {
     // Resume only the one in the visible swiper slide
     const activeSlide = document.querySelector('.swiper-slide-active iframe');
-    if(activeSlide) {
+    if (activeSlide) {
         activeSlide.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
     }
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-const initializeAvatar = () => {
-    const nameElement = document.getElementById('userName');
-    const avatarElement = document.getElementById('userAvatar');
+    const initializeAvatar = () => {
+        const nameElement = document.getElementById('userName');
+        const avatarElement = document.getElementById('userAvatar');
 
-    if (nameElement && avatarElement) {
-        // .innerText is more reliable for visible text than .textContent
-        const nameText = nameElement.innerText.trim();
-        
-        if (nameText && nameText !== "?") {
-            const firstLetter = nameText.charAt(0).toUpperCase();
-            avatarElement.innerText = firstLetter;
-            console.log("Avatar updated to:", firstLetter); // Check your console (F12)
-            return true; // Success
+        if (nameElement && avatarElement) {
+            // .innerText is more reliable for visible text than .textContent
+            const nameText = nameElement.innerText.trim();
+
+            if (nameText && nameText !== "?") {
+                const firstLetter = nameText.charAt(0).toUpperCase();
+                avatarElement.innerText = firstLetter;
+                console.log("Avatar updated to:", firstLetter); // Check your console (F12)
+                return true; // Success
+            }
         }
-    }
-    return false; // Not ready yet
-};
+        return false; // Not ready yet
+    };
 
-// Try immediately, on load, and as a fallback interval
-window.addEventListener('load', initializeAvatar);
+    // Try immediately, on load, and as a fallback interval
+    window.addEventListener('load', initializeAvatar);
 
-// Fallback: Check every 100ms for 2 seconds (in case of slow loading)
-let attempts = 0;
-const checkExist = setInterval(() => {
-    const success = initializeAvatar();
-    attempts++;
-    if (success || attempts > 20) clearInterval(checkExist);
-}, 100);
+    // Fallback: Check every 100ms for 2 seconds (in case of slow loading)
+    let attempts = 0;
+    const checkExist = setInterval(() => {
+        const success = initializeAvatar();
+        attempts++;
+        if (success || attempts > 20) clearInterval(checkExist);
+    }, 100);
 });
 
 
@@ -900,7 +871,7 @@ const checkExist = setInterval(() => {
 function toggleBilling() {
     const isChecked = document.getElementById('billing-toggle').checked;
     const billingSection = document.getElementById('billing-section');
-    
+
     if (isChecked) {
         billingSection.classList.add('hidden');
     } else {
@@ -950,13 +921,13 @@ function toggleMobileMenu(event) {
     if (event) event.stopPropagation();
     const sidebar = document.getElementById('mobile-sidebar');
     const overlay = document.getElementById('sidebar-overlay');
-    
+
     const isOpening = sidebar.classList.contains('left-[-100%]');
 
     if (isOpening) {
         // Instant close others
         document.querySelectorAll('.slide-up-panel').forEach(p => p.classList.add('invisible'));
-        
+
         sidebar.classList.replace('left-[-100%]', 'left-0');
         overlay.classList.replace('opacity-0', 'opacity-100');
         overlay.classList.replace('pointer-events-none', 'pointer-events-auto');
@@ -968,7 +939,7 @@ function toggleMobileMenu(event) {
 
 function toggleMobileWidget(panelId, event) {
     if (event) event.stopPropagation();
-    
+
     const panel = document.getElementById(panelId);
     const content = panel.querySelector('div:last-child');
 
@@ -981,7 +952,7 @@ function toggleMobileWidget(panelId, event) {
     closeAllMobileSystems();
 
     panel.classList.remove('invisible', 'pointer-events-none');
-    
+
     // Smooth timing
     setTimeout(() => {
         content.classList.replace('translate-y-full', 'translate-y-0');
@@ -991,7 +962,7 @@ function toggleMobileWidget(panelId, event) {
 }
 
 // GLOBAL CLICK LISTENER: This ensures any click on a backdrop closes the system
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     // Check if the clicked element is the overlay or a panel's backdrop
     if (e.target.id === 'sidebar-overlay' || e.target.getAttribute('data-backdrop') === 'true') {
         closeAllMobileSystems();
@@ -1018,50 +989,137 @@ function handleSortClick(selectedBtn) {
     // or wait until they hit "Apply Filters"
     console.log("Sorted by: " + selectedBtn.innerText);
 }
-
-
 // theme-script ends
 
+document.addEventListener('DOMContentLoaded', function () {
+    async function addToCart(productId, variantId, quantity, mode="set") {
+        try {
+            const res = await fetch(`/addProductToCart?productId=${productId}&variantId=${variantId}&quantity=${quantity}&mode=${mode}`);
+            const response = await res.json();
 
-
-
-
-function addtoCart(productId, variantId, quantity) {
-    $.ajax({
-        url: '/addProductToCart',
-        type: 'GET',
-        data: {
-            productId: productId,
-            variantId: variantId,
-            quantity: quantity
-        },
-        success: function (response) {
-            console.log(response.data);
             if (response.success) {
-                toastr.success(response.message, 'Success Title');
+                toastr.success(response.message, 'Success');
             } else {
-                toastr.error(response.message, 'Error Title');
+                toastr.error(response.message, 'Error');
             }
 
             if (response.availableQty <= 0) {
-                $(".out-of-stock-block").show();
-                $(".add-to-cart-block").hide();
+                document.querySelectorAll('.out-of-stock-block').forEach(el => el.style.display = 'block');
+                document.querySelectorAll('.add-to-cart-block').forEach(el => el.style.display = 'none');
             } else {
-                $(".out-of-stock-block").hide();
-                $(".add-to-cart-block").show();
+                document.querySelectorAll('.out-of-stock-block').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.add-to-cart-block').forEach(el => el.style.display = 'block');
             }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            // Display an error toast if the request fails
-            toastr.error(errorThrown, 'Error Title');
+
+            return response; // return the full response
+        } catch (error) {
+            toastr.error(error, 'Error');
+            return { success: false, availableQty: 0 };
+        }
+    }
+
+    $('.add-to-cart').on('click', function () {
+        const productId = document.getElementById('main_product_id')?.value;
+        const variantId = document.getElementById('stock_id')?.value;
+        addToCart(productId, variantId, 1, 'increment');
+    });
+
+    // toggle minus and trash icon
+     document.querySelectorAll('.product-item').forEach(container => {
+        const input = container.querySelector('.qty-input');
+        const iconWrapper = container.querySelector('.icon-wrapper');
+        const minusBtn = container.querySelector('.minus-btn');
+
+        let currentVal = parseInt(input.value);
+
+        if (currentVal === 1) {
+            iconWrapper.innerHTML = TRASH_ICON;
+
+            minusBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
+            minusBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+
+        } else if (currentVal > 1) {
+
+            iconWrapper.innerHTML = MINUS_ICON;
+
+            minusBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
+            minusBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
         }
     });
-};
 
-$('.add-to-cart').on('click', function () {
-    var productId = $('#main_product_id').val();
-    var variantId = $('#stock_id').val();
-    addtoCart(productId, variantId, 1)
+    // Add items to cart
+    window.updateMultiQty = async function (btn, change) {
+        // Find the container for THIS specific product
+        const container = btn.closest('.product-item');
+        const input = container.querySelector('.qty-input');
+        const iconWrapper = container.querySelector('.icon-wrapper');
+        const minusBtn = container.querySelector('.minus-btn');
+        const productId = container.dataset.productId;
+        const variantId = container.dataset.variantId;
+        const cartId = container.dataset.cartId;
+        
+        let currentVal = parseInt(input.value);
+        
+        // DELETE LOGIC: If qty is 1 and user clicks minus
+        if (currentVal === 1 && change === -1) {
+            if (confirm("Remove this item?")) {
+                try {
+                    const res = await fetch(`/removeCartItem/${cartId}`);
+                    const response = await res.json();
+
+                    if (response.status) {
+                        container.remove();
+                        toastr.success(response.message, 'Success');
+                        updateCartSummary();
+                    } else {
+                        toastr.error(response.message, 'Error');
+                    }
+                } catch (error) {
+                    toastr.error('Something went wrong', 'Error');
+                }
+            }
+            return;
+        }
+        
+        let newVal = currentVal + change;
+        if (newVal < 1) newVal = 1;
+
+        const response = await addToCart(productId, variantId, newVal, 'set');
+        if (response.success) {
+            input.value = newVal;
+            updateCartSummary();
+
+            // UI UPDATES for this specific card
+            if (newVal === 1) {
+                iconWrapper.innerHTML = TRASH_ICON;
+                minusBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
+                minusBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+            } else {
+                iconWrapper.innerHTML = MINUS_ICON;
+                minusBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
+                minusBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+            }
+
+            // Pulse animation
+            input.classList.add('text-[#2A7CFF]', 'scale-110');
+            setTimeout(() => input.classList.remove('text-[#2A7CFF]', 'scale-110'), 150);
+        }
+    };
+
+    async function updateCartSummary(){
+        try {
+            const response = await fetch('/getCartSummary');
+            const data = await response.json();
+            if (data.status) {
+                document.getElementById('cart-subtotal').innerText = data.sub_total;
+                document.getElementById('cart-discount').innerText = data.discount_sum;
+                document.getElementById('cart-tax').innerText = data.tax;
+                document.getElementById('cart-total').innerText = data.total;
+                document.getElementById('cart-count').innerText = data.cart_count;
+                document.getElementById('cart-shipping').innerText = data.shipping;
+            }
+        } catch (err) {
+            console.error('Error fetching cart summary', err);
+        }
+    }
 });
-
-
