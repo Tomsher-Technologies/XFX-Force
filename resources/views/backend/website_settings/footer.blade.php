@@ -78,7 +78,7 @@
                                 </div>
 
                                 <div class="text-right">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -178,7 +178,7 @@
                                 </div>
 
                                 <div class="text-right">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -225,7 +225,7 @@
                                                     </div>
                                                     <div class="col-auto">
                                                         <button type="button"
-                                                            class="mt-1 btn btn-icon btn-circle btn-soft-danger"
+                                                            class="mt-1 btn btn-icon btn-circle btn-soft-danger btn-sm"
                                                             data-toggle="remove-parent" data-parent=".row">
                                                             <i class="las la-times"></i>
                                                         </button>
@@ -234,7 +234,7 @@
                                             @endforeach
                                         @endif
                                     </div>
-                                    <button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
+                                    <button type="button" class="btn btn-soft-secondary btn-sm" data-toggle="add-more"
                                         data-content='<div class="row gutters-5">
     										<div class="col-4">
     											<div class="form-group">
@@ -247,7 +247,7 @@
     											</div>
     										</div>
     										<div class="col-auto">
-    											<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
+    											<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger btn-sm" data-toggle="remove-parent" data-parent=".row">
     												<i class="las la-times"></i>
     											</button>
     										</div>
@@ -257,7 +257,7 @@
                                     </button>
                                 </div>
                                 <div class="text-right">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -302,7 +302,7 @@
                                                     </div>
                                                     <div class="col-auto">
                                                         <button type="button"
-                                                            class="mt-1 btn btn-icon btn-circle btn-soft-danger"
+                                                            class="mt-1 btn btn-icon btn-circle btn-soft-danger btn-sm"
                                                             data-toggle="remove-parent" data-parent=".row">
                                                             <i class="las la-times"></i>
                                                         </button>
@@ -311,7 +311,7 @@
                                             @endforeach
                                         @endif
                                     </div>
-                                    <button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
+                                    <button type="button" class="btn btn-soft-secondary btn-sm" data-toggle="add-more"
                                         data-content='<div class="row gutters-5">
     										<div class="col-4">
     											<div class="form-group">
@@ -324,7 +324,7 @@
     											</div>
     										</div>
     										<div class="col-auto">
-    											<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
+    											<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger btn-sm" data-toggle="remove-parent" data-parent=".row">
     												<i class="las la-times"></i>
     											</button>
     										</div>
@@ -334,7 +334,7 @@
                                     </button>
                                 </div>
                                 <div class="text-right">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -379,7 +379,7 @@
                                                     </div>
                                                     <div class="col-auto">
                                                         <button type="button"
-                                                            class="mt-1 btn btn-icon btn-circle btn-soft-danger"
+                                                            class="mt-1 btn btn-icon btn-circle btn-soft-danger btn-sm"
                                                             data-toggle="remove-parent" data-parent=".row">
                                                             <i class="las la-times"></i>
                                                         </button>
@@ -388,7 +388,7 @@
                                             @endforeach
                                         @endif
                                     </div>
-                                    <button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
+                                    <button type="button" class="btn btn-soft-secondary btn-sm" data-toggle="add-more"
                                         data-content='<div class="row gutters-5">
     										<div class="col-4">
     											<div class="form-group">
@@ -401,7 +401,7 @@
     											</div>
     										</div>
     										<div class="col-auto">
-    											<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
+    											<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger btn-sm" data-toggle="remove-parent" data-parent=".row">
     												<i class="las la-times"></i>
     											</button>
     										</div>
@@ -411,7 +411,7 @@
                                     </button>
                                 </div>
                                 <div class="text-right">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -456,7 +456,7 @@
                                                     </div>
                                                     <div class="col-auto">
                                                         <button type="button"
-                                                            class="mt-1 btn btn-icon btn-circle btn-soft-danger"
+                                                            class="mt-1 btn btn-icon btn-circle btn-soft-danger btn-sm"
                                                             data-toggle="remove-parent" data-parent=".row">
                                                             <i class="las la-times"></i>
                                                         </button>
@@ -465,7 +465,7 @@
                                             @endforeach
                                         @endif
                                     </div>
-                                    <button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
+                                    <button type="button" class="btn btn-soft-secondary btn-sm" data-toggle="add-more"
                                         data-content='<div class="row gutters-5">
     										<div class="col-4">
     											<div class="form-group">
@@ -478,7 +478,7 @@
     											</div>
     										</div>
     										<div class="col-auto">
-    											<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
+    											<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger btn-sm" data-toggle="remove-parent" data-parent=".row">
     												<i class="las la-times"></i>
     											</button>
     										</div>
@@ -488,7 +488,7 @@
                                     </button>
                                 </div>
                                 <div class="text-right">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
                                 </div>
                             </form>
                         </div>
