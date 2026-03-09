@@ -28,11 +28,12 @@ class ProfileController extends Controller
     }
 
     public function getUserAccountInfo(){
-        $lang = getActiveLanguage();
-        $user_id = (!empty(auth('sanctum')->user())) ? auth('sanctum')->user()->id : '';
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $user = User::find($user_id);
-        
-        return view('pages.my-profile',compact('lang','user'));
+        echo '<pre>';
+        print_r($user);
+        die;
+        return view('pages.my-profile',compact('user'));
     }
 
     public function update(Request $request)
