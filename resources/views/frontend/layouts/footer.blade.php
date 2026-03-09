@@ -1,29 +1,29 @@
 <!--footer-->
 <footer class="bg-[#0F161B]">
-    <div class="footer-top bg-[#000000] md:bg-[url(/assets/images/footer-top.png)] bg-no-repeat px-[16px] md:px-[140px] pt-[50px] md:pt-[80px] z-[1] relative">
+    <div style="background: url('{{ asset('assets/images/footer-top.png') }}')" class="footer-top bg-[#000000] xl:bg-transparent xl:bg-[url('/assets/images/footer-top.png')] bg-no-repeat px-[16px] md:px-[30px] xl:px-[140px] pt-[50px] xl:pt-[80px] z-[1] relative">
         <div class="flex flex-col md:grid md:grid-cols-3 gap-4 w-full">
-            <div class="grid col-span-1 col-start-2">
-                <div class="footer-logo w-full flex items-center justify-start">
+                <div class="grid col-span-1 col-start-1 xl:col-start-2">
+                    <div class="footer-logo w-full flex items-center md:items-start justify-start">
                     @php
                         $logo = get_setting('footer_logo');
                        
                     @endphp
-                    <img src="{{ uploaded_asset($logo) }}" alt="Logo" title="Logo" class="w-[200px] h-auto m-auto">
+                    <img src="{{ uploaded_asset($logo) }}" alt="Logo" title="Logo" class="w-[250px] h-auto m-auto">
                 </div>
             </div>
-            <div class="grid col-span-1 col-start-3 justify-items-center border-hidden md:border-l-1 md:border-[#ffffff30]">
-                <div class="contact-details mt-[30px] md:mt-[0px]">
-                    <span class="font-normal text-white text-[14px] mb-[10px] uppercase block text-center md:text-left">{{ get_setting('footer_contact_title') }}</span>
-                    <a href="tel:{{ get_setting('footer_phone') }}" class="block text-white text-[25px] font-medium text-center md:text-left" title="Call PC Garage UAE Support">{{ get_setting('footer_phone') }}</a>
-                    <a href="mailto:{{ get_setting('footer_email') }}" title="Email PC Garage Support" aria-label="Email PC Garage Support" class="block text-white text-[25px] font-medium text-center md:text-left">{{ get_setting('footer_email') }}</a>
+            <div class="grid col-span-1 col-start-3 justify-items-center border-hidden md:border-l-1 md:border-[#282B34]">
+                    <div class="contact-details mt-[30px] md:mt-[0px]">
+                        <span class="font-normal text-white text-[12px] xl:text-[14px] mb-[10px] uppercase block text-center md:text-left">{{ get_setting('footer_contact_title') }}</span>
+                    <a href="tel:{{ get_setting('footer_phone') }}" class="block text-white text-[18px] xl:text-[25px] font-medium text-center md:text-left" title="Call PC Garage UAE Support">{{ get_setting('footer_phone') }}</a>
+                    <a href="mailto:{{ get_setting('footer_email') }}" title="Email PC Garage Support" aria-label="Email PC Garage Support" class="block text-white text-[18px] xl:text-[25px] font-medium text-center md:text-left">{{ get_setting('footer_email') }}</a>
                 </div>
             </div>
         </div>
     </div>
-    <div class="footer-mid bg-black pt-[50px] md:pt-[80px] px-[16px] md:px-[140px] text-center md:text-left">
-        <div class="footer-links border-y-1 border-[#ffffff30] py-[0px] md:py-[50px]">
-            <div class="flex flex-col md:grid md:grid-cols-5 gap-[0px] md:gap-[50px]">
-                <div class="py-[50px] md:py-[0px] border-b-1 border-[#ffffff30] md:border-hidden">
+    <div class="footer-mid bg-black pt-[50px] lg:pt-[80px] px-[16px] md:px-[30px] xl:px-[140px] text-center md:text-left">
+        <div class="footer-links border-y-1 border-[#282B34] py-[0px] md:py-[50px]">
+            <div class="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-5 gap-[0px] md:gap-[50px]">
+                <div class="py-[50px] md:py-[0px] border-b-1 border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('widget_one') }}</h6>
                     <ul>
                         @php
@@ -42,7 +42,7 @@
                         @endif
                     </ul>
                 </div>
-                <div class="py-[50px] md:py-[0px] border-b-1 border-[#ffffff30] md:border-hidden">
+                <div class="py-[50px] md:py-[0px] border-b-1 border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('widget_two') }}</h6>
                     <ul>
                         @php
@@ -61,7 +61,7 @@
                         @endif
                     </ul>
                 </div>
-                <div class="py-[50px] md:py-[0px] border-b-1 border-[#ffffff30] md:border-hidden">
+                <div class="py-[50px] md:py-[0px] border-b-1 border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('widget_three') }}</h6>
                     <ul>
                         @php
@@ -80,7 +80,7 @@
                         @endif
                     </ul>
                 </div>
-                <div class="py-[50px] md:py-[0px] border-b-1 border-[#ffffff30] md:border-hidden">
+                <div class="py-[50px] md:py-[0px] border-b-1 border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('widget_four') }}</h6>
                     <ul class="border-list">
                         @php
@@ -91,7 +91,7 @@
                         @if ($sectionFourTitles && $sectionFourLinks)
                             @foreach ($sectionFourTitles as $index => $title)
                                 <li>
-                                    <a href="{{ $sectionFourLinks[$index] ?? '#' }}" class="text-[#898989] text-[15px] transition-all duration-600 hover:text-blue-500 leading-[35px]">
+                                    <a href="{{ $sectionFourLinks[$index] ?? '#' }}" class="text-[#898989] text-[15px] transition-all duration-600 hover:text-blue-500 leading-[35px] block w-full py-[10px] border-b border-[#282B34]">
                                         {{ $title }}
                                     </a>
                                 </li>
@@ -99,14 +99,14 @@
                         @endif
                     </ul>
                 </div>
-                <div class="py-[50px] md:py-[0px] border-b-1 border-[#ffffff30] md:border-hidden">
+                <div class="py-[50px] md:py-[0px] border-b-1 border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('footer_address_title') }}</h6>
                     <p class="text-[#898989] text-[15px] leading-[30px]">{{ get_setting('footer_address') }}</p>
                 </div>
             </div>
         </div>
     </div>
-    <div class="footer-bottom bg-black py-[30px] px-[16px] md:px-[140px]">
+    <div class="footer-bottom bg-black py-[30px] px-[16px] md:px-[30px] xl:px-[140px]">
         <div class="flex flex-col md:grid grid-cols-3 gap-[30px] md:gap-[0px]">
             <div class="flex align-center justify-center md:justify-start items-center">
                 <p class="text-white text-[15px] font-medium text-center md:text-left">

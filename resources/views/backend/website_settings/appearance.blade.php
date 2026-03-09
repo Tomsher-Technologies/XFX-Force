@@ -12,14 +12,14 @@
     				<form action="{{ route('business_settings.update') }}" method="POST">
     					@csrf
                         <div class="form-group row">
-                            <label class="col-md-3 col-from-label">{{translate('Frontend Website Name')}}</label>
+                            <label class="col-md-3 col-from-label">{{trans('Frontend Website Name')}}</label>
                             <div class="col-md-8">
                                 <input type="hidden" name="types[]" value="website_name">
         	                    <input type="text" name="website_name" class="form-control" placeholder="Website Name" value="{{ get_setting('website_name') }}">
                             </div>
                         </div>
     	                <div class="form-group row">
-    	                    <label class="col-md-3 col-from-label">{{translate('Site Motto')}}</label>
+    	                    <label class="col-md-3 col-from-label">{{trans('Site Motto')}}</label>
                             <div class="col-md-8">
                                 <input type="hidden" name="types[]" value="site_motto">
         	                    <input type="text" name="site_motto" class="form-control" placeholder="Best eCommerce Website" value="{{  get_setting('site_motto') }}">
@@ -41,7 +41,7 @@
                             </div>
     					</div>
     	                <div class="form-group row">
-    	                    <label class="col-md-3 col-from-label">{{translate('Website Base Color')}}</label>
+    	                    <label class="col-md-3 col-from-label">{{trans('Website Base Color')}}</label>
                             <div class="col-md-8">
                                 <input type="hidden" name="types[]" value="base_color">
         	                    <input type="text" name="base_color" class="form-control" placeholder="#377dff" value="{{ get_setting('base_color') }}">
@@ -49,7 +49,7 @@
                             </div>
     	                </div>
     	                <div class="form-group row">
-    	                    <label class="col-md-3 col-from-label">{{translate('Website Base Hover Color')}}</label>
+    	                    <label class="col-md-3 col-from-label">{{trans('Website Base Hover Color')}}</label>
                             <div class="col-md-8">
                                 <input type="hidden" name="types[]" value="base_hov_color">
         	                    <input type="text" name="base_hov_color" class="form-control" placeholder="#377dff" value="{{  get_setting('base_hov_color') }}">
@@ -73,21 +73,21 @@
     						<label class="col-md-3 col-from-label">Meta Title</label>
                             <div class="col-md-8">
         						<input type="hidden" name="types[]" value="meta_title">
-        						<input type="text" class="form-control" placeholder="{{translate('Title')}}" name="meta_title" value="{{ get_setting('meta_title') }}">
+        						<input type="text" class="form-control" placeholder="{{trans('Title')}}" name="meta_title" value="{{ get_setting('meta_title') }}">
                             </div>
     					</div>
     					<div class="form-group row">
     						<label class="col-md-3 col-from-label">Meta description</label>
                             <div class="col-md-8">
         						<input type="hidden" name="types[]" value="meta_description">
-        						<textarea class="resize-off form-control" placeholder="{{translate('Description')}}" name="meta_description">{{  get_setting('meta_description') }}</textarea>
+        						<textarea class="resize-off form-control" placeholder="{{trans('Description')}}" name="meta_description">{{  get_setting('meta_description') }}</textarea>
                             </div>
     					</div>
     					<div class="form-group row">
     						<label class="col-md-3 col-from-label">Keywords</label>
                             <div class="col-md-8">
         						<input type="hidden" name="types[]" value="meta_keywords">
-        						<textarea class="resize-off form-control" placeholder="{{translate('Keyword, Keyword')}}" name="meta_keywords">{{ get_setting('meta_keywords') }}</textarea>
+        						<textarea class="resize-off form-control" placeholder="{{trans('Keyword, Keyword')}}" name="meta_keywords">{{ get_setting('meta_keywords') }}</textarea>
         						<small class="text-muted">Separate with coma</small>
                             </div>
     					</div>
@@ -126,7 +126,7 @@
                             </div>
     					</div>
                         <div class="form-group row">
-    						<label class="col-md-3 col-from-label">{{translate('Show Cookies Agreement?')}}</label>
+    						<label class="col-md-3 col-from-label">{{trans('Show Cookies Agreement?')}}</label>
     						<div class="col-md-8">
     							<label class="aiz-switch aiz-switch-success mb-0">
     								<input type="hidden" name="types[]" value="show_cookies_agreement">
@@ -149,7 +149,7 @@
     				<form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
     					@csrf
     					<div class="form-group row">
-                            <label class="col-md-3 col-from-label">{{translate('Show website popup?')}}</label>
+                            <label class="col-md-3 col-from-label">{{trans('Show website popup?')}}</label>
                             <div class="col-md-8">
                                 <label class="aiz-switch aiz-switch-success mb-0">
                                     <input type="hidden" name="types[]" value="show_website_popup">
@@ -166,7 +166,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-3 col-from-label">{{translate('Show Subscriber form?')}}</label>
+                            <label class="col-md-3 col-from-label">{{trans('Show Subscriber form?')}}</label>
                             <div class="col-md-8">
                                 <label class="aiz-switch aiz-switch-success mb-0">
                                     <input type="hidden" name="types[]" value="show_subscribe_form">

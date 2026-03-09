@@ -37,7 +37,7 @@
                 class="m-auto nav-wrapper grid grid-cols-2 md:grid-cols-[auto_auto_auto] items-center justify-between w-full">
 
                 <div class="logo">
-                    <a href="index.html" title="Home - PC Garage | Custom Gaming PCs & High-End Hardware in UAE">
+                    <a href="{{ route('home') }}" title="Home - PC Garage | Custom Gaming PCs & High-End Hardware in UAE">
                         <img src="{{ asset('assets/images/PC-Garage-Logo-white.svg') }}" alt="PC Garage Logo" title="PC Garage Logo"
                             class="w-[200px] white ">
                     </a>

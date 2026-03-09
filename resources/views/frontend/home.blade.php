@@ -730,28 +730,27 @@
 
 <!--about & Brands-->
 @if(!empty($homePageFooters))
-<section class="bg-[#0F161B] min-h-full md:min-h-[100vh] px-[16px] md:px-[140px] py-[50px] md:py-[100px] relative">
-    <div class="swiper aboutswiper overflow-hidden min-h-full md:min-h-[100vh]">
-        <div class="swiper-wrapper">
+    <section class="bg-[#0F161B] min-h-full md:min-h-[100vh] px-[16px] md:px-[140px] py-[50px] md:py-[100px] md:pb-[0px] relative">
+        <div class="swiper aboutswiper overflow-hidden min-h-full md:min-h-[100vh]">
+            <div class="swiper-wrapper">
             @foreach($homePageFooters as $footer)
                 @php
                     // Get the image file from uploads
                     $footerImage = $footerUploads[$footer['footer_image']] ?? null;
                     $footerImageUrl = $footerImage ? Storage::url($footerImage->file_name) : asset('assets/images/about-img.webp');
                 @endphp    
-            <div class="swiper-slide">
-                <div class="flex flex-col md:grid md:grid-cols-3">
-                    <div class="section-title mb-[0px] md:mb-[30px]">
-                        <!-- <h3 class="text-[40px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">Your Ultimate Destination for High-Performance <strong class="bg-gradient-to-tr from-[#3E81FF] to-white bg-clip-text text-transparent">Gaming</strong></h3> -->
-                        <h3 class="text-[40px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">{{$footer['footer_title']}}</h3>
-                    </div>
-                    <img src="{{$footerImageUrl}}" alt="About PC Garage" title="About PC Garage" class="w-full md:w-[55%] h-auto relative md:absolute bottom-[0px] md:bottom-[-55%] left-[0px] md:left-[-20%] right-0 m-auto z-[0]">
-                    <div class="grid col-span-3 col-start-3 mt-[0px] md:mt-[250px]">
-                        <p class="text-white text-[15px] md:text-[18px] font-normal leading-[30px] md:leading-[35px] mb-[30px] md:mb-[50px] text-justify [text-align-last:center] md:text-left">{{ $footer['footer_content'] }}</p>
-                        <a href="{{$footer['footer_button_link']}}" class="w-full md:w-fit text-center text-black uppercase text-[13px] md:text-[14px] font-medium px-[30px] py-[15px] bg-white rounded-full transition-all duration-600 hover:bg-[#2a7cff] hover:text-white">{{$footer['footer_button_text']}}</a>
+                <div class="swiper-slide">
+                    <div class="flex flex-col md:grid md:grid-cols-3">
+                        <div class="section-title mb-[0px] md:mb-[30px]">
+                                <h3 class="text-[40px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">{{$footer['footer_title']}}</h3>
+                        </div>
+                        <img src="{{$footerImageUrl}}" alt="About PC Garage" title="About PC Garage" class="w-full md:w-[55%] h-auto relative md:absolute bottom-[0px] md:bottom-[-55%] left-[0px] md:left-[-20%] right-0 m-auto z-[0]">
+                        <div class="grid col-span-3 col-start-3 mt-[0px] md:mt-[250px]">
+                            <div style="color:rgb(255 255 255) !important;" class="text-white text-[15px] md:text-[18px] font-normal leading-[30px] md:leading-[35px] mb-[30px] md:mb-[50px] text-justify [text-align-last:center] md:text-left">{!! $footer['footer_content'] !!}</div>
+                            <a href="{{$footer['footer_button_link']}}" class="w-full md:w-fit text-center text-black uppercase text-[13px] md:text-[14px] font-medium px-[30px] py-[15px] bg-white rounded-full transition-all duration-600 hover:bg-[#2a7cff] hover:text-white">{{$footer['footer_button_text']}}</a>
+                        </div>
                     </div>
                 </div>
-            </div>
             @endforeach
 
         </div>
