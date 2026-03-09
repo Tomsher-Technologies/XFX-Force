@@ -844,7 +844,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (nameText && nameText !== "?") {
                 const firstLetter = nameText.charAt(0).toUpperCase();
                 avatarElement.innerText = firstLetter;
-                console.log("Avatar updated to:", firstLetter); // Check your console (F12)
+                // console.log("Avatar updated to:", firstLetter); // Check your console (F12)
                 return true; // Success
             }
         }

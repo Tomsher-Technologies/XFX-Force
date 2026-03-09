@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use Hash;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 use Storage;
 use Auth;
 
@@ -30,29 +31,31 @@ class ProfileController extends Controller
     public function getUserAccountInfo(){
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $user = User::find($user_id);
-        echo '<pre>';
-        print_r($user);
-        die;
-        return view('pages.my-profile',compact('user'));
+       
+        return view('frontend.user.my-account',compact('user'));
     }
 
     public function update(Request $request)
     {
-        $request->validate([
+        $user = auth('frontend')->user();
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'phone' => 'required|min:9',
+            'phone' => 'required|string|max:20|unique:users,phone,' . $user->id,
         ]);
 
-        $user = Auth::user();
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ]);
+        }
+
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->save();
     
-
-        session()->flash('message', trans('messages.profile_update_success'));
-        session()->flash('alert-type', 'success');
-
-        return redirect()->back();
+        return response()->json([
+            'success' => 'Profile updated successfully'
+        ]);
     }
 
     public function updatePassword(){

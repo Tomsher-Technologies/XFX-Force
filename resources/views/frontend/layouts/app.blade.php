@@ -112,7 +112,18 @@
             @if (session('error'))
                 toastr.error('{{ session("error") }}');
             @endif
+            
         });
+
+        (function() {
+            const nameElement = document.getElementById('userNameSidebar');
+            if (nameElement) {
+                const name = nameElement.textContent.trim();
+                if (name) {
+                    document.getElementById('userAvatarSidebar').textContent = name.charAt(0).toUpperCase();
+                }
+            }
+        })();
     </script>
     @yield('script')
 </body>
