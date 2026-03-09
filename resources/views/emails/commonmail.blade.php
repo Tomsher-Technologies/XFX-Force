@@ -209,10 +209,11 @@
                                             <tr>
                                                 <td align="center" valign="middle">
                                                     <a href="{{ env('APP_URL') }}">
-                                                        <img src="{{ asset('assets/img/logo.png') }}"
-                                                            height="100" alt="{{ env('APP_NAME') }}">
+                                                        <img src="{{ asset('assets/images/PC-Garage-Logo-white.svg') }}" height="100" alt="{{ env('APP_NAME') }}">
                                                     </a>
                                                 </td>
+                                                {{-- {{ asset('assets/images/PC-Garage-Logo-white.svg') }} --}}
+                                                {{-- https://pcgarage.me/imgs/PC-Garage-Logo-white.png --}}
                                             </tr>
                                             <tr></tr>
                                         </table>

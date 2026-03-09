@@ -1,96 +1,126 @@
-@extends('layouts.app')
+@extends('frontend.layouts.app')
 
 @section('title', 'Reset Password - '.env('APP_NAME'))
 
 @section('content')
 
-<div class="container mx-auto py-12 px-6 lg:px-12">
-    <div class="max-w-2xl m-auto bg-white shadow-2xl rounded-2xl p-8 transform transition duration-300">
-    <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-6">Reset Password</h1>
-       
-        <form action="{{ route('password.reset') }}" method="POST" class="space-y-6">
-            @csrf
-            <div>
-                <input type="hidden" name="token" value="{{ $token }}">
-                <label for="email" class="block text-gray-700 font-medium mb-1">Email</label>
-                <input type="email" id="email" placeholder="Email.." class="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" name="email" readonly value="{{ old('email', $email) }}">
+<section class="bg-[#0F161B] max-w-6xl mx-auto py-[50px] pt-[100px] md:pt-[200px] md:pb[100px] flex flex-col gap-[30px] md:gap-[50px]">
+    <div class="flex items-center justify-center p-6">
+        <div class="w-full max-w-md bg-[#1C2228] rounded-[30px] border border-white/5 p-8 md:p-10 shadow-2xl">
+            
+            <div class="mb-10 text-center">
+                <h2 class="text-white text-[20px] font-semibold mb-2 uppercase">Set New Password</h2>
+                <p class="text-gray-400 text-sm">Update your credentials to keep your account secure.</p>
+            </div>
+
+            <form class="space-y-6" action="{{ route('password.reset') }}" method="POST">
+                @csrf
+                <div class="space-y-2">
+                    <input type="hidden" name="token" value="{{ $token }}">
+                    <label for="email" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">Email</label>
+                    <input type="email" id="email" placeholder="Email.." class="w-full bg-[#0B0F13] border border-white/5 p-4 pr-12 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all" name="email" readonly value="{{ old('email', $email) }}">
+                </div>
+
+                <div x-data="{ show: false }" class="space-y-2">
+                    <label for="password" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">New Password</label>
                 
-            </div>
-            <div x-data="{ show: false }" class="mb-4">
-                <label for="password" class="block text-gray-700 font-medium mb-1">Password</label>
-            
-                <div class="relative">
-                    <!-- Password Input -->
-                    <input :type="show ? 'text' : 'password'" id="password" name="password" class="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" placeholder="Enter password" autocomplete="new-password" >
-            
-                    <!-- Toggle Icon Inside Input on the Right -->
-                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-5 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
-                        <!-- Show Icon -->
-                        <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                             viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-            
-                        <!-- Hide Icon -->
-                        <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                             viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.964 9.964 0 012.184-3.293m1.43-1.43A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.969 9.969 0 01-4.138 5.132M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M3 3l18 18" />
-                        </svg>
-                    </button>
+                    <div class="relative group">
+                        <!-- Password Input -->
+                        <input :type="show ? 'text' : 'password'" id="password" name="password" placeholder="••••••••" class="w-full bg-[#0B0F13] border border-white/5 p-4 pr-12 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all" autocomplete="new-password" >
+                
+                        <!-- Toggle Icon Inside Input on the Right -->
+                        <button type="button" @click="show = !show" class="absolute inset-y-0 right-5 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
+                            <!-- Show Icon -->
+                            <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                
+                            <!-- Hide Icon -->
+                            <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.964 9.964 0 012.184-3.293m1.43-1.43A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.969 9.969 0 01-4.138 5.132M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3l18 18" />
+                            </svg>
+                        </button>
+                    </div>
+                
                 </div>
+
+                <div x-data="{ show: false }" class="space-y-2">
+                    <label for="password" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">Confirm New Password</label>
+                
+                    <div class="relative group">
+                        <!-- Password Input -->
+                        <input :type="show ? 'text' : 'password'" id="password_confirmation" name="password_confirmation"
+                            placeholder="••••••••" class="w-full bg-[#0B0F13] border border-white/5 p-4 pr-12 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all" autocomplete="new-password" >
+                
+                        <!-- Toggle Icon Inside Input on the Right -->
+                        <button type="button" @click="show = !show" class="absolute inset-y-0 right-5 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none" >
+                            <!-- Show Icon -->
+                            <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                
+                            <!-- Hide Icon -->
+                            <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.964 9.964 0 012.184-3.293m1.43-1.43A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.969 9.969 0 01-4.138 5.132M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3l18 18" />
+                            </svg>
+                        </button>
+                    </div>
             
-            </div>
-            
-            
-            <div x-data="{ show: false }" class="mb-4">
-                <label for="password" class="block text-gray-700 font-medium mb-1">Confirm Password</label>
-            
-                <div class="relative">
-                    <!-- Password Input -->
-                    <input :type="show ? 'text' : 'password'" id="password_confirmation" name="password_confirmation"
-                        class="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" placeholder="Enter confirm password.." autocomplete="new-password" >
-            
-                    <!-- Toggle Icon Inside Input on the Right -->
-                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-5 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none" >
-                        <!-- Show Icon -->
-                        <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                             viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-            
-                        <!-- Hide Icon -->
-                        <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                             viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.964 9.964 0 012.184-3.293m1.43-1.43A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.969 9.969 0 01-4.138 5.132M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M3 3l18 18" />
-                        </svg>
-                    </button>
                 </div>
-        
-            </div>
-            @error('email')
+
+                @error('email')
+                        <span class="text-red-600">{{ $message }}</span>
+                @enderror
+                @error('password')
                     <span class="text-red-600">{{ $message }}</span>
-            @enderror
-            @error('password')
-                <span class="text-red-600">{{ $message }}</span>
-            @enderror
-            <button type="submit" class="w-full bg-primary text-white py-4 rounded-full hover:bg-[#3498db] transition-all duration-300 transform hover:scale-105 font-medium text-sm">Reset</button>
-        </form>
-        
-        <p class="text-center text-gray-700 mt-6 text-sm">Remembered your password? <a href="{{ route('login') }}" class="text-blue-600 font-medium hover:underline">Login</a></p>
+                @enderror
+
+                {{-- <hr class="border-white/8">
+
+                <div class="space-y-3">
+                    <label class="text-gray-500 text-[14px] font-medium uppercase block tracking-wider text-center pb-[15px]">Verification Code</label>
+                    <div class="flex justify-center gap-3" id="otp-container">
+                        <input type="text" maxlength="1" class="otp-input w-14 md:w-16 h-14 md:h-16 bg-[#0B0F13] border border-white/5 rounded-xl text-white text-[18px] font-medium text-center outline-none focus:border-[#2A7CFF] transition-all" />
+                        <input type="text" maxlength="1" class="otp-input w-14 md:w-16 h-14 md:h-16 bg-[#0B0F13] border border-white/5 rounded-xl text-white text-[18px] font-medium text-center outline-none focus:border-[#2A7CFF] transition-all" />
+                        <input type="text" maxlength="1" class="otp-input w-14 md:w-16 h-14 md:h-16 bg-[#0B0F13] border border-white/5 rounded-xl text-white text-[18px] font-medium text-center outline-none focus:border-[#2A7CFF] transition-all" />
+                        <input type="text" maxlength="1" class="otp-input w-14 md:w-16 h-14 md:h-16 bg-[#0B0F13] border border-white/5 rounded-xl text-white text-[18px] font-medium text-center outline-none focus:border-[#2A7CFF] transition-all" />
+                    </div>
+                    <p class="text-center text-[15px] text-gray-500 py-[15px]">Didn't get the code? <button type="button" class="cursor-pointer text-[#2A7CFF] hover:underline font-medium">Resend</button></p>
+                </div> --}}
+
+                <button type="submit" class="cursor-pointer transition-all duration-600 w-full bg-[#2A7CFF] py-4 rounded-xl font-medium text-white text-[14px] uppercase hover:bg-[#1A6BFF] transition-all shadow-lg shadow-[#2A7CFF]/20 active:scale-[0.98]">
+                    Update Password
+                </button>
+            </form>
+
+            <div class="mt-8 text-center">
+                <a href="{{ route('login') }}" class="inline-flex items-center gap-2 text-gray-500 text-sm hover:text-white transition-colors group">
+                    <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Log In
+                </a>
+            </div>
+        </div>
     </div>
-    </div>
+</section>
+
 
 @endsection
 

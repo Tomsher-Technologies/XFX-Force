@@ -11,7 +11,7 @@
                 <p class="text-gray-400 text-sm">Create an account for exclusive hardware deals</p>
             </div>
 
-            <form action="{{ url('register') }}" method="POST" class="space-y-5" autocomplete="off">
+            <form action="{{ route('register') }}" method="POST" class="space-y-5" autocomplete="off">
                 @csrf
                 <div>
                     <label class="text-gray-500 text-[12px] font-medium uppercase mb-1 block tracking-wider">Full Name</label>
