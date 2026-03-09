@@ -1,34 +1,47 @@
-@extends('layouts.app')
+@extends('frontend.layouts.app')
 
 @section('title', 'Forgot Password - '.env('APP_NAME'))
 
 @section('content')
 
-<div class="container mx-auto py-12 px-6 lg:px-12">
-    <div class="max-w-2xl m-auto bg-white shadow-2xl rounded-2xl p-8 transform transition duration-300">
-    <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-6">Forgot Password</h1>
-        
-        <p class="text-gray-600 text-center mb-4">Enter your email address to receive a password reset link.</p>
-        
-        <form id="forgotPasswordForm" method="POST" class="space-y-6">
-            @csrf
-            <div>
-                <label for="email" class="block text-gray-700 font-medium mb-1">Email</label>
-                <input type="email" name="email" id="email" placeholder="Enter registered email.." class="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
-            </div>
+
+<section class="bg-[#0F161B] max-w-6xl mx-auto py-[50px] pt-[100px] md:pt-[200px] md:pb[100px] flex flex-col gap-[30px] md:gap-[50px]">
+    <div class="flex items-center justify-center p-6">
+        <div class="w-full max-w-md bg-[#1C2228] rounded-[30px] border border-white/5 p-8 md:p-10 shadow-2xl">
             
-            <button type="submit"  id="resetButton" class="w-full bg-primary text-white py-4 rounded-full hover:bg-[#3498db] transition-all duration-300 transform hover:scale-105 font-medium text-sm flex items-center justify-center gap-2">
-                <span id="resetText">Reset</span>
-                <svg id="loadingSpinner" class="hidden w-5 h-5 ml-2 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                </svg>
-            </button>
-        </form>
-        
-        <p class="text-center text-gray-700 mt-6 text-sm">Remembered your password? <a href="{{ route('login') }}" class="text-blue-600 font-medium hover:underline">Login</a></p>
+            <div class="mb-10 text-center">
+                <h2 class="text-white text-[20px] font-semibold mb-1 uppercase">Forgot Password</h2>
+                <p class="text-gray-400 text-sm">Enter your email to receive a password reset link</p>
+            </div>
+
+            <form id="forgotPasswordForm" method="POST" class="space-y-6">
+                @csrf
+                <div>
+                    <label class="text-gray-500 text-[12px] font-medium uppercase mb-1 block tracking-wider">Email Address</label>
+                    <input type="email" name="email" id="email" placeholder="Enter your registered email.." class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all placeholder:text-gray-700">
+                </div>
+
+                <button type="submit" id="resetButton"  class="cursor-pointer l duration-600 w-full bg-[#2A7CFF] py-4 rounded-xl font-medium text-white flex items-center justify-center text-[14px] uppercase hover:bg-[#1A6BFF] transition-all shadow-lg shadow-[#2A7CFF]/20 active:scale-[0.98]">
+                    <span id="resetText">Reset</span>
+                    <svg id="loadingSpinner" class="hidden w-5 h-5 ml-2 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="mt-8 text-center">
+                <a href="{{ route('login') }}" class="inline-flex items-center gap-2 text-gray-500 text-sm hover:text-white transition-colors group">
+                    <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Log In
+                </a>
+            </div>
+        </div>
     </div>
-    </div>
+</section>
+
 
 @endsection
 

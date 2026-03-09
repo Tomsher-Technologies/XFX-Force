@@ -74,7 +74,7 @@
 <body>
     <div style="width: 60%;">
         <table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#ffffff"
-            style="border: 1px solid #b7e3f978">
+            style="border: 1px solid #000000">
             <tbody>
                 <tr>
                     <td width="650" align="center" valign="middle">
@@ -88,9 +88,11 @@
                                                     <tr>
                                                         <td width="208" align="center" valign="middle">
                                                             <a href="{{ env('APP_URL') }}" target="_blank">
-                                                                <img src="https://pcgarage.me/imgs/PC-Garage-Logo-white.png" alt="{{ env('APP_NAME') }}" title="{{ env('APP_NAME') }}" style="display: block;margin-top: 5px;margin-bottom: 5px;" width="222" />
+                                                                <img src="{{ asset('assets/images/PC-Garage-Logo-white.svg') }}" alt="{{ env('APP_NAME') }}" title="{{ env('APP_NAME') }}" style="display: block;margin-top: 5px;margin-bottom: 5px;" width="222" />
                                                             </a>
                                                         </td>
+                                                         {{-- {{ asset('assets/images/PC-Garage-Logo-white.svg') }} --}}
+                                                        {{-- https://pcgarage.me/imgs/PC-Garage-Logo-white.png --}}
                                                     </tr>
                                                 </tbody>
                                             </table>

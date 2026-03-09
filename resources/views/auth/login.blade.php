@@ -24,7 +24,7 @@
                 <div x-data="{ show: false }" class="space-y-2">
                     <div class="flex justify-between">
                         <label class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">Password</label>
-                        <a href="{{ route('forgot-password') }}" class="text-[#2A7CFF] text-[12px] font-medium uppercase hover:underline">Forgot?</a>
+                        <a href="{{ route('forgot-password') }}" class="text-[#2A7CFF] text-[12px] font-medium uppercase hover:underline">Forgot Password?</a>
                     </div>
                     <div class="relative">
                         <!-- Password Input -->
