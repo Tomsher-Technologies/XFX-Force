@@ -53,6 +53,7 @@
         <div class="col-span-5 overflow-hidden h-[50vh] md:h-[70vh] w-full">
             <div class="swiper singleprdswiper relative overflow-hidden h-full w-full">
                 <input type="hidden" value="{{$product->id}}" id="main_product_id">
+                <input type="hidden" value="{{$stockId}}" id="selected_stock_id">
                 <div class="swiper-wrapper">
                     @php $hasVariantImage = false; @endphp
                     @foreach($product->stocks as $stock)
@@ -82,6 +83,10 @@
         <div class="product-info flex flex-col gap-[20px] md:gap-[50px] md:col-span-6 w-full">
             @php
             $firstStock = $product->stocks->first();
+            if($stockId){
+                $firstStock = $product->stocks->where('id', $stockId)->first();
+            }
+            
             $groupedAttributes = $product->stocks
             ->flatMap(function ($stock) {
             return $stock->attributes;
@@ -143,9 +148,10 @@
                     </div>
                 </div>
 
-                <!-- When item exist -->
-                <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block hide" style="display: none;">
+                <!-- When item exist and nothing in cart-->
+                <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block">
                     <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
+                    <button onclick="window.location.href='{{ route('cart') }}'" class="go-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Go to cart</button>
                     <a href="#" class="w-full text-center bg-white md:bg-transparent text-black md:text-white uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 hover:bg-white hover:text-black">Add to Wishlist</a>
                 </div>
                 <!-- When item exist -->

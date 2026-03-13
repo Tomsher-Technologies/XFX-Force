@@ -311,14 +311,14 @@ h3 {
     opacity: 1;
 }
 
-.product-card:hover button{
+/* .product-card:hover button{
     background-color: #2a7cff;
     color: #fff;
     background: linear-gradient(#2a7cff, #2a7cff) padding-box,
               linear-gradient(to right, #82ADF0, #2A7CFF) border-box;
   border-radius: 15px;
   border: 1px solid transparent;
-}
+} */
 .swiper-pagination-bullet{
     width: 5px;
     height: 5px;
@@ -632,6 +632,15 @@ ol.lh18 li{
 /* Sticky header / small visual polish */
 .site-header.sticky-header { background: rgba(255,255,255,0.98); box-shadow: 0 4px 18px rgba(0,0,0,.06); }
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
 
 .border-\[\#282B34\] {
     border-color: #282B34;
