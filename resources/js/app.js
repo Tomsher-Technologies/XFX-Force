@@ -914,6 +914,28 @@ window.closeAllMobileSystems = function() {
     document.body.style.overflow = 'auto';
 }
 
+window.togglePassword = function(buttonElement) {
+    // Find the relative container (the 'group' div)
+    const container = buttonElement.closest(".relative");
+    const input = container.querySelector("input");
+    const eyeIcon = container.querySelector(".eye-icon");
+    const eyeOffIcon = container.querySelector(".eye-off-icon");
+
+    const isPassword = input.type === "password";
+
+    // Toggle Type
+    input.type = isPassword ? "text" : "password";
+
+    // Toggle Icons
+    if (isPassword) {
+        eyeIcon.classList.add("hidden");
+        eyeOffIcon.classList.remove("hidden");
+    } else {
+        eyeIcon.classList.remove("hidden");
+        eyeOffIcon.classList.add("hidden");
+    }
+}
+
 window.toggleMobileMenu = function() {
     const panel = document.getElementById("mobile-side-panel");
     const overlay = document.getElementById("mobile-menu-overlay");

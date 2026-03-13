@@ -10,8 +10,6 @@
             
             @include('frontend.layouts.sidebar')
 
-            <div class="h-20 xl:hidden"></div>
-
             <main class="flex-grow pb-24 lg:pb-0">
                 <div>
                     <div class="flex flex-col md:flex-row justify-between items-center md:items-center mb-10 pb-[30px] gap-4 border-b border-[#252B31] text-center md:text-left">

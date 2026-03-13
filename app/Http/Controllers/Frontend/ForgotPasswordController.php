@@ -5,10 +5,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use App\Models\User;
-use Str;
-use Mail;
-use DB;
-use Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class ForgotPasswordController extends Controller
 {
@@ -21,7 +21,7 @@ class ForgotPasswordController extends Controller
 
     public function sendResetLink(Request $request)
     {
-        $request->validate(['email' => 'required|email|exists:users,email']);
+        $request->validate(['email' => 'required|email|exists:users,email,user_type,customer']);
 
         $token = Str::random(64);
 
@@ -32,7 +32,7 @@ class ForgotPasswordController extends Controller
 
         // Send email with the reset link (replace with your mail implementation)
         $resetLink = route('password.reset.form', ['email' => $request->email, 'token' => $token]);
-        \Mail::send('emails.password-reset', ['resetLink' => $resetLink], function ($message) use ($request) {
+        Mail::send('emails.password-reset', ['resetLink' => $resetLink], function ($message) use ($request) {
             $message->to($request->email)->subject('Password Reset Link');
         });
 
@@ -50,10 +50,10 @@ class ForgotPasswordController extends Controller
         $request->validate([
             'token' => 'required',
             'email' => 'required|email|exists:users,email',
-            'password' => 'required|min:8|regex:/[A-Z]/|regex:/[0-9]/|confirmed',
+            'password' => 'required|min:8|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*#?&]/|confirmed',
         ],[
-            'password.regex' => 'Password must contain at least one uppercase letter and one number.'
-            ]);
+            'password.regex' => 'Password must contain at least one uppercase letter, one number, and one special character.'
+        ]);
 
         
         $resetRecord = DB::table('password_resets')
