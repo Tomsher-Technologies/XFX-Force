@@ -37,7 +37,7 @@
                 class="m-auto nav-wrapper grid grid-cols-2 md:grid-cols-[auto_auto_auto] items-center justify-between w-full">
 
                 <div class="logo">
-                    <a href="index.html" title="Home - PC Garage | Custom Gaming PCs & High-End Hardware in UAE">
+                    <a href="{{ route('home') }}" title="Home - PC Garage | Custom Gaming PCs & High-End Hardware in UAE">
                         <img src="{{ asset('assets/images/PC-Garage-Logo-white.svg') }}" alt="PC Garage Logo" title="PC Garage Logo"
                             class="w-[200px] white ">
                     </a>
@@ -65,7 +65,7 @@
                             </div>
                         </div>
                     </li>
-                    <li><a href="#" class="text-[#ffffff] uppercase text-[14px] no-underline">Build your pc</a></li>
+                    <li><a href="{{ route('buildyourpc') }}" class="text-[#ffffff] uppercase text-[14px] no-underline">Build your pc</a></li>
                     <li><a href="#" class="text-[#ffffff] uppercase text-[14px] no-underline">Pre-built pc</a></li>
                     <li><a href="#" class="text-[#ffffff] uppercase text-[14px] no-underline">Components</a></li>
                     <li><a href="#" class="text-[#ffffff] uppercase text-[14px] no-underline">Deals</a></li>
@@ -89,10 +89,10 @@
                     <!--//search trigger-->
 
                     <!--cart trigger-->
-                    <a href="#" class="action-btn cart-icon no-underline relative">
+                    <a href="{{ route('cart') }}" class="action-btn cart-icon no-underline relative">
                         <img src="{{ asset('assets/images/cart.svg') }}" alt="Cart Icon" class="img-fluid" title="Cart">
                         <span
-                            class="count bg-[#2a7cff] p-[5px] leading-[1] rounded-full text-[#ffffff] text-[12px] w-[10px] h-[10px] absolute top-[-15px] right-[10px] md:right-[-15px] text-center justify-center inline-table align-center items-center">10</span>
+                            class="count bg-[#2a7cff] p-[5px] leading-[1] rounded-full text-[#ffffff] text-[12px] w-[10px] h-[10px] absolute top-[-15px] right-[10px] md:right-[-15px] text-center justify-center inline-table align-center items-center" id="total-cart-count-top">{{ \App\Models\Cart::cartItemsCount() }}</span>
                     </a>
                     <!--//cart trigger-->
 

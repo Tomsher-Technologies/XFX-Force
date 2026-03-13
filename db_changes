@@ -301,3 +301,13 @@ UPDATE `pages` SET `slug` = 'Home/Landing Page' WHERE `pages`.`id` = 1;
 
 -- -- Added on 06-03-2026
 -- ALTER TABLE `carts` ADD `warranty_id` INT NULL DEFAULT NULL AFTER `coupon_applied`, ADD `warranty_price` DOUBLE(20,2) NULL DEFAULT NULL AFTER `warranty_id`;
+
+-- Added on 10-03-2026
+
+CREATE TABLE `pc_builder_setups` (`id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NULL DEFAULT NULL , `build_data` LONGTEXT NULL DEFAULT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Added on 12-03-2026
+
+ALTER TABLE carts 
+ADD COLUMN pc_builder_id BIGINT NULL AFTER user_id,
+ADD COLUMN is_pc_builder TINYINT(1) DEFAULT 0 AFTER pc_builder_id;

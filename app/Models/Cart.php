@@ -10,7 +10,7 @@ class Cart extends Model
 {
     protected $guarded = [];
     
-    protected $fillable = ['user_id', 'temp_user_id', 'product_id', 'product_stock_id', 'variation', 'quantity', 'metal_price', 'stone_price', 'making_charge', 'price', 'offer_price', 'offer_id', 'offer_tag', 'tax', 'shipping_cost', 'shipping_type', 'discount', 'offer_discount', 'coupon_code', 'coupon_applied', 'status','updated_at', 'warranty_id', 'warranty_price'];
+    protected $fillable = ['user_id', 'temp_user_id', 'product_id', 'product_stock_id', 'variation', 'quantity', 'metal_price', 'stone_price', 'making_charge', 'price', 'offer_price', 'offer_id', 'offer_tag', 'tax', 'shipping_cost', 'shipping_type', 'discount', 'offer_discount', 'coupon_code', 'coupon_applied', 'status','updated_at', 'warranty_id', 'warranty_price','pc_builder_id','is_pc_builder'];
 
     public function user()
     {
@@ -25,5 +25,14 @@ class Cart extends Model
     public function product_stock()
     {
         return $this->belongsTo(ProductStock::class);
+    }
+
+    public static function cartItemsCount($userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+
+        return self::where('user_id', $userId)
+            ->where('status', 'pending')
+            ->count();
     }
 }

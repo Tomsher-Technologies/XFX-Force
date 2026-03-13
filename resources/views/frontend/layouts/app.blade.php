@@ -54,7 +54,9 @@
 
 <body class="m-[0] bg-[#0F161B]">
     <!-- Header -->
-    @include('frontend.layouts.header')
+     @if(!isset($hideHeader) || !$hideHeader)
+        @include('frontend.layouts.header')
+    @endif  
 
     <!-- Main Content -->
     <main>
@@ -62,7 +64,10 @@
     </main>
 
     <!-- Footer -->
-    @include('frontend.layouts.footer')
+     @if(!isset($hideFooter) || !$hideFooter)
+        @include('frontend.layouts.footer')
+    @endif
+    
     <!--script-->
     <script src="//unpkg.com/alpinejs" defer></script>
     <script src="{{ asset('assets/js/elements@1.js') }}" type="module"></script>

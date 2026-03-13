@@ -322,14 +322,14 @@ h3 {
     opacity: 1;
 }
 
-.product-card:hover button{
+/* .product-card:hover button{
     background-color: #2a7cff;
     color: #fff;
     background: linear-gradient(#2a7cff, #2a7cff) padding-box,
               linear-gradient(to right, #82ADF0, #2A7CFF) border-box;
   border-radius: 15px;
   border: 1px solid transparent;
-}
+} */
 .swiper-pagination-bullet{
     width: 5px;
     height: 5px;
@@ -573,6 +573,59 @@ ol.lh18 li{
 .bootstrap-select.form-control-sm .dropdown-toggle {
     height: calc(1.2rem + 0.8rem + 2px) !important;
 }
-      
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
 
+@layer components {
+  .nav-item.active, .nav-item:hover {
+    background-color: #2A7CFF;
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+    color: #ffffff;
+  }
+  /* .nav-item:not(.active) {
+    color: var(--color-gray-400);
+    &:hover {
+      @media (hover: hover) {
+        background-color: #252C33;
+      }
+    }
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-white);
+      }
+    }
+  } */
+  .nav-item .icon {
+    color: var(--color-gray-400);
+  }
+  .nav-item.active svg path, .nav-item:hover svg path {
+    fill: #ffffff;
+  }
+  .nav-item.active span {
+    color: var(--color-white);
+  }
+  .nav-item.selected .check-icon {
+    display: block;
+  }
+  .nav-item.selected {
+    background-color: #252C33;
+  }
+  .nav-item.selected span {
+    color: var(--color-white);
+  }
+  .nav-item.selected svg path {
+    fill: #ffffff;
+  }
+  /* .nav-item:not(.selected) .check-icon {
+    display: none;
+  } */
+}

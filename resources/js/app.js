@@ -183,8 +183,8 @@ document.addEventListener('click', function (e) {
 // Cart page Specification and warranty popups
 document.addEventListener('DOMContentLoaded', () => {
     // --- SPECIFICATION MODAL LOGIC ---
-    const sOverlay = document.getElementById('spec-modal-overlay');
-    const sContainer = document.getElementById('spec-modal-container');
+    const sOverlay = document.querySelector('.spec-modal-overlay');
+    const sContainer = document.querySelector('.spec-modal-container');
 
     // function toggleSpecModal() {
     window.toggleSpecModal = function () {
@@ -209,10 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- WARRANTY MODAL LOGIC ---
-    const wOverlay = document.getElementById('warranty-modal-overlay');
-    const wContainer = document.getElementById('warranty-modal-container');
+    const wOverlay = document.querySelector('.warranty-modal-overlay');
+    const wContainer = document.querySelector('.warranty-modal-container');
     
-
     // function toggleWarrantyModal() {
     window.toggleWarrantyModal = function () {
         const isHidden = wOverlay.classList.contains('hidden');
@@ -487,6 +486,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         document.querySelector(".out-of-stock-block").style.display = 'none';
                         document.querySelector(".add-to-cart-block").style.display = 'block';
+                        if(response.data.cartQty > 0){
+                            document.querySelector(".add-to-cart").classList.add('hidden')
+                            document.querySelector(".go-to-cart").classList.remove('hidden')
+                        }else{
+                            document.querySelector(".go-to-cart").classList.add('hidden')
+                            document.querySelector(".add-to-cart").classList.remove('hidden')
+                            
+                        }
                     }
                 }
             });
@@ -506,8 +513,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mainProductInput) {
         getVarientDetails(mainProductInput.value);
     }
+    
+    // select and trigger the click event default selected variant
+    const stockInput = document.getElementById('selected_stock_id');
+    const selectedStockId = stockInput ? stockInput.value : null;
+
     const firstBtn = document.querySelector('.variant-group .variant-btn');
-    if (firstBtn) {
+    const activeBtn = document.querySelector('.variant-group .variant-btn.active');
+    
+
+    if (selectedStockId && activeBtn) {
+        activeBtn.click();
+    } else if (firstBtn) {
         firstBtn.click();
     }
 });
@@ -519,6 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const trigger = document.getElementById("menuTrigger");
 const overlay = document.getElementById("megaOverlay");
 
+if (trigger){
 trigger.addEventListener("click", () => {
     // Toggle the Morphing Icon
     trigger.classList.toggle("active");
@@ -533,6 +551,7 @@ trigger.addEventListener("click", () => {
         document.body.style.overflow = "auto";
     }
 });
+}
 
 var swiper = new Swiper(".categoryswiper", {
     slidesPerView: 7,
@@ -1062,6 +1081,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const productId = container.dataset.productId;
         const variantId = container.dataset.variantId;
         const cartId = container.dataset.cartId;
+        const cartItemBox = btn.closest('.product-cart-item');
         
         let currentVal = parseInt(input.value);
         
@@ -1073,10 +1093,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     const response = await res.json();
 
                     if (response.status) {
+                        if(cartItemBox){
+                            cartItemBox.remove();
+                        }
                         container.remove();
                         toastr.success(response.message, 'Success');
-                        console.log("AAAAAAAAAa");
                         updateCartSummary();
+                        $("#main-cart-section").load(location.href + " #main-cart-section>*", "");
                     } else {
                         toastr.error(response.message, 'Error');
                     }
@@ -1093,7 +1116,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const response = await addToCart(productId, variantId, newVal, 'set');
         if (response.success) {
             input.value = newVal;
-             console.log("BBBBBBB");
             updateCartSummary();
 
             // UI UPDATES for this specific card
@@ -1125,6 +1147,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('cart-count').innerText = data.cart_count;
                 document.getElementById('cart-shipping').innerText = data.shipping;
                 document.getElementById('cart-warranty').innerText = data.warranty_sum;
+                document.getElementById('total-cart-count-top').innerText = data.cart_count;
                 
             }
         } catch (err) {

@@ -27,16 +27,32 @@ class CartController extends Controller
                 return $item;
             });
 
+        // direct cart items
+        $directCartItems = $cartItems->where('is_pc_builder', 0);
+
+        // PC Builder cart items
+        $pcBuilderItems = $cartItems->where('is_pc_builder', 1)
+        ->groupBy('pc_builder_id');
+
         $subtotal  = $cartItems->sum('subtotal');
         $offerSum  = $cartItems->sum('offerSum');
         $discountSum = $subtotal - $offerSum;
-        $cartCount = $cartItems->sum('quantity');
-        $shipping = 0;
-        $tax = 0;
+        $cartCount = $cartItems->count();
+        
+        $defaultVat = get_setting('default_vat') ?? 0;
+        $tax = ($offerSum * $defaultVat) / 100;
         $warrantySum  = $cartItems->sum('warranty_price');
+
+        $shipping = get_setting('default_shipping_amount') ?? 0;
+        $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
+
+        if ($offerSum >= $freeShippingMinAmount) {
+            $shipping = 0;
+        }
+        
         $total = $offerSum + $tax + $shipping + $warrantySum;
 
-        return view('frontend.cart', compact('cartItems', 'subtotal', 'discountSum','cartCount','tax', 'shipping', 'total', 'warrantySum'))
+        return view('frontend.cart', compact('cartItems', 'subtotal', 'discountSum','cartCount','tax', 'shipping', 'total', 'warrantySum', 'pcBuilderItems','directCartItems'))
             ->with('total', $total);
     }
 
@@ -111,116 +127,6 @@ class CartController extends Controller
             'availableQty' => $stock->qty - $newQty
         ]);
     }
-
-    /*public function addToCart(Request $request)
-    {
-        $product_slug   = $request->has('product_slug') ? $request->product_slug : '';
-        $sku            = $request->has('sku') ? $request->sku : '';
-        $quantity       = $request->has('quantity') ? $request->quantity : 0;
-
-        $userId = Auth::id();
-      
-        $guestToken = $request->cookie('guest_token') ?? uniqid('guest_', true);
-
-        if (auth()->user()) {
-            $users_id_type = 'user_id';
-            $user_id = auth()->user()->id;
-            if ($guestToken) {
-                Cart::where('temp_user_id', $guestToken)
-                    ->update(
-                        [
-                            'user_id' => $user_id,
-                            'temp_user_id' => null
-                        ]
-                    );
-            }
-        }else{
-            $users_id_type = 'temp_user_id';
-        }
-
-        $variantProduct = ProductStock::leftJoin('products as p','p.id','=','product_stocks.product_id')
-                                    ->where('p.sku', $sku)
-                                    ->where('p.slug', $product_slug)
-                                    ->select('product_stocks.*')->first() ?? [];
-
-        if(!empty($variantProduct)){
-            $product_id         = $variantProduct['product_id'] ?? null;
-            $product_stock_id   = $variantProduct['id'] ?? null;
-          
-            $current_Stock      = $variantProduct['qty'] ?? 0;
-            
-            $carts = Cart::where([
-                $users_id_type =>  ($users_id_type == 'user_id') ? $userId  : $guestToken,
-                'product_id' => $product_id,
-                'product_stock_id' => $product_stock_id
-            ])->first();
-
-            // Calculate the total quantity to check against stock
-            $totalQuantityInCart = $quantity;
-
-            $priceData = getProductPrice($variantProduct);
-            $tax = 0;
-            if ($carts) {
-
-                $totalQuantityInCart += $carts->quantity;
-
-                if ($current_Stock < $totalQuantityInCart) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => trans('messages.product_outofstock_msg').'!',
-                        'cart_count' => $this->cartCount()
-                    ], 200);
-                }
-    
-                if($variantProduct->product->vat != 0){
-                    $new_quantity = $carts->quantity + $quantity;
-                    $tax = (($carts->offer_price * $new_quantity)/100) * $variantProduct->product->vat;
-                }
-                $carts->quantity        += $quantity;
-                $carts->tax             = $tax;
-                $carts->price           = $priceData['original_price'] ?? 0;
-                $carts->offer_price     = $priceData['discounted_price'] ?? 0;
-                $carts->offer_tag       = $priceData['offer_tag'] ?? NULL;
-                $carts->save();
-            }else {
-
-                if ($current_Stock < $quantity) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => trans('messages.product_outofstock_msg').'!',
-                        'cart_count' => $this->cartCount()
-                    ], 200);
-                }
-               
-                if($variantProduct->product->vat != 0){
-                    $tax = (($priceData['discounted_price'] * ($quantity ?? 1))/100) * $variantProduct->product->vat;
-                }
-                $data[$users_id_type]           = ($users_id_type == 'user_id') ? $userId  : $guestToken;
-                $data['product_id']             = $product_id;
-                $data['product_stock_id']       = $product_stock_id;
-                $data['quantity']               = $quantity;
-                $data['price']                  = $priceData['original_price'] ?? 0;
-                $data['offer_price']            = $priceData['discounted_price'] ?? 0;
-                $data['offer_tag']              = $priceData['offer_tag'] ?? NULL;
-                $data['tax']                    = $tax;
-                $data['shipping_cost']          = 0;
-
-                Cart::create($data);
-            }
-
-            return response()->json([
-                'status' => true,
-                'message' => trans('messages.product_add_cart_success'),
-                'cart_count' =>  $this->cartCount()
-            ], 200);
-        }else{
-            return response()->json([
-                'status' => false,
-                'message' => trans('messages.product_add_cart_failed'),
-                'cart_count' => $this->cartCount()
-            ], 200); 
-        }
-    }*/
 
     public function getCartDetails()
     {
@@ -310,8 +216,17 @@ class CartController extends Controller
         $subTotal     = $cartItems->sum('subtotal');
         $offerSum     = $cartItems->sum('offer_sum');
         $discountSum  = $subTotal - $offerSum;
-        $shipping     = 0;
-        $tax          = 0;
+
+        $shipping = get_setting('default_shipping_amount') ?? 0;
+        $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
+
+        if ($offerSum >= $freeShippingMinAmount) {
+            $shipping = 0;
+        }
+
+        $defaultVat = get_setting('default_vat') ?? 0;
+        $tax = ($offerSum * $defaultVat) / 100;
+        
         $cartCount    = $cartItems->sum('quantity');
         $warrantySum  = $cartItems->sum('warranty_price');
         $total        = $offerSum + $tax + $shipping + $warrantySum;
