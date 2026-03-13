@@ -50,6 +50,18 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @yield('style')
+
+    <style>
+        .swiper-button-next,.swiper-container-rtl .swiper-button-prev {
+            left: auto;
+            background-image: url("{{ asset('assets/images/arrow-right.svg') }}"); 
+        }
+        .swiper-button-prev,
+        .swiper-container-rtl .swiper-button-next {
+            right: auto;
+            background-image: url("{{ asset('assets/images/arrow-left.svg') }}"); 
+        }
+    </style>
 </head>
 
 <body class="m-[0] bg-[#0F161B]">
@@ -73,6 +85,40 @@
     <script src="{{ asset('assets/js/elements@1.js') }}" type="module"></script>
     <!--//script-->
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            @if (session('success'))
+                toastr.success('{{ session("success") }}');
+            @endif
+
+            @if (session('error'))
+                toastr.error('{{ session("error") }}');
+            @endif
+        });
+    </script>
     @yield('script')
 </body>
 

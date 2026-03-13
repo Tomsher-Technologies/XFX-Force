@@ -535,22 +535,17 @@ document.addEventListener('DOMContentLoaded', () => {
 // theme-script.js starts
 const trigger = document.getElementById("menuTrigger");
 const overlay = document.getElementById("megaOverlay");
+if (trigger && overlay) {
+    trigger.addEventListener("click", () => {
+        trigger.classList.toggle("active");
+        overlay.classList.toggle("open");
 
-if (trigger){
-trigger.addEventListener("click", () => {
-    // Toggle the Morphing Icon
-    trigger.classList.toggle("active");
-
-    // Toggle the Mega Menu Visibility
-    overlay.classList.toggle("open");
-
-    // Prevent scrolling when menu is open
-    if (overlay.classList.contains("open")) {
-        document.body.style.overflow = "hidden";
-    } else {
-        document.body.style.overflow = "auto";
-    }
-});
+        if (overlay.classList.contains("open")) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+    });
 }
 
 var swiper = new Swiper(".categoryswiper", {
@@ -892,7 +887,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-function toggleBilling() {
+window.toggleBilling = function() {
     const isChecked = document.getElementById('billing-toggle').checked;
     const billingSection = document.getElementById('billing-section');
 
@@ -910,7 +905,7 @@ function toggleBilling() {
  * MOBILE NAVIGATION CONTROLLER - FINAL STABLE VERSION
  */
 
-function closeAllMobileSystems() {
+window.closeAllMobileSystems = function() {
     // 1. Reset Sidebar
     const sidebar = document.getElementById('mobile-sidebar');
     if (sidebar) {
@@ -941,27 +936,25 @@ function closeAllMobileSystems() {
     document.body.style.overflow = 'auto';
 }
 
-function toggleMobileMenu(event) {
-    if (event) event.stopPropagation();
-    const sidebar = document.getElementById('mobile-sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
+window.toggleMobileMenu = function() {
+    const panel = document.getElementById("mobile-side-panel");
+    const overlay = document.getElementById("mobile-menu-overlay");
+    const isOpen = panel.classList.contains("translate-x-0");
 
-    const isOpening = sidebar.classList.contains('left-[-100%]');
-
-    if (isOpening) {
-        // Instant close others
-        document.querySelectorAll('.slide-up-panel').forEach(p => p.classList.add('invisible'));
-
-        sidebar.classList.replace('left-[-100%]', 'left-0');
-        overlay.classList.replace('opacity-0', 'opacity-100');
-        overlay.classList.replace('pointer-events-none', 'pointer-events-auto');
-        document.body.style.overflow = 'hidden';
+    if (!isOpen) {
+        panel.classList.replace("-translate-x-full", "translate-x-0");
+        overlay.classList.replace("opacity-0", "opacity-100");
+        overlay.classList.replace("pointer-events-none", "pointer-events-auto");
+        document.body.style.overflow = "hidden";
     } else {
-        closeAllMobileSystems();
+        panel.classList.replace("translate-x-0", "-translate-x-full");
+        overlay.classList.replace("opacity-100", "opacity-0");
+        overlay.classList.replace("pointer-events-auto", "pointer-events-none");
+        document.body.style.overflow = "";
     }
 }
 
-function toggleMobileWidget(panelId, event) {
+window.toggleMobileWidget = function(panelId, event) {
     if (event) event.stopPropagation();
 
     const panel = document.getElementById(panelId);
@@ -995,7 +988,7 @@ document.addEventListener('click', function (e) {
 
 
 
-function handleSortClick(selectedBtn) {
+window.handleSortClick = function (selectedBtn) {
     // 1. Find all buttons in the sort container
     const allSortBtns = document.querySelectorAll('.sort-btn');
 
@@ -1155,3 +1148,137 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
+
+
+window.toggleEditMode = function() {
+    const inputs = document.querySelectorAll(".profile-input");
+    const saveContainer = document.getElementById("save-button-container");
+    const editTexts = document.querySelectorAll(".edit-text-sync");
+    const editIcons = document.querySelectorAll(".edit-icon-sync");
+    const editButtons = document.querySelectorAll('[onclick="toggleEditMode()"]');
+
+    // Check current state based on first input
+    const isReadOnly = inputs[0].readOnly;
+
+    inputs.forEach((input) => {
+        input.readOnly = !isReadOnly;
+        if (isReadOnly) {
+            input.classList.remove("read-only:opacity-70", "cursor-default");
+            input.classList.add("cursor-text");
+        } else {
+            input.classList.add("read-only:opacity-70", "cursor-default");
+            input.classList.remove("cursor-text");
+        }
+    });
+
+    if (isReadOnly) {
+        // --- ENTERING EDIT MODE ---
+        saveContainer.classList.remove("hidden");
+        saveContainer.classList.add("flex");
+
+        editTexts.forEach((el) => (el.innerText = "DISCARD CHANGES"));
+
+        // Change Icons to "X" (Close)
+        editIcons.forEach((el) => {
+            el.innerHTML =
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />';
+        });
+
+        // Add a red "Warning" style to the buttons
+        editButtons.forEach((btn) => {
+            btn.classList.add("text-red-500", "border-[#c0392b80]", "bg-[#c0392b50]");
+            btn.classList.remove("bg-[#252B31]");
+        });
+
+        inputs[0].focus();
+    } else {
+        // --- EXITING / CANCELING ---
+        saveContainer.classList.add("hidden");
+        saveContainer.classList.remove("flex");
+
+        editTexts.forEach((el) => (el.innerText = "EDIT PROFILE"));
+
+        // Change Icons back to "Pencil" (Edit)
+        editIcons.forEach((el) => {
+            el.innerHTML =
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />';
+        });
+
+        // Revert styles
+        editButtons.forEach((btn) => {
+            btn.classList.remove("text-red-500", "border-[#c0392b80]", "bg-[#c0392b50]");
+            btn.classList.add("bg-[#252B31]");
+        });
+    }
+}
+
+window.toggleSidePanel = function () {
+    const panel = document.getElementById("account-side-panel");
+    const overlay = document.getElementById("side-panel-overlay");
+
+    const isOpen = panel.classList.contains("translate-x-0");
+
+    if (!isOpen) {
+        // Open
+        panel.classList.remove("translate-x-full");
+        panel.classList.add("translate-x-0");
+        overlay.classList.remove("opacity-0", "pointer-events-none");
+        overlay.classList.add("opacity-100", "pointer-events-auto");
+        document.body.style.overflow = "hidden"; // Prevent background scroll
+    } else {
+        // Close
+        panel.classList.add("translate-x-full");
+        panel.classList.remove("translate-x-0");
+        overlay.classList.add("opacity-0", "pointer-events-none");
+        overlay.classList.remove("opacity-100", "pointer-events-auto");
+        document.body.style.overflow = "";
+    }
+}
+
+window.toggleSearch = function () {
+    const menu = document.getElementById("search-mega-menu");
+    const overlay = document.getElementById("search-overlay");
+    const input = document.getElementById("mega-search-input");
+
+    const isHidden = menu.classList.contains("-translate-y-full");
+
+    if (isHidden) {
+        // Show
+        menu.classList.remove("-translate-y-full", "invisible");
+        menu.classList.add("translate-y-0");
+        overlay.classList.remove("opacity-0", "pointer-events-none");
+        overlay.classList.add("opacity-100", "pointer-events-auto");
+
+        // Focus the input with a slight delay for animation
+        setTimeout(() => input.focus(), 400);
+        document.body.style.overflow = "hidden";
+    } else {
+        // Hide
+        menu.classList.add("-translate-y-full");
+        menu.classList.remove("translate-y-0");
+        setTimeout(() => menu.classList.add("invisible"), 500);
+        overlay.classList.add("opacity-0", "pointer-events-none");
+        overlay.classList.remove("opacity-100", "pointer-events-auto");
+        document.body.style.overflow = "";
+    }
+}
+
+/* mobile menu */
+
+
+
+window.toggleSubMenu = function (id) {
+    const sub = document.getElementById(id);
+    const caret = document.getElementById("shop-caret");
+
+    if (sub.classList.contains("hidden")) {
+        sub.classList.remove("hidden");
+        caret.classList.add("rotate-180");
+    } else {
+        sub.classList.add("hidden");
+        caret.classList.remove("rotate-180");
+    }
+}
+
+
+

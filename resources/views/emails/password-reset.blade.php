@@ -74,11 +74,11 @@
 <body>
     <div style="width: 60%;">
         <table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#ffffff"
-            style="border: 1px solid #b7e3f978">
+            style="border: 1px solid #000000">
             <tbody>
                 <tr>
                     <td width="650" align="center" valign="middle">
-                        <table border="0" align="center" cellpadding="0" cellspacing="0" style="background:#b7e3f978;">
+                        <table border="0" align="center" cellpadding="0" cellspacing="0" style="background:#000000;">
                             <tbody>
                                 <tr>
                                     <td width="658" align="center" valign="middle">
@@ -88,9 +88,11 @@
                                                     <tr>
                                                         <td width="208" align="center" valign="middle">
                                                             <a href="{{ env('APP_URL') }}" target="_blank">
-                                                                <img src="{{ asset('assets/img/logo.png') }}" alt="{{ env('APP_NAME') }}" title="{{ env('APP_NAME') }}" style="display: block;margin-top: 5px;margin-bottom: 5px;" width="222" />
+                                                                <img src="{{ asset('assets/images/PC-Garage-Logo-white.svg') }}" alt="{{ env('APP_NAME') }}" title="{{ env('APP_NAME') }}" style="display: block;margin-top: 5px;margin-bottom: 5px;" width="222" />
                                                             </a>
                                                         </td>
+                                                        {{-- {{ asset('assets/images/PC-Garage-Logo-white.svg') }} --}}
+                                                        {{-- https://pcgarage.me/imgs/PC-Garage-Logo-white.png --}}
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -121,7 +123,7 @@
                                         <br>
                                         <p>We received a request to reset your password for your {{env('APP_NAME')}} account. Click the button below to set a new password:</p>
                                         <br>
-                                        <a href="{{ $resetLink }}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                                        <a href="{{ $resetLink }}" style="display: inline-block; padding: 12px 24px; background-color: #000000; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">
                                             Reset Password
                                         </a>
                                         <br>
@@ -142,11 +144,11 @@
                         </table>
 
                         <table border="0" align="center" cellpadding="0" cellspacing="0"
-                            style="background-color: #b7e3f978">
+                            style="background-color: #000000">
                             <tbody>
                                 <tr>
                                     <td width="648" align="center" valign="middle" style="text-align: center">
-                                        <span style="font-family: Arial, sans-serif; font-size: 12px; color: black;">©
+                                        <span style="font-family: Arial, sans-serif; font-size: 12px; color: white;">©
                                             {{date('Y')}} {{ env('APP_NAME') }}. All Rights Reserved.</span>
                                     </td>
                                 </tr>

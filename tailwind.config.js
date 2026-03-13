@@ -18,6 +18,9 @@ module.exports = {
                 primary: '#41B6E8', // Primary color for buttons and arrows
                 secondary: '#2D2D2D', // Secondary color for hover states
             },
+            backgroundImage: {
+                'footer-top': "url('/assets/images/footer-top.png')",
+            }
         },
     },
 

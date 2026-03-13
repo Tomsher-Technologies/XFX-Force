@@ -60,7 +60,7 @@ class AuthController extends Controller
         \Mail::to($request->email)->queue(new \App\Mail\SendMail($details));
 
         // Log the user in after registration
-        Auth::login($user);
+        Auth::guard('frontend')->login($user);
 
         return redirect()->route('home')->with('success', 'Welcome! Your registration was successful. Start shopping with us!');  // Redirect to home page after registration
     }
@@ -83,11 +83,11 @@ class AuthController extends Controller
 
         $remember = $request->has('remember');
         // Attempt to log the user in
-        if (Auth::attempt($credentials, $remember)) {
-            if (Auth::user()->user_type === 'customer') {
-                return redirect()->route('home')->with('success', 'Login successful! Welcome back.'); // Redirect to home for customersP
+        if (Auth::guard('frontend')->attempt($credentials, $remember)) {
+            if (Auth::guard('frontend')->user()->user_type === 'customer') {
+                return redirect()->route('home')->with('success', 'Login successful! Welcome back.'); // Redirect to home for customers
             } else {
-                Auth::logout(); // Log out non-customers
+                Auth::guard('frontend')->logout(); // Log out non-customers
                 return back()->with('error', 'Access restricted to customers only.');
             }
         }
@@ -99,7 +99,7 @@ class AuthController extends Controller
     // Logout the user
     public function logout()
     {
-        Auth::logout();
-        return redirect()->route('login'); // Redirect to login page after logout
+        Auth::guard('frontend')->logout();
+        return redirect()->route('home'); // Redirect to login page after logout
     }
 }
