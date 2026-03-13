@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use Hash;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 use Storage;
 use Auth;
 
@@ -21,59 +22,61 @@ class ProfileController extends Controller
     public function counters()
     {
         return response()->json([
-            'cart_item_count' => Cart::where('user_id', auth()->user()->id)->count(),
-            'wishlist_item_count' => Wishlist::where('user_id', auth()->user()->id)->count(),
-            'order_count' => Order::where('user_id', auth()->user()->id)->count(),
+            'cart_item_count' => Cart::where('user_id', auth('frontend')->user()->id)->count(),
+            'wishlist_item_count' => Wishlist::where('user_id', auth('frontend')->user()->id)->count(),
+            'order_count' => Order::where('user_id', auth('frontend')->user()->id)->count(),
         ]);
     }
 
     public function getUserAccountInfo(){
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $user = User::find($user_id);
-        echo '<pre>';
-        print_r($user);
-        die;
-        return view('pages.my-profile',compact('user'));
+       
+        return view('frontend.user.my-account',compact('user'));
     }
 
     public function update(Request $request)
     {
-        $request->validate([
+        $user = auth('frontend')->user();
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'phone' => 'required|min:9',
+            'phone' => 'required|string|max:20|unique:users,phone,' . $user->id,
         ]);
 
-        $user = Auth::user();
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ]);
+        }
+
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->save();
     
-
-        session()->flash('message', trans('messages.profile_update_success'));
-        session()->flash('alert-type', 'success');
-
-        return redirect()->back();
+        return response()->json([
+            'success' => 'Profile updated successfully'
+        ]);
     }
 
     public function updatePassword(){
         $lang = getActiveLanguage();
-        return view('pages.change-password',compact('lang'));
+        return view('frontend.user.change-password',compact('lang'));
     }
 
     public function changePassword(Request $request)
     {
         $request->validate([
             'current_password' => 'required',
-            'new_password' => 'required|min:8|confirmed',
+            'new_password' => ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/','regex:/[@$!%*#?&]/'],
         ]);
 
-        $user = Auth::user();
+        $user = Auth::guard('frontend')->user();
 
         // Check if the current password matches
         if (!Hash::check($request->current_password, $user->password)) {
             session()->flash('message', trans('messages.current_password_incorrect'));
             session()->flash('alert-type', 'error');
-            return redirect()->back();
+            return redirect()->back()->withInput(); 
         }
 
         // Update the password
@@ -87,7 +90,7 @@ class ProfileController extends Controller
 
     public function orderList(Request $request){
         $lang = getActiveLanguage();
-        $user_id = (!empty(auth()->user())) ? auth()->user()->id : '';
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $user = User::find($user_id);
         $total_count = 0;
         $orderList = [];
@@ -112,7 +115,7 @@ class ProfileController extends Controller
     }
     
     public function orderReturnList(Request $request){
-        $user_id = (!empty(auth()->user())) ? auth()->user()->id : '';
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $user = User::find($user_id);
         $total_count = 0;
         $orderList = [];
@@ -128,7 +131,7 @@ class ProfileController extends Controller
     }
     public function orderDetails(Request $request){
         $order_code = $request->code ?? '';
-        $user_id = (!empty(auth()->user())) ? auth()->user()->id : '';
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $track_list = [];
         $lang = getActiveLanguage();
         $order = [];
@@ -166,32 +169,35 @@ class ProfileController extends Controller
 
     public function getUserAddressInfo(){
         $lang = getActiveLanguage();
-        $addresses = Address::where('user_id', auth()->user()->id)->orderBy('id','desc')->get();
-        return view('pages.my-address', compact('addresses','lang'));
+        $addresses = Address::where('user_id', auth('frontend')->user()->id)->orderBy('id','desc')->get();
+        return view('frontend.user.my-address', compact('addresses','lang'));
     }
 
-    public function addAddress(){
-        $lang = getActiveLanguage();
-        return view('pages.add-address', compact('lang'));
-    }
 
     public function saveAddress(Request $request){
-        $validate = $request->validate([
-            'name' => 'required|regex:/^[a-zA-Z\s]+$/u',
-            'address' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'country' => 'required',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|regex:/^[a-zA-Z\s]+$/u|max:100',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:100',
+            'state' => 'required|string|max:100',
+            'country' => 'required|string|max:100',
             'phone' => ['required', 'regex:/^\+?[0-9]{7,15}$/']
         ], [
             'name.regex' => 'Only alphabets and spaces are allowed in the name field.',
             'phone.regex' => 'Please enter a valid phone number (numbers only, 7-15 digits).'
         ]);
 
-        $user_id = (!empty(auth()->user())) ? auth()->user()->id : '';
+        if ($validator->fails()) {
+            return response()->json([
+                'status'=>'error',
+                'errors'=>$validator->errors()
+            ],200);
+        }
+
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
 
         if($user_id != ''){
-            if($request->address_id != ''){
+            if($request->address_id != 0){
                 $address                = Address::find($request->address_id);
             }else{
                 $address                = new Address;
@@ -210,20 +216,18 @@ class ProfileController extends Controller
             $address->type          = $request->address_type ?? null;
             $address->set_default   = $request->default ?? 0;
             $address->phone         = $request->phone;
+            $address->latitude      = $request->latitude ?? null;
+            $address->longitude     = $request->longitude ?? null;
             $address->save();
     
-            session()->flash('message', 'Address saved successfully!');
-            session()->flash('alert-type', 'success');
-            return redirect()->route('my-address');
+            return response()->json(['success'=> true ], 200);
         }else{
-            session()->flash('message', 'Something went wrong!');
-            session()->flash('alert-type', 'error');
-            return redirect()->back();
+            return response()->json(['success'=> false ], 200);
         }
     }
 
     public function deleteAddress(Request $request){
-        $user_id = (!empty(auth()->user())) ? auth()->user()->id : '';
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $address_id = $request->address_id ?? null;
         if($user_id != '' && $address_id != null){
             Address::where(['id' => $request->address_id,'user_id' => $user_id])->delete();

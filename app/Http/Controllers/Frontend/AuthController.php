@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -22,32 +22,52 @@ class AuthController extends Controller
     // Handle the registration logic
     public function register(Request $request)
     {
-        // Validation for registration form
+        $existingUser = User::where('email', $request->email)->first();
+     
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone' => ['required', 'regex:/^[0-9]+$/', 'min:10', 'max:15', 'unique:users'], // Allow only numbers
-            'password' => ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'phone' => ['required', 'regex:/^[0-9]+$/', 'min:10', 'max:15', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[0-9]/','regex:/[@$!%*#?&]/'],
             'password_confirmation' => ['required_with:password', 'same:password'],
         ],[
-            'password.regex' => 'Password must contain at least one uppercase letter and one number.'
-            ]);
-
-        if ($validator->fails()) {
-            return redirect('register')
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        // Create new user
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'user_type' => 'customer',
-            'password' => Hash::make($request->password),
+            'password.regex' => 'Password must contain at least one uppercase letter, one number, and one special character.'
         ]);
 
+       
+        if ($validator->fails()) {
+            return redirect('register')->withErrors($validator)->withInput();
+        }
+
+        if ($existingUser) {
+            // If guest → convert to customer
+            if ($existingUser->user_type == 'guest') {
+
+                $existingUser->update([
+                    'name' => $request->name,
+                    'phone' => $request->phone,
+                    'password' => Hash::make($request->password),
+                    'user_type' => 'customer'
+                ]);
+
+                $user = $existingUser;
+
+            } else {
+
+                return redirect('register')
+                    ->withErrors(['email' => 'This email is already registered. Please login.'])->withInput();
+            }
+        } else {
+            // Create new user
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'user_type' => 'customer',
+                'password' => Hash::make($request->password),
+            ]);
+        }
+        
         $details = [
             'name' => $request->name,
             'subject' => 'Registration Successful - Welcome to '.env('APP_NAME').'!',
@@ -57,7 +77,7 @@ class AuthController extends Controller
             <p>Thank you for choosing ".env('APP_NAME').". </p>"
         ];
        
-        \Mail::to($request->email)->queue(new \App\Mail\SendMail($details));
+        Mail::to($request->email)->queue(new \App\Mail\SendMail($details));
 
         // Log the user in after registration
         Auth::guard('frontend')->login($user);

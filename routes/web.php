@@ -68,5 +68,13 @@ Route::group(['middleware' => ['auth:frontend']], function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('account', [ProfileController::class, 'getUserAccountInfo'])->name('account');
-    Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update');
+    Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update'); 
+
+    Route::get('update-password', [ProfileController::class, 'updatePassword'])->name('update-password');
+    Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('account.changePassword');
+
+    Route::get('my-address', [ProfileController::class, 'getUserAddressInfo'])->name('my-address');
+    Route::post('save-address', [ProfileController::class, 'saveAddress'])->name('save-address');
+    Route::delete('/address/delete', [ProfileController::class, 'deleteAddress'])->name('address.delete');
+    Route::get('edit-address/{id}', [ProfileController::class, 'editAddress'])->name('edit-address');
 });

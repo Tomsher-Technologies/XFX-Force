@@ -183,6 +183,7 @@
 
 UPDATE `pages` SET `slug` = 'Home/Landing Page' WHERE `pages`.`id` = 1;
 
+ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 
 
 /* Jisha END */
