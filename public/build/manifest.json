@@ -1,0 +1,23 @@
+{
+  "public/assets/fonts/JuanCock.woff": {
+    "file": "assets/JuanCock-b0c8ac38.woff",
+    "src": "public/assets/fonts/JuanCock.woff"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-4cca7152.css",
+    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/js/app.css": {
+    "file": "assets/app-64efd51c.css",
+    "src": "resources/js/app.css"
+  },
+  "resources/js/app.js": {
+    "css": [
+      "assets/app-64efd51c.css"
+    ],
+    "file": "assets/app-86c1550c.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  }
+}
