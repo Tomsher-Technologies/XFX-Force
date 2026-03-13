@@ -1,37 +1,21 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Shop')
+@section('title', 'Shop - Category')
 @section('content')
 
 @php
 
 Log::info($_REQUEST);
 @endphp
-<!--inner banner-->
-<section class="bg-[#000000] px-[16px] md:px-[250px] pt-[200px] pb-[100px] relative border rounded-br-[100px] rounded-bl-[100px] before:content-[''] before:absolute before:top-[-130%] before:left-[50%] before:translate-x-[-50%] before:w-[900px] before:h-[900px] before:bg-[#2161C7] before:rounded-full before:filter before:blur-[200px] before:z-[0] before:opacity-[0.7]">
-    <div class="section-title mb-[30px] relative">
-        <h3 class="text-[50px] text-[white] capitalize font-bold text-center uppercase text-center">Shop by Categories</h3>
-    </div>
-    <div class="swiper categoryswiper relative">
-        <div class="swiper-wrapper">
-            @foreach ($categories as $category)
-            <div class="swiper-slide" data-swiper-autoplay="8000">
-                <a href="{{ route('shop.category',$category->id) }}" class="flex flex-col items-center justify-center gap-[15px]">
-                    <div class="category-thumb flex align-center bg-[#272930] p-[30px] rounded-full h-[130px] w-[130px]">
-                        <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" alt="Graphics Card" title="Graphics Card" class="w-full m-auto">
-                    </div>
-                    <h4 class="text-[white] text-center font-medium text-[16px] capitalize">{{$category->name}}</h4>
-                </a>
-            </div>
-            @endforeach
+
+    <!--inner banner-->
+    <section class="px-[16px] md:px-[140px] pt-[80px] md:pt-[150px] pb-[0px] relative">
+        <div class="section-title mb-[0px] relative border-t-1 border-[#ffffff30] pt-[50px]">
+            <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase flex flex-col md:flex-row flex-start justify-center md:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">shop: {{ $category->name }}<span class="text-[18px] text-[#2A7CFF] top-[6px] tracking-[0px] relative font-sans h-[0px]">{{ $productCount }}</span></h3>
         </div>
-        <div class="controls absolute flex items-center justify-between gap-[40px] w-full top-[50%] left-[0] right-[0] z-[1]">
-            <div class="swiper-button-prev !relative !left-[-100px] !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
-            <div class="swiper-button-next !relative !right-[-100px] !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
-        </div>
-    </div>
-</section>
-<!--//categories-->
+        <input type="hidden" id="current-category-id" value="{{ $category->id }}">
+    </section>
+    <!--//categories-->
 
 
 <!--product listing-->
@@ -494,10 +478,9 @@ Log::info($_REQUEST);
 
             <div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 
-                <div class="flex items-center justify-between">
-                    <h1 class="text-4xl font-bold tracking-tight text-white uppercase">All Products</h1>
-                    <div class="flex items-center gap-[30px]">
-                        <span class="text-[#898989] text-[14px]">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
+                <div class="flex flex-col md:flex-row items-center justify-between gap-[15px] md:gap-[0px] w-full">
+                    <span class="text-[#898989] text-[14px] w-full text-center md:text-left">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
+                    <div class="flex flex-col md:flex-row items-center gap-[15px] md:gap-[30px] w-full justify-end">
                         <el-dropdown class="relative inline-block text-left">
                             <button class="group inline-flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white min-w-[230px]">
                                 <span class="mr-[10px] text-[14px] text-[#898989]">Sort by:
@@ -710,7 +693,6 @@ Log::info($_REQUEST);
         });
     });
 
-
     // Filtering function
     function filterProducts(selectedBrands = [], sort = "newest", view = "gridview") {
         const categories = Array.from(document.querySelectorAll('input[name="categories[]"]:checked'))
@@ -718,9 +700,12 @@ Log::info($_REQUEST);
 
         const min_price = parseInt(document.getElementById('min-price')?.textContent) || 0;
         const max_price = parseInt(document.getElementById('max-price')?.textContent) || 300000;
+        const categoryId = document.getElementById('current-category-id')?.value;
 
         // Get URL from Blade data attribute
-        const url = `/products`;
+        let url = categoryId
+            ? `/shop/category/${categoryId}`
+            : `/shop`;
 
         // Build query string
         const params = new URLSearchParams({

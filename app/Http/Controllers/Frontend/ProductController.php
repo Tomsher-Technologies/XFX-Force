@@ -243,17 +243,18 @@ class ProductController extends Controller
         return $products;
     }
 
-    public function productDetails($id)
+    public function productDetails($id, $stockId = null)
     {
         $product = Product::with([
             'stocks',
             'stocks.attributes.attribute',
             'stocks.attributes.value'
         ])->findOrFail($id);
+
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->get();
-        return view('frontend.productDetails', compact('product', 'relatedProducts'));
+        return view('frontend.productDetails', compact('product', 'relatedProducts','stockId'));
     }
 
     public function index(Request $request)
@@ -400,11 +401,95 @@ class ProductController extends Controller
                     'price' => $variant->price,
                     'offer_price' => $variant->offer_price,
                     'image' => $variant->image ?? '',
+                    'cartQty' => $cartQty,
                     'availableQty' => $availableQty,
                 ]
             ]);
         } else {
             return response()->json(['success' => false, 'message' => 'No matching variant']);
         }
+    }
+
+    public function shopByCategory(Request $request, $categoryId)
+    {
+        $sort = $request->get('sort', 'newest');
+        $view = $request->get('view', 'gridview');
+
+        // Get current category
+        $category = Category::withCount('products')->findOrFail($categoryId);
+
+
+        $products = Product::select('products.*')
+            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id');
+
+        // Category from URL (default filter)
+        $products->where('products.category_id', $categoryId);
+
+        // Filters
+        if ($request->filled('categories')) {
+            $products->whereIn('products.category_id', $request->categories);
+        }
+
+        if ($request->filled('brands')) {
+            $products->whereIn('products.brand_id', $request->brands);
+        }
+
+        if ($request->filled('min_price')) {
+            $products->where('product_stocks.price', '>=', $request->min_price);
+        }
+
+        if ($request->filled('max_price')) {
+            $products->where('product_stocks.price', '<=', $request->max_price);
+        }
+
+        // Sorting
+        switch ($sort) {
+            case 'oldest':
+                $products->orderBy('products.created_at', 'asc');
+                break;
+
+            case 'price_low_high':
+                $products->orderBy('product_stocks.price', 'asc');
+                break;
+
+            case 'price_high_low':
+                $products->orderBy('product_stocks.price', 'desc');
+                break;
+
+            default:
+                $products->orderBy('products.created_at', 'desc');
+                break;
+        }
+
+        $products = $products->with('stocks')->distinct()->get();
+
+        $categories = Category::withCount('products')->get();
+        $brands = Brand::withCount('products')->get();
+
+        if ($products->isEmpty()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'No Products Found!',
+                ]);
+            }
+        }
+
+        // Total products for this category after filters
+        $productCount = $products->count();
+        // If AJAX request, return only product list partial
+        if ($request->ajax()) {
+            return view('frontend.partials.product-list', compact('products', 'view'))->render();
+        }
+
+        return view('frontend.shop-by-category', compact(
+            'products',
+            'categories',
+            'brands',
+            'sort',
+            'view',
+            'categoryId',
+            'category',
+            'productCount'
+        ));
     }
 }
