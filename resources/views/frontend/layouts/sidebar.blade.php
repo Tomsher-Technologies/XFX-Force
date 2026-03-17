@@ -21,7 +21,7 @@
                 <span class="text-[10px] lg:text-[15px] ">Orders</span>
             </a>
 
-            <a href="{{ route('my-address') }}" class="w-full flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px]  transition-all group  {{ request()->routeIs('address*') ? 'bg-[#2A7CFF] text-white font-medium' : 'hover:bg-[#252C33] text-[#898989] text-gray-400 hover:text-white' }} ">
+            <a href="{{ route('my-address') }}" class="w-full flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px]  transition-all group  {{ request()->routeIs('my-address*') ? 'bg-[#2A7CFF] text-white font-medium' : 'hover:bg-[#252C33] text-[#898989] text-gray-400 hover:text-white' }} ">
                 <svg class="w-5 h-5 group-hover:text-white {{ request()->routeIs('my-address*') ? 'text-[#ffffff]' : 'text-[#898989]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 <span class="text-[10px] lg:text-[15px] ">Address</span>
             </a>
