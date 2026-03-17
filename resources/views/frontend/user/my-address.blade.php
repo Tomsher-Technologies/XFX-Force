@@ -21,7 +21,7 @@
                                 <p class="text-gray-500">Manage your shipping locations.</p>
                             </div>
                             <div class="w-full flex justify-center md:justify-end">
-                                <button onclick="toggleAddressModal('.address-modal', true)"
+                                <button onclick="openAddAddressModal()"
                                     class="w-fit flex items-center justify-center gap-2 bg-[#2A7CFF] hover:bg-[#1a66e5] text-white px-6 py-3 rounded-xl font-medium text-[13px] uppercase cursor-pointer transition-all active:scale-95 shadow-[0_0_20px_rgba(42,124,255,0.3)]">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -35,7 +35,12 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-[30px]">
 
                             @foreach ($addresses as $address)
-                                <div class="bg-[#1C2228] border border-[#282B34] rounded-2xl overflow-hidden group hover:border-[#2A7CFF]/30 transition-all duration-300" id="address_div_{{ $address->id }}">
+                                <div class="bg-[#1C2228] border border-[#282B34] rounded-2xl overflow-hidden group hover:border-[#2A7CFF]/30 transition-all duration-300"
+                                    id="address_div_{{ $address->id }}" data-id="{{ $address->id }}" data-name="{{ $address->name }}"
+                                    data-phone="{{ $address->phone }}" data-address="{{ $address->address }}" data-city="{{ $address->city }}"
+                                    data-state="{{ $address->state_name }}" data-country="{{ $address->country_name }}"
+                                    data-zipcode="{{ $address->postal_code }}" data-type="{{ $address->type }}"
+                                    data-default="{{ $address->set_default }}" data-lat="{{ $address->latitude }}" data-lng="{{ $address->longitude }}">
                                     <div class="p-6 flex flex-col gap-4">
                                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 w-full">
                                         
@@ -173,7 +178,7 @@
 
                                         <input type="text"  name="state" id="state"  placeholder="Emirate / State *"
                                             value=""
-                                            class="bg-[#161B22] border border-gray-900/50 p-4 rounded-xl text-gray-400 w-full">
+                                            class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
                                         <p class="text-red-400 text-xs mt-1 error-state"></p>
                                     </div>
 
@@ -188,7 +193,7 @@
                                     <div>
                                         <input type="text" name="country" id="country" placeholder="Country *"
                                             value=""
-                                            class="bg-[#161B22] border border-gray-900/50 p-4 rounded-xl text-gray-400 w-full">
+                                            class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
                                         <p class="text-red-400 text-xs mt-1 error-country"></p>
                                     </div>
 
@@ -251,6 +256,34 @@
                     </div>
                 </div>
                 <!--//address modal-->
+
+                <!-- Delete Confirmation Modal -->
+                <div onclick="toggleDeleteModal(false)"
+                class="delete-modal fixed inset-0 z-[100] hidden opacity-0 bg-black/40 backdrop-blur-md flex justify-center items-center p-4 transition-all duration-300">
+
+                    <div onclick="event.stopPropagation()"
+                    class="bg-[#0B0F13] border border-gray-800 w-full max-w-md rounded-2xl shadow-2xl p-6 transform scale-95 opacity-0 transition-all duration-300 delete-modal-container">
+
+                        <h3 class="text-white text-lg font-semibold mb-2">Delete &nbsp; Address</h3>
+                        <p class="text-gray-400 text-sm mb-6">
+                            Are you sure you want to delete this address? This action cannot be undone.
+                        </p>
+
+                        <div class="flex gap-3 justify-end">
+
+                            <button onclick="toggleDeleteModal(false)"
+                            class="px-5 py-2 border border-gray-700 text-gray-400 rounded-lg hover:bg-gray-800">
+                                Cancel
+                            </button>
+
+                            <button onclick="confirmDeleteAddress()"
+                            class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                                Delete
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -371,8 +404,11 @@
                                 $(".error-"+key).text(value[0]);
                             });
                         }else{
-                            alert("Address saved successfully");
-                            location.reload();
+                            toastr.success("Address saved successfully");
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 3000);
+
                         }
                     },
                     error:function(xhr){
@@ -386,5 +422,119 @@
                 });
             });
         });
+
+        function editAddress(id) {
+            const div = document.getElementById('address_div_' + id);
+            const form = document.getElementById('addressForm');
+
+            // Fill form fields from data-attributes
+            form.address_id.value = div.dataset.id;
+            form.name.value = div.dataset.name;
+            form.phone.value = div.dataset.phone;
+            form.address.value = div.dataset.address;
+            form.city.value = div.dataset.city;
+            form.state.value = div.dataset.state;
+            form.country.value = div.dataset.country;
+            form.zipcode.value = div.dataset.zipcode;
+
+            // Set address type radio
+            const radios = form.querySelectorAll('input[name="address_type"]');
+            radios.forEach(r => r.checked = r.value === div.dataset.type);
+
+            // Default checkbox
+            form.default.checked = div.dataset.default == "1";
+
+            // Set map marker
+            const lat = parseFloat(div.dataset.lat) || 25.2048;
+            const lng = parseFloat(div.dataset.lng) || 55.2708;
+            const pos = { lat: lat, lng: lng };
+            marker.setPosition(pos);
+            map.setCenter(pos);
+            form.latitude.value = lat;
+            form.longitude.value = lng;
+
+            // Update modal title
+            form.querySelector('h4').innerText = 'Edit Address';
+
+            // Open modal
+            toggleAddressModal('.address-modal', true);
+        }
+
+        function openAddAddressModal() {
+            const form = document.getElementById('addressForm');
+            form.reset();
+            form.address_id.value = 0;
+            form.querySelector('h4').innerText = 'Add New Address';
+
+            // Reset map to default location
+            const defaultPos = { lat: 25.2048, lng: 55.2708 };
+            marker.setPosition(defaultPos);
+            map.setCenter(defaultPos);
+            form.latitude.value = defaultPos.lat;
+            form.longitude.value = defaultPos.lng;
+
+            toggleAddressModal('.address-modal', true);
+        }
+
+        let deleteAddressId = null;
+
+        function deleteAddress(id){
+            deleteAddressId = id;
+            toggleDeleteModal(true);
+        }
+
+        function toggleDeleteModal(open){
+
+            const modal = document.querySelector('.delete-modal');
+            const container = modal.querySelector('.delete-modal-container');
+
+            if(open){
+
+                modal.classList.remove('hidden');
+
+                requestAnimationFrame(()=>{
+                    modal.classList.add('opacity-100');
+                    container.classList.remove('scale-95','opacity-0');
+                    container.classList.add('scale-100','opacity-100');
+                });
+
+            }else{
+
+                modal.classList.remove('opacity-100');
+                container.classList.remove('scale-100','opacity-100');
+                container.classList.add('scale-95','opacity-0');
+
+                setTimeout(()=>{
+                    modal.classList.add('hidden');
+                },300);
+
+            }
+
+        }
+
+        function confirmDeleteAddress(){
+
+            $.ajax({
+                url: "{{ route('delete-address') }}",
+                type: "POST",
+                data:{
+                    id: deleteAddressId,
+                    _token:$('meta[name="csrf-token"]').attr('content')
+                },
+                success:function(response){
+
+                    if(response.success){
+
+                        $("#address_div_"+deleteAddressId).remove();
+                        toggleDeleteModal(false);
+
+                    }else{
+                        toastr.error("Failed to delete address");
+                    }
+
+                }
+            });
+
+        }
     </script>
 @endsection

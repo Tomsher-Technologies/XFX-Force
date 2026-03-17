@@ -75,6 +75,6 @@ Route::group(['middleware' => ['auth:frontend']], function () {
 
     Route::get('my-address', [ProfileController::class, 'getUserAddressInfo'])->name('my-address');
     Route::post('save-address', [ProfileController::class, 'saveAddress'])->name('save-address');
-    Route::delete('/address/delete', [ProfileController::class, 'deleteAddress'])->name('address.delete');
+    Route::post('/address/delete', [ProfileController::class, 'deleteAddress'])->name('delete-address');
     Route::get('edit-address/{id}', [ProfileController::class, 'editAddress'])->name('edit-address');
 });

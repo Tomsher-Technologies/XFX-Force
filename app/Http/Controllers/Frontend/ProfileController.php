@@ -202,10 +202,12 @@ class ProfileController extends Controller
             }else{
                 $address                = new Address;
             }
-            if($request->default == 1){
-                Address::where('user_id', $user_id)->update(['set_default' => 0]);
+            $isDefault = $request->has('default') ? 1 : 0;
+
+            if($isDefault){
+                Address::where('user_id', $user_id)->where('id','!=',$request->address_id)->update(['set_default' => 0]);
             }
-            
+
             $address->user_id       = $user_id;
             $address->address       = $request->address ?? null;
             $address->name          = $request->name ?? null;
@@ -214,10 +216,11 @@ class ProfileController extends Controller
             $address->country_name  = $request->country ?? null;
             $address->postal_code   = $request->zipcode ?? null;
             $address->type          = $request->address_type ?? null;
-            $address->set_default   = $request->default ?? 0;
+            $address->set_default   = $isDefault;
             $address->phone         = $request->phone;
             $address->latitude      = $request->latitude ?? null;
             $address->longitude     = $request->longitude ?? null;
+
             $address->save();
     
             return response()->json(['success'=> true ], 200);
@@ -226,21 +229,20 @@ class ProfileController extends Controller
         }
     }
 
-    public function deleteAddress(Request $request){
-        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        $address_id = $request->address_id ?? null;
-        if($user_id != '' && $address_id != null){
-            Address::where(['id' => $request->address_id,'user_id' => $user_id])->delete();
-            return response()->json([
-                'status' => true,
-                'message' => trans('messages.address').' '.trans('messages.deleted_msg')
-            ]);
-        }else{
-            return response()->json([
-                'status' => false,
-                'message' => trans('messages.something_went_wrong')
-            ]);
+    public function deleteAddress(Request $request)
+    {
+        $user_id = auth('frontend')->user()->id;
+
+        $address = Address::where('id',$request->id)
+            ->where('user_id',$user_id)
+            ->first();
+
+        if($address){
+            $address->delete();
+            return response()->json(['success'=>true]);
         }
+
+        return response()->json(['success'=>false]);
     }
 
     public function editAddress($id){
