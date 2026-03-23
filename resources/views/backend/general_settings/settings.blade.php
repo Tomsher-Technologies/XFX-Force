@@ -114,6 +114,36 @@
                     </form>
                 </div>
             </div>
+
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0 h6">Estimated Delivery Days</h5>
+                    </div>
+                    <form action="{{ route('configuration.delivery_settings') }}" method="POST"
+                        enctype="multipart/form-data">
+                        <div class="card-body">
+                            @csrf
+                            <input type="hidden" name="type" value="delivery_days">
+
+                            <div class="form-group row  mt-2">
+                                <label class="col-md-4 col-from-label">
+                                    Estimated Delivery Days
+                                </label>
+                                <div class="col-md-8">
+                                    <input step="1" class="form-control" type="number"
+                                        name="default_delivery_days"
+                                        value="{{ get_setting('default_delivery_days') ?? 0 }}">
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-0 text-right">
+                                <button type="submit" class="btn btn-sm btn-primary mt-2">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <div class="col-lg-6">

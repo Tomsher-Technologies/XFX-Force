@@ -229,6 +229,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/configuration/return', [BusinessSettingsController::class, 'return_settings'])->name('configuration.return_settings');
     Route::post('/configuration/vat', [BusinessSettingsController::class, 'vat_settings'])->name('configuration.vat_settings');
     Route::post('/configuration/pickup', [BusinessSettingsController::class, 'pickup_settings'])->name('configuration.pickup_settings');
+    Route::post('/configuration/delivery', [BusinessSettingsController::class, 'delivery_settings'])->name('configuration.delivery_settings');
 
     //Reports
     Route::get('/stock_report', [ReportController::class, 'stock_report'])->name('stock_report.index');

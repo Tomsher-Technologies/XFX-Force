@@ -133,6 +133,20 @@ class BusinessSettingsController extends Controller
         return back();
     }
 
+    public function delivery_settings(Request $request)
+    {
+        BusinessSetting::updateOrCreate([
+            'type' => 'default_delivery_days'
+        ], [
+            'value' => $request->default_delivery_days ?? 0
+        ]);
+
+        flash('Settings updated successfully')->success();
+
+        Artisan::call('cache:clear');
+        return back();
+    }
+
     public function vat_settings(Request $request)
     {
         BusinessSetting::updateOrCreate([

@@ -31,7 +31,7 @@
                 
                 <span style="margin-top:1px; ">{{ $prodData['offer_price'] ?? $prodData['price'] }}</span>
                 @if ($prodData['offer_price'] != $prodData['price'])
-                    <span class="text-[#898989] font-medium line-through">{{ $prodData['price'] }}</span>
+                    <span class="text-[#898989] font-medium line-through" style="margin-top:1px; ">{{ $prodData['price'] }}</span>
                 @endif
             </h5>
             <a href="{{ route('product.details', $prodData['product_id']) }}"
