@@ -117,6 +117,47 @@
             @if (session('error'))
                 toastr.error('{{ session("error") }}');
             @endif
+
+            document.addEventListener('click', function(e) {
+                const button = e.target.closest('.wishlist-toggle');
+                if (!button) return;
+
+                e.preventDefault();
+
+                if (!{{ auth('frontend')->check() ? 'true' : 'false' }}) {
+                    toastr.error('Please log in to manage your wishlist.');
+                    return;
+                }
+                const productId = button.dataset.productId;
+                const stockId = button.dataset.stockId;
+                const icon = button.querySelector('svg');
+                
+                fetch("/wishlist/toggle", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        stock_id: stockId
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'added') {
+                        icon.setAttribute('fill', 'currentColor');
+                        button.classList.add('text-red-500');
+                        button.classList.remove('text-white', 'bg-black/20');
+                        toastr.success('Product added to wishlist.');
+                    } else {
+                        icon.setAttribute('fill', 'none');
+                        button.classList.remove('text-red-500');
+                        button.classList.add('text-white', 'bg-black/20');
+                        toastr.info('Product removed from wishlist.');
+                    }
+                });
+            });
             
         });
 

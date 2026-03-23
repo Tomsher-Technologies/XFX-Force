@@ -77,4 +77,7 @@ Route::group(['middleware' => ['auth:frontend']], function () {
     Route::post('save-address', [ProfileController::class, 'saveAddress'])->name('save-address');
     Route::post('/address/delete', [ProfileController::class, 'deleteAddress'])->name('delete-address');
     Route::get('edit-address/{id}', [ProfileController::class, 'editAddress'])->name('edit-address');
+
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 });
