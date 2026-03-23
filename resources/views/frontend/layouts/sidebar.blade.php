@@ -26,7 +26,7 @@
                 <span class="text-[10px] lg:text-[15px] ">Address</span>
             </a>
 
-            <a href="wishlist.html" class="w-full flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px]  transition-all group {{ request()->routeIs('wishlist*') ? 'bg-[#2A7CFF] text-white font-medium' : 'hover:bg-[#252C33] text-[#898989] text-gray-400 hover:text-white' }} ">
+            <a href="{{ route('wishlist') }}" class="w-full flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px]  transition-all group {{ request()->routeIs('wishlist*') ? 'bg-[#2A7CFF] text-white font-medium' : 'hover:bg-[#252C33] text-[#898989] text-gray-400 hover:text-white' }} ">
                 <svg class="w-5 h-5 group-hover:text-white  {{ request()->routeIs('wishlist*') ? 'text-[#ffffff]' : 'text-[#898989]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                 <span class="text-[10px] lg:text-[15px] ">Wishlist</span>
             </a>
