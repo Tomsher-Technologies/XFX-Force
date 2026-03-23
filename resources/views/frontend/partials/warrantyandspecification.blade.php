@@ -1,8 +1,26 @@
 <!--spec modal-->
-<div id=""
-    class="spec-modal-overlay fixed inset-0 z-[9999] hidden overflow-y-auto bg-black/80 backdrop-blur-md transition-all duration-300 opacity-0 px-4 py-10">
-    <div id=""
-        class="spec-modal-container relative mx-auto bg-[#0B0F13] border border-gray-800 w-full max-w-4xl rounded-2xl shadow-2xl transform scale-100 transition-all duration-300 mt-[100px]">
+
+@php
+$productSpecifications = \App\Models\ProductSpecification::where(
+'product_id',
+$item->product->id
+)->with(['specification','specificationItem'])->get();
+
+$specifications = $productSpecifications
+->map(function ($ps) {
+if ($ps->specification && $ps->specificationItem) {
+return [
+'title' => $ps->specification->main_title,
+'value' => $ps->specificationItem->title,
+];
+}
+})
+->filter()
+->values();
+
+@endphp
+<div class="spec-modal-overlay fixed inset-0 z-[9999] hidden overflow-y-auto bg-black/80 backdrop-blur-md transition-all duration-300 opacity-0 px-4 py-10">
+    <div class="spec-modal-container relative mx-auto bg-[#0B0F13] border border-gray-800 w-full max-w-4xl rounded-2xl shadow-2xl transform scale-100 transition-all duration-300 mt-[100px]">
         <div class="flex justify-end p-4">
             <button onclick="toggleSpecModal()"
                 class="text-gray-500 hover:text-white text-xl p-2 cursor-pointer">✕</button>
@@ -34,10 +52,13 @@
 <!--//spec modal-->
 
 <!--warranty modal-->
-<div id="" class="warranty-modal-overlay fixed inset-0 z-[9999] hidden overflow-y-auto bg-black/90 backdrop-blur-sm transition-all duration-300 opacity-0 px-4 py-10">
+@php
+    $productWarrantis = $item->product->warranties;
+@endphp
+<div class="warranty-modal-overlay fixed inset-0 z-[9999] hidden overflow-y-auto bg-black/90 backdrop-blur-sm transition-all duration-300 opacity-0 px-4 py-10">
     <div class="warranty-modal-container relative mx-auto bg-[#0B0F13] border border-blue-900/30 w-full max-w-4xl rounded-2xl shadow-2xl transform scale-95 transition-all duration-300 mt-[100px]">
         <div class="flex justify-end p-4">
-            <button onclick="toggleWarrantyModal()" class="text-gray-500 hover:text-white text-xl p-2 cursor-pointer">✕</button>
+            <button onclick="closeWarrantyModal(this.closest('.warranty-modal-overlay'))" class="text-gray-500 hover:text-white text-xl p-2 cursor-pointer">✕</button>
         </div>
         <div class="px-8 pb-10 text-gray-300">
             <h2 class="text-[18px] md:text-[20px] uppercase font-bold text-white pb-[20px] border-b-2 border-blue-500">Warranty Options</h2>
@@ -45,10 +66,14 @@
                 <div class="mt-[30px] space-y-4">
                     <div class="grid grid-cols-1 gap-4">
 
-                        <div class="space-y-4" id="warranty-selector-container">
+                        <div class="space-y-4">
                             @if($productWarrantis->isNotEmpty())
                             @foreach ($productWarrantis as $warranty)
-                            <label onclick="selectWarranty(this)" class="warranty-card relative flex items-center justify-between p-5 border border-gray-800 bg-[#282B3450] rounded-xl cursor-pointer transition-all duration-200" data-cartid="{{$item->id}}" data-warrantyid="{{$warranty->id}}">
+                            
+                            <label onclick="selectWarranty(this)" class="warranty-card relative flex items-center justify-between p-5 rounded-xl cursor-pointer transition-all duration-200 {{ $item->warranty_id == $warranty->id 
+                                    ? 'border-2 border-[#2A7CFF] bg-[#161B22]' 
+                                    : 'border border-gray-800 bg-[#282B3450]' 
+                                }} cursor-pointer transition-all duration-200" data-cartid="{{$item->id}}" data-warrantyid="{{$warranty->id}}">
                                 <div class="flex flex-col gap-1">
                                     <span class="text-white font-bold text-[16px]">{{$warranty->title}}</span>
                                     <p class="text-[13px] text-[#636671]">{{$warranty->description}}</p>

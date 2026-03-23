@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\InvoiceController;
-
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Frontend\BuildPcController;
 use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\Frontend\CartController;
@@ -48,13 +48,15 @@ Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/get-variants-by-value', [ProductController::class, 'getVariantsByValue']);
 Route::get('/getVarientDetails', [ProductController::class, 'getVarientDetails']);
 Route::get('/getVariantState', [ProductController::class, 'getVariantState']);
+
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::get('/addProductToCart', [CartController::class, 'addProductToCart']);
 Route::get('/removeCartItem/{id}', [CartController::class, 'removeCartItem']);
 Route::get('/getCartSummary', [CartController::class, 'getCartSummary']);
-
-
 Route::get('/updateProductWarranty', [CartController::class, 'updateProductWarranty']);
+Route::post('/apply_coupon_code', [CartController::class, 'apply_coupon_code']);
+Route::post('/remove_coupon_code', [CartController::class, 'remove_coupon_code']);
+
 Route::get('/shop/category/{categoryId}', [ProductController::class, 'shopByCategory'])->name('shop.category');
 Route::get('/buildyourpc', [BuildPcController::class, 'index'])->name('buildyourpc');
 Route::get('/buildyourpc/products/{category_id}', [BuildPcController::class, 'getProductsByCategory']);
@@ -64,9 +66,23 @@ Route::get('/buildyourpc/getBuildData', [BuildPcController::class, 'getBuildData
 Route::get('/buildyourpc/place-order', [BuildPcController::class, 'placePcBuilderOrder'])->name('pcbuilder.place.order');
 Route::post('/pc-builder/reset', [BuildPcController::class, 'resetConfiguration'])->name('pc.builder.reset');
 
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+Route::post('/checkout/placeOrder', [CheckoutController::class, 'placeOrder']);
+
+Route::get('/order-success/{id}', [OrderController::class, 'success'])->name('order.success');
+Route::get('/order-fail', [OrderController::class, 'fail'])->name('order.fail');
+// Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('order.my-orders');
+Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.index');
+Route::get('/my-orders/{id}', [OrderController::class, 'myOrderSingle'])->name('orders.show');
+Route::post('/my-orders/{id}/cancel', [OrderController::class, 'cancelOrder'])
+    ->name('orders.cancel');
+
+    Route::post('/my-orders/{id}/return', [OrderController::class, 'returnOrder'])
+    ->name('orders.return');
+    
+
 Route::group(['middleware' => ['auth:frontend']], function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
-
     Route::get('account', [ProfileController::class, 'getUserAccountInfo'])->name('account');
     Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update'); 
 

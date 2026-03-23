@@ -312,3 +312,13 @@ CREATE TABLE `pc_builder_setups` (`id` INT NOT NULL AUTO_INCREMENT , `user_id` I
 ALTER TABLE carts 
 ADD COLUMN pc_builder_id BIGINT NULL AFTER user_id,
 ADD COLUMN is_pc_builder TINYINT(1) DEFAULT 0 AFTER pc_builder_id;
+
+-- Added on 14-03-2026
+ALTER TABLE `orders` ADD `fulfillment_method` VARCHAR(20) NOT NULL DEFAULT 'delivery' COMMENT 'Delivery, store pickup' AFTER `payment_tracking_id`;
+ALTER TABLE `orders` DROP `combined_order_id`;
+
+ALTER TABLE `product_stocks` CHANGE `qty` `qty` INT UNSIGNED NOT NULL DEFAULT '0';
+
+ALTER TABLE order_details 
+ADD COLUMN pc_builder_id BIGINT NULL AFTER product_stock_id,
+ADD COLUMN is_pc_builder TINYINT(1) DEFAULT 0 AFTER pc_builder_id;

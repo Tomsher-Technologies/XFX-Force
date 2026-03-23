@@ -631,8 +631,6 @@
 <section class="bg-[#0F161B] px-[16px] md:px-[140px] relative">
     <div class="border-y-1 border-[#ffffff10] py-[50px] md:py-[100px]">
         <div class="section-title mb-[30px] relative flex items-center justify-center">
-            <!-- <h3 class="text-[40px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">Trusted by the Pro <strong class="bg-gradient-to-tr from-[#3E81FF] to-white bg-clip-text text-transparent">Gaming</strong> Community!</h3> -->
-
             <h3 class="text-[40px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">{{$page_content['testimonials_title'] ?? ''}}</h3>
         </div>
         <div class="flex flex-col md:grid grid-cols-6">

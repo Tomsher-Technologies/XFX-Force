@@ -54,9 +54,11 @@
             <div class="swiper singleprdswiper relative overflow-hidden h-full w-full">
                 <input type="hidden" value="{{$product->id}}" id="main_product_id">
                 <input type="hidden" value="{{$stockId}}" id="selected_stock_id">
+                
                 <div class="swiper-wrapper">
                     @php $hasVariantImage = false; @endphp
                     @foreach($product->stocks as $stock)
+                    <input type="hidden" value="{{ $stock->stock_title }}" id="variant_type">
                     @if($stock->image)
                     @php $hasVariantImage = true; @endphp
                     <div class="swiper-slide" data-swiper-autoplay="8000">
@@ -86,7 +88,7 @@
             if($stockId){
                 $firstStock = $product->stocks->where('id', $stockId)->first();
             }
-            
+        
             $groupedAttributes = $product->stocks
             ->flatMap(function ($stock) {
             return $stock->attributes;
@@ -142,16 +144,23 @@
                     <label class="text-[15px] text-white mb-[15px] block text-center md:text-left">Price</label>
                     <div class="price w-full flex flex-row items-end gap-[15px]">
                         <h5 class="price flex flex-row text-[#2A7CFF] text-left text-[25px] m-[0] font-bold align-center items-center gap-[10px] leading-[35px]">
-                            <img src="{{ asset('assets/images/aed.svg') }}" class="w-[22px] h-[22px]" alt="AED" title="Symbol of AED"><span class="offer-price">{{ number_format($firstStock->offer_price, 2) }}</span>
+                            <img src="{{ asset('assets/images/aed.svg') }}" class="w-[22px] h-[22px]" alt="AED" title="Symbol of AED">
+                            <span class="offer-price">{{ number_format($firstStock->offer_price, 2) }}</span>
                         </h5>
+                        @if(!empty($product->discount) && $product->discount > 0)
                         <span class="text-[#898989] font-medium line-through text-[20px] main-price">{{ $firstStock->price }} </span>
+                        @endif
                     </div>
                 </div>
 
-                <!-- When item exist and nothing in cart-->
+                <!-- When item exist-->
                 <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block">
-                    <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
+                    
                     <button onclick="window.location.href='{{ route('cart') }}'" class="go-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Go to cart</button>
+                   
+                    <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
+                    
+                    
                     <a href="#" class="w-full text-center bg-white md:bg-transparent text-black md:text-white uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 hover:bg-white hover:text-black">Add to Wishlist</a>
                 </div>
                 <!-- When item exist -->

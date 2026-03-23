@@ -209,78 +209,106 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- WARRANTY MODAL LOGIC ---
-    const wOverlay = document.querySelector('.warranty-modal-overlay');
-    const wContainer = document.querySelector('.warranty-modal-container');
-    
-    // function toggleWarrantyModal() {
-    window.toggleWarrantyModal = function () {
-        const isHidden = wOverlay.classList.contains('hidden');
-        if (isHidden) {
-            wOverlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => {
-                wOverlay.classList.add('opacity-100');
-                wContainer.classList.add('scale-100');
-                wContainer.classList.remove('scale-95');
-            }, 10);
-        } else {
-            wOverlay.classList.remove('opacity-100');
-            wContainer.classList.add('scale-95');
-            wContainer.classList.remove('scale-100');
-            setTimeout(() => {
-                wOverlay.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }, 300);
-        }
+window.toggleWarrantyModal = function (btn) {
+
+    // find the parent product/cart block
+    const parent = btn.closest('.cart-box');
+
+    const wOverlay = parent.querySelector('.warranty-modal-overlay');
+    const wContainer = parent.querySelector('.warranty-modal-container');
+
+    if (!wOverlay || !wContainer) return;
+
+    const isHidden = wOverlay.classList.contains('hidden');
+
+    if (isHidden) {
+        wOverlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+            wOverlay.classList.add('opacity-100');
+            wContainer.classList.add('scale-100');
+            wContainer.classList.remove('scale-95');
+        }, 10);
+
+    } else {
+
+        wOverlay.classList.remove('opacity-100');
+        wContainer.classList.add('scale-95');
+        wContainer.classList.remove('scale-100');
+
+        setTimeout(() => {
+            wOverlay.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }, 300);
+    }
+};
+
+// --- CLOSE WARRANTY MODAL ---
+window.closeWarrantyModal = function (overlay) {
+
+    const container = overlay.querySelector('.warranty-modal-container');
+
+    overlay.classList.remove('opacity-100');
+    container.classList.add('scale-95');
+    container.classList.remove('scale-100');
+
+    setTimeout(() => {
+        overlay.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }, 300);
+}
+
+
+// --- OUTSIDE CLICK CLOSE ---
+window.addEventListener('click', (e) => {
+    if (e.target === sOverlay) toggleSpecModal();
+
+    if (e.target.classList.contains('warranty-modal-overlay')) {
+        closeWarrantyModal(e.target);
     }
 
-    // --- OUTSIDE CLICK CLOSING ---
-    window.addEventListener('click', (e) => {
-        if (e.target === sOverlay) toggleSpecModal();
-        if (e.target === wOverlay) toggleWarrantyModal();
+});
+
+
+// --- WARRANTY SELECT ---
+window.selectWarranty = async function (selectedElement) {
+
+    // scope only inside the current modal
+    const modal = selectedElement.closest('.warranty-modal-overlay');
+    const cards = modal.querySelectorAll('.warranty-card');
+
+    const cartId = selectedElement.dataset.cartid;
+    const warrantyId = selectedElement.dataset.warrantyid;
+
+    // reset all cards
+    cards.forEach(card => {
+        card.classList.remove('border-2','border-[#2A7CFF]','bg-[#161B22]');
+        card.classList.add('border','border-gray-800','bg-[#282B3450]');
+        const icon = card.querySelector('.check-icon');
+        if (icon) icon.classList.add('hidden');
     });
 
+    // activate selected
+    selectedElement.classList.add('border-2','border-[#2A7CFF]','bg-[#161B22]');
+    selectedElement.classList.remove('border','border-gray-800','bg-[#282B3450]');
 
-    window.selectWarranty = async function (selectedElement) {
-        // 1. Get all warranty cards
-        const cards = document.querySelectorAll('.warranty-card');
+    const activeIcon = selectedElement.querySelector('.check-icon');
+    if (activeIcon) activeIcon.classList.remove('hidden');
 
-        // Get cart + warranty id from data attributes
-        const cartId = selectedElement.dataset.cartid;
-        const warrantyId = selectedElement.dataset.warrantyid;
+    // update warranty
+    const response = await fetch(`/updateProductWarranty?cartId=${cartId}&warrantyId=${warrantyId}`);
+    const data = await response.json();
 
-        cards.forEach(card => {
-            // 2. Reset Styles to "Unselected"
-            card.classList.remove('border-2', 'border-[#2A7CFF]', 'bg-[#161B22]');
-            card.classList.add('border', 'border-gray-800', 'bg-[#282B3450]');
-
-            // 3. Hide Checkmark icons
-            const icon = card.querySelector('.check-icon');
-            if (icon) icon.classList.add('hidden');
-        });
-
-        // 4. Apply "Selected" Styles to the clicked element
-        selectedElement.classList.add('border-2', 'border-[#2A7CFF]', 'bg-[#161B22]');
-        selectedElement.classList.remove('border', 'border-gray-800', 'bg-[#282B3450]');
-
-        // 5. Show the checkmark for the selected plan
-        const activeIcon = selectedElement.querySelector('.check-icon');
-        if (activeIcon) activeIcon.classList.remove('hidden');
-
-        // Update warranty in cart
-        const response = await fetch(`/updateProductWarranty?cartId=${cartId}&warrantyId=${warrantyId}`);
-        const data = await response.json();
-        if (data.status) {
-            updateCartSummary();
-        }
-    };
+    if (data.status) {
+        updateCartSummary();
+    }
+};
 });
 
 // Warranty script end.
 
 // Cart page script
-const MINUS_ICON = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 12H4" /></svg>`;
-const TRASH_ICON = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>`;
+
 
 
 
@@ -462,6 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(response => {
                 if (response.success) {
+                    console.log(response.data);
                     if (response.data.image && swiperInstance) {
                         swiperInstance.removeAllSlides();
                         swiperInstance.appendSlide(`
@@ -475,24 +504,26 @@ document.addEventListener('DOMContentLoaded', () => {
                         swiperInstance.slideTo(0);
                     }
 
-                    document.querySelector('.price span.main-price').textContent = response.data.price;
+                    const mainPrice = document.querySelector('.price span.main-price');
+                    if(mainPrice) mainPrice.textContent = response.data.price;
                     document.querySelector('.offer-price').textContent = response.data.offer_price;
                     document.querySelector('.variant-title').textContent = response.data.title;
                     document.getElementById('stock_id').value = response.data.variant_id;
 
                     if (response.data.availableQty <= 0) {
-                        document.querySelector(".out-of-stock-block").style.display = 'block';
+                        document.querySelector(".out-of-stock-block").style.display = 'grid';
                         document.querySelector(".add-to-cart-block").style.display = 'none';
                     } else {
                         document.querySelector(".out-of-stock-block").style.display = 'none';
-                        document.querySelector(".add-to-cart-block").style.display = 'block';
+                        document.querySelector(".add-to-cart-block").style.display = 'grid';
                         if(response.data.cartQty > 0){
-                            document.querySelector(".add-to-cart").classList.add('hidden')
-                            document.querySelector(".go-to-cart").classList.remove('hidden')
+                            // alert('already once added in cart');
+                            document.querySelector(".add-to-cart").classList.add('hidden');
+                            document.querySelector(".go-to-cart").classList.remove('hidden');
                         }else{
-                            document.querySelector(".go-to-cart").classList.add('hidden')
-                            document.querySelector(".add-to-cart").classList.remove('hidden')
-                            
+                            // alert('no items in the cart');
+                            document.querySelector(".go-to-cart").classList.add('hidden');
+                            document.querySelector(".add-to-cart").classList.remove('hidden');
                         }
                     }
                 }
@@ -833,8 +864,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 4. Listen for Lightbox Closing
     lightbox.on('close', () => {
-        // Send 'playVideo' command to resume background playback
-        bgPlayer.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        const bgPlayer = document.getElementById('bgPlayer');
+
+        if (bgPlayer && bgPlayer.contentWindow) {
+            // Send 'playVideo' command to resume background playback
+            bgPlayer.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        }
     });
 });
 
@@ -1038,16 +1073,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (response.success) {
                 toastr.success(response.message, 'Success');
+                document.getElementById('total-cart-count-top').innerText = response.totalCartItemsCount;
+                
             } else {
                 toastr.error(response.message, 'Error');
             }
 
+            const outStockBlocks = document.querySelectorAll('.out-of-stock-block');
+            const addCartBlocks = document.querySelectorAll('.add-to-cart-block');
+
             if (response.availableQty <= 0) {
-                document.querySelectorAll('.out-of-stock-block').forEach(el => el.style.display = 'block');
-                document.querySelectorAll('.add-to-cart-block').forEach(el => el.style.display = 'none');
+                if(outStockBlocks) outStockBlocks.forEach(el => el.style.display = 'grid');
+                if(addCartBlocks) addCartBlocks.forEach(el => el.style.display = 'none');
             } else {
-                document.querySelectorAll('.out-of-stock-block').forEach(el => el.style.display = 'none');
-                document.querySelectorAll('.add-to-cart-block').forEach(el => el.style.display = 'block');
+                if(outStockBlocks) outStockBlocks.forEach(el => el.style.display = 'none');
+                if(addCartBlocks) addCartBlocks.forEach(el => el.style.display = 'grid');
+                
+                const addToCartBtn = document.querySelector(".add-to-cart");
+                const goToCartBtn = document.querySelector(".go-to-cart");
+
+                if(response.cartQty > 0){
+                    if (addToCartBtn) addToCartBtn.classList.add('hidden');
+                    if (goToCartBtn) goToCartBtn.classList.remove('hidden');
+                }else{
+                    if (goToCartBtn) goToCartBtn.classList.add('hidden');
+                    if (addToCartBtn) addToCartBtn.classList.remove('hidden');
+                }
             }
 
             return response; // return the full response
@@ -1067,22 +1118,24 @@ document.addEventListener('DOMContentLoaded', function () {
      document.querySelectorAll('.product-item').forEach(container => {
         const input = container.querySelector('.qty-input');
         const iconWrapper = container.querySelector('.icon-wrapper');
-        const minusBtn = container.querySelector('.minus-btn');
+        const minusBtn = iconWrapper.querySelector('.minus-btn');
+        const trashBtn = iconWrapper.querySelector('.trash-btn');
+        const decrementBtn = container.querySelector('.decrement-btn');
 
         let currentVal = parseInt(input.value);
 
         if (currentVal === 1) {
-            iconWrapper.innerHTML = TRASH_ICON;
-
-            minusBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
-            minusBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+            if(minusBtn) minusBtn.classList.add('hidden');
+            if(trashBtn) trashBtn.classList.remove('hidden');
+            decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
+            decrementBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
 
         } else if (currentVal > 1) {
+            trashBtn.classList.add('hidden');
+            minusBtn.classList.remove('hidden');
 
-            iconWrapper.innerHTML = MINUS_ICON;
-
-            minusBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
-            minusBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+            decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
+            decrementBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
         }
     });
 
@@ -1092,11 +1145,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const container = btn.closest('.product-item');
         const input = container.querySelector('.qty-input');
         const iconWrapper = container.querySelector('.icon-wrapper');
-        const minusBtn = container.querySelector('.minus-btn');
+        const minusBtn = iconWrapper.querySelector('.minus-btn');
+        const trashBtn = iconWrapper.querySelector('.trash-btn');
+        const decrementBtn = container.querySelector('.decrement-btn');
         const productId = container.dataset.productId;
         const variantId = container.dataset.variantId;
         const cartId = container.dataset.cartId;
         const cartItemBox = btn.closest('.product-cart-item');
+        const cartPrice = cartItemBox.querySelector('.cart_price');
+        const cartOfferPrice = cartItemBox.querySelector('.cart_offer_price');
+        // cartPrice.classList.add('ddddddddd');
         
         let currentVal = parseInt(input.value);
         
@@ -1133,15 +1191,23 @@ document.addEventListener('DOMContentLoaded', function () {
             input.value = newVal;
             updateCartSummary();
 
-            // UI UPDATES for this specific card
+            console.log(cartOfferPrice);
+            console.log(cartPrice);
+
+            if(cartOfferPrice) cartOfferPrice.textContent = response.offerPrice;
+            if(cartPrice) cartPrice.textContent = response.price;
+                       
             if (newVal === 1) {
-                iconWrapper.innerHTML = TRASH_ICON;
-                minusBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
-                minusBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+                minusBtn.classList.add('hidden');
+                trashBtn.classList.remove('hidden');
+                decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
+                decrementBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
             } else {
-                iconWrapper.innerHTML = MINUS_ICON;
-                minusBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
-                minusBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+                trashBtn.classList.add('hidden');
+                minusBtn.classList.remove('hidden');
+                
+                decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
+                decrementBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
             }
 
             // Pulse animation
@@ -1163,6 +1229,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('cart-shipping').innerText = data.shipping;
                 document.getElementById('cart-warranty').innerText = data.warranty_sum;
                 document.getElementById('total-cart-count-top').innerText = data.cart_count;
+                document.getElementById('coupon_discount').innerHTML = data.couponDiscount;
                 
             }
         } catch (err) {
@@ -1302,5 +1369,62 @@ window.toggleSubMenu = function (id) {
     }
 }
 
+
+// coupon script
+
+const applyCouponButton = document.getElementById('apply_coupon');
+const removeCouponButton = document.getElementById('remove_coupon');
+
+window.applyCouponCode = function() {
+    const couponCode = document.getElementById('coupon_code').value;
+    
+    fetch('/apply_coupon_code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ coupon: couponCode })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            console.log(data);
+            toastr.success('Coupon applied!' || 'Success');
+            applyCouponButton.classList.add('hidden');
+            removeCouponButton.classList.remove('hidden');
+            document.getElementById('coupon_discount').innerHTML = data.coupon_discount;
+            updateCartSummary();
+        } else {
+            toastr.error(data.message || 'Something went wrong');
+        }
+    });
+};
+
+window.removeCouponCode = function() {
+    const couponCode = document.getElementById('coupon_code').value;
+    
+    fetch('/remove_coupon_code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ coupon: couponCode })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            toastr.success('Coupon Removed!' || 'Success');
+            removeCouponButton.classList.add('hidden');
+            applyCouponButton.classList.remove('hidden');
+            document.getElementById('coupon_code').value = '';
+            document.getElementById('coupon_discount').innerHTML = '0.00';
+            updateCartSummary();
+        } else {
+            toastr.error(data.message || 'Something went wrong');
+        }
+    });
+};
 
 
