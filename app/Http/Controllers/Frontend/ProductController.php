@@ -245,6 +245,13 @@ class ProductController extends Controller
 
     public function productDetails($id, $stockId = null)
     {
+        $guestToken = request()->cookie('guest_token');
+
+        if(!$guestToken){
+            $guestToken = uniqid('guest_', true);
+            cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
+        }
+
         $product = Product::with([
             'stocks',
             'stocks.attributes.attribute',
@@ -254,7 +261,32 @@ class ProductController extends Controller
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->get();
-        return view('frontend.productDetails', compact('product', 'relatedProducts','stockId'));
+
+        // determine selected stock
+        $selectedStock = $stockId 
+            ? $product->stocks->where('id', $stockId)->first()
+            : $product->stocks->first();
+
+        // get cart quantity
+        $cartQty = 0;
+
+        if ($selectedStock) {
+            $cartQuery = Cart::where('product_id', $product->id)
+                ->where('product_stock_id', $selectedStock->id)
+                ->where('status', 'pending')
+                ->where(function($query) use ($guestToken) {
+                    if(auth()->check()) {
+                        // Logged-in user
+                        $query->where('user_id', auth()->user()->id);
+                    } else {
+                        // Guest user
+                        $query->where('temp_user_id', $guestToken);
+                    }
+                });
+            $cartQty = $cartQuery->value('quantity') ?? 0;
+        }
+        
+        return view('frontend.productDetails', compact('product', 'relatedProducts','stockId', 'cartQty'));
     }
 
     public function index(Request $request)
@@ -364,10 +396,60 @@ class ProductController extends Controller
 
     public function getVarientDetails(Request $request)
     {
+        $guestToken = request()->cookie('guest_token');
 
+        if(!$guestToken){
+            $guestToken = uniqid('guest_', true);
+            cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
+        }
+        
+        
         $productId   = $request->productId;
         $selectedAttributes = json_decode($request->selectedAttributes, true) ?? [];
+        
 
+        // For single product
+        if (empty($selectedAttributes)) {
+
+            $variant = ProductStock::where('product_id', $productId)->first();
+
+            if (!$variant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No variant found'
+                ]);
+            }
+
+            $cartQty = Cart::where('product_stock_id', $variant->id)
+                ->where('status', 'pending')
+                ->where(function($query) use ($guestToken) {
+                    if(auth()->check()) {
+                        // Logged-in user
+                        $query->where('user_id', auth()->user()->id);
+                    } else {
+                        // Guest user
+                        $query->where('temp_user_id', $guestToken);
+                    }
+                })
+                ->sum('quantity');
+
+            $availableQty = $variant->qty - $cartQty;
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'variant_id' => $variant->id,
+                    'title' => $variant->stock_title,
+                    'price' => $variant->price,
+                    'offer_price' => $variant->offer_price,
+                    'image' => $variant->image ?? '',
+                    'cartQty' => $cartQty,
+                    'availableQty' => $availableQty,
+                ]
+            ]);
+        }
+        
+        // For product with variants
         $variantIds = ProductAttributes::where('product_id', $productId)
             ->whereIn('attribute_id', array_keys($selectedAttributes))
             ->whereIn('attribute_value_id', array_values($selectedAttributes))
@@ -390,6 +472,15 @@ class ProductController extends Controller
             // calculate stock
             $cartQty = Cart::where('product_stock_id', $variant->id)
                 ->where('status', 'pending')
+                ->where(function($query) use ($guestToken) {
+                    if(auth()->check()) {
+                        // Logged-in user
+                        $query->where('user_id', auth()->user()->id);
+                    } else {
+                        // Guest user
+                        $query->where('temp_user_id', $guestToken);
+                    }
+                })
                 ->sum('quantity');
 
             $availableQty = $variant->qty - $cartQty;

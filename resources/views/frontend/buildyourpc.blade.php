@@ -518,7 +518,6 @@ $hideFooter = true;
                 nav.classList.remove('active');
             });
 
-            // alert(this.dataset.categoryId);
             const categoryName = this.dataset.categoryName;
             document.querySelector('.category-heading').innerText = categoryName;
             document.querySelector('.category-sub-heading').innerText = categoryName;
@@ -577,7 +576,7 @@ $hideFooter = true;
             const maxLimit = categoryElement.dataset.maxSelect;
         
             if (isCategoryLimitExceeded(categoryElement, maxLimit, categoryId)) {
-                alert(`You can only select ${maxLimit} products in this category`);
+                toastr.warning(`You can only select ${maxLimit} products in this category`);
                 return;
             }
         }
@@ -660,7 +659,7 @@ $hideFooter = true;
                         ).length;
                         
                         if(selectedCount <= minLimit) {
-                            alert(`Please select at least ${minLimit} product(s) in ${categoryName}`);
+                            toastr.warning(`Please select at least ${minLimit} product(s) in ${categoryName}`);
                             return;
                         }
                     }
@@ -742,8 +741,6 @@ $hideFooter = true;
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        
-
         const isValid = validateMinSelection();
         if (isValid) {
             proceedToOrder();
@@ -811,7 +808,6 @@ $hideFooter = true;
                 0;
 
             if (selectedCount < minLimit) {
-                // alert(`Please select at least ${minLimit} product(s) in ${category.innerText}`);
                 valid = false;
             }
 
@@ -845,7 +841,6 @@ $hideFooter = true;
 
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
-        // alert(activeIndex);
 
         prevBtn.disabled = false;
         prevBtn.classList.remove('opacity-50', 'cursor-not-allowed','hidden');
@@ -894,9 +889,8 @@ $hideFooter = true;
 
         // Only check the current category when Next is clicked
         const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0;
-
         if (selectedCount < minSelect) {
-            alert(`Please select at least ${minSelect} product(s) in ${currentCategory.innerText}`);
+            toastr.warning(`Please select at least ${minSelect} product(s) in ${currentCategory.innerText}`);
             return; // stop proceeding to next step
         }
 
@@ -992,7 +986,7 @@ $hideFooter = true;
             if(data.status){
                 window.location.href = "/cart";
             }else{
-                alert(data.message);
+                toastr.error(data.message);
             }
 
         })
@@ -1007,7 +1001,7 @@ $hideFooter = true;
         let builderId = document.getElementById('pcBuilderId').value;
 
         if (!builderId) {
-            alert('Builder not found');
+            toastr.error('Builder not found');
             return;
         }
 
@@ -1023,20 +1017,16 @@ $hideFooter = true;
                 _token: "{{ csrf_token() }}"
             },
             success: function (response) {
-
                 if (response.status) {
-
-                    alert(response.message);
-
-                    // Clear UI
+                    toastr.success(response.message);
                     location.reload();
 
                 } else {
-                    alert(response.message);
+                    toastr.error(response.message);
                 }
             },
             error: function () {
-                alert('Something went wrong');
+                toastr.error('Something went wrong');
             }
         });
     }

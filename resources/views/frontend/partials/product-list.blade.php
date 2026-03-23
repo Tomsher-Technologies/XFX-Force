@@ -26,7 +26,7 @@
                                                 <span class="text-[#898989] font-medium line-through">{{ $firstStock->price }}</span>
                                                 @endif
                                             </h5>
-                                            <button class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white">Buy now</button>
+                                            <button onclick="window.location= '{{ route('product.details', $product['id']) }}'"  class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white">Buy now</button>
                                         </div>
                                     </a>
                                 </div>
@@ -88,8 +88,8 @@
                                     @endif
                                 </div>
                                 <div class="button-group flex flex-col gap-[15px]">
-                                    <a href="#" class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view details</a>
-                                    <button class="flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg')}}" alt="" title="" class="mr-[15px]">Buy now</button>
+                                    <a href="{{ route('product.details', $product['id']) }}" class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view details</a>
+                                    <button onclick="window.location= '{{ route('product.details', $product['id']) }}'" class="flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg')}}" alt="" title="" class="mr-[15px]">Buy now</button>
                                 </div>
                             </div>
                         </div>

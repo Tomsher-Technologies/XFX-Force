@@ -71,8 +71,7 @@
                             {{ $shipping_address->phone }}<br>
                             {{ $shipping_address->address }},
                             {{ $shipping_address->city }}, {{ $shipping_address->state }}, {{ $shipping_address->country }},
-                            <br>
-                            {{ $shipping_address->zipcode }}
+                            
                         </address>
                     @endif
                     

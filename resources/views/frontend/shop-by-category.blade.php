@@ -326,7 +326,7 @@ Log::info($_REQUEST);
         </dialog>
     </el-dialog>
 
-    <main class="px-[16px] md:px-[140px] py-[100px]">
+    <main class="px-[16px] md:px-[140px] pt-[50px] pb-[100px]">
         <div class="grid grid-cols-4 gap-[50px]">
             <div>
                 <!-- Filters -->

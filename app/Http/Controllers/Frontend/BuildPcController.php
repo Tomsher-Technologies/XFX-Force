@@ -248,8 +248,17 @@ class BuildPcController extends Controller
 
     public function placePcBuilderOrder(Request $request)
     {
-        $builderId = $request->builder_id;
+        $userId = auth()->check() ? auth()->user()->id : null;
 
+        $guestToken = request()->cookie('guest_token');
+
+        if(!$guestToken){
+            $guestToken = uniqid('guest_', true);
+            cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
+        }
+
+
+        $builderId = $request->builder_id;
         $builder = PcBuilderSetup::find($builderId);
 
         if (!$builder) {
@@ -262,8 +271,16 @@ class BuildPcController extends Controller
         $buildData = $builder->build_data;
 
         // Remove old builder cart items
-        Cart::where('user_id', auth()->id())
-            ->where('pc_builder_id', $builderId)
+        Cart::where('pc_builder_id', $builderId)
+            ->where(function($query) use ($guestToken) {
+                    if(auth()->check()) {
+                        // Logged-in user
+                        $query->where('user_id', auth()->id());
+                    } else {
+                        // Guest user
+                        $query->where('temp_user_id', $guestToken);
+                    }
+                })
             ->delete();
 
         foreach ($buildData as $categoryId => $products) {
@@ -275,7 +292,8 @@ class BuildPcController extends Controller
                 if (!$variant) continue;
 
                 Cart::create([
-                    'user_id' => auth()->id(),
+                    'user_id' => $userId,
+                    'temp_user_id' => $userId ? null : $guestToken,
                     'product_id' => $item['product_id'],
                     'product_stock_id' => $item['variant_id'],
                     'quantity' => $item['quantity'],
@@ -298,14 +316,37 @@ class BuildPcController extends Controller
 
     public function resetConfiguration(Request $request)
     {
+        
+        $guestToken = request()->cookie('guest_token');
+
+        if(!$guestToken){
+            $guestToken = uniqid('guest_', true);
+            cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
+        }
         $builderId = $request->builder_id;
 
-        Cart::where('user_id', auth()->id())
-            ->where('pc_builder_id', $builderId)
+        Cart::where('pc_builder_id', $builderId)
+            ->where(function($query) use ($guestToken) {
+                if(auth()->check()) {
+                    // Logged-in user
+                    $query->where('user_id', auth()->user()->id);
+                } else {
+                    // Guest user
+                    $query->where('temp_user_id', $guestToken);
+                }
+            })
             ->delete();
 
         $builder = PcBuilderSetup::where('id', $builderId)
-            ->where('user_id', auth()->id())
+            ->where(function($query) use ($guestToken) {
+                if(auth()->check()) {
+                    // Logged-in user
+                    $query->where('user_id', auth()->user()->id);
+                } else {
+                    // Guest user
+                    $query->where('temp_user_id', $guestToken);
+                }
+            })
             ->first();
 
         if (!$builder) {
