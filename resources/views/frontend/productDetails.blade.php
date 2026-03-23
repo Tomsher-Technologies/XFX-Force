@@ -105,7 +105,7 @@
             <h1 class="text-white text-[20px] md:text-[30px] leading-[30px] 
                 md:leading-[45px] text-center 
                 md:text-left tracking-[0px] variant-title">
-                {{ $firstStock->stock_title }}
+                {{ $firstStock->stock_title ?? $product->name }}
             </h1>
             <input type="hidden" value="{{$firstStock->id}}" id="stock_id">
 
