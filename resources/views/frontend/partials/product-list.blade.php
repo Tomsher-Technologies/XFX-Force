@@ -7,44 +7,20 @@
                 <div class="grid grid-cols-3 gap-3">
                     @foreach ($products as $product)
                         @php
-                            // Get the first stock for this product
                             $firstStock = $product->stocks->first();
+                            $prodData = [
+                                'product_id' => $product->id ?? null,
+                                'stock_id' => $firstStock->id ?? null,
+                                'thumbnail_img' => $product->thumbnail_img ?? null,
+                                'offer_tag' => $firstStock->offer_tag ?? null,
+                                'name' => $product->name ?? null,
+                                'offer_price' => $firstStock->offer_price ?? null,
+                                'price' => $firstStock->price ?? null,
+                                'page' => 'product-list',
+                            ]
                         @endphp
-                        <div>
-                            <div class="product-card w-full relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
-                                
-                                @include('frontend.partials.wishlist-icon', ['product' => $product->id, 'stock' => $firstStock->id])
-                                
-                                <a href="{{ route('product.details', $product->id) }}" class="product-img h-[230px] w-full relative z-[1] bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]">
-                                    <img src="{{ Storage::url($product->thumbnail_img) }}"
-                                        class="absolute object-cover object-center w-full h-full"
-                                        alt="Upcoming Product 1" title="Upcoming Product 1">
-                                    @if (!empty($firstStock->offer_tag))
-                                        <badge
-                                            class="absolute top-[20px] left-[20px] bg-[#077F09] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">
-                                            {{ $firstStock->offer_tag }}</badge>
-                                    @endif
-                                </a>
-                                <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1]">
-                                    <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2">
-                                        {{ $product->name }}</h4>
-                                    <h5
-                                        class="price flex flex-row text-[#2A7CFF] text-[18px] m-[0] font-bold align-center items-center gap-[10px]">
-                                        <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]"
-                                            alt="AED"
-                                            title="Symbol of AED">{{ $firstStock->offer_price ?? $firstStock->price }}
-                                        @if ($firstStock->offer_price)
-                                            <span
-                                                class="text-[#898989] font-medium line-through">{{ $firstStock->price }}</span>
-                                        @endif
-                                    </h5>
-                                    <a href="{{ route('product.details', $product->id) }}"
-                                        class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white">Buy
-                                        now</a>
-                                </div>
-                               
-                            </div>
-                        </div>
+                        
+                        @include('frontend.partials.product_card', ['prodData' => $prodData])
                     @endforeach
                 </div>
             </div>

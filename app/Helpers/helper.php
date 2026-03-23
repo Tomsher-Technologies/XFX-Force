@@ -362,7 +362,7 @@ if (!function_exists('get_product_image')) {
                 $ext   = pathinfo($path)['extension'];
                 $dirname   = pathinfo($path)['dirname'];
                 $r_path = "{$dirname}/" . $fileName . "_{$size}px" . ".{$ext}";
-                return app('url')->asset($r_path);
+                return app('url')->asset('storage/'.$r_path);
             }
         }
 
