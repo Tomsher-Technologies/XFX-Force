@@ -141,17 +141,17 @@
                                 <span class="text-[15px]">Orders</span>
                             </a>
 
-                            <a href="my-address.html" class="w-full text-gray-400 flex flex-row items-start gap-4 p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
+                            <a href="{{ route('my-address') }}" class="w-full text-gray-400 flex flex-row items-start gap-4 p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
                                 <svg class="w-5 h-5 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                 <span class="text-[15px]">Address</span>
                             </a>
 
-                            <a href="wishlist.html" class="w-full text-gray-400 flex flex-row items-start gap-4 p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
+                            <a href="{{ route('wishlist') }}" class="w-full text-gray-400 flex flex-row items-start gap-4 p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
                                 <svg class="w-5 h-5 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                                 <span class="text-[15px]">Wishlist</span>
                             </a>
 
-                            <a href="accounts-change-password.html" class="w-full text-gray-400 flex flex-row items-start gap-4 p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
+                            <a href="{{ route('update-password') }}" class="w-full text-gray-400 flex flex-row items-start gap-4 p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
                                 <svg class="w-5 h-5 group-hover:text-white" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24"><path fill="#9F9FA9" class="group-hover:fill-white" d="M19,8.424V7A7,7,0,0,0,5,7V8.424A5,5,0,0,0,2,13v6a5.006,5.006,0,0,0,5,5H17a5.006,5.006,0,0,0,5-5V13A5,5,0,0,0,19,8.424ZM7,7A5,5,0,0,1,17,7V8H7ZM20,19a3,3,0,0,1-3,3H7a3,3,0,0,1-3-3V13a3,3,0,0,1,3-3H17a3,3,0,0,1,3,3Z"/><path fill="#9F9FA9" class="group-hover:fill-white" d="M12,14a1,1,0,0,0-1,1v2a1,1,0,0,0,2,0V15A1,1,0,0,0,12,14Z"/></svg>
                                 <span class="text-[15px]">Password</span>
                             </a>

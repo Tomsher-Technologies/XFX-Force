@@ -646,11 +646,12 @@ function wishlistCount()
     }
 }
 
-function isWishlisted($productId)
+function isWishlisted($productId, $stockId)
 {
-    return Wishlist::where('user_id', Auth::id())
-                   ->where('product_id', $productId)
-                   ->exists();
+    return Wishlist::where('user_id', auth('frontend')->id())
+            ->where('product_id', $productId)
+            ->where('product_stock_id', $stockId)
+            ->exists();
 }
 
 function productWishlisted($sku, $product_slug){

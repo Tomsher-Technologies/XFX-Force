@@ -84,5 +84,16 @@ Route::post('/my-orders/{id}/cancel', [OrderController::class, 'cancelOrder'])
 Route::group(['middleware' => ['auth:frontend']], function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('account', [ProfileController::class, 'getUserAccountInfo'])->name('account');
-    Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update');
+    Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update'); 
+
+    Route::get('update-password', [ProfileController::class, 'updatePassword'])->name('update-password');
+    Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('account.changePassword');
+
+    Route::get('my-address', [ProfileController::class, 'getUserAddressInfo'])->name('my-address');
+    Route::post('save-address', [ProfileController::class, 'saveAddress'])->name('save-address');
+    Route::post('/address/delete', [ProfileController::class, 'deleteAddress'])->name('delete-address');
+    Route::get('edit-address/{id}', [ProfileController::class, 'editAddress'])->name('edit-address');
+
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 });
