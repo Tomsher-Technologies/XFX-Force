@@ -35,8 +35,7 @@
                 @endif
             </h5>
             <a href="{{ route('product.details', $prodData['product_id']) }}"
-                class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white">Buy
-                now</a>
+                class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white">Add to cart</a>
         </div>
 
     </div>
