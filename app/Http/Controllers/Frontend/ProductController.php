@@ -439,7 +439,7 @@ class ProductController extends Controller
                 'success' => true,
                 'data' => [
                     'variant_id' => $variant->id,
-                    'title' => $variant->stock_title,
+                    'title' => $variant->stock_title ?? $variant->product->name,
                     'price' => $variant->price,
                     'offer_price' => $variant->offer_price,
                     'image' => $variant->image ?? '',
