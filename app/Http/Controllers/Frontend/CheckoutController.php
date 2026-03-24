@@ -36,11 +36,12 @@ class CheckoutController
         $addresses = [];
         $user = Auth::user();
 
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         if(auth()->check()){
-            $addresses = Address::where('user_id', auth()->id())->get();
+            $addresses = Address::where('user_id', $user_id)->get();
         }
 
-        $userId = auth()->check() ? auth()->id() : null;
+        $userId = auth()->check() ? $user_id : null;
         $guestToken = request()->cookie('guest_token');
 
         if (!$guestToken && !$userId) {
@@ -76,7 +77,8 @@ class CheckoutController
         $shipping_address = [];
         $billing_address = [];
 
-        $user_id = auth()->check() ? auth()->id() : null;
+        $auth_user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $user_id = auth()->check() ? $auth_user_id : null;
 
         /* ---------------- Guest Token ---------------- */
 

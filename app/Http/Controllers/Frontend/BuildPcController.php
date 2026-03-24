@@ -32,7 +32,8 @@ class BuildPcController extends Controller
                 ->get();
         }
 
-        $builder = PcBuilderSetup::where('user_id', auth()->id())->first();
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $builder = PcBuilderSetup::where('user_id', $user_id)->first();
         $buildData = $builder ? $builder->build_data : [];
 
         $reviewProducts = [];
@@ -82,11 +83,12 @@ class BuildPcController extends Controller
 
     public function savePcBuilder(Request $request)
     {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         if ($request->builder_id) {
             $builder = PcBuilderSetup::find($request->builder_id);
         } else {
             $builder = PcBuilderSetup::firstOrCreate(
-                ['user_id' => auth()->id()],
+                ['user_id' => $user_id],
                 ['build_data' => []]
             );
         }
@@ -214,7 +216,8 @@ class BuildPcController extends Controller
     // Function to get the latest build data.
     public function getBuildData()
     {
-        $builder = PcBuilderSetup::where('user_id', auth()->id())->first();
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $builder = PcBuilderSetup::where('user_id', $user_id)->first();
         $buildData = $builder ? $builder->build_data : [];
 
         $reviewData = [
@@ -269,13 +272,13 @@ class BuildPcController extends Controller
         }
 
         $buildData = $builder->build_data;
-
+$user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         // Remove old builder cart items
         Cart::where('pc_builder_id', $builderId)
             ->where(function($query) use ($guestToken) {
                     if(auth()->check()) {
                         // Logged-in user
-                        $query->where('user_id', auth()->id());
+                        $query->where('user_id', $user_id);
                     } else {
                         // Guest user
                         $query->where('temp_user_id', $guestToken);
@@ -355,8 +358,6 @@ class BuildPcController extends Controller
                 'message' => 'Configuration not found'
             ]);
         }
-
-        $builder->delete();
 
         
         return response()->json([

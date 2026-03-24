@@ -173,11 +173,8 @@ class OrderController extends Controller
 
     public function myOrders()
     {
-        $orders = Order::where('user_id', auth()->id())->latest()->get();
-        // auth()->id()
-        // echo (auth()->id());exit;
-
-
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $orders = Order::where('user_id', $user_id)->latest()->get();
         return view('frontend.order.my-orders', compact('orders'));
     }
 
@@ -369,9 +366,10 @@ class OrderController extends Controller
 
     public function myOrderSingle($id)
     {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $order = Order::with('orderDetails.product')
             ->where('id', $id)
-            // ->where('user_id', auth()->id()) // security
+            ->where('user_id', $user_id) // security
             ->firstOrFail();
 
         $trackingHistory = OrderTracking::where('order_id', $id)
@@ -384,8 +382,9 @@ class OrderController extends Controller
 
     public function cancelOrder($id)
     {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $order = Order::where('id', $id)
-            // ->where('user_id', auth()->id())
+            ->where('user_id', $user_id)
             ->firstOrFail();
 
         if (in_array($order->delivery_status, ['shipped', 'delivered'])) {
