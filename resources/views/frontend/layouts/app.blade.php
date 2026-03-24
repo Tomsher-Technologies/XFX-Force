@@ -130,6 +130,7 @@
                 }
                 const productId = button.dataset.productId;
                 const stockId = button.dataset.stockId;
+                const page = button.dataset.page;
                 const icon = button.querySelector('svg');
                 
                 fetch("/wishlist/toggle", {
@@ -145,16 +146,35 @@
                 })
                 .then(res => res.json())
                 .then(data => {
+
+                    const allButtons = document.querySelectorAll(
+                        `.wishlist-toggle[data-product-id="${productId}"][data-stock-id="${stockId}"]`
+                    );
+
+                    allButtons.forEach(btn => {
+                        const icon = btn.querySelector('svg');
+
+                        if (data.status === 'added') {
+                            icon.setAttribute('fill', 'currentColor');
+                            btn.classList.add('text-red-500');
+                            btn.classList.remove('text-white', 'bg-black/20');
+                        } else {
+                            icon.setAttribute('fill', 'none');
+                            btn.classList.remove('text-red-500');
+                            btn.classList.add('text-white', 'bg-black/20');
+                        }
+                    });
+
+
                     if (data.status === 'added') {
-                        icon.setAttribute('fill', 'currentColor');
-                        button.classList.add('text-red-500');
-                        button.classList.remove('text-white', 'bg-black/20');
-                        toastr.success('Product added to wishlist.');
+                        toastr.success('Product added to wishlist.');      
                     } else {
-                        icon.setAttribute('fill', 'none');
-                        button.classList.remove('text-red-500');
-                        button.classList.add('text-white', 'bg-black/20');
                         toastr.info('Product removed from wishlist.');
+                        if(page === 'wishlist') {
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
+                        }
                     }
                 });
             });

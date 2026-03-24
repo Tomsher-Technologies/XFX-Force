@@ -24,31 +24,23 @@ class WishlistController extends Controller
             if($wishlist){
                 foreach($wishlist as $data){
                     if($data->product && $data->product_stock){
-                        $priceData = getProductPrice($data->product_stock);
-
                         $products[] = [
-                            'id' => (int) $data->id,
-                            'product' => [
-                                'variant_id' => $data->product_stock->id ?? '',
-                                'product_id' => $data->product_id ?? '',
-                                'name' => $data->product->getTranslation('name', $lang) ?? '',
-                                'sku' => $data->product_stock->sku ?? '',
-                                'slug' => $data->product->slug ?? '',
-                                'thumbnail_image' => ($data->product_stock->image != NULL && $data->product_stock->image != '0') ? get_product_image($data->product_stock->image,'300') : get_product_image($data->product->thumbnail_img,'300'),
-                                'stroked_price' => $priceData['discounted_price'] ?? 0,
-                                'main_price' => $priceData['original_price'] ?? 0,
-                                'min_qty' => $data->product->min_qty ?? 0,
-                                'quantity' => $data->product_stock->qty ?? 0,
-                                'offer_tag' => $priceData['offer_tag'] ?? '',
-                                'attributes' => getProductAttributes($data->product_stock->attributes)
-                            ]
+                            'id' => $data->id ?? null,
+                            'product_id' => $data->product_id ?? null,
+                            'stock_id' => $data->product_stock_id ?? null,
+                            'thumbnail_img' => ($data->product_stock?->image != NULL && $data->product_stock?->image != '0') ? $data->product_stock?->image : $data->product?->thumbnail_img,
+                            'offer_tag' => $data->product_stock?->offer_tag ?? null,
+                            'name' => $data->product->name ?? null,
+                            'offer_price' => $data->product_stock?->offer_price ?? null,
+                            'price' => $data->product_stock?->price ?? null,
+                            'page' => 'wishlist',
                         ];
                     }
                 }    
             }
         }
         // echo '<pre>';
-        // print_r($result);
+        // print_r($products);
         // die;
 
         return view('frontend.user.wishlist',compact('lang','products','wishlist'));
