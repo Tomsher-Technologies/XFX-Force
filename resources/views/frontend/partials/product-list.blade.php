@@ -33,7 +33,7 @@
                                         <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]"
                                             alt="AED"
                                             title="Symbol of AED">{{ $firstStock->offer_price ?? $firstStock->price }}
-                                        @if ($firstStock->offer_price)
+                                        @if (!empty($firstStock->offer_tag))
                                             <span
                                                 class="text-[#898989] font-medium line-through">{{ $firstStock->price }}</span>
                                         @endif
@@ -107,7 +107,7 @@
                                     alt="AED"
                                     title="Symbol of AED">{{ $firstStock->offer_price ?? $firstStock->price }}
                             </h5>
-                            @if ($firstStock->offer_price)
+                            @if (!empty($firstStock->offer_tag))
                                 <span
                                     class="text-[#898989] font-medium line-through text-[20px]">{{ $firstStock->price }}</span>
                             @endif

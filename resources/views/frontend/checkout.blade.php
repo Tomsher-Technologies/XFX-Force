@@ -574,7 +574,6 @@ function completeYourOrder() {
             }
         })
         .catch(error => {
-            console.log(error);return;
             window.location.href = "/order-fail";
         });
 

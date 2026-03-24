@@ -217,7 +217,7 @@ class CartController extends Controller
             ->where('status', 'pending')
             ->get();
 
-           return $cartItems->sum('quantity');
+           return $cartItems->count();
     }
 
     public function removeCartItem($id)
@@ -330,7 +330,7 @@ class CartController extends Controller
         $defaultVat = get_setting('default_vat') ?? 0;
         $tax = ($offerSum * $defaultVat) / 100;
 
-        $cartCount    = $cartItems->sum('quantity');
+        $cartCount    = $cartItems->count();
         $warrantySum  = $cartItems->sum('warranty_price');
         $totalBeforeCouponDicount        = $offerSum + $tax + $shipping + $warrantySum;
         
@@ -342,14 +342,14 @@ class CartController extends Controller
 
         return [
             'status' => true,
-            'sub_total'    => format_price($subTotal),
-            'discount_sum' => format_price($discountSum),
-            'shipping'     => format_price($shipping),
-            'tax'   => format_price($tax),
+            'sub_total'    => $subTotal,
+            'discount_sum' => $discountSum,
+            'shipping'     => $shipping,
+            'tax'   => $tax,
             'cart_count'   => $cartCount,
-            'warranty_sum' => format_price($warrantySum),
-            'couponDiscount' => format_price($couponDiscount),
-            'total'        => format_price($total),
+            'warranty_sum' => $warrantySum,
+            'couponDiscount' => $couponDiscount,
+            'total'        => $total,
         ];
     }
 

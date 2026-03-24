@@ -662,3 +662,7 @@ ol.lh18 li{
 #returnModal.active #modalContent {
   transform: scale(1);
 }
+
+input:checked ~ div svg {
+  opacity: 1 !important;
+}

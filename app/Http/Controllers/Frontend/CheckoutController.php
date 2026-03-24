@@ -159,7 +159,10 @@ class CheckoutController
         
 
         if ($carts->isEmpty()) {
-            // return redirect()->route('order.fail');
+            return response()->json([
+                'success' => false,
+                'redirect' => route('order.fail')
+            ]);
         }
 
         $carts->load(['product', 'product_stock']);
@@ -249,14 +252,18 @@ class CheckoutController
 
         OrderDetail::insert($orderItems);
 
-        $grand_total = ($sub_total + $total_tax + round($total_shipping)) - ($discount + $total_coupon_discount);
+       
+
+        $cartSummary = app(CartController::class)->getCartSummary();
+
+         $grand_total = ($sub_total + $cartSummary['tax'] + $cartSummary['shipping']) - ($discount + $total_coupon_discount);
 
         $order->update([
             'grand_total' => $grand_total,
             'sub_total' => $sub_total,
             'offer_discount' => $discount,
-            'tax' => $total_tax,
-            'shipping_cost' => round($total_shipping),
+            'tax' => $cartSummary['tax'],
+            'shipping_cost' => $cartSummary['shipping'],
             'shipping_type' => ($total_shipping == 0) ? 'free_shipping' : 'flat_rate',
             'coupon_discount' => round($total_coupon_discount),
             'coupon_code' => $coupon_code
@@ -282,7 +289,6 @@ class CheckoutController
         User::where('user_type', 'admin')->get()
             ->each(fn($admin) => $admin->notify(new NewOrderNotification($order)));
 
-        // return redirect()->route('order.success');
         return response()->json([
             'success' => true,
             'redirect' => route('order.success', $order->id)

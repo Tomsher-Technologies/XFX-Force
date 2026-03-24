@@ -19,7 +19,7 @@
                                 </svg>
                             </div>
                             <h2 class="text-2xl font-medium text-white uppercase mb-4">Order Confirmed</h2>
-                            <p class="text-gray-400">Thank you for your purchase. Your order <span class="text-white font-mono">#PCG-88291</span> is being processed.</p>
+                            <p class="text-gray-400">Thank you for your purchase. Your order <span class="text-white font-mono">#{{ $order->code }}</span> is being processed.</p>
                         </div>
 
                         <div class="bg-[#1C2228] border border-white/5 rounded-3xl p-8 md:p-12 mb-8">
@@ -36,9 +36,9 @@
                                     </p>
                                 </div>
                                 <div>
-                                    <p class="text-[12px] font-medium text-gray-400 uppercase mb-2">Delivery Method</p>
+                                    <p class="text-[12px] font-medium text-gray-400 uppercase mb-2">Payment Method</p>
                                     <p class="text-white leading-relaxed">
-                                        Express Delivery (24-48 Hours)<br>
+                                        {{ $order->payment_type ?: 'Debit / Credit Card' }}<br>
                                         <span class="text-[#2A7CFF] text-sm italic">
                                             Expected by {{ \Carbon\Carbon::parse($order->estimated_delivery)->format('F j, Y') }}
 
@@ -279,99 +279,7 @@
     <!--//mobile burger menu-->
 
     <script>
-        $(window).scroll(function () {
-            const header = $('#main-header');
-            if ($(this).scrollTop() > 50) {
-                // STYLE WHEN STICKY
-                header.addClass('bg-[#0b0b0b] shadow-xl border-b border-[#1E2529]')
-                    .removeClass('h-fit bg-transparent');
-            } else {
-                // ORIGINAL STYLE
-                header.addClass('h-fit bg-transparent')
-                    .removeClass('bg-[#0b0b0b] shadow-xl border-b border-[#1E2529]');
-            }
-        });
-
-        $(document).ready(function () {
-            $('.view-btn').on('click', function () {
-                // 1. Add active class and background to the one you clicked
-                $(this).addClass('active bg-[#282B34]');
-
-                // 2. Remove those same classes from all other buttons in the same parent
-                $(this).siblings().removeClass('active bg-[#282B34]');
-            });
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-            const minInput = document.getElementById('range-min');
-            const maxInput = document.getElementById('range-max');
-            const minLabel = document.getElementById('min-price');
-            const maxLabel = document.getElementById('max-price');
-            const progress = document.getElementById('slider-progress');
-
-            const priceGap = 500; // Minimum gap between handles
-
-            function updateSlider() {
-                let minVal = parseInt(minInput.value);
-                let maxVal = parseInt(maxInput.value);
-
-                // Logic to prevent handles from crossing
-                if (maxVal - minVal < priceGap) {
-                    if (this.id === 'range-min') {
-                        minInput.value = maxVal - priceGap;
-                    } else {
-                        maxInput.value = minVal + priceGap;
-                    }
-                } else {
-                    minLabel.textContent = minInput.value;
-                    maxLabel.textContent = maxInput.value;
-
-                    // Calculate percentage for the blue progress bar
-                    const minPercent = (minInput.value / minInput.max) * 100;
-                    const maxPercent = 100 - (maxInput.value / maxInput.max) * 100;
-
-                    progress.style.left = minPercent + "%";
-                    progress.style.right = maxPercent + "%";
-                }
-            }
-
-            [minInput, maxInput].forEach(input => {
-                input.addEventListener('input', updateSlider);
-            });
-
-            // Run once on load to set initial state
-            updateSlider();
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const searchInput = document.getElementById('brand-search');
-            const brandItems = document.querySelectorAll('.brand-item');
-
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-
-                brandItems.forEach(item => {
-                    const brandName = item.getAttribute('data-name').toLowerCase();
-
-                    // Check if search query matches the brand name
-                    if (brandName.includes(query)) {
-                        item.style.display = 'flex'; // Show match
-                        item.classList.add('animate-fade-in'); // Optional: add a quick fade effect
-                    } else {
-                        item.style.display = 'none'; // Hide non-match
-                    }
-                });
-            });
-
-            // Handle selection (Active State)
-            brandItems.forEach(item => {
-                item.addEventListener('click', function () {
-                    this.classList.toggle('border-[#3E81FF]');
-                    this.classList.toggle('bg-[#282B34]');
-                    const img = this.querySelector('img');
-                    img.classList.toggle('grayscale-0');
-                });
-            });
-        });
+       
 
         document.addEventListener('DOMContentLoaded', () => {
             const searchInput = document.getElementById('category-search');
@@ -393,20 +301,6 @@
                 });
             });
         });
-        $(window).scroll(function () {
-            const header = $('#main-header');
-
-            if ($(this).scrollTop() > 50) {
-                // STYLE WHEN STICKY
-                header.addClass('bg-[#0b0b0b] shadow-xl border-b border-[#1E2529]')
-                    .removeClass('h-24 bg-transparent');
-            } else {
-                // ORIGINAL STYLE
-                header.addClass('h-24 bg-transparent')
-                    .removeClass('bg-[#0b0b0b] shadow-xl border-b border-[#1E2529]');
-            }
-        });
-
         
         // 1. Define the function globally immediately
         window.toggleModal = function () {
