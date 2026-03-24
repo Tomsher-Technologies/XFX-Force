@@ -593,6 +593,30 @@ function getUser()
     return $user;
 }
 
+function getFrontEndUser()
+{
+
+$user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+    $user = array(
+        'users_id_type' => 'temp_user_id',
+        'users_id' => null
+    );
+
+    if ($user_id) {
+        $user = array(
+            'users_id_type' => 'user_id',
+            'users_id' => $user_id
+        );
+    } else {
+        $user = array(
+            'users_id_type' => 'temp_user_id',
+            'users_id' => Request::cookie('guest_token')
+        );
+    }
+
+    return $user;
+}
+
 function cartCount()
 {
     $guest_token = request()->cookie('guest_token') ?? uniqid('guest_', true);

@@ -229,7 +229,7 @@ class CartController extends Controller
 
     public function removeCartItem($id)
     {
-        $user = getUser();
+        $user = getFrontEndUser();
 
         if ($id != '' && $user['users_id'] != '') {
 
@@ -371,7 +371,7 @@ class CartController extends Controller
 
     public function apply_coupon_code(Request $request)
     {
-        $user = getUser();
+        $user = getFrontEndUser();
         
         if($user['users_id'] != ''){
             $cart_items = Cart::where([$user['users_id_type'] => $user['users_id']])->get();
@@ -515,7 +515,7 @@ class CartController extends Controller
 
     public function remove_coupon_code(Request $request)
     {
-        $user = getUser();
+        $user = getFrontEndUser();
         Cart::where([$user['users_id_type'] => $user['users_id']])->update([
             'discount' => 0.00,
             'coupon_code' => "",
@@ -530,7 +530,7 @@ class CartController extends Controller
 
     public function getCouponDiscount($couponCode, $total)
     {
-        $user = getUser();
+        $user = getFrontEndUser();
 
         if (!$user['users_id']) {
             return 0;
