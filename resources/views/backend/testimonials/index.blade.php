@@ -5,12 +5,13 @@
             <div class="col-md-6">
                 <h5 class="h4">{{ trans('messages.all').' Testimonials' }}</h5>
             </div>
-
+            @can('add_testimonials')
             <div class="col-md-6 text-md-right">
-                <a href="{{ route('testimonials.create') }}" class="btn btn-primary">
+                <a href="{{ route('testimonials.create') }}" class="btn btn-primary btn-sm">
                     <span>{{ trans('messages.add_new').' Testimonial' }}</span>
                 </a>
             </div>
+            @endcan
         </div>
     </div>
 
@@ -23,11 +24,12 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
-                                    <th>Name </th>
-                                    <th class="text-left" style="width:20%;">Title</th>
-                                    <th class="text-left" style="width:35%;">Comment</th>
-                                    <th class="text-center">Sort Order</th>
+                                    <th>Name</th>
+                                    <th class="text-left">Sub Title</th>
+                                    <th class="text-center">Type</th>
+                                    <th class="text-center">Source</th>
                                     <th class="text-center">Status</th>
+                                    <th class="text-center">Sort Order</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -38,9 +40,9 @@
                                         <td>
                                             {{ $test->name }}
                                         </td>
-                                        <td class="text-left">{{ $test->title }}</td>
-                                        <td class="text-left">{{ $test->comment }}</td>
-                                        <td class="text-center">{{ $test->sort_order }}</td>
+                                        <td class="text-left">{{ $test->sub_title }}</td>
+                                        <td class="text-center">{{ ucwords($test->type) }}</td>
+                                        <td class="text-center">{{ ucwords($test->video_source) }}</td>
                                         <td class="text-center">
                                             <label class="aiz-switch aiz-switch-success mb-0">
                                                 <input onchange="update_status(this)" value="{{ $test->id }}"
@@ -50,12 +52,16 @@
                                                 <span class="slider round"></span>
                                             </label>
                                         </td>
-                                        <td class="text-center">
-                                            <a href="{{ route('testimonials.edit', $test) }}" class="btn btn-soft-primary btn-icon btn-circle"><i class="las la-edit"></i></a>
-
-                                            <a href="#" class="btn btn-soft-danger btn-icon btn-circle confirm-delete" data-href="{{ route('testimonials.delete', $test->id) }}" title="Delete">
+                                        <td class="text-center">{{ $test->sort_order }}</td>
+                                        <td class="d-flex gap-2 justify-content-center footable-last-visible">
+                                            @can('edit_testimonials')
+                                            <a href="{{ route('testimonials.edit', $test) }}" class="btn btn-soft-primary btn-icon btn-circle btn-sm"><i class="las la-edit"></i></a>
+                                            @endcan
+                                            @can('delete_testimonials')
+                                            <a href="#" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{ route('testimonials.delete', $test->id) }}" title="Delete">
                                                 <i class="las la-trash"></i>
                                             </a>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach

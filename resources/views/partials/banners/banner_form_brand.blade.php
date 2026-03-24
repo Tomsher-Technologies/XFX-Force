@@ -1,7 +1,7 @@
 <div class="form-group row">
     <label class="col-md-3 col-form-label">Link</label>
     <div class="col-md-9">
-        <select class="form-control aiz-selectpicker" title="Select an option" name="link_ref_id" id="link_ref_id" data-live-search="true" required>
+        <select class="form-control aiz-selectpicker  form-control-sm" title="Select an option" name="link_ref_id" id="link_ref_id" data-live-search="true" required>
             @foreach ($brands as $brands)
                 <option {{ $old_data == $brands->id ? 'selected' : '' }} value="{{ $brands->id }}">
                     {{ $brands->name }}</option>

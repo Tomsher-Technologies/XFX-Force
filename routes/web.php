@@ -1,18 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Frontend\FrontendController;
-use App\Http\Controllers\Frontend\ProductController;
+use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Frontend\BuildPcController;
+use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
-use App\Http\Controllers\Frontend\UserController;
-use App\Http\Controllers\Frontend\AuthController;
-use App\Http\Controllers\Frontend\WishlistController;
-use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\ForgotPasswordController;
+use App\Http\Controllers\Frontend\FrontendController;
+use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\ProductController;
+use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\SearchController;
-use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Frontend\UserController;
+use App\Http\Controllers\Frontend\WishlistController;
+use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -25,22 +28,72 @@ use App\Http\Controllers\Admin\InvoiceController;
 |
 */
 
-Route::get('/', [FrontendController::class, 'home'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('register/', [AuthController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [AuthController::class, 'register']);
+
+Route::get('login/', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login']);
+
+Route::get('forgot-password/', [ForgotPasswordController::class, 'showForgotForm'])->name('forgot-password');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.sendResetLink');
+Route::get('/password/reset/{email}/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
+Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
 
 
-Route::group(['middleware' => ['auth']], function () {
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/product/{id}/{stockId?}', [ProductController::class, 'productDetails'])->name('product.details');
+Route::get('/products', [ProductController::class, 'index'])->name('products');
+Route::get('/get-variants-by-value', [ProductController::class, 'getVariantsByValue']);
+Route::get('/getVarientDetails', [ProductController::class, 'getVarientDetails']);
+Route::get('/getVariantState', [ProductController::class, 'getVariantState']);
 
-   
+Route::get('/cart', [CartController::class, 'index'])->name('cart');
+Route::get('/addProductToCart', [CartController::class, 'addProductToCart']);
+Route::get('/removeCartItem/{id}', [CartController::class, 'removeCartItem']);
+Route::get('/getCartSummary', [CartController::class, 'getCartSummary']);
+Route::get('/updateProductWarranty', [CartController::class, 'updateProductWarranty']);
+Route::post('/apply_coupon_code', [CartController::class, 'apply_coupon_code']);
+Route::post('/remove_coupon_code', [CartController::class, 'remove_coupon_code']);
+
+Route::get('/shop/category/{categoryId}', [ProductController::class, 'shopByCategory'])->name('shop.category');
+Route::get('/buildyourpc', [BuildPcController::class, 'index'])->name('buildyourpc');
+Route::get('/buildyourpc/products/{category_id}', [BuildPcController::class, 'getProductsByCategory']);
+Route::get('/buildyourpc/products/details/{stockId}', [BuildPcController::class, 'getProductDetails']);
+Route::get('/buildyourpc/savePcBuilder', [BuildPcController::class, 'savePcBuilder']);
+Route::get('/buildyourpc/getBuildData', [BuildPcController::class, 'getBuildData']);
+Route::get('/buildyourpc/place-order', [BuildPcController::class, 'placePcBuilderOrder'])->name('pcbuilder.place.order');
+Route::post('/pc-builder/reset', [BuildPcController::class, 'resetConfiguration'])->name('pc.builder.reset');
+
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+Route::post('/checkout/placeOrder', [CheckoutController::class, 'placeOrder']);
+
+Route::get('/order-success/{id}', [OrderController::class, 'success'])->name('order.success');
+Route::get('/order-fail', [OrderController::class, 'fail'])->name('order.fail');
+// Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('order.my-orders');
+Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.index');
+Route::get('/my-orders/{id}', [OrderController::class, 'myOrderSingle'])->name('orders.show');
+Route::post('/my-orders/{id}/cancel', [OrderController::class, 'cancelOrder'])
+    ->name('orders.cancel');
+
+    Route::post('/my-orders/{id}/return', [OrderController::class, 'returnOrder'])
+    ->name('orders.return');
+    
+
+Route::group(['middleware' => ['auth:frontend']], function () {
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('account', [ProfileController::class, 'getUserAccountInfo'])->name('account');
+    Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update'); 
+
+    Route::get('update-password', [ProfileController::class, 'updatePassword'])->name('update-password');
+    Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('account.changePassword');
+
+    Route::get('my-address', [ProfileController::class, 'getUserAddressInfo'])->name('my-address');
+    Route::post('save-address', [ProfileController::class, 'saveAddress'])->name('save-address');
+    Route::post('/address/delete', [ProfileController::class, 'deleteAddress'])->name('delete-address');
+    Route::get('edit-address/{id}', [ProfileController::class, 'editAddress'])->name('edit-address');
+
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 });
-
-
-
-
-
-
-
-
-
-
-
-

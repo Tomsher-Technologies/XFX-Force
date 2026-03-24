@@ -14,8 +14,6 @@ class Banner extends Model
 {
     use HasFactory;
 
-    protected $with = ['banner_translations'];
-
     protected $fillable = [
         'name',
         'image',
@@ -30,33 +28,7 @@ class Banner extends Model
         'status',
     ];
 
-    public function getTranslation($field = '', $lang = false){
-        $lang = $lang == false ? App::getLocale() : $lang;
-
-        $banner_translation = $this->banner_translations
-            ->where('lang', $lang)
-            ->first();
-           
-        // if ($field === 'image') {
-        //     // Return the file_name if the image relationship is loaded
-        //     return $banner_translation && $banner_translation->relationLoaded('mainImage') && $banner_translation->image
-        //         ? $banner_translation->mainImage->file_name
-        //         : null; // Return null or a default image path if needed
-        // }
-
-        // if ($field === 'mobile_image') {
-        //     return $banner_translation && $banner_translation->mobileImage
-        //         ? $banner_translation->mobileImage->file_name
-        //         : null;
-        // }
-
-        return $banner_translation != null ? $banner_translation->$field : $this->$field;
-    }
-  
-    public function banner_translations(){
-        return $this->hasMany(BannerTranslation::class)->with('mainImage', 'mobileImage');
-    }
-
+    
 
     public function getALink()
     {
@@ -131,5 +103,14 @@ class Banner extends Model
         });
 
         parent::boot();
+    }
+
+    public function mainImage()
+    {
+        return $this->hasOne(Upload::class, 'id', 'image');
+    }
+    public function mobileImage()
+    {
+        return $this->hasOne(Upload::class, 'id', 'mobile_image');
     }
 }

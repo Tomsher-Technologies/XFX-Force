@@ -46,7 +46,7 @@
             <div id="main-wrapper">
                 <div class="p-3 main-block">
                     <div class="d-flex justify-content-between align-items-center">
-                        <strong>Specifications</strong>
+                        <h6>Specifications</h6>
 
                         <!-- TOP BUTTON -->
                         <button type="button" 
@@ -81,7 +81,7 @@
                                         <option value="0" {{ $level1->status==0?'selected':'' }}>Inactive</option>
                                     </select>
                                     <button type="button" class="remove-level1 border-0 bg-transparent">
-                                        <i class="las la-trash text-danger"></i>
+                                        <i class="las la-trash text-danger fs-20"></i>
                                     </button>
                                 </div>
                                 <div class="col-md-3 pl-0">
@@ -121,7 +121,7 @@
 
                                             <button type="button"
                                                 class="remove-level2 border-0 bg-transparent">
-                                                <i class="las la-trash text-danger"></i>
+                                                <i class="las la-trash text-danger fs-20"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -188,7 +188,7 @@
                             </select>
 
                             <button type="button" class="border-0 bg-transparent remove-level1">
-                            <i class="las la-trash text-danger"></i>
+                            <i class="las la-trash text-danger fs-20"></i>
                                                     </button>
                         </div>
                         <div class="col-md-3 pl-0">
@@ -251,7 +251,7 @@
                     </select>
                     <button type="button"
                         class="border-0 bg-transparent remove-level2">
-                        <i class="las la-trash text-danger"></i>
+                        <i class="las la-trash text-danger fs-20"></i>
                     </button>
                 </div>
 

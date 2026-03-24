@@ -16,15 +16,7 @@ class HomeSlider extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'image',
-        'mobile_image',
-        'link_type',
-        'link_ref',
-        'link_ref_id',
-        'link',
-        'sort_order',
-        'status',
+        'name', 'slider_type', 'video', 'mobile_video', 'image', 'mobile_image', 'title', 'sub_title', 'btn_text', 'link_type', 'link_ref', 'link_ref_id', 'link', 'sort_order', 'status'
     ];
 
     public function mainImage()
@@ -34,6 +26,15 @@ class HomeSlider extends Model
     public function mobileImage()
     {
         return $this->hasOne(Upload::class, 'id', 'mobile_image');
+    }
+
+    public function mainVideo()
+    {
+        return $this->hasOne(Upload::class, 'id', 'video');
+    }
+    public function mobileVideo()
+    {
+        return $this->hasOne(Upload::class, 'id', 'mobile_video');
     }
 
     public function getALink()
@@ -52,11 +53,6 @@ class HomeSlider extends Model
             $product = BrandTranslation::where('brand_id', $this->link_ref_id)->select('slug')->first()->slug;
             return route('products.index', [
                 'brand' => $product
-            ]);
-        } elseif ($this->link_ref == 'service' && $this->link_ref_id !== null) {
-            $product = Service::where('id', $this->link_ref_id)->select('slug')->first()->slug;
-            return route('services.show', [
-                'slug' => $product
             ]);
         } elseif ($this->link_ref == 'external' && $this->link !== null) {
             return $this->link;
@@ -80,14 +76,7 @@ class HomeSlider extends Model
             }else{
                 return '#';
             }
-        } elseif ($this->link_ref == 'offer' && $this->link_ref_id !== null) {
-            $product = Offers::where('id', $this->link_ref_id)->select('slug')->first();
-            if($product){
-                return $product->slug;
-            }else{
-                return '#';
-            }
-        }  elseif ($this->link_ref == 'brand' && $this->link_ref_id !== null) {
+        } elseif ($this->link_ref == 'brand' && $this->link_ref_id !== null) {
             $product = Brand::where('id', $this->link_ref_id)->select('slug')->first();
             if($product){
                 return $product->slug;

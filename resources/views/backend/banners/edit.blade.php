@@ -9,18 +9,7 @@
             <div class="card">
                 
                 <div class="card-body p-0">
-                    <ul class="nav nav-tabs nav-fill border-light">
-                        @foreach (\App\Models\Language::all() as $key => $language)
-                            <li class="nav-item">
-                                <a class="nav-link text-reset @if ($language->code == $lang) active @else bg-soft-dark border-light border-left-0 @endif py-3"
-                                    href="{{ route('banners.edit', ['id' => $banner->id, 'lang' => $language->code]) }}">
-                                    <img src="{{ static_asset('assets/img/flags/' . $language->code . '.png') }}" height="11"
-                                        class="mr-1">
-                                    <span>{{ $language->name }}</span>
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
+                    
                     <form  class="p-4" method="POST" action="{{ route('banners.update', $banner) }}">
                         @csrf
                         @method('PATCH')
@@ -31,7 +20,7 @@
                             <div class="col-md-9">
                                 <input type="text" placeholder="Name"
                                     value="{{ old('name', $banner->name) }}" id="name" name="name"
-                                    class="form-control" required>
+                                    class="form-control form-control-sm" required>
                                 @error('name')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
@@ -41,7 +30,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="signinSrEmail">
                                 Banner
-                                <small>(1300x650)</small>
+                                {{-- <small>(1300x650)</small> --}}
                             </label>
                             <div class="col-md-9">
                                 <div class="input-group" data-toggle="aizuploader" data-type="image">
@@ -50,8 +39,8 @@
                                             Browse
                                         </div>
                                     </div>
-                                    <div class="form-control file-amount">Choose File</div>
-                                    <input value="{{ old('banner', $banner->getTranslation('image',$lang)) }}" type="hidden" name="banner"
+                                    <div class="form-control form-control-sm file-amount">Choose File</div>
+                                    <input value="{{ old('banner', $banner->image) }}" type="hidden" name="banner"
                                         class="selected-files" required>
                                 </div>
                                 <div class="file-preview box sm">
@@ -65,7 +54,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="signinSrEmail">
                                 Mobile Banner
-                                <small>(1300x650)</small>
+                                {{-- <small>(1300x650)</small> --}}
                             </label>
                             <div class="col-md-9">
                                 <div class="input-group" data-toggle="aizuploader" data-type="image">
@@ -74,8 +63,8 @@
                                             Browse
                                         </div>
                                     </div>
-                                    <div class="form-control file-amount">Choose File</div>
-                                    <input value="{{ old('mobile_banner', $banner->getTranslation('mobile_image',$lang)) }}" type="hidden"
+                                    <div class="form-control form-control-sm file-amount">Choose File</div>
+                                    <input value="{{ old('mobile_banner', $banner->mobile_image) }}" type="hidden"
                                         name="mobile_banner" class="selected-files" required>
                                 </div>
                                 <div class="file-preview box sm">
@@ -89,24 +78,24 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">Title</label>
                             <div class="col-md-9">
-                                <input type="text" placeholder="Title" value="{{ old('title', $banner->getTranslation('title',$lang)) }}" id="title"
-                                    name="title" class="form-control">
+                                <input type="text" placeholder="Title" value="{{ old('title', $banner->title) }}" id="title"
+                                    name="title" class="form-control form-control-sm">
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">Sub Title</label>
                             <div class="col-md-9">
-                                <input type="text" placeholder="Sub Title" value="{{ old('sub_title', $banner->getTranslation('sub_title',$lang)) }}" id="sub_title"
-                                    name="sub_title" class="form-control">
+                                <input type="text" placeholder="Sub Title" value="{{ old('sub_title', $banner->sub_title) }}" id="sub_title"
+                                    name="sub_title" class="form-control form-control-sm">
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">Button Text</label>
                             <div class="col-md-9">
-                                <input type="text" placeholder="Button Text" value="{{ old('btn_text', $banner->getTranslation('btn_text',$lang)) }}" id="btn_text"
-                                    name="btn_text" class="form-control">
+                                <input type="text" placeholder="Button Text" value="{{ old('btn_text', $banner->btn_text) }}" id="btn_text"
+                                    name="btn_text" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -114,7 +103,7 @@
                             <div class="form-group row @if ($lang != 'en') d-none @endif">
                                 <label class="col-md-3 col-form-label">Link Type</label>
                                 <div class="col-md-9">
-                                    <select onchange="banner_form()" class="form-control aiz-selectpicker" name="link_type"
+                                    <select onchange="banner_form()" class="form-control form-control-sm aiz-selectpicker" name="link_type"
                                         id="link_type" data-live-search="true" required>
                                         <option {{ old('link_type', $banner->link_type) == 'external' ? 'selected' : '' }}
                                             value="external">
@@ -126,6 +115,8 @@
                                         <option {{ old('link_type', $banner->link_type) == 'category' ? 'selected' : '' }}
                                             value="category">
                                             Category</option>
+                                        <option {{ old('link_type', $banner->link_type) == 'brand' ? 'selected' : '' }}
+                                            value="brand">Brand</option>
                                     </select>
                                     @error('link_type')
                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -145,7 +136,7 @@
                             <div class="form-group row @if ($lang != 'en') d-none @endif">
                                 <label class="col-md-3 col-form-label">Status</label>
                                 <div class="col-md-9">
-                                    <select class="form-control aiz-selectpicker" name="status" id="status" required>
+                                    <select class="form-control form-control-sm aiz-selectpicker" name="status" id="status" required>
                                         <option {{ old('status', $banner->status) == '1' ? 'selected' : '' }} value="1">
                                             Enabled</option>
                                         <option {{ old('status', $banner->status) == '0' ? 'selected' : '' }} value="0">
@@ -159,10 +150,10 @@
                        
 
                         <div class="form-group mb-0 text-right">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary btn-sm">
                                 Save
                             </button>
-                            <a href="{{ route('banners.index') }}" class="btn btn-cancel">{{trans('messages.cancel')}}</a>
+                            <a href="{{ route('banners.index') }}" class="btn btn-cancel btn-sm">{{trans('messages.cancel')}}</a>
                         </div>
                     </form>
                 </div>

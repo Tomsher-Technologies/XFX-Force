@@ -11,8 +11,20 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+
+    server: {
+        host: '127.0.0.1',
+        port: 5173,
+        strictPort: false,
+        hmr: {
+            host: '127.0.0.1'
+        }
+    },
+
     build: {
-        outDir: 'dist',
-        emptyOutDir: true,
-    }
+        target: 'esnext',
+        commonjsOptions: {
+            transformMixedEsModules: true,
+        },
+    },
 });

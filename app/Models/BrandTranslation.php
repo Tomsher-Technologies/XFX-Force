@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BrandTranslation extends Model
 {
   protected $fillable = [
-    'brand_id', 'lang', 'name', 'slug', 'meta_title', 'meta_description', 'og_title', 'og_description', 'twitter_title', 'twitter_description', 'meta_keywords'
+    'brand_id', 'meta_title', 'meta_description', 'og_title', 'og_description', 'twitter_title', 'twitter_description', 'meta_keywords'
   ];
 
   public function brand()

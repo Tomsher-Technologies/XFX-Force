@@ -8,18 +8,32 @@ use App;
 class Brand extends Model
 {
 
-  protected $with = ['brand_translations'];
+    protected $with = ['brand_translations'];
 
-  protected $fillable = ['name', 'logo', 'is_active'];
+    protected $fillable = ['name', 'logo', 'is_active'];
 
-  public function getTranslation($field = '', $lang = false){
-      $lang = $lang == false ? App::getLocale() : $lang;
-      $brand_translation = $this->brand_translations->where('lang', $lang)->first();
-      return $brand_translation != null ? $brand_translation->$field : $this->$field;
-  }
+    public function getTranslation($field = '', $lang = false){
+        $lang = $lang == false ? App::getLocale() : $lang;
+        $brand_translation = $this->brand_translations->first();
+        return $brand_translation != null ? $brand_translation->$field : $this->$field;
+    }
 
-  public function brand_translations(){
-      return $this->hasMany(BrandTranslation::class);
-  }
+    public function brand_translations(){
+        return $this->hasMany(BrandTranslation::class);
+    }
 
+    public function sections()
+    {
+        return $this->hasMany(BrandSection::class);
+    }
+
+    public function tabs()
+    {
+        return $this->hasMany(BrandTab::class);
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

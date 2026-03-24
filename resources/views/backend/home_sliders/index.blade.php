@@ -10,7 +10,7 @@
                         <h1 class="h3">{{ trans('messages.all').' '.trans('messages.sliders') }}</h1>
                     </div>
                     <div class="col-md-6 text-md-right">
-                        <a href="{{ route('home-slider.create') }}" class="btn btn-primary">
+                        <a href="{{ route('home-slider.create') }}" class="btn btn-primary btn-sm">
                             <span>{{ trans('messages.add_new').' '.trans('messages.sliders') }}</span>
                         </a>
                     </div>
@@ -26,8 +26,10 @@
                                 <tr>
                                     <th class="text-center">#</th>
                                     <th>Name</th>
+                                    <th class="text-center">Slider Type</th>
+                                    
+                                    <th class="text-center">File</th>
                                     <th class="text-center">Link Type</th>
-                                    <th>Image</th>
                                     <th class="text-center">Sort Order</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Options</th>
@@ -41,17 +43,29 @@
                                             {{ $slider->name }}
                                         </td>
                                         <td class="text-center">
-                                            {{ ucfirst($slider->link_type) }}
+                                            {{ ucfirst($slider->slider_type) }}
                                         </td>
-                                        <td>
-                                            <div class="row gutters-5 w-200px w-md-300px mw-100">
-                                                @if ($slider->image)
-                                                    <div class="col-auto">
-                                                        <img src="{{ uploaded_asset($slider->image) }}" alt="Image"
-                                                            class="img-fit">
-                                                    </div>
-                                                @endif
-                                            </div>
+                                        
+                                        <td class="text-center">
+                                            @if ($slider->image)
+                                                <div class="col-auto">
+                                                    <img src="{{ uploaded_asset($slider->image) }}" alt="Image"
+                                                        class="img-fit">
+                                                </div>
+                                            @endif
+
+                                            @if ($slider->video)
+                                                <div class="col-auto">
+                                                    <video controls style="max-width: 150px;">
+                                                        <source src="{{ uploaded_asset($slider->video) }}" type="video/mp4">
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                </div>
+                                            @endif
+                                        </td>
+
+                                        <td class="text-center">
+                                            {{ ucfirst($slider->link_type) }}
                                         </td>
                                         <td class="text-center">
                                             {{ $slider->sort_order }}
@@ -65,12 +79,12 @@
                                             </label>
                                         </td>
                                         <td class="text-center">
-                                            <a class="btn btn-soft-primary btn-icon btn-circle"
+                                            <a class="btn btn-soft-primary btn-icon btn-circle btn-sm"
                                                 href="{{ route('home-slider.edit', $slider) }}" title="Edit">
                                                 <i class="las la-edit"></i>
                                             </a>
                                             <a href="#"
-                                                class="btn btn-soft-danger btn-icon btn-circle confirm-delete"
+                                                class="btn btn-soft-danger btn-icon btn-circle confirm-delete btn-sm"
                                                 data-href="{{ route('home-slider.delete', $slider->id) }}" title="Delete">
                                                 <i class="las la-trash"></i>
                                             </a>

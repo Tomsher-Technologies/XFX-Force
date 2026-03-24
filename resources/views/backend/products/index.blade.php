@@ -39,7 +39,7 @@
                         <span>Add New Product</span>
                     </a>
                 </div>    
-            @endif
+            @endcan
         </div>
     </div>
     <br>
@@ -156,8 +156,7 @@
 
                                         @if ($product->thumbnail_img)
                                             <div class="col-auto">
-                                                <img src="{{ get_product_image($product->thumbnail_img, '300') }}"
-                                                    alt="Image" class="size-50px img-fit">
+                                                <img src="{{ product_image_url($product->thumbnail_img, 300) }}" alt="Image" class="size-50px img-fit">
                                             </div>
                                         @endif
 
@@ -181,15 +180,16 @@
                                 <td class="text-center">
                                     @php
                                         $qty = 0;
-                                        if ($product->product_type == 1) {
-                                            foreach ($product->stocks as $key => $stock) {
-                                                $qty += $stock->qty;
-                                                echo $stock->sku . ' - <b>' . $stock->qty . '</b><br>';
+                                        if ($product->stocks && $product->stocks->count() > 0) {
+                                            if ($product->product_type == 1) {
+                                                foreach ($product->stocks->where('type','variant') as $key => $stock) {
+                                                    $qty += $stock->qty;
+                                                    echo $stock->sku . ' - <b>' . $stock->qty . '</b><br>';
+                                                }
+                                            } else {
+                                                $qty = optional($product->stocks->first())->qty;
+                                                echo $product->stocks->first()->sku . ' - <b>'.$qty.'</b>';
                                             }
-                                        } else {
-                                            //$qty = $product->current_stock;
-                                            $qty = optional($product->stocks->first())->qty;
-                                            echo '<b>'.$qty.'</b>';
                                         }
                                     @endphp
                                     @if ($qty <= $product->low_stock_quantity)
@@ -216,13 +216,13 @@
                                     
                                 </td>
                               
-                                <td class="text-center">
-                                    {{-- <a class="btn btn-soft-success btn-icon btn-circle"
+                                <td class="d-flex gap-2 justify-content-center footable-last-visible">
+                                    {{-- <a class="btn btn-soft-success btn-icon btn-circle btn-sm"
                                         href="{{ route('product', $product->slug) }}" target="_blank" title="View">
                                         <i class="las la-eye"></i>
                                     </a> --}}
                                     @can('edit_product')
-                                        <a class="btn btn-soft-primary btn-icon btn-circle" href="{{ route('products.edit', ['id' => $product->id, 'lang' => env('DEFAULT_LANGUAGE')]) }}"
+                                        <a class="btn btn-soft-primary btn-icon btn-circle btn-sm" href="{{ route('products.edit', ['id' => $product->id, 'lang' => env('DEFAULT_LANGUAGE')]) }}"
                                         title="Edit">
                                             <i class="las la-edit"></i>
                                         </a>
@@ -273,10 +273,6 @@
 
         });
 
-        $(document).ready(function() {
-            //$('#container').removeClass('mainnav-lg').addClass('mainnav-sm');
-        });
-
         function update_published(el) {
             if (el.checked) {
                 var status = 1;
@@ -295,8 +291,6 @@
                 }
             });
         }
-
-       
 
         function sort_products(el) {
             $('#sort_products').submit();

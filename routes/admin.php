@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\AbandonedCartController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SpecificationController;
+use App\Http\Controllers\Admin\PcBuilderCategorySettingController;
 
 
 Route::get('/admin/notifications', function () {
@@ -65,6 +66,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('staffs', StaffController::class);
     Route::get('/staffs/destroy/{id}', [StaffController::class, 'destroy'])->name('staffs.destroy');
 
+    Route::get('pc-builder/categories', [PcBuilderCategorySettingController::class, 'index'])->name('pc-builder.categories');
+    Route::post('pc-builder/categories', [PcBuilderCategorySettingController::class, 'store'])->name('pc-builder.categories.store');
+
+
+
     Route::post('/banners/get_form', [Bannercontroller::class, 'get_form'])->name('banners.get_form');
     Route::get('/banners/destroy/{banner}', [Bannercontroller::class, 'destroy'])->name('banners.destroy');
     Route::resource('banners', Bannercontroller::class)->except(['show', 'destroy']);
@@ -84,6 +90,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/home-slider/update-status', [HomeSliderController::class, 'updateStatus'])->name('home-slider.update-status');
         Route::get('/home-slider/delete/{id}', [HomeSliderController::class, 'destroy'])->name('home-slider.delete');
         Route::resource('home-slider', HomeSliderController::class);
+        
 
         Route::resource('custom-pages', PageController::class);
         Route::get('/pages', [PageController::class, 'index'])->name('website.pages');
@@ -96,13 +103,13 @@ Route::group(['middleware' => ['auth']], function () {
 
         // Partners
         Route::resource('partners', PartnersController::class)->except('show');
+        
+    });
 
-        // Manage testimonials
+    // Manage testimonials
         Route::resource('testimonials', TestimonialController::class)->except('show');
         Route::get('/testimonials/delete/{id}', [TestimonialController::class, 'destroy'])->name('testimonials.delete');
         Route::post('/testimonials/update-status', [TestimonialController::class, 'updateStatus'])->name('testimonials.update-status');
-        
-    });
 
     // Brands
     Route::resource('brands', BrandController::class);
@@ -182,6 +189,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/business-settings/update', [BusinessSettingsController::class, 'update'])->name('business_settings.update');
 
+    Route::post('/business-settings/update-settings', [BusinessSettingsController::class, 'updateSettings'])->name('business_settings.update_settings');
+
     // Manage services
 
     Route::get('/service/all', [ServiceController::class, 'index'])->name('service.index');
@@ -218,8 +227,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/configuration', [BusinessSettingsController::class, 'shipping_configuration'])->name('shipping_configuration.index');
     Route::post('/shipping_configuration/free_shipping', [BusinessSettingsController::class, 'freeshipping_settings'])->name('shipping_configuration.free_shipping');
     Route::post('/configuration/return', [BusinessSettingsController::class, 'return_settings'])->name('configuration.return_settings');
-
-    Route::post('/configuration/service', [BusinessSettingsController::class, 'service_settings'])->name('configuration.service_settings');
+    Route::post('/configuration/vat', [BusinessSettingsController::class, 'vat_settings'])->name('configuration.vat_settings');
+    Route::post('/configuration/pickup', [BusinessSettingsController::class, 'pickup_settings'])->name('configuration.pickup_settings');
+    Route::post('/configuration/delivery', [BusinessSettingsController::class, 'delivery_settings'])->name('configuration.delivery_settings');
 
     //Reports
     Route::get('/stock_report', [ReportController::class, 'stock_report'])->name('stock_report.index');
@@ -252,8 +262,21 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/specifications/delete/{id}', [SpecificationController::class, 'destroy'])->name('specifications.delete');
 
+    Route::get('/specifications-items', [SpecificationController::class, 'getSpecificationItems'])->name('specifications.items');
+    
+
+
     // Attributes
     Route::resource('attributes', AttributeController::class);
     Route::get('/attributes/delete/{id}', [AttributeController::class, 'destroy'])->name('attributes.delete');
 
+});
+
+Route::get('/env-check', function () {
+    return [
+        'php_version' => PHP_VERSION,
+        'gd_loaded'   => extension_loaded('gd'),
+        'php_ini'     => php_ini_loaded_file(),
+        'php_binary' => PHP_BINARY,
+    ];
 });

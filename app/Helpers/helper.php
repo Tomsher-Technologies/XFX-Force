@@ -192,20 +192,15 @@ if (!function_exists('verified_sellers_id')) {
     }
 }
 
+
 if (!function_exists('get_setting')) {
-    function get_setting($key, $default = null, $lang = false)
+    function get_setting($key, $default = null, $lang = null)
     {
         $settings = Cache::remember('business_settings', 86400, function () {
-            return BusinessSetting::all();
+            return BusinessSetting::pluck('value', 'type')->toArray();
         });
-
-        if ($lang == false) {
-            $setting = $settings->where('type', $key)->first();
-        } else {
-            $setting = $settings->where('type', $key)->where('lang', $lang)->first();
-            $setting = !$setting ? $settings->where('type', $key)->first() : $setting;
-        }
-        return $setting == null ? $default : $setting->value;
+        
+        return $settings[$key] ?? $default;
     }
 }
 
@@ -267,13 +262,13 @@ if (!function_exists('format_price')) {
         }
 
         if (get_setting('symbol_format') == 1) {
-            return currency_symbol() . $fomated_price;
+            return $fomated_price;
         } else if (get_setting('symbol_format') == 3) {
-            return currency_symbol() . ' ' . $fomated_price;
+            return $fomated_price;
         } else if (get_setting('symbol_format') == 4) {
-            return $fomated_price . ' ' . currency_symbol();
+            return $fomated_price;
         }
-        return $fomated_price . currency_symbol();
+        return $fomated_price;
     }
 }
 
@@ -367,7 +362,7 @@ if (!function_exists('get_product_image')) {
                 $ext   = pathinfo($path)['extension'];
                 $dirname   = pathinfo($path)['dirname'];
                 $r_path = "{$dirname}/" . $fileName . "_{$size}px" . ".{$ext}";
-                return app('url')->asset($r_path);
+                return app('url')->asset('storage/'.$r_path);
             }
         }
 
@@ -651,11 +646,12 @@ function wishlistCount()
     }
 }
 
-function isWishlisted($productId)
+function isWishlisted($productId, $stockId)
 {
-    return Wishlist::where('user_id', Auth::id())
-                   ->where('product_id', $productId)
-                   ->exists();
+    return Wishlist::where('user_id', auth('frontend')->id())
+            ->where('product_id', $productId)
+            ->where('product_stock_id', $stockId)
+            ->exists();
 }
 
 function productWishlisted($sku, $product_slug){
@@ -749,3 +745,33 @@ function checkCartProduct($sku, $slug){
         }
     }
 }
+
+if (!function_exists('product_image_url')) {
+    /**
+     * Get the product image URL for a specific size.
+     *
+     * @param string $path  // stored path like 'products/11111/main/11111.png'
+     * @param int $size     // desired size e.g. 300, 500
+     * @return string
+     */
+    function product_image_url($path, $size = null)
+    {
+        if (!$path) return ''; // no image
+
+        // get directory, filename, extension
+        $info = pathinfo($path);
+
+        $dir = $info['dirname'];  // products/11111/main
+        $filename = $info['filename']; // 11111
+        $ext = $info['extension']; // png, jpg, etc
+
+        if ($size) {
+            $filename .= "_{$size}px"; // append size
+        }
+
+        $fullPath = $dir . '/' . $filename . '.' . $ext;
+
+        return Storage::url($fullPath); // returns /storage/products/11111/main/11111_300px.png
+    }
+}
+

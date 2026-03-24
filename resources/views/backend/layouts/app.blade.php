@@ -10,13 +10,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="app-url" content="{{ getBaseURL() }}">
     <meta name="file-base-url" content="{{ getFileBaseURL() }}">
-    <meta name="admin-url" content="{{ getBaseURL() . env('ADMIN_PREFIX') }}">
+    <!-- <meta name="admin-url" content="{{ getBaseURL() . env('ADMIN_PREFIX') }}"> -->
+    <meta name="admin-url" content="{{ url('/admin') }}">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg" href="{{ asset('assets/img/favicon.ico') }}">
+    <link rel="icon" type="image/svg" href="{{ asset('assets/images/favicon.ico') }}">
     <title>@yield('title', env('APP_NAME'))</title>
     <!-- google font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">
@@ -85,9 +86,10 @@
 
     @yield('modal')
 
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('assets/js/vendors.js') }}"></script>
     <script src="{{ asset('assets/js/aiz-core.js') }}"></script>
+    <script src="{{ asset('assets/js/custom.js') }}"></script>
 
     @yield('script')
 
@@ -97,22 +99,6 @@
         @endforeach
 
 
-        // if ($('#lang-change').length > 0) {
-        //     $('#lang-change .dropdown-menu a').each(function() {
-        //         $(this).on('click', function(e) {
-        //             e.preventDefault();
-        //             var $this = $(this);
-        //             var locale = $this.data('flag');
-        //             $.post('#', {
-        //                 _token: '{{ csrf_token() }}',
-        //                 locale: locale
-        //             }, function(data) {
-        //                 location.reload();
-        //             });
-
-        //         });
-        //     });
-        // }
 
         function menuSearch() {
             var filter, item;
@@ -146,6 +132,15 @@
                 $("#search-menu").html('')
             }
         }
+
+        $('#toggleInstructions').on('click', function () {
+            $('#importInstructions').slideToggle();
+        });
+
+        $('button[data-dismiss="modal"]').click(function(){
+            $(this).parents('.modal').modal('hide');
+        })
+
     </script>
 
 </body>

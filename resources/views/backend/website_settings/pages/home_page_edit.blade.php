@@ -1,597 +1,772 @@
 @extends('backend.layouts.app')
 @section('content')
 
-    <div class="row">
-        <div class="col-xl-10 mx-auto">
-            <h4 class="fw-600">Home Page Settings</h4>
-
+@php
+    $home = \App\Models\Page::where('type', 'home')->first();
+    $homeSettings = $home ? json_decode($home->data, true) : [];
+@endphp
+<div class="row">
+    <div class="col-xl-12 mx-auto">
+        <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
+            @csrf
             <div class="card">
-                {{-- <ul class="nav nav-tabs nav-fill border-light">
-                    @foreach (\App\Models\Language::all() as $key => $language)
-                        <li class="nav-item">
-                            <a class="nav-link text-reset @if ($language->code == $lang) active @else bg-soft-dark border-light border-left-0 @endif py-3" href="{{ route('custom-pages.edit', ['id'=>$page->type, 'lang'=> $language->code] ) }}">
-                                <img src="{{ static_asset('assets/img/flags/'.$language->code.'.png') }}" height="11" class="mr-1">
-                                <span>{{$language->name}}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul> --}}
                 <div class="card-header">
-                    <h5 class="mb-0">Categories Section</h5>
+                    <h6 class="mb-0">Home Page Settings</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Title<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="title" value="{{ old('title', $page->getTranslation('title', $lang)) }}" required>
-                                <span style="font-size:12px;color: #00b3ff !important;">To highlight specific words, enclose them in square brackets [ ]</span>
-                            </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">Home Sliders</label>
+                            <select name="home_slider[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['home_slider'] ?? []) }}">
+                                @foreach ($sliders as $key => $slider)
+                                <option value="{{ $slider->id }}">{{ $slider->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Banners <small>(select at least 3 options)</small></label>
+                            <select name="home_banners[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['home_banners'] ?? []) }}" data-max-options="3">
+                                @foreach ($banners as $key => $banner)
+                                <option value="{{ $banner->id }}">{{ $banner->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Shop By categories section starts -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Shop By Categories</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">Main Title</label>
+                            <input type="text" name="category_title" value="{{ $homeSettings['category_title'] ?? '' }}" class="form-control form-control-sm form-control form-control-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Categories</label>
+                            <select name="categories[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Categories" data-selected="{{ json_encode($homeSettings['categories'] ?? []) }}">
+                                @foreach ($categories as $key => $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Shop By categories section ends -->
+            <!-- Play Without Limits, High - Performance Gaming PCS (Featured products) Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Featured Products</h6>
+                </div>
+                <div class="card-body">
 
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Subtitle <span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="sub_title" value="{{ old('sub_title', $page->getTranslation('sub_title', $lang)) }}" required>
-                            </div>
+                    {{-- Main Title --}}
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label>Main Title</label>
+                            <input type="text"
+                                name="featured_products_title"
+                                value="{{ $homeSettings['featured_products_title'] ?? '' }}"
+                                class="form-control form-control-sm">
                         </div>
-                       
-                        <div class="form-group">
-                            <label>Categories</label>
-                            <div class="new_collection-categories-target">
-                                <input type="hidden" name="types[]" value="home_categories">
-                                <input type="hidden" name="page_id" value="{{ $page_id }}">
-                                <input type="hidden" name="lang" value="{{ $lang }}">
-                                
-                                @if (get_setting('home_categories') != null && get_setting('home_categories') != 'null')
-                                    @foreach (json_decode(get_setting('home_categories'), true) as $key => $value)
-                                        <div class="row gutters-5">
-                                            <div class="col">
-                                                <div class="form-group">
-                                                    <select class="form-control aiz-selectpicker" name="home_categories[]" data-live-search="true" data-selected={{ $value }}
-                                                        required>
-                                                        <option value="">Select Category</option>
-                                                        @foreach ($categories as $category)
-                                                            <option value="{{ $category->id }}">{{ $category->name }}
-                                                            </option>
-                                                            @foreach ($category->childrenCategories as $childCategory)
-                                                                @include('backend.categories.child_category', [
-                                                                    'child_category' => $childCategory,
-                                                                ])
-                                                            @endforeach
-                                                        @endforeach
-                                                    </select>
+                    </div>
+
+                    <!-- New Arrivals -->
+                    <div class="new-arrival-repeater border shadow p-3 mb-3">
+                        <strong>New Arrivals</strong>
+                        <hr>
+
+                        <div data-repeater-list="new_arrivals">
+
+                        @php
+                            $newArrivals = $homeSettings['new_arrivals'] ?? [];
+                        @endphp
+
+                        @forelse($newArrivals as $item)
+                            <div data-repeater-item>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <label>Product</label>
+                                        <select class="form-control form-control-sm aiz-selectpicker"
+                                                name="featured_new_product_id"
+                                                data-live-search="true">
+                                            <option value="">Select Product</option>
+                                            @foreach ($products as $product)
+                                                <option value="{{ $product->id }}"
+                                                    {{ ($item['featured_new_product_id'] ?? '') == $product->id ? 'selected' : '' }}>
+                                                    {{ $product->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label>Image</label>
+                                        <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">
+                                                    {{ trans('messages.browse') }}
                                                 </div>
                                             </div>
-                                            <div class="col-auto">
-                                                <button type="button"
-                                                    class="mt-1 btn btn-icon btn-circle btn-soft-danger"
-                                                    data-toggle="remove-parent" data-parent=".row">
-                                                    <i class="las la-times"></i>
-                                                </button>
+                                            <div class="form-control form-control-sm file-amount">
+                                                {{ isset($item['featured_new_image']) && $item['featured_new_image'] != '' ? basename($item['featured_new_image']) : trans('messages.choose_file') }}
                                             </div>
+                                            <input type="hidden" name="featured_new_image" class="selected-files"
+                                                value="{{ $item['featured_new_image'] ?? '' }}">
                                         </div>
-                                    @endforeach
-                                @endif
+
+                                        <div class="file-preview box sm">
+                                            @if(isset($item['featured_new_image']) && $item['featured_new_image'] != '')
+                                                <div class="file-preview-item">
+                                                    <img src="{{ asset($item['featured_new_image']) }}" alt="image" class="img-thumbnail">
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label>Title</label>
+                                        <input type="text"
+                                            name="featured_new_title"
+                                            value="{{ $item['featured_new_title'] ?? '' }}"
+                                            class="form-control form-control-sm">
+                                    </div>
+
+                                    <div class="col-md-2 pr-0">
+                                        <label>Sub Title</label>
+                                        <input type="text"
+                                            name="featured_new_sub_title"
+                                            value="{{ $item['featured_new_sub_title'] ?? '' }}"
+                                            class="form-control form-control-sm">
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <label class="d-block">&nbsp;</label>
+                                        <button type="button"
+                                                data-repeater-delete
+                                                class="btn btn-danger btn-icon btn-sm">
+                                            <i class="las la-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
-                                data-content='<div class="row gutters-5">
-								<div class="col">
-									<div class="form-group">
-										<select class="form-control aiz-selectpicker" name="home_categories[]" data-live-search="true" required>
-                                            <option value="">Select Category</option>
-											@foreach ($categories as $key => $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                            @foreach ($category->childrenCategories as $childCategory)
-                                            @include('backend.categories.child_category', [
-                                                'child_category' => $childCategory,
-                                            ])
+                        @empty
+                            <div data-repeater-item>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <label>Product</label>
+                                        <select class="form-control form-control-sm aiz-selectpicker"
+                                                name="featured_new_product_id"
+                                                data-live-search="true">
+                                            <option value="">Select Product</option>
+                                            @foreach ($products as $product)
+                                                <option value="{{ $product->id }}">
+                                                    {{ $product->name }}
+                                                </option>
                                             @endforeach
-                                            @endforeach
-										</select>
-									</div>
-								</div>
-								<div class="col-auto">
-									<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
-										<i class="las la-times"></i>
-									</button>
-								</div>
-							</div>'
-                                data-target=".new_collection-categories-target">
-                                Add New
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label>Image</label>
+                                        <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">{{ trans('messages.browse')}}</div>
+                                            </div>
+                                            <div class="form-control form-control-sm file-amount">{{ trans('messages.choose_file') }}</div>
+                                            <input type="hidden" name="featured_new_image" class="selected-files">
+                                        </div>
+                                        <div class="file-preview box sm"></div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Title</label>
+                                        <input type="text"
+                                            name="featured_new_title"
+                                            class="form-control form-control-sm">
+                                    </div>
+
+                                    <div class="col-md-2 pr-0">
+                                        <label>Sub Title</label>
+                                        <input type="text"
+                                            name="featured_new_sub_title"
+                                            class="form-control form-control-sm">
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <label class="d-block">&nbsp;</label>
+                                        <button type="button"
+                                                data-repeater-delete
+                                                class="btn btn-danger btn-icon btn-sm">
+                                            <i class="las la-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforelse
+
+                    </div>
+
+                        <div class="text-right">
+                            <button type="button"
+                                    data-repeater-create
+                                    class="btn btn-primary btn-xs">
+                                Add More
                             </button>
                         </div>
-                        
-                        <div class="text-right">
-                            <button type="submit" class="btn btn-info">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Explore Products</h5>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="page_id" value="{{ $page_id }}">
-                        <input type="hidden" name="lang" value="{{ $lang }}">
+                    </div>
 
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Title<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="heading1" value="{{ old('heading1', $page->getTranslation('heading1', $lang)) }}" required>
-                                <span style="font-size:12px;color: #00b3ff !important;">To highlight specific words, enclose them in square brackets [ ]</span>
-                            </div>
-                        </div>
+                    <hr class="my-4">
 
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Subtitle <span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="heading2" value="{{ old('heading2', $page->getTranslation('heading2', $lang)) }}" required>
-                            </div>
-                        </div>
-                    
-                        <div class="form-group row">
-                            <label class="col-md-2 col-from-label">{{ trans('messages.products') }} (10 Numbers)</label>
-                            <div class="col-md-10">
-                                <input type="hidden" name="types[]" value="home_products">
-                                <input type="hidden" name="page_type" value="home_products">
-                                <select name="home_products[]" class="form-control aiz-selectpicker" multiple  data-max-options="10" data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ get_setting('home_products') }}">
-                                    {{-- <option disabled value=""></option> --}}
-                                    @foreach ($products as $key => $prod)
-                                        <option value="{{ $prod->id }}">{{ $prod->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="text-right">
-                            <button type="submit" class="btn btn-info">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                    <!-- Popular products section -->
+                    <div class="popular-products-repeater border shadow p-3 mb-3">
+                        <strong>Popular Products</strong>
+                        <hr>
 
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Services</h5>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="page_id" value="{{ $page_id }}">
-                        <input type="hidden" name="lang" value="{{ $lang }}">
+                        <div data-repeater-list="popular_products">
 
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Title <span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="heading3" value="{{ old('heading3', $page->getTranslation('heading3', $lang)) }}" required>
-                                <span style="font-size:12px;color: #00b3ff !important;">To highlight specific words, enclose them in square brackets [ ]</span>
-                            </div>
-                        </div>
+                        @php
+                            $popularProducts = $homeSettings['popular_products'] ?? [];
+                        @endphp
 
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Subtitle <span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="heading4" value="{{ old('heading4', $page->getTranslation('heading4', $lang)) }}" required>
-                            </div>
-                        </div>
-                    
-                        <div class="form-group row ">
-                            <label class="col-md-2 col-from-label">Services (Max 6)</label>
-                            <div class="col-md-10">
-                                <input type="hidden" name="types[]" value="home_services">
-                                <input type="hidden" name="page_type" value="home_services">
-                                <select name="home_services[]" class="form-control aiz-selectpicker" multiple  data-max-options="6" 
-                                    data-live-search="true" title="Select Services" data-selected="{{ get_setting('home_services') }}">
-                                    {{-- <option disabled value=""></option> --}}
-                                    @foreach ($services as $serv)
-                                        <option value="{{ $serv->id }}">{{ $serv->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="text-right">
-                            <button type="submit" class="btn btn-info">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-          
-
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Why Choose Us Section</h5>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="page_id" value="{{ $page_id }}">
-                        <input type="hidden" name="lang" value="{{ $lang }}">
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Title<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="heading5" value="{{ old('heading5', $page->getTranslation('heading5', $lang)) }}" required>
-                                <span style="font-size:12px;color: #00b3ff !important;">To highlight specific words, enclose them in square brackets [ ]</span>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Subtitle <span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="heading6" value="{{ old('heading6', $page->getTranslation('heading6', $lang)) }}" required>
-                            </div>
-                        </div>
-
-                        @for ($i=1; $i<=6; $i++)
-                            <div class="form-group row">
-                                <label class="col-md-2 col-form-label"
-                                    for="signinSrEmail">Image {{$i}}</label>
-                                <div class="col-md-10">
-                                    <div class="input-group" data-toggle="aizuploader" data-type="image">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text bg-soft-secondary font-weight-medium">
-                                                {{ trans('messages.browse') }}</div>
+                        @forelse($popularProducts as $item)
+                            <div data-repeater-item>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <label>Product</label>
+                                        <select class="form-control form-control-sm aiz-selectpicker"
+                                                name="featured_popular_product_id"
+                                                data-live-search="true">
+                                            <option value="">Select Product</option>
+                                            @foreach ($products as $product)
+                                                <option value="{{ $product->id }}"
+                                                    {{ ($item['featured_popular_product_id'] ?? '') == $product->id ? 'selected' : '' }}>
+                                                    {{ $product->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Image</label>
+                                        <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">
+                                                    {{ trans('messages.browse') }}
+                                                </div>
+                                            </div>
+                                            <div class="form-control form-control-sm file-amount">
+                                                {{ isset($item['featured_popular_image']) && $item['featured_popular_image'] != '' ? basename($item['featured_popular_image']) : trans('messages.choose_file') }}
+                                            </div>
+                                            <input type="hidden" name="featured_popular_image" class="selected-files"
+                                                value="{{ $item['featured_popular_image'] ?? '' }}">
                                         </div>
-                                        <div class="form-control file-amount">{{ trans('messages.choose_file') }}</div>
-                                        <input type="hidden" name="image{{$i}}" value="{{ $page->{'image' . $i} ?? '' }}" class="selected-files">
+
+                                        <div class="file-preview box sm">
+                                            @if(isset($item['featured_popular_image']) && $item['featured_popular_image'] != '')
+                                                <div class="file-preview-item">
+                                                    <img src="{{ asset($item['featured_popular_image']) }}" alt="image" class="img-thumbnail">
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
-                                    <div class="file-preview box sm">
+                                    <div class="col-md-3">
+                                        <label>Title</label>
+                                        <input type="text"
+                                            name="featured_popular_title"
+                                            value="{{ $item['featured_popular_title'] ?? '' }}"
+                                            class="form-control form-control-sm">
+                                    </div>
+
+                                    <div class="col-md-2 pr-0">
+                                        <label>Sub Title</label>
+                                        <input type="text"
+                                            name="featured_popular_sub_title"
+                                            value="{{ $item['featured_popular_sub_title'] ?? '' }}"
+                                            class="form-control form-control-sm">
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <label class="d-block">&nbsp;</label>
+                                        <button type="button"
+                                                data-repeater-delete
+                                                class="btn btn-danger btn-icon btn-sm">
+                                            <i class="las la-trash"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        @endfor
-                        
-                        <hr>
-                        <div class="form-group row">
-                            <h5 class="mb-0 ml-3">Box 1 Content</h5>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Title<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="title1" value="{{ old('title1', $page->getTranslation('title1', $lang)) }}" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Content <span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <textarea  class="form-control" name="content1" placeholder="Enter.." rows="3">{!! $page->getTranslation('content1', $lang) !!}</textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="signinSrEmail">Icon </label>
-                            <div class="col-md-10">
-                                <div class="input-group" data-toggle="aizuploader" data-type="image">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
+                        @empty
+                            <div data-repeater-item>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <label>Product</label>
+                                        <select class="form-control form-control-sm aiz-selectpicker"
+                                                name="featured_popular_product_id"
+                                                data-live-search="true">
+                                            <option value="">Select Product</option>
+                                            @foreach ($products as $product)
+                                                <option value="{{ $product->id }}">
+                                                    {{ $product->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="form-control file-amount">Choose File</div>
-                                    <input value="{{ $page->image9 }}" type="hidden" name="image9"  class="selected-files">
-                                </div>
-                                <div class="file-preview box sm"></div>
-                            </div>
-                        </div>
 
-                        <hr>
-                        <div class="form-group row">
-                            <h5 class="mb-0 ml-3">Box 2 Content</h5>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Title<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="title2" value="{{ old('title2', $page->getTranslation('title2', $lang)) }}" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Content <span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <textarea  class="form-control" name="content2" placeholder="Enter.." rows="3">{!! $page->getTranslation('content2', $lang) !!}</textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="signinSrEmail">Icon </label>
-                            <div class="col-md-10">
-                                <div class="input-group" data-toggle="aizuploader" data-type="image">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
+                                    <div class="col-md-3">
+                                        <label>Image</label>
+                                        <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">{{ trans('messages.browse')}}</div>
+                                            </div>
+                                            <div class="form-control form-control-sm file-amount">{{ trans('messages.choose_file') }}</div>
+                                            <input type="hidden" name="featured_popular_image" class="selected-files">
+                                        </div>
+                                        <div class="file-preview box sm"></div>
                                     </div>
-                                    <div class="form-control file-amount">Choose File</div>
-                                    <input value="{{ $page->image7 }}" type="hidden" name="image7"  class="selected-files">
-                                </div>
-                                <div class="file-preview box sm"></div>
-                            </div>
-                        </div>
 
-                        <hr>
-                        <div class="form-group row">
-                            <h5 class="mb-0 ml-3">Box 3 Content</h5>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Title<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="title3" value="{{ old('title3', $page->getTranslation('title3', $lang)) }}" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Content <span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <textarea  class="form-control" name="content3" placeholder="Enter.." rows="3">{!! $page->getTranslation('content3', $lang) !!}</textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="signinSrEmail">Icon </label>
-                            <div class="col-md-10">
-                                <div class="input-group" data-toggle="aizuploader" data-type="image">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
+                                    <div class="col-md-3">
+                                        <label>Title</label>
+                                        <input type="text"
+                                            name="featured_popular_title"
+                                            class="form-control form-control-sm">
                                     </div>
-                                    <div class="form-control file-amount">Choose File</div>
-                                    <input value="{{ $page->image8 }}" type="hidden" name="image8"  class="selected-files">
-                                </div>
-                                <div class="file-preview box sm"></div>
-                            </div>
-                        </div>
 
-                        <hr>
-                        <div class="form-group row">
-                            <h5 class="mb-0 ml-3">Box 4 Content</h5>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Title<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="heading7" value="{{ old('heading7', $page->getTranslation('heading7', $lang)) }}" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Content <span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <textarea  class="form-control" name="content4" placeholder="Enter.." rows="3">{!! $page->getTranslation('content4', $lang) !!}</textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="signinSrEmail">Icon </label>
-                            <div class="col-md-10">
-                                <div class="input-group" data-toggle="aizuploader" data-type="image">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
+                                    <div class="col-md-2 pr-0">
+                                        <label>Sub Title</label>
+                                        <input type="text"
+                                            name="featured_popular_sub_title"
+                                            class="form-control form-control-sm">
                                     </div>
-                                    <div class="form-control file-amount">Choose File</div>
-                                    <input value="{{ $page->image }}" type="hidden" name="image10"  class="selected-files">
+
+                                    <div class="col-md-1">
+                                        <label class="d-block">&nbsp;</label>
+                                        <button type="button"
+                                                data-repeater-delete
+                                                class="btn btn-danger btn-icon btn-sm">
+                                            <i class="las la-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="file-preview box sm"></div>
                             </div>
-                        </div>
+                        @endforelse
 
-
-
-                        <div class="text-right">
-                            <input type="hidden" name="page_type" value="highlights_section">
-                            <button type="submit" class="btn btn-info">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Testimonials Section</h5>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="page_id" value="{{ $page_id }}">
-                        <input type="hidden" name="lang" value="{{ $lang }}">
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Title<span class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="heading8" value="{{ old('heading8', $page->getTranslation('heading8', $lang)) }}" required>
-                                <span style="font-size:12px;color: #00b3ff !important;">To highlight specific words, enclose them in square brackets [ ]</span>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Subtitle<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="content"  value="{{ old('content', $page->getTranslation('content', $lang)) }}" required>
-                            </div>
-                        </div>
-
-                        <div class="text-right">
-                            <button type="submit" class="btn btn-info">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Blogs Section</h5>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="page_id" value="{{ $page_id }}">
-                        <input type="hidden" name="lang" value="{{ $lang }}">
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Title<span class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="heading9" value="{{ old('heading9', $page->getTranslation('heading9', $lang)) }}" required>
-                                <span style="font-size:12px;color: #00b3ff !important;">To highlight specific words, enclose them in square brackets [ ]</span>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">Subtitle<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" placeholder="Enter.." name="content5"  value="{{ old('content5', $page->getTranslation('content5', $lang)) }}" required>
-                            </div>
-                        </div>
-
-                        <div class="text-right">
-                            <button type="submit" class="btn btn-info">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div class="card">
-
-
-                <form class="p-4" action="{{ route('business_settings.update') }}" method="POST"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="page_id" value="{{ $page_id }}">
-                        <input type="hidden" name="lang" value="{{ $lang }}">
-                    <div class="card-header px-0">
-                        <h6 class="fw-600 mb-0">Seo Fields</h6>
                     </div>
-                    <div class="card-body px-0">
-        
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.meta_title') }}</label>
-                            <div class="col-sm-10">
-                                <input type="text" @if($lang == 'ae') dir="rtl" @endif  class="form-control" placeholder="{{ trans('messages.meta_title') }}" name="meta_title"
-                                    value="{{ $page->getTranslation('meta_title', $lang) }}">
-                            </div>
-                        </div>
-        
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.meta_description') }}</label>
-                            <div class="col-sm-10">
-                                <textarea class="resize-off form-control" placeholder="{{ trans('messages.meta_description') }}" name="meta_description"  @if($lang == 'ae') dir="rtl" @endif >{!! $page->getTranslation('meta_description',$lang) !!}</textarea>
-                            </div>
-                        </div>
-        
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.meta_keywords') }}</label>
-                            <div class="col-sm-10">
-                                <textarea  @if($lang == 'ae') dir="rtl" @endif class="resize-off form-control" placeholder="{{ trans('messages.meta_keywords') }}" name="keywords">{!! $page->getTranslation('keywords',$lang) !!}</textarea>
-                                <small class="text-muted">Separate with coma</small>
-                            </div>
-                        </div>
-        
-        
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.og_title') }}</label>
-                            <div class="col-sm-10">
-                                <input type="text"  @if($lang == 'ae') dir="rtl" @endif class="form-control" placeholder="{{ trans('messages.og_title') }}"
-                                    name="og_title" value="{{ $page->getTranslation('og_title',$lang) }}">
-                            </div>
-                        </div>
-        
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.og_description') }}</label>
-                            <div class="col-sm-10">
-                                <textarea class="resize-off form-control" placeholder="{{ trans('messages.og_description') }}" name="og_description" @if($lang == 'ae') dir="rtl" @endif >{!! $page->getTranslation('og_description',$lang) !!}</textarea>
-                            </div>
-                        </div>
-        
-        
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">{{trans('messages.twitter_title') }}</label>
-                            <div class="col-sm-10">
-                                <input type="text"  @if($lang == 'ae') dir="rtl" @endif class="form-control" placeholder="{{ trans('messages.twitter_title') }}"
-                                    name="twitter_title" value="{{ $page->getTranslation('twitter_title',$lang) }}">
-                            </div>
-                        </div>
-        
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.twitter_description') }}</label>
-                            <div class="col-sm-10">
-                                <textarea class="resize-off form-control" placeholder="{{ trans('messages.twitter_description') }}"
-                                    name="twitter_description" @if($lang == 'ae') dir="rtl" @endif >{!! $page->getTranslation('twitter_description',$lang) !!}</textarea>
-                            </div>
-                        </div>
-        
-                       
-        
+
                         <div class="text-right">
-                            <button type="submit" class="btn btn-info">Update</button>
-                            <a href="{{ route('website.pages') }}" class="btn btn-cancel">Cancel</a>
+                            <button type="button"
+                                    data-repeater-create
+                                    class="btn btn-primary btn-xs">
+                                Add More
+                            </button>
                         </div>
                     </div>
-                </form>
+
+                </div>
             </div>
-        </div>
+            <!-- Play Without Limits, High - Performance Gaming PCS Section end -->
+            <!-- Upcoming Products Section starts -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Upcoming Products</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">Main Title</label>
+                            <input type="text" name="upcoming_products_title" value="{{ $homeSettings['upcoming_products_title'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">New Arrivals</label>
+                            <select name="upcoming_new_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['upcoming_new_products'] ?? []) }}">
+                                @foreach ($products as $key => $product)
+                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Popular Products</label>
+                            <select name="upcoming_popular_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['upcoming_popular_products'] ?? []) }}">
+                                @foreach ($products as $key => $product)
+                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Upcoming products section ends -->
+            <!-- Middle Banner section starts -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Middle Banners</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">Main Title</label>
+                            <input type="text" name="middle_banner_title" value="{{ $homeSettings['middle_banner_title'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Banners <small>(814*256)</small></label>
+                            <select name="middle_banners[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['middle_banners'] ?? []) }}">
+                                @foreach ($banners as $key => $banner)
+                                <option value="{{ $banner->id }}">{{ $banner->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Middle Banner section ends -->
+             <!-- Featured Custom Pre - Build Gaming PCs (Middle featured Products)-->
+              <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Middle Featured Products</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">Main Title</label>
+                            <input type="text" name="middle_featured_products_title" value="{{ $homeSettings['middle_featured_products_title'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">New Arrivals</label>
+                            <select name="middle_featured_new_arrivals[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['middle_featured_new_arrivals'] ?? []) }}">
+                                @foreach ($products as $key => $product)
+                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Popular Products</label>
+                            <select name="middle_featured_popular_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['middle_featured_popular_products'] ?? []) }}">
+                                @foreach ($products as $key => $product)
+                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+              <!-- Featured Custom Pre - Build Gaming PCs ends -->
+               <!-- Middle Full Banner section starts -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Middle Full Banner</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">Main Title</label>
+                            <input type="text" name="middle_full_banner_title" value="{{ $homeSettings['middle_full_banner_title'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Banners <small>(1642*256)</small></label>
+                            <select name="middle_full_banner[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['middle_full_banner'] ?? []) }}">
+                                @foreach ($banners as $key => $banner)
+                                <option value="{{ $banner->id }}">{{ $banner->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Middle Full Banner section ends -->
+            <!-- Best Deals Section starts -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Best Deals</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">Main Title</label>
+                            <input type="text" name="best_deals_title" value="{{ $homeSettings['best_deals_title'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Products</label>
+                            <select name="best_deals_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['best_deals_products'] ?? []) }}">
+                                @foreach ($products as $key => $product)
+                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Best Deals section ends -->
+
+            <!-- Power Your Passion: Gaming & Pro Grade Builds Section starts (Product Gallery) -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Product Gallery</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">Main Title</label>
+                            <input type="text" name="product_gallery_title" value="{{ $homeSettings['product_gallery_title'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Products <small>(Maximum 6 items allowed)</small></label>
+                            <select name="product_gallery_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['product_gallery_products'] ?? []) }}" data-max-options="6">
+                                @foreach ($products as $key => $product)
+                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Power Your Passion: Gaming & Pro Grade Builds section ends -->
+
+            <!-- Graphic Cards Section starts -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Graphic Cards</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="col-form-label">Main Title</label>
+                            <input type="text" name="graphic_cards_title" value="{{ $homeSettings['graphic_cards_title'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="col-form-label">Products</label>
+                            <select name="graphic_cards_products[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ json_encode($homeSettings['graphic_cards_products'] ?? []) }}">
+                                @foreach ($products as $key => $product)
+                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Graphic Cards section ends -->
+            <!-- Testimonials Section starts -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Testimonials</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <label class="col-form-label">Main Title</label>
+                            <input type="text" name="testimonials_title" value="{{ $homeSettings['testimonials_title'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <label class="col-form-label">Rating Count</label>
+                            <input type="text" name="testimonials_rating_count" value="{{ $homeSettings['testimonials_rating_count'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="col-form-label">Rating Title</label>
+                            <input type="text" name="testimonials_rating_title" value="{{ $homeSettings['testimonials_rating_title'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="col-form-label">Customer Count</label>
+                            <input type="text" name="testimonials_customer_count" value="{{ $homeSettings['testimonials_customer_count'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="col-form-label">Customer Title</label>
+                            <input type="text" name="testimonials_customer_title" value="{{ $homeSettings['testimonials_customer_title'] ?? '' }}" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Testimonials section ends -->
+
+            <!-- Home Footer Section starts -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Footer Section</h6>
+                </div>
+                <div class="card-body">
+                    <div class="footer-section-repeater">
+                        <div data-repeater-list="footers">
+
+                            @php
+                                $footers = $homeSettings['footers'] ?? [];
+                            @endphp
+
+                            @forelse($footers as $item)
+                                <div data-repeater-item class="border shadow p-3 mb-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <label>Main Title</label>
+                                            <input type="text" name="footer_title" value="{{ $item['footer_title'] ?? '' }}" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Image</label>
+                                            <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">
+                                                        {{ trans('messages.browse') }}
+                                                    </div>
+                                                </div>
+                                                <div class="form-control form-control-sm file-amount">
+                                                    {{ isset($item['footer_image']) && $item['footer_image'] != '' ? basename($item['footer_image']) : trans('messages.choose_file') }}
+                                                </div>
+                                                <input type="hidden" name="footer_image" class="selected-files" value="{{ $item['footer_image'] ?? '' }}">
+                                            </div>
+                                            <div class="file-preview box sm">
+                                                @if(isset($item['footer_image']) && $item['footer_image'] != '')
+                                                    <div class="file-preview-item">
+                                                        <img src="{{ asset($item['footer_image']) }}" alt="image" class="img-thumbnail">
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Button Text</label>
+                                            <input type="text" name="footer_button_text" value="{{ $item['footer_button_text'] ?? '' }}" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Button Link</label>
+                                            <input type="text" name="footer_button_link" value="{{ $item['footer_button_link'] ?? '' }}" class="form-control form-control-sm">
+                                        </div>
+                                        <div class="col-md-11">
+                                            <label>Content</label>
+                                            <textarea class="aiz-text-editor" data-min-height="80" name="footer_content">{{ $item['footer_content'] ?? '' }}</textarea>
+                                            <!-- <input type="text" name="footer_content" value="{{ $item['footer_content'] ?? '' }}" class="form-control form-control-sm"> -->
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <label class="d-block">&nbsp;</label>
+                                            <button type="button" data-repeater-delete class="btn btn-danger btn-icon btn-sm">
+                                                <i class="las la-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div data-repeater-item class="border shadow p-3 mb-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <label>Main Title</label>
+                                            <input type="text" name="footer_title" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Image</label>
+                                            <div class="input-group" data-toggle="aizuploader" data-type="image">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text bg-soft-secondary font-weight-medium form-control form-control-sm">
+                                                        {{ trans('messages.browse') }}
+                                                    </div>
+                                                </div>
+                                                <div class="form-control form-control-sm file-amount">{{ trans('messages.choose_file') }}</div>
+                                                <input type="hidden" name="footer_image" class="selected-files">
+                                            </div>
+                                            <div class="file-preview box sm"></div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Content</label>
+                                            <input type="text" name="footer_content" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Button Text</label>
+                                            <input type="text" name="footer_button_text" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label>Button Link</label>
+                                            <input type="text" name="footer_button_link" class="form-control form-control-sm">
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <label class="d-block">&nbsp;</label>
+                                            <button type="button" data-repeater-delete class="btn btn-danger btn-icon btn-sm">
+                                                <i class="las la-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforelse
+
+                        </div>
+
+                        <div class="text-right">
+                            <button type="button" data-repeater-create class="btn btn-primary btn-xs">
+                                Add More Footer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Home Footer section ends -->
+
+            <div class="text-right mb-2">
+                <button type="submit" class="btn btn-info btn-sm">Update</button>
+            </div>
+        </form>
     </div>
-
+</div>
 @endsection
 
 @section('script')
-    <script type="text/javascript">
-        $(document).ready(function() {
-            AIZ.plugins.bootstrapSelect('refresh');
+<script type="text/javascript">
+    $('.remove-galley').on('click', function() {
+        thumbnail = $(this)
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: "POST",
+            url: "{{ route('page.delete_image') }}",
+            data: {
+                url: $(thumbnail).data('url'),
+                id: '{{ $page->id }}'
+            },
+            success: function(data) {
+                if (data == 1) {
+                    $(thumbnail).closest('.file-preview-item').remove();
+                    AIZ.plugins.notify('success', "{{ trans('messages.image').trans('messages.deleted_msg') }}");
+                } else {
+                    AIZ.plugins.notify('danger', "{{ trans('messages.something_went_wrong')}}");
+                }
 
-            $('.aiz-selectpicker').on('shown.bs.select', function () {
-                var select = $(this);
-                var selectedOptions = select.find('option:selected').detach();
-                select.prepend(selectedOptions);
-                select.selectpicker('refresh');
-            });
+            }
         });
+    });
+</script>
 
-        $('.remove-galley').on('click', function() {
-            thumbnail = $(this)
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"
+    integrity="sha512-foIijUdV0fR0Zew7vmw98E6mOWd9gkGWQBWaoA1EOFAx+pY+N8FmmtIYAVj64R98KeD2wzZh1aHK0JSpKmRH8w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="text/javascript">
+    $(function() {
+        function initAizRepeater(selector) {
+            $(selector).repeater({
+                initEmpty: false,
+                defaultValues: {},
+                show: function () {
+                    $(this).slideDown();
+                    $(this).find('.bootstrap-select').find('.btn.dropdown-toggle').remove();
+                    $(this).find('.aiz-selectpicker').selectpicker('refresh');
                 },
-                type: "POST",
-                url: '{{ route('page.delete_image') }}',
-                data: {
-                    url: $(thumbnail).data('url'),
-                    id: '{{ $page->id }}'
-                },
-                success: function(data) {
-                    if (data == 1) {
-                        $(thumbnail).closest('.file-preview-item').remove();
-                        AIZ.plugins.notify('success', "{{ trans('messages.image').trans('messages.deleted_msg') }}");
-                    } else {
-                        AIZ.plugins.notify('danger', "{{ trans('messages.something_went_wrong')}}");
-                    }
-                    
+                hide: function (deleteElement) {
+                    $(this).slideUp(deleteElement);
                 }
             });
-        });
+        }
 
-    </script>
+        initAizRepeater('.new-arrival-repeater');
+        initAizRepeater('.popular-products-repeater');
+        initAizRepeater('.footer-section-repeater');
+    });
+</script>
 @endsection

@@ -64,6 +64,17 @@ class OrderController extends Controller
         return view('frontend.user.seller.orders', compact('orders', 'payment_status', 'delivery_status', 'sort_search'));
     }
 
+    public function success($id)
+    {
+        $order = Order::with('orderDetails.product')->findOrFail($id);
+        return view('frontend.order.success', compact('order'));
+    }
+
+    public function fail()
+    {
+        return view('frontend.order.fail');
+    }
+
     // All Orders
     public function all_orders(Request $request)
     {
@@ -94,22 +105,23 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail(decrypt($id));
         $order_shipping_address = json_decode($order->shipping_address);
-       
+
         return view('backend.sales.all_orders.show', compact('order'));
     }
 
-    public function allCancelRequests(Request $request){
+    public function allCancelRequests(Request $request)
+    {
         $request->session()->put('last_url', url()->full());
         $search         = ($request->has('search')) ? $request->search : '';
         $ca_search      = ($request->has('ca_search')) ? $request->ca_search : '';
         $date           = ($request->has('date')) ? $request->date : ''; //
         $refund_search  = ($request->has('refund_search')) ? $request->refund_search : '';
 
-        $orders = Order::where('cancel_request',1)->orderBy('cancel_request_date','DESC');
-        if($search){
+        $orders = Order::where('cancel_request', 1)->orderBy('cancel_request_date', 'DESC');
+        if ($search) {
             $orders = $orders->where('code', 'like', '%' . $search . '%');
         }
-        if($ca_search){
+        if ($ca_search) {
             $ca_search = ($ca_search == 10) ? 0 : $ca_search;
             $orders = $orders->where('cancel_approval', $ca_search);
         }
@@ -125,36 +137,45 @@ class OrderController extends Controller
         // echo '<pre>';
         // print_r($orders);
         // die;
-        return view("backend.sales.cancel_requests",compact('orders', 'search', 'ca_search', 'date', 'refund_search'));
+        return view("backend.sales.cancel_requests", compact('orders', 'search', 'ca_search', 'date', 'refund_search'));
     }
 
-    public function allReturnRequests(Request $request){
+    public function allReturnRequests(Request $request)
+    {
         $request->session()->put('return_last_url', url()->full());
         $search         = ($request->has('search')) ? $request->search : '';
         $ca_search      = ($request->has('ca_search')) ? $request->ca_search : '';
         $date           = ($request->has('date')) ? $request->date : ''; //
         $refund_search  = ($request->has('refund_search')) ? $request->refund_search : '';
 
-        
-        $orders = OrderReturn::with(['order', 'product'])->orderBy('created_at','DESC');
-        if($search){
-            $orders = $orders->whereHas('order', function($query) use ($search) {
-                            $query->where('code', 'like', '%' . $search . '%'); // Adjust field name if necessary
-                        });
+
+        $orders = OrderReturn::with(['order', 'product'])->orderBy('created_at', 'DESC');
+        if ($search) {
+            $orders = $orders->whereHas('order', function ($query) use ($search) {
+                $query->where('code', 'like', '%' . $search . '%'); // Adjust field name if necessary
+            });
         }
-        if($ca_search){
+        if ($ca_search) {
             $orders = $orders->where('status', $ca_search);
         }
 
         if ($date != null) {
             $orders = $orders->whereDate('created_at', '>=', date('Y-m-d', strtotime(explode(" to ", $date)[0])))->whereDate('created_at', '<=', date('Y-m-d', strtotime(explode(" to ", $date)[1])));
         }
-        
+
         $orders = $orders->paginate(15);
         // echo '<pre>';
         // print_r($orders);
         // die;
-        return view("backend.sales.return_requests",compact('orders', 'search', 'ca_search', 'date', 'refund_search'));
+        return view("backend.sales.return_requests", compact('orders', 'search', 'ca_search', 'date', 'refund_search'));
+    }
+
+
+    public function myOrders()
+    {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $orders = Order::where('user_id', $user_id)->latest()->get();
+        return view('frontend.order.my-orders', compact('orders'));
     }
 
     // Update return request status
@@ -172,26 +193,27 @@ class OrderController extends Controller
         return response()->json(['success' => true, 'message' => 'Return status updated successfully.']);
     }
 
-     public function return_orders_show($id)
-     {
-         $order = Order::findOrFail(decrypt($id));
-         
-         return view('backend.sales.return_orders_show', compact('order'));
-     }
- 
+    public function return_orders_show($id)
+    {
+        $order = Order::findOrFail(decrypt($id));
 
-    public function cancelRequestStatus(Request $request){
+        return view('backend.sales.return_orders_show', compact('order'));
+    }
+
+
+    public function cancelRequestStatus(Request $request)
+    {
         $id = $request->id;
         $status = $request->status;
-        
+
         $cancel_request = Order::findOrFail($id);
-        if($cancel_request->cancel_request == 1 ){
+        if ($cancel_request->cancel_request == 1) {
 
             // $message = getOrderStatusMessageTest($cancel_request->user->name, $cancel_request->code);
             // $userPhone = $cancel_request->user->phone ?? '';
 
             $cancel_request->cancel_approval = $status;
-            if($status == 1){
+            if ($status == 1) {
                 $cancel_request->delivery_status = 'cancelled';
 
                 foreach ($cancel_request->orderDetails as $key => $orderDetail) {
@@ -199,13 +221,13 @@ class OrderController extends Controller
                     $orderDetail->save();
 
                     $product_stock = ProductStock::where('product_id', $orderDetail->product_id)->first();
-                
+
                     if ($product_stock != null) {
                         $product_stock->qty += $orderDetail->quantity;
                         $product_stock->save();
                     }
                 }
-                
+
                 $track              = new OrderTracking;
                 $track->order_id    = $cancel_request->id;
                 $track->status      = 'cancelled';
@@ -215,21 +237,21 @@ class OrderController extends Controller
                 // if($userPhone != '' && isset($message['cancelled']) && $message['cancelled'] != ''){
                 //     SendSMSUtility::sendSMS($userPhone, $message['cancelled']);
                 // }
-            }else{
+            } else {
                 // if($userPhone != '' && isset($message['cancel_reject']) && $message['cancel_reject'] != ''){
                 //     SendSMSUtility::sendSMS($userPhone, $message['cancel_reject']);
                 // }
             }
             $cancel_request->cancel_approval_date = date('Y-m-d H:i:s');
-            $cancel_request->save(); 
-            
+            $cancel_request->save();
+
             echo 1;
-        }else{
+        } else {
             echo 0;
         }
-     }
+    }
 
-     public function cancel_orders_show($id)
+    public function cancel_orders_show($id)
     {
         $order = Order::findOrFail(decrypt($id));
         return view('backend.sales.cancel_orders_show', compact('order'));
@@ -253,9 +275,7 @@ class OrderController extends Controller
                         $product_stock->qty += $orderDetail->quantity;
                         $product_stock->save();
                     }
-
                 } catch (\Exception $e) {
-
                 }
 
                 $orderDetail->delete();
@@ -306,7 +326,7 @@ class OrderController extends Controller
             $orderDetail->save();
 
             $product_stock = ProductStock::where('id', $orderDetail->product_stock_id)
-            ->first();
+                ->first();
 
             if ($request->status == 'cancelled') {
                 if ($product_stock != null) {
@@ -314,34 +334,115 @@ class OrderController extends Controller
                     $product_stock->save();
                 }
             }
-
         }
-        
+
 
         return 1;
     }
-   public function update_tracking_code(Request $request) {
+    public function update_tracking_code(Request $request)
+    {
         $order = Order::findOrFail($request->order_id);
         $order->tracking_code = $request->tracking_code;
         $order->save();
 
         return 1;
-   }
+    }
 
-   public function update_payment_status(Request $request)
-   {
-       $order = Order::findOrFail($request->order_id);
-       
+    public function update_payment_status(Request $request)
+    {
+        $order = Order::findOrFail($request->order_id);
 
-       foreach ($order->orderDetails as $key => $orderDetail) {
+
+        foreach ($order->orderDetails as $key => $orderDetail) {
             $orderDetail->payment_status = $request->status;
             $orderDetail->save();
         }
-       
-       $order->payment_status = $request->status;
-       $order->save();
 
-       return 1;
-   }
+        $order->payment_status = $request->status;
+        $order->save();
 
+        return 1;
+    }
+
+    public function myOrderSingle($id)
+    {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $order = Order::with('orderDetails.product')
+            ->where('id', $id)
+            ->where('user_id', $user_id) // security
+            ->firstOrFail();
+
+        $trackingHistory = OrderTracking::where('order_id', $id)
+            ->orderBy('created_at')
+            ->get()
+            ->keyBy('status');
+
+        return view('frontend.order.my-order-single', compact('order', 'trackingHistory'));
+    }
+
+    public function cancelOrder($id)
+    {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $order = Order::where('id', $id)
+            ->where('user_id', $user_id)
+            ->firstOrFail();
+
+        if (in_array($order->delivery_status, ['shipped', 'delivered'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Order cannot be cancelled at this stage.'
+            ]);
+        }
+
+        $order->delivery_status = 'cancelled';
+        $order->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Order cancelled successfully.'
+        ]);
+    }
+
+    public function returnOrder(Request $request, $id)
+    {
+        $order = Order::with('orderDetails')->find($id);
+
+        if (!$order) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Order not found'
+            ]);
+        }
+
+        $returnQtys = $request->input('return_qty', []); // array: order_detail_id => quantity
+        $returnReason = $request->input('return_reason', '');
+
+        if (empty($returnQtys)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No items selected for return'
+            ]);
+        }
+
+        foreach ($order->orderDetails as $detail) {
+            $qtyToReturn = isset($returnQtys[$detail->id]) ? intval($returnQtys[$detail->id]) : 0;
+
+            if ($qtyToReturn <= 0) continue; // Skip if nothing selected
+
+            // Create new return entry
+            OrderReturn::create([
+                'order_id' => $order->id,
+                'order_detail_id' => $detail->id,
+                'product_id' => $detail->product_id,
+                'return_qty' => $qtyToReturn,
+                'return_reason' => $returnReason ?: 'No reason provided',
+                'status' => 'pending', // default status
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Return request submitted successfully'
+        ]);
+    }
 }
