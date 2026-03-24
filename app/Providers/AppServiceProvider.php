@@ -59,11 +59,12 @@ class AppServiceProvider extends ServiceProvider
                 cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
             }
 
+            $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
             $totalCartItemsCount = Cart::where('status', 'pending')
-                ->where(function($query) use ($guestToken) {
-                    if(auth()->check()) {
+                ->where(function($query) use ($guestToken, $user_id) {
+                    if($user_id) {
                         // Logged-in user
-                        $query->where('user_id', auth()->user()->id);
+                        $query->where('user_id', $user_id);
                     } else {
                         // Guest user
                         $query->where('temp_user_id', $guestToken);

@@ -251,7 +251,7 @@ class BuildPcController extends Controller
 
     public function placePcBuilderOrder(Request $request)
     {
-        $userId = auth()->check() ? auth()->user()->id : null;
+        $userId = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
 
         $guestToken = request()->cookie('guest_token');
 
@@ -272,11 +272,11 @@ class BuildPcController extends Controller
         }
 
         $buildData = $builder->build_data;
-$user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         // Remove old builder cart items
         Cart::where('pc_builder_id', $builderId)
-            ->where(function($query) use ($guestToken) {
-                    if(auth()->check()) {
+            ->where(function($query) use ($guestToken, $user_id) {
+                    if($user_id) {
                         // Logged-in user
                         $query->where('user_id', $user_id);
                     } else {
@@ -319,7 +319,7 @@ $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '
 
     public function resetConfiguration(Request $request)
     {
-        
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $guestToken = request()->cookie('guest_token');
 
         if(!$guestToken){
@@ -329,10 +329,10 @@ $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '
         $builderId = $request->builder_id;
 
         Cart::where('pc_builder_id', $builderId)
-            ->where(function($query) use ($guestToken) {
-                if(auth()->check()) {
+            ->where(function($query) use ($guestToken, $user_id) {
+                if($user_id) {
                     // Logged-in user
-                    $query->where('user_id', auth()->user()->id);
+                    $query->where('user_id', $user_id);
                 } else {
                     // Guest user
                     $query->where('temp_user_id', $guestToken);
@@ -341,10 +341,10 @@ $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '
             ->delete();
 
         $builder = PcBuilderSetup::where('id', $builderId)
-            ->where(function($query) use ($guestToken) {
-                if(auth()->check()) {
+            ->where(function($query) use ($guestToken, $user_id) {
+                if($user_id) {
                     // Logged-in user
-                    $query->where('user_id', auth()->user()->id);
+                    $query->where('user_id', $user_id);
                 } else {
                     // Guest user
                     $query->where('temp_user_id', $guestToken);
