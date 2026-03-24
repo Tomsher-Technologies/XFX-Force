@@ -39,10 +39,31 @@
                                 <h1 class="banner-caption text-center text-[35px] md:text-[90px] uppercase w-[70%] md:w-[40%] leading-[1]">
                                     {{ $slider->name }}
                                 </h1>
-                                <a href="#"
-                                        class="btn btn-cta !rounded-full !text-[#000000] !text-[15px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium"
-                                        title="">{{$slider->btn_text ?? 'START BUILDING'}}</a>
 
+                                @php
+                                    switch ($slider->link_type) {
+                                        case 'external':
+                                            $url = $slider->link;
+                                            break;
+
+                                        case 'product':
+                                            $url = route('product.details', $slider->link_ref_id);
+                                            break;
+
+                                        case 'category':
+                                            $url = route('shop.category', $slider->link_ref_id);
+                                            break;
+                                            
+                                        default:
+                                            $url = '#';
+                                    }
+                                @endphp
+
+                                <a href="{{ $url }}"
+                                @if($slider->link_type === 'external') target="_blank" @endif
+                                class="btn btn-cta !rounded-full !text-[#000000] !text-[15px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium">
+                                {{ $slider->btn_text ?? 'START BUILDING' }}
+                                </a>
                             </div>
                         </div>
 

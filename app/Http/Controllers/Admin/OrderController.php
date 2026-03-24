@@ -173,11 +173,8 @@ class OrderController extends Controller
 
     public function myOrders()
     {
-        $orders = Order::where('user_id', 78)->latest()->get();
-        // auth()->id()
-        // echo (auth()->id());exit;
-
-
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $orders = Order::where('user_id', $user_id)->latest()->get();
         return view('frontend.order.my-orders', compact('orders'));
     }
 
@@ -369,9 +366,10 @@ class OrderController extends Controller
 
     public function myOrderSingle($id)
     {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $order = Order::with('orderDetails.product')
             ->where('id', $id)
-            // ->where('user_id', auth()->id()) // security
+            ->where('user_id', $user_id) // security
             ->firstOrFail();
 
         $trackingHistory = OrderTracking::where('order_id', $id)
@@ -384,8 +382,9 @@ class OrderController extends Controller
 
     public function cancelOrder($id)
     {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $order = Order::where('id', $id)
-            // ->where('user_id', auth()->id())
+            ->where('user_id', $user_id)
             ->firstOrFail();
 
         if (in_array($order->delivery_status, ['shipped', 'delivered'])) {
@@ -415,37 +414,31 @@ class OrderController extends Controller
             ]);
         }
 
-        if ($order->delivery_status !== 'delivered') {
+        $returnQtys = $request->input('return_qty', []); // array: order_detail_id => quantity
+        $returnReason = $request->input('return_reason', '');
+
+        if (empty($returnQtys)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Only delivered orders can be returned'
+                'message' => 'No items selected for return'
             ]);
         }
 
-        // Check if return already exists
-        $existingReturn = OrderReturn::where('order_id', $order->id)->first();
-        if ($existingReturn) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Return request already submitted'
-            ]);
-        }
-
-        // For simplicity, returning **all items** by default
         foreach ($order->orderDetails as $detail) {
+            $qtyToReturn = isset($returnQtys[$detail->id]) ? intval($returnQtys[$detail->id]) : 0;
+
+            if ($qtyToReturn <= 0) continue; // Skip if nothing selected
+
+            // Create new return entry
             OrderReturn::create([
                 'order_id' => $order->id,
                 'order_detail_id' => $detail->id,
                 'product_id' => $detail->product_id,
-                'return_qty' => $detail->quantity,  // all quantity returned
-                'return_reason' => 'No reason provided', // default, can update via modal later
-                'status' => 'pending',
+                'return_qty' => $qtyToReturn,
+                'return_reason' => $returnReason ?: 'No reason provided',
+                'status' => 'pending', // default status
             ]);
         }
-
-        // Optional: update order status to returned
-        $order->delivery_status = 'returned';
-        $order->save();
 
         return response()->json([
             'status' => 'success',

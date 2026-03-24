@@ -70,24 +70,29 @@ class CartController extends Controller
         $offerSum  = $cartItems->sum('offerSum');
         $discountSum = $subtotal - $offerSum;
         $cartCount = $cartItems->count();
-        
-        $defaultVat = get_setting('default_vat') ?? 0;
-        $tax = ($offerSum * $defaultVat) / 100;
         $warrantySum  = $cartItems->sum('warranty_price');
 
-        $shipping = get_setting('default_shipping_amount') ?? 0;
-        $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
-
-        if ($offerSum >= $freeShippingMinAmount) {
-            $shipping = 0;
-        }
-        
-        $totalBeforeCouponDicount = $offerSum + $tax + $shipping + $warrantySum;
+        // coupon discount
+        $totalBeforeCouponDicount = $offerSum + $warrantySum;
 
         if ($couponCode) {
             $couponDiscount = $this->getCouponDiscount($couponCode, $totalBeforeCouponDicount);
         }
 
+        // Tax calculation
+        $defaultVat = get_setting('default_vat') ?? 0;
+        $totalBeforeTax = $offerSum - $couponDiscount + $warrantySum;
+        $tax = ($totalBeforeTax * $defaultVat) / 100;
+
+        // Shipping price calculation
+        $totalBeforeShippingPriceApplied = $totalBeforeTax + $tax;
+        $shipping = ($totalBeforeShippingPriceApplied > 0) ? (get_setting('default_shipping_amount') ?? 0) : 0;
+        $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
+        if ($totalBeforeShippingPriceApplied >= $freeShippingMinAmount) {
+            $shipping = 0;
+        }
+
+        // Total
         $total = $offerSum + $tax + $shipping + $warrantySum - $couponDiscount;
 
         return view('frontend.cart', compact('cartItems', 'subtotal', 'discountSum', 'cartCount', 'tax', 'shipping', 'total', 'warrantySum', 'pcBuilderItems', 'directCartItems', 'couponCode' , 'couponDiscount'))
@@ -217,7 +222,7 @@ class CartController extends Controller
             ->where('status', 'pending')
             ->get();
 
-           return $cartItems->sum('quantity');
+           return $cartItems->count();
     }
 
     public function removeCartItem($id)
@@ -318,38 +323,44 @@ class CartController extends Controller
         $offerSum     = $cartItems->sum('offer_sum');
         $discountSum  = $subTotal - $offerSum;
 
-        $shipping = ($subTotal > 0) ? (get_setting('default_shipping_amount') ?? 0) : 0;
-        $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
-
-        if ($offerSum >= $freeShippingMinAmount) {
-            $shipping = 0;
-        }
-
-        
-
-        $defaultVat = get_setting('default_vat') ?? 0;
-        $tax = ($offerSum * $defaultVat) / 100;
-
-        $cartCount    = $cartItems->sum('quantity');
+        $cartCount    = $cartItems->count();
         $warrantySum  = $cartItems->sum('warranty_price');
-        $totalBeforeCouponDicount        = $offerSum + $tax + $shipping + $warrantySum;
-        
+
+        // coupon discount
+        $totalBeforeCouponDicount        = $offerSum + $warrantySum;
         $couponDiscount = 0;
         if ($couponCode) {
             $couponDiscount = $this->getCouponDiscount($couponCode, $totalBeforeCouponDicount);
         }
+
+        // Tax calculation
+        $defaultVat = get_setting('default_vat') ?? 0;
+        $totalBeforeTax = $offerSum - $couponDiscount + $warrantySum;
+        $tax = ($totalBeforeTax * $defaultVat) / 100;
+
+        // Shipping price calculation
+        $totalBeforeShippingPriceApplied = $totalBeforeTax + $tax;
+        
+        $shipping = ($totalBeforeShippingPriceApplied > 0) ? (get_setting('default_shipping_amount') ?? 0) : 0;
+        $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
+
+        if ($totalBeforeShippingPriceApplied >= $freeShippingMinAmount) {
+            $shipping = 0;
+        }
+
+        // Total calculation
         $total = $offerSum + $tax + $shipping + $warrantySum - $couponDiscount;
 
         return [
             'status' => true,
-            'sub_total'    => format_price($subTotal),
-            'discount_sum' => format_price($discountSum),
-            'shipping'     => format_price($shipping),
-            'tax'   => format_price($tax),
+            'sub_total'    => $subTotal,
+            'discount_sum' => $discountSum,
+            'shipping'     => $shipping,
+            'tax'   => $tax,
             'cart_count'   => $cartCount,
-            'warranty_sum' => format_price($warrantySum),
-            'couponDiscount' => format_price($couponDiscount),
-            'total'        => format_price($total),
+            'warranty_sum' => $warrantySum,
+            'couponDiscount' => $couponDiscount,
+            'total'        => $total,
         ];
     }
 

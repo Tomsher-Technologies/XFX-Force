@@ -83,7 +83,7 @@
                                     alt="AED"
                                     title="Symbol of AED">{{ $firstStock->offer_price ?? $firstStock->price }}
                             </h5>
-                            @if ($firstStock->offer_price)
+                            @if (!empty($firstStock->offer_tag))
                                 <span
                                     class="text-[#898989] font-medium line-through text-[20px]">{{ $firstStock->price }}</span>
                             @endif

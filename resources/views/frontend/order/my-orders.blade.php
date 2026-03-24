@@ -98,10 +98,23 @@
                                     </div>
 
                                     <div class="flex flex-col items-center md:items-start gap-2">
-                                        <div class="flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full">
-                                            <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                                            <span class="order-status text-blue-500 text-[11px] font-medium uppercase">{{ trans('messages.' . $order->delivery_status) }}</span>
+                                        @php
+                                            $badgeColor = 'blue-500'; //pending
+
+                                            if($order->delivery_status == 'delivered' || $order->delivery_status == 'confirmed'){
+                                                $badgeColor = 'green-500';
+                                            } elseif ($order->delivery_status == 'cancelled') {
+                                                $badgeColor = 'red-500';
+                                            } elseif ($order->delivery_status == 'on_the_way' || $order->delivery_status == 'picked_up') {
+                                                $badgeColor = 'yellow-500';
+                                            }
+
+                                        @endphp
+                                        <div class="flex items-center gap-2 px-3 py-1 bg-{{ $badgeColor }}/10 border border-blue-500/20 rounded-full">
+                                            <span class="w-2 h-2 bg-{{ $badgeColor }} rounded-full animate-pulse"></span>
+                                            <span class="order-status text-{{ $badgeColor }} text-[11px] font-medium uppercase">{{ trans('messages.' . $order->delivery_status) }}</span>
                                         </div>
+
                                         <div class="price w-full flex flex-row items-center gap-[10px]">
                                             <h5 class="price flex flex-row text-white text-left text-[20px] m-[0] font-medium align-center items-center gap-[10px]">
                                                 <svg class="w-[20px]" width="18" height="15" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
