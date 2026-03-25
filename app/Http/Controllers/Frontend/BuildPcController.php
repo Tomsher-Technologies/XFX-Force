@@ -33,7 +33,12 @@ class BuildPcController extends Controller
         }
 
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        $builder = PcBuilderSetup::where('user_id', $user_id)->first();
+        $builder = PcBuilderSetup::where('user_id', $user_id)
+            ->where('is_ordered', false)
+            ->first();
+            // echo "<pre>";
+            // print_r($builder);
+            // exit;
         $buildData = $builder ? $builder->build_data : [];
 
         $reviewProducts = [];

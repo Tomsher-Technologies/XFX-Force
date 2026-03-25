@@ -41,8 +41,22 @@
 
                         // default page link
                         $pagelink = '#';
+
                         if ($productId && $variantId) {
-                            $pagelink = route('product.details', [$productId, $variantId]);
+                            // Fetch product with stocks
+                            $product = \App\Models\Product::with('stocks')->find($productId);
+
+                            if ($product) {
+                                // Find the stock by given variant_id
+                                $stock = $product->stocks->where('id', $variantId)->first();
+
+                                if ($stock) {
+                                    $pagelink = route('product.details', [
+                                        'slug' => $product->slug,
+                                        'sku'  => $stock->sku
+                                    ]);
+                                }
+                            }
                         }
                     @endphp
 

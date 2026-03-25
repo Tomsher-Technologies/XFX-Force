@@ -43,7 +43,9 @@ Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'
 
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/product/{id}/{stockId?}', [ProductController::class, 'productDetails'])->name('product.details');
+// Route::get('/product/{id}/{stockId?}', [ProductController::class, 'productDetails'])->name('product.details');
+Route::get('/product/{slug}/{sku?}', [ProductController::class, 'productDetails'])
+    ->name('product.details');
 Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/get-variants-by-value', [ProductController::class, 'getVariantsByValue']);
 Route::get('/getVarientDetails', [ProductController::class, 'getVarientDetails']);

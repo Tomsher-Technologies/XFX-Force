@@ -47,7 +47,18 @@
                                             break;
 
                                         case 'product':
-                                            $url = route('product.details', $slider->link_ref_id);
+                                            // Get product by ID to retrieve slug and default stock
+                                            $product = \App\Models\Product::with('stocks')->find($slider->link_ref_id);
+
+                                            if ($product && $product->stocks->count() > 0) {
+                                                $defaultStock = $product->stocks->first(); // first stock as default
+                                                $url = route('product.details', [
+                                                    'slug' => $product->slug,
+                                                    'sku'  => $defaultStock->sku
+                                                ]);
+                                            } else {
+                                                $url = '#';
+                                            }
                                             break;
 
                                         case 'category':
@@ -523,6 +534,7 @@
 <!--//Best Deals-->
 
 <!--pro built items-->
+kjhjdbhlfblkhdbfkhf
 @if(!empty($popularGalleryProducts))
 <section class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] md:py-[100px] relative border-b-1 border-[#ffffff10] md:border-hidden">
     <div class="section-title mb-[30px] relative flex items-end justify-between">
@@ -530,11 +542,11 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-[15px]">
         @foreach($popularGalleryProducts as $product)
-        <div class="group ftr-card relative border rounded-[20px] overflow-hidden min-h-[415px] cursor-pointer" onclick="window.location.href='{{ route('product.details', $product->id) }}'">
+        <div class="group ftr-card relative border rounded-[20px] overflow-hidden min-h-[415px] cursor-pointer" onclick="window.location.href='{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}'">
             <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-center object-cover w-full h-full top-0 left-0 transition-all duration-600 group-hover:scale-110" alt="pro build 01" title="pro build 01">
             <div class="content flex flex-col md:flex-row items-end justify-end md:justify-between gap-[20px] md:gap-[30px] relative z-[1] w-full h-full bg-gradient-to-b from-transparent to-[#0000008a] p-[30px]">
                 <h6 class="text-white text-[20px] font-medium w-full md:w-fit text-center">{{ $product->name }}</h6>
-                <a href="{{ route('product.details', $product->id) }}" class="w-full md:w-fit text-center text-black text-[13px] md:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[15px] rounded-full transition-all duration-600 group-hover:bg-[#2A7CFF] group-hover:text-white">Shop Now</a>
+                <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full md:w-fit text-center text-black text-[13px] md:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[15px] rounded-full transition-all duration-600 group-hover:bg-[#2A7CFF] group-hover:text-white">Shop Now</a>
             </div>
         </div>
         @endforeach
