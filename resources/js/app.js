@@ -1458,3 +1458,62 @@ function formatPrice(amount) {
         .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+
+// Address map section script
+
+let map;
+let marker;
+
+window.initMap = function() {
+    let defaultLocation = { lat: 25.2048, lng: 55.2708 }; // Dubai
+    map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 13,
+        center: defaultLocation,
+    });
+
+    marker = new google.maps.Marker({
+        position: defaultLocation,
+        map: map,
+        draggable: true
+    });
+
+    updateLatLng(defaultLocation);
+
+    // click map
+    map.addListener("click", function(event){
+        marker.setPosition(event.latLng);
+        updateLatLng(event.latLng);
+    });
+
+    // drag marker
+    marker.addListener("dragend", function(event){
+        updateLatLng(event.latLng);
+    });
+}
+
+window.updateLatLng = function(location){
+    let lat = typeof location.lat === "function" ? location.lat() : location.lat;
+    let lng = typeof location.lng === "function" ? location.lng() : location.lng;
+
+    document.getElementById("latitude").value = lat;
+    document.getElementById("longitude").value = lng;
+
+    console.log("Latitude:", lat);
+    console.log("Longitude:", lng);
+}
+
+
+window.getCurrentLocation = function(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(position){
+            let pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            map.setCenter(pos);
+            marker.setPosition(pos);
+            document.getElementById("latitude").value = pos.lat;
+            document.getElementById("longitude").value = pos.lng;
+        });
+    }
+}

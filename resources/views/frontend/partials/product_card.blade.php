@@ -1,6 +1,16 @@
 
 <div>
     <div class="product-card w-full relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
+        
+        @php
+            // Get product object
+            $product = \App\Models\Product::with('stocks')->find($prodData['product_id']);
+
+            // Get the stock by the given stock_id
+            $stock = $product
+                ? $product->stocks->where('id', $prodData['stock_id'])->first()
+                : null;
+        @endphp
 
         @include('frontend.partials.wishlist-icon', [
             'product' => $prodData['product_id'],
@@ -8,12 +18,12 @@
             'page' => $prodData['page'] ?? null,
         ])
 
-        <a href="{{ route('product.details', $prodData['product_id']) }}"
+        <a href="{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}"
             class="product-img h-[230px] w-full relative z-[1] bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]">
             <img src="{{ get_product_image($prodData['thumbnail_img'],'300') }}"
                 class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1"
                 title="Upcoming Product 1">
-            @if (!empty($prodData['offer_tag']))
+            @if (filled($prodData['offer_tag']))
                 <badge
                     class="absolute top-[20px] left-[20px] bg-[#077F09] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">
                     {{ $prodData['offer_tag'] }}</badge>
@@ -34,7 +44,7 @@
                     <span class="text-[#898989] font-medium line-through" style="margin-top:1px; ">{{ $prodData['price'] }}</span>
                 @endif
             </h5>
-            <a href="{{ route('product.details', $prodData['product_id']) }}"
+            <a href="{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}"
                 class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white">Add to cart</a>
         </div>
 

@@ -17,6 +17,7 @@ class CartController extends Controller
 {
     public function index()
     {
+        Cart::updateCartPricesWithLatestPrices();
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $guestToken = request()->cookie('guest_token');
 
@@ -565,4 +566,5 @@ class CartController extends Controller
 
         return $couponDiscount;
     }
+
 }

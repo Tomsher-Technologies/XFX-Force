@@ -90,7 +90,9 @@ class HomeController extends Controller
         $bestDealsProducts = Product::whereIn('id', $page_content['best_deals_products'] ?? [])->get();
 
         // product gallery images
-        $popularGalleryProducts = Product::whereIn('id', $page_content['product_gallery_products'] ?? [])->get();
+        $popularGalleryProducts = Product::whereIn('id', $page_content['product_gallery_products'] ?? [])
+        ->with('stocks')
+        ->get();
         
         // Graphic card product details
         $graphicCardProducts = Product::whereIn('id', $page_content['graphic_cards_products'] ?? [])->get();

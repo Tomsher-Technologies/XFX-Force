@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Notifications\NewOrderNotification;
 use App\Models\Cart;
 use App\Mail\EmailManager;
+use App\Models\PcBuilderSetup;
+use Illuminate\Support\Facades\Validator;
 use Mail;
 
 class CheckoutController
@@ -37,11 +39,11 @@ class CheckoutController
         $user = Auth::user();
 
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        if(auth()->check()){
-            $addresses = Address::where('user_id', $user_id)->get();
+        if($user_id){
+            $addresses = Address::where('user_id', auth('frontend')->user()->id)->orderBy('id','desc')->get();
         }
 
-        $userId = auth()->check() ? $user_id : null;
+        $userId = $user_id ? $user_id : null;
         $guestToken = request()->cookie('guest_token');
 
         if (!$guestToken && !$userId) {
@@ -70,6 +72,29 @@ class CheckoutController
 
     public function placeOrder(Request $request)
     {
+
+     $validator = Validator::make($request->all(), [
+            'first_name' => 'required|regex:/^[a-zA-Z\s]+$/u|max:100',
+            'billing_email' => 'required|email|max:255',
+            'billing_city' => 'required|string|max:100',
+            'billing_state' => 'required|string|max:100',
+            'billing_country' => 'required|string|max:100',
+            'billing_phone' => ['required', 'regex:/^\+?[0-9]{7,15}$/'],
+            'billing_address' => 'required|string',
+        ], [
+            'name.regex' => 'Only alphabets and spaces are allowed in the name field.',
+            'phone.regex' => 'Please enter a valid phone number (numbers only, 7-15 digits).'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'=>'error',
+                'errors'=>$validator->errors(),
+                'redirect' => ''
+            ],200);
+        }
+
+
         $name = $request->first_name . ' ' . $request->last_name;
 
         $billing_shipping_same = $request->same_as_billing ?? null;
@@ -78,7 +103,7 @@ class CheckoutController
         $billing_address = [];
 
         $auth_user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        $user_id = auth()->check() ? $auth_user_id : null;
+        $user_id = $auth_user_id ? $auth_user_id : null;
 
         /* ---------------- Guest Token ---------------- */
 
@@ -103,39 +128,63 @@ class CheckoutController
             'phone'   => $request->billing_phone,
         ];
 
-        
-
         if ($billing_shipping_same != 'on') {
-            $shipping_address = [
-                'name'    => $request->shipping_name ?? $name,
-                'email'   => $request->billing_email,
-                'address' => $request->shipping_address ?? $request->billing_address,
-                'city'    => $request->shipping_city ?? $request->billing_city,
-                'state'   => $request->shipping_state ?? $request->billing_state,
-                'country' => $request->shipping_country ?? $request->billing_country,
-                'phone'   => $request->shipping_phone ?? $request->billing_phone,
-            ];
+
+            if ($request->selected_addr) {
+
+                $selectedAddress = Address::find($request->selected_addr);
+                
+                $shipping_address = [
+                    'name'    => $selectedAddress->name,
+                    'email'   => $request->billing_email,
+                    'address' => $selectedAddress->address,
+                    'city'    => $selectedAddress->city,
+                    'state'   => $selectedAddress->state_name,
+                    'country' => $selectedAddress->country_name,
+                    'phone'   => $selectedAddress->phone,
+                ];
+
+            } else {
+
+                $shipping_address = [
+                    'name'    => $request->shipping_name ?? $name,
+                    'email'   => $request->billing_email,
+                    'address' => $request->shipping_address ?? $request->billing_address,
+                    'city'    => $request->shipping_city ?? $request->billing_city,
+                    'state'   => $request->shipping_state ?? $request->billing_state,
+                    'country' => $request->shipping_country ?? $request->billing_country,
+                    'phone'   => $request->shipping_phone ?? $request->billing_phone,
+                ];
+            }
+
         } else {
             $shipping_address = $billing_address;
         }
 
-        
 
         $billing_address_json  = json_encode($billing_address);
         $shipping_address_json = json_encode($shipping_address);
 
-
-        
-
         /* ---------------- User Handling ---------------- */
 
-        if (!$user_id) {
+        $authUser = auth('frontend')->user();
 
+        if ($authUser) {
+
+            // Logged in user always use auth user id
+            $user_id = $authUser->id;
+
+        } else {
+
+            // Guest user
             $existingUser = User::where('email', $request->billing_email)->first();
 
             if ($existingUser) {
+
                 $user_id = $existingUser->id;
+
             } else {
+
                 $user = User::create([
                     'name' => $name,
                     'email' => $request->billing_email,
@@ -147,7 +196,6 @@ class CheckoutController
             }
         }
 
-       
 
         /* ---------------- Convert Guest Cart ---------------- */
 
@@ -157,12 +205,19 @@ class CheckoutController
                 'temp_user_id' => null
             ]);
 
-        $carts = Cart::where('user_id', $user_id)->orderBy('id')->get();
+        /* ---------------- Get Cart ---------------- */
+        $carts = Cart::where(function ($query) use ($user_id, $temp_user_id) {
+                $query->where('user_id', $user_id)
+                    ->orWhere('temp_user_id', $temp_user_id);
+            })
+            ->orderBy('id')
+            ->get();
         
 
         if ($carts->isEmpty()) {
             return response()->json([
-                'success' => false,
+                'status' => false,
+                'errors' => '',
                 'redirect' => route('order.fail')
             ]);
         }
@@ -282,6 +337,21 @@ class CheckoutController
 
         reduceProductQuantity($productQuantities);
 
+        /* ---------------- Update PC Builder ---------------- */
+
+        $pcBuilderIds = $carts->where('is_pc_builder', 1)
+                            ->pluck('pc_builder_id')
+                            ->filter()
+                            ->unique();
+
+        if($pcBuilderIds->count()) {
+
+            PcBuilderSetup::whereIn('id', $pcBuilderIds)
+                ->update([
+                    'is_ordered' => 1
+                ]);
+        }
+
         /* ---------------- Clear Cart ---------------- */
 
         Cart::where('user_id', $user_id)->delete();
@@ -292,7 +362,8 @@ class CheckoutController
             ->each(fn($admin) => $admin->notify(new NewOrderNotification($order)));
 
         return response()->json([
-            'success' => true,
+            'status' => true,
+            'errors' => '',
             'redirect' => route('order.success', $order->id)
         ]);
     }
@@ -390,22 +461,5 @@ class CheckoutController
         return response()->json(['success' => true, 'message' => 'Return request submitted successfully.']);
     }
 
-
-    public function saveNewAddress(Request $request){
-        /*if(auth()->user()){
-            $request->new_address = $request->new_building_name.' ,'.  $request->new_street_name;
-            $addressNew                = new Address;
-            $addressNew->user_id       = auth()->user()->id;
-            $addressNew->address       = $request->new_address ?? null;
-            $addressNew->name          = $request->new_name ?? null;
-            $addressNew->city          = $request->new_city ?? null;
-            $addressNew->state_name    = $request->new_state ?? null;
-            $addressNew->country_name  = $request->new_country ?? null;
-            $addressNew->type          = $request->new_address_type ?? 'other';
-            $addressNew->phone         = $request->new_phone;
-            $addressNew->save();
-        }*/
-    }
-
-    // i need a function where, each time i load cart page , i want toupdate the product/stock related columns with products current details. like price offer price shipping cost (split and save) copun 
+    // create a function where, each time  load cart page ,  want toupdate the product/stock related columns with products current details. like price offer price shipping cost (split and save) copun 
 }

@@ -61,7 +61,7 @@
             @endforeach
         </div>
         @if($stock)
-        <a href="{{ route('product.details', [$stock->product->id, $stock->id] ) }}" id="view-product-link" target="_blank" class="text-[15px] text-center px-4 py-3 rounded-[10px] text-gray-400 bg-[#252C33] hover:text-white transition-all duration-300">
+        <a href="{{ route('product.details', [$stock->product->slug, $stock->sku] ) }}" id="view-product-link" target="_blank" class="text-[15px] text-center px-4 py-3 rounded-[10px] text-gray-400 bg-[#252C33] hover:text-white transition-all duration-300">
             View Product Details
         </a>
         @endif

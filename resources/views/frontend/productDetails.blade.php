@@ -84,10 +84,7 @@
         </div>
         <div class="product-info flex flex-col gap-[20px] md:gap-[50px] md:col-span-6 w-full">
             @php
-            $firstStock = $product->stocks->first();
-            if($stockId){
-                $firstStock = $product->stocks->where('id', $stockId)->first();
-            }
+            $firstStock = $selectedStock;
         
             $groupedAttributes = $product->stocks
             ->flatMap(function ($stock) {
@@ -107,7 +104,7 @@
                 md:text-left tracking-[0px] variant-title">
                 {{ $firstStock->stock_title ?? $product->name }}
             </h1>
-            <input type="hidden" value="{{$firstStock->id}}" id="stock_id">
+            <input type="hidden" value="{{ $firstStock->id}}" id="stock_id">
 
             <!--varients-->
             <div class="flex flex-col gap-[30px] md:gap-6 text-center md:text-left border-t-1 md:border-t-0 border-[#ffffff30] mt-[30px] md:mt-[0px] py-[30px] md:py-[0px]">

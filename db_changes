@@ -322,3 +322,6 @@ ALTER TABLE `product_stocks` CHANGE `qty` `qty` INT UNSIGNED NOT NULL DEFAULT '0
 ALTER TABLE order_details 
 ADD COLUMN pc_builder_id BIGINT NULL AFTER product_stock_id,
 ADD COLUMN is_pc_builder TINYINT(1) DEFAULT 0 AFTER pc_builder_id;
+
+ALTER TABLE pc_builder_setups 
+ADD COLUMN is_ordered TINYINT(1) NOT NULL DEFAULT 0 COMMENT '0=>false, 1=>true' AFTER build_data;
