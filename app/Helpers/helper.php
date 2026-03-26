@@ -344,6 +344,11 @@ function getAllCategories()
     });
 }
 
+function getMenuCount(){
+    $menuCount = \App\Models\Menu::count();
+    return $menuCount;
+}
+
 function cleanSKU($sku)
 {
     $sku = str_replace(' ', '', $sku);
