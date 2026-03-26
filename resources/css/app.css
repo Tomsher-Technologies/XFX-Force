@@ -125,12 +125,12 @@ h3 {
 .swiper-button-next,
 .swiper-container-rtl .swiper-button-prev {
   left: auto;
-  background-image: url("images/arrow-right.svg");
+  background-image: url("public/assets/images/arrow-right.svg");
 }
 .swiper-button-prev,
 .swiper-container-rtl .swiper-button-next {
   right: auto;
-  background-image: url("images/arrow-left.svg");
+  background-image: url("public/assets/images/arrow-left.svg");
 }
 
 /* landing banner */
