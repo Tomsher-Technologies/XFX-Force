@@ -357,13 +357,17 @@ function getMenuLink($menu){
     switch ($menu->link_type) {
 
         case 'product':
-            $product = Product::select('slug')->find($menu->link_value);
-            return $product ? url('/product/'.$product->slug) : '#';
+            $product = Product::select('slug','sku')->find($menu->link_value);
+            return $product ? url('/product/'.$product->slug.'/'.$product->sku) : '#';
 
         case 'category':
-            $category = Category::select('slug')->find($menu->link_value);
-            return $category ? url('/category/'.$category->slug) : '#';
+            $category = \App\Models\Category::find($menu->link_value);
 
+            if(!$category) return '#';
+
+            $slug = $category->getTranslation('slug');
+
+            return $slug ? url('/shop/category/'.$slug) : '#';
         case 'brand':
             $brand = Brand::select('slug')->find($menu->link_value);
             return $brand ? url('/brand/'.$brand->slug) : '#';
@@ -373,6 +377,14 @@ function getMenuLink($menu){
     }
 }
 
+function getMenus(){
+    return Cache::rememberForever('menus', function () {
+        return \App\Models\Menu::with([
+                    'sections.items',
+                    'items'
+                ])->orderBy('sort_order')->get();
+    });
+}
 function cleanSKU($sku)
 {
     $sku = str_replace(' ', '', $sku);
