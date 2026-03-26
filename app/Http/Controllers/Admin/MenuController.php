@@ -72,6 +72,8 @@ class MenuController extends Controller
         if($type=='section'){
             $section = MenuSection::findOrFail($id);
             $section->title = $request->title;
+            $section->link_type = $request->link_type;
+            $section->link_value = $request->link_value;
             $section->save();
             return response()->json($section);
         }

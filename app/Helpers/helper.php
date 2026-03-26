@@ -349,6 +349,30 @@ function getMenuCount(){
     return $menuCount;
 }
 
+function getMenuLink($menu){
+    if(!$menu->link_value){
+        return '#';
+    }
+
+    switch ($menu->link_type) {
+
+        case 'product':
+            $product = Product::select('slug')->find($menu->link_value);
+            return $product ? url('/product/'.$product->slug) : '#';
+
+        case 'category':
+            $category = Category::select('slug')->find($menu->link_value);
+            return $category ? url('/category/'.$category->slug) : '#';
+
+        case 'brand':
+            $brand = Brand::select('slug')->find($menu->link_value);
+            return $brand ? url('/brand/'.$brand->slug) : '#';
+
+        default:
+            return $menu->link_value; // custom link
+    }
+}
+
 function cleanSKU($sku)
 {
     $sku = str_replace(' ', '', $sku);

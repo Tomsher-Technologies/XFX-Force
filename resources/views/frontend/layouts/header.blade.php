@@ -1,4 +1,5 @@
-<header id="main-header" class="w-full fixed bg-transparent z-[9999] px-[16px] md:px-[30px] xl:px-[140px] transition-all duration-600">
+
+    <header id="main-header" class="w-full fixed bg-transparent z-[9999] px-[16px] md:px-[30px] xl:px-[140px] transition-all duration-600">
         <div class="top-bar w-full flex items-center justify-center sm:justify-content-center hidden xl:block">
             <div class="w-full m-auto flex items-center justify-center md:justify-between border-b-1 border-[#393939] pt-[20px] pb-[20px]">
                 <div class="contact-info">
@@ -26,45 +27,113 @@
         <nav class="main-nav w-full py-[20px]">
             <div class="m-auto nav-wrapper grid grid-cols-2 xl:grid-cols-[auto_auto_auto] items-center justify-between w-full">
                 <div class="logo">
-                    <a href="{{ route('home') }}" title="Home - PC Garage | Custom Gaming PCs & High-End Hardware in UAE">
+                    <a href="index.html" title="Home - PC Garage | Custom Gaming PCs & High-End Hardware in UAE">
                         <img src="{{ asset('assets/images/PC-Garage-Logo-white.svg') }}" alt="PC Garage Logo" title="PC Garage Logo" class="w-[200px] white ">
                     </a>
                 </div>
-                <ul class="nav-menu items-center gap-[30px] list-none hidden xl:flex items-center">
-                    <li><a href="{{ route('home') }}" class="text-[#ffffff] uppercase text-[14px] no-underline">Home</a></li>
+
+                @php
+                    $menus = \App\Models\Menu::with([
+                                'sections.items',
+                                'items'
+                            ])->orderBy('sort_order')->get();
+                @endphp 
+                {{-- <ul class="nav-menu items-center gap-[30px] list-none hidden xl:flex items-center">
+                    <li><a href="#" class="text-[#ffffff] uppercase text-[14px] no-underline">Home</a></li>
                     <li class="has-mega">
-                        <a href="{{ route('products') }}" class="text-[#ffffff] uppercase text-[14px] no-underline flex gap-[10px]">Shop <img src="{{ asset('assets/images/caret-down.svg') }}" alt="Caret Down Icon" class="img-fluid"></a>
+                        <a href="shop.html" class="text-[#ffffff] uppercase text-[14px] no-underline flex gap-[10px]">Shop <img src="{{ asset('assets/images/caret-down.svg') }}" alt="Caret Down Icon" class="img-fluid"></a>
+                        
                         <div class="mega-menu absolute top-full m-auto left-0 right-0 w-5xl bg-white p-10 shadow-[0_10px_30px_rgba(0,0,0,0.1)] opacity-0 invisible translate-y-[0px] transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:visible group-hover:translate-y-[55px]">
                             <div class="mega-grid w-full mx-auto grid grid-cols-2 gap-[50px]">
                                 <div>
                                     <h4 class="text-sm text-gray-400 uppercase pb-[10px] mb-[15px] border-b-1 border-gray-300">Shop by Categories</h4>
                                     <ul class="grid grid-cols-2 md:grid-cols-2 gap-x-8">
-                                        @foreach ($headerCategories as $category)
-                                        <li>
-                                            <a href="{{ route('shop.category', $category->id) }}" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">{{ $category->name }}</a>
-                                        </li>
-                                        @endforeach
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Graphics Cards</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Processors</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Motherboard</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">RAM</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Storage</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Power Supply</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Fans</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Cooling System</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Cases</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Accessories</a></li>
                                     </ul>
                                 </div>
                                 <div>
                                     <h4 class="text-sm text-gray-400 uppercase pb-[10px] mb-[15px] border-b-1 border-gray-300">Shop by Brands</h4>
                                     <ul class="grid grid-cols-2 md:grid-cols-2 gap-x-8">
-                                        @foreach ($headerBrands as $brand)
-                                        <li>
-                                            <a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">{{ $brand->name }}</a>
-                                        </li>
-                                        @endforeach
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Acer</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">AMD</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Benq</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Glorious</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Intel</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">Samsung</a></li>
+                                        <li><a href="shop-category.html" class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">XFX</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </li>
-                    <li><a href="{{ route('buildyourpc') }}" class="text-[#ffffff] uppercase text-[14px] no-underline">Build your pc</a></li>
-                    <li><a href="shop-category.html" class="text-[#ffffff] uppercase text-[14px] no-underline">Pre-built pc</a></li>
-                    <li><a href="shop-category.html" class="text-[#ffffff] uppercase text-[14px] no-underline">Components</a></li>
-                    <li><a href="shop.html" class="text-[#ffffff] uppercase text-[14px] no-underline">Deals</a></li>
-                    <li><a href="about.html" class="text-[#ffffff] uppercase text-[14px] no-underline">About us</a></li>
+
+                </ul> --}}
+
+                <ul class="nav-menu items-center gap-[30px] list-none hidden xl:flex items-center">
+                    @foreach($menus as $menu)
+                        @if($menu->type === 'normal')
+                            <li>
+                                <a href="{{ getMenuLink($menu) }}"
+                                class="text-[#ffffff] uppercase text-[14px] no-underline">
+                                    {{ $menu->title }}
+                                </a>
+                            </li>
+                        @endif
+
+                        @if($menu->type === 'mega')
+                            <li class="relative has-mega">
+                                <a href="{{ getMenuLink($menu) }}"
+                                class="text-[#ffffff] uppercase text-[14px] no-underline flex gap-[10px]">
+                                    {{ $menu->title }}
+                                    <img src="{{ asset('assets/images/caret-down.svg') }}" class="img-fluid" alt="Caret Down Icon">
+                                </a>
+
+                                <div class="mega-menu absolute top-full m-auto left-0 right-0 w-5xl bg-white p-10 shadow-[0_10px_30px_rgba(0,0,0,0.1)] opacity-0 invisible translate-y-[0px] transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:visible group-hover:translate-y-[55px]">
+                                        
+                                    <div class="mega-grid w-full mx-auto grid gap-[50px] grid-cols-{{ count($menu->sections) }} gap-[50px]">
+
+                                        @foreach($menu->sections as $section)
+                                            <div>
+                                                
+                                                <h4 class="text-sm text-gray-400 uppercase pb-[10px] mb-[15px] border-b border-gray-300">
+                                                    <a href="{{ getMenuLink($section) }}" class="">
+                                                        {{ $section->title }}
+                                                    </a>
+                                                </h4>
+
+                                                <ul class="grid grid-cols-2 md:grid-cols-2 gap-x-8">
+                                                    @foreach($section->items as $item)
+                                                    {{-- @php
+                                                    echo '<pre>';
+                                                    print_r($item);
+                                                    die;
+                                                @endphp --}}
+                                                        <li>
+                                                            <a href="{{ getMenuLink($item) }}"
+                                                            class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">
+                                                                {{ $item->title }}
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </li>
+                        @endif
+                    @endforeach
                 </ul>
+
                 <div class="nav-actions flex items-center gap-[30px] md:gap-[50px] justify-end">
                     <!--burger menu trigger-->
                     <button onclick="toggleMobileMenu()" class="burger-menu gap-[6px] flex xl:hidden flex-col bg-transparent border-hidden cursor-pointer">
@@ -93,20 +162,20 @@
 
                     
                     <!--profile trigger-->
-                        @if(Auth('frontend')->check())
-                            <button type="button"  onclick="toggleSidePanel()" id="profile-trigger" class="cursor-pointer action-btn hidden md:flex items-center justify-center hover:bg-white/5 p-2 rounded-lg transition-all">
-                                <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M8.15234 8.74992C8.97353 8.75104 9.76112 9.07746 10.3418 9.65813C10.9225 10.2388 11.2489 11.0264 11.25 11.8476V14.9999H10V11.8476C9.99938 11.3578 9.80437 10.8883 9.45801 10.5419C9.11164 10.1956 8.64217 10.0005 8.15234 9.99992H3.09863C2.60865 10.0004 2.13847 10.1954 1.79199 10.5419C1.44568 10.8883 1.25062 11.3578 1.25 11.8476V14.9999H0V11.8476C0.00111301 11.0264 0.328507 10.2388 0.90918 9.65813C1.48992 9.0776 2.27748 8.75092 3.09863 8.74992H8.15234ZM4.89355 0.0721893C5.62096 -0.0725011 6.37534 0.0012594 7.06055 0.28508C7.74554 0.568873 8.33118 1.04948 8.74316 1.66594C9.15521 2.28261 9.375 3.00826 9.375 3.74992C9.37396 4.74408 8.97837 5.69733 8.27539 6.40031C7.57238 7.10323 6.61915 7.49893 5.625 7.49992C4.88352 7.4999 4.15855 7.27996 3.54199 6.86809C2.92533 6.45604 2.44495 5.8697 2.16113 5.18449C1.87737 4.49941 1.80266 3.74577 1.94727 3.01848C2.09194 2.29115 2.44929 1.62296 2.97363 1.09856C3.49805 0.574143 4.16618 0.21689 4.89355 0.0721893ZM5.625 1.24992C5.13068 1.24995 4.64736 1.39623 4.23633 1.67082C3.82525 1.9455 3.50465 2.33613 3.31543 2.79289C3.12625 3.24961 3.07647 3.75238 3.17285 4.23723C3.26931 4.72217 3.5078 5.16788 3.85742 5.5175C4.20704 5.86711 4.65277 6.10561 5.1377 6.20207C5.62253 6.29844 6.12534 6.24866 6.58203 6.05949C7.03878 5.87027 7.42943 5.54967 7.7041 5.1386C7.97869 4.72758 8.12496 4.24423 8.125 3.74992C8.125 3.08691 7.86139 2.45117 7.39258 1.98235C6.92375 1.51352 6.28802 1.24992 5.625 1.24992Z" fill="white"/>
-                                </svg>
-                            </button>
-                        @else
-                            <a href="{{ route('login') }}" class="action-btn hidden md:flex items-center justify-center hover:bg-white/5 p-2 rounded-lg transition-all">
-                                <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M8.15234 8.74992C8.97353 8.75104 9.76112 9.07746 10.3418 9.65813C10.9225 10.2388 11.2489 11.0264 11.25 11.8476V14.9999H10V11.8476C9.99938 11.3578 9.80437 10.8883 9.45801 10.5419C9.11164 10.1956 8.64217 10.0005 8.15234 9.99992H3.09863C2.60865 10.0004 2.13847 10.1954 1.79199 10.5419C1.44568 10.8883 1.25062 11.3578 1.25 11.8476V14.9999H0V11.8476C0.00111301 11.0264 0.328507 10.2388 0.90918 9.65813C1.48992 9.0776 2.27748 8.75092 3.09863 8.74992H8.15234ZM4.89355 0.0721893C5.62096 -0.0725011 6.37534 0.0012594 7.06055 0.28508C7.74554 0.568873 8.33118 1.04948 8.74316 1.66594C9.15521 2.28261 9.375 3.00826 9.375 3.74992C9.37396 4.74408 8.97837 5.69733 8.27539 6.40031C7.57238 7.10323 6.61915 7.49893 5.625 7.49992C4.88352 7.4999 4.15855 7.27996 3.54199 6.86809C2.92533 6.45604 2.44495 5.8697 2.16113 5.18449C1.87737 4.49941 1.80266 3.74577 1.94727 3.01848C2.09194 2.29115 2.44929 1.62296 2.97363 1.09856C3.49805 0.574143 4.16618 0.21689 4.89355 0.0721893ZM5.625 1.24992C5.13068 1.24995 4.64736 1.39623 4.23633 1.67082C3.82525 1.9455 3.50465 2.33613 3.31543 2.79289C3.12625 3.24961 3.07647 3.75238 3.17285 4.23723C3.26931 4.72217 3.5078 5.16788 3.85742 5.5175C4.20704 5.86711 4.65277 6.10561 5.1377 6.20207C5.62253 6.29844 6.12534 6.24866 6.58203 6.05949C7.03878 5.87027 7.42943 5.54967 7.7041 5.1386C7.97869 4.72758 8.12496 4.24423 8.125 3.74992C8.125 3.08691 7.86139 2.45117 7.39258 1.98235C6.92375 1.51352 6.28802 1.24992 5.625 1.24992Z" fill="white"/>
-                                </svg>
-                                <span class="text-white ml-1">Login</span>
-                            </a>
-                        @endif
+                    @if(Auth('frontend')->check())
+                        <button type="button"  onclick="toggleSidePanel()" id="profile-trigger" class="cursor-pointer action-btn hidden md:flex items-center justify-center hover:bg-white/5 p-2 rounded-lg transition-all">
+                            <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.15234 8.74992C8.97353 8.75104 9.76112 9.07746 10.3418 9.65813C10.9225 10.2388 11.2489 11.0264 11.25 11.8476V14.9999H10V11.8476C9.99938 11.3578 9.80437 10.8883 9.45801 10.5419C9.11164 10.1956 8.64217 10.0005 8.15234 9.99992H3.09863C2.60865 10.0004 2.13847 10.1954 1.79199 10.5419C1.44568 10.8883 1.25062 11.3578 1.25 11.8476V14.9999H0V11.8476C0.00111301 11.0264 0.328507 10.2388 0.90918 9.65813C1.48992 9.0776 2.27748 8.75092 3.09863 8.74992H8.15234ZM4.89355 0.0721893C5.62096 -0.0725011 6.37534 0.0012594 7.06055 0.28508C7.74554 0.568873 8.33118 1.04948 8.74316 1.66594C9.15521 2.28261 9.375 3.00826 9.375 3.74992C9.37396 4.74408 8.97837 5.69733 8.27539 6.40031C7.57238 7.10323 6.61915 7.49893 5.625 7.49992C4.88352 7.4999 4.15855 7.27996 3.54199 6.86809C2.92533 6.45604 2.44495 5.8697 2.16113 5.18449C1.87737 4.49941 1.80266 3.74577 1.94727 3.01848C2.09194 2.29115 2.44929 1.62296 2.97363 1.09856C3.49805 0.574143 4.16618 0.21689 4.89355 0.0721893ZM5.625 1.24992C5.13068 1.24995 4.64736 1.39623 4.23633 1.67082C3.82525 1.9455 3.50465 2.33613 3.31543 2.79289C3.12625 3.24961 3.07647 3.75238 3.17285 4.23723C3.26931 4.72217 3.5078 5.16788 3.85742 5.5175C4.20704 5.86711 4.65277 6.10561 5.1377 6.20207C5.62253 6.29844 6.12534 6.24866 6.58203 6.05949C7.03878 5.87027 7.42943 5.54967 7.7041 5.1386C7.97869 4.72758 8.12496 4.24423 8.125 3.74992C8.125 3.08691 7.86139 2.45117 7.39258 1.98235C6.92375 1.51352 6.28802 1.24992 5.625 1.24992Z" fill="white"/>
+                            </svg>
+                        </button>
+                    @else
+                        <a href="{{ route('login') }}" class="action-btn hidden md:flex items-center justify-center hover:bg-white/5 p-2 rounded-lg transition-all">
+                            <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.15234 8.74992C8.97353 8.75104 9.76112 9.07746 10.3418 9.65813C10.9225 10.2388 11.2489 11.0264 11.25 11.8476V14.9999H10V11.8476C9.99938 11.3578 9.80437 10.8883 9.45801 10.5419C9.11164 10.1956 8.64217 10.0005 8.15234 9.99992H3.09863C2.60865 10.0004 2.13847 10.1954 1.79199 10.5419C1.44568 10.8883 1.25062 11.3578 1.25 11.8476V14.9999H0V11.8476C0.00111301 11.0264 0.328507 10.2388 0.90918 9.65813C1.48992 9.0776 2.27748 8.75092 3.09863 8.74992H8.15234ZM4.89355 0.0721893C5.62096 -0.0725011 6.37534 0.0012594 7.06055 0.28508C7.74554 0.568873 8.33118 1.04948 8.74316 1.66594C9.15521 2.28261 9.375 3.00826 9.375 3.74992C9.37396 4.74408 8.97837 5.69733 8.27539 6.40031C7.57238 7.10323 6.61915 7.49893 5.625 7.49992C4.88352 7.4999 4.15855 7.27996 3.54199 6.86809C2.92533 6.45604 2.44495 5.8697 2.16113 5.18449C1.87737 4.49941 1.80266 3.74577 1.94727 3.01848C2.09194 2.29115 2.44929 1.62296 2.97363 1.09856C3.49805 0.574143 4.16618 0.21689 4.89355 0.0721893ZM5.625 1.24992C5.13068 1.24995 4.64736 1.39623 4.23633 1.67082C3.82525 1.9455 3.50465 2.33613 3.31543 2.79289C3.12625 3.24961 3.07647 3.75238 3.17285 4.23723C3.26931 4.72217 3.5078 5.16788 3.85742 5.5175C4.20704 5.86711 4.65277 6.10561 5.1377 6.20207C5.62253 6.29844 6.12534 6.24866 6.58203 6.05949C7.03878 5.87027 7.42943 5.54967 7.7041 5.1386C7.97869 4.72758 8.12496 4.24423 8.125 3.74992C8.125 3.08691 7.86139 2.45117 7.39258 1.98235C6.92375 1.51352 6.28802 1.24992 5.625 1.24992Z" fill="white"/>
+                            </svg>
+                            <span class="text-white ml-1">Login</span>
+                        </a>
+                    @endif
                     <!--profile trigger-->
                 </div>
             </div>

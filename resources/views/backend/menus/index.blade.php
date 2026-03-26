@@ -56,13 +56,15 @@
                             <button class="btn btn-xs btn-soft-secondary edit-btn" data-id="{{ $menu->id }}" data-type="menu">
                                 <i class="las la-edit"></i>
                             </button>
+
                             <button class="btn btn-xs btn-soft-danger delete-btn" data-id="{{ $menu->id }}" data-type="menu">
                                 <i class="las la-trash"></i>
                             </button>
-                            @if($menu->type == 'mega')
-                            <button class="btn btn-xs btn-soft-success add-section-btn" data-id="{{ $menu->id }}" data-type="menu">
-                                <i class="las la-plus"></i> Add Section
-                            </button>
+
+                            @if($menu->type == 'mega' && $menu->sections->count() < 2)
+                                <button class="btn btn-xs btn-soft-success add-section-btn" data-id="{{ $menu->id }}" data-type="menu">
+                                    <i class="las la-plus"></i> Add Section
+                                </button>
                             @endif
                         </span>
                     </div>

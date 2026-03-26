@@ -616,12 +616,12 @@ input:checked ~ div svg {
   transition: all 0.4s ease;
 }
 
-.mega-overlay .mega-grid {
+/* .mega-overlay .mega-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 50px;
   color: #fff;
-}
+} */
 
 .mega-menu {
   position: absolute;
@@ -636,12 +636,12 @@ input:checked ~ div svg {
   transition: 0.3s ease;
   transform: translateY(10px);
 }
-.mega-menu .mega-grid {
+/* .mega-menu .mega-grid {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-}
+} */
 
 /* Swiper Pagination - Custom Box Loading Style */
 #hero-slider .swiper-pagination {
