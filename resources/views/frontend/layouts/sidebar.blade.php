@@ -16,7 +16,7 @@
                 <span class="text-[10px] lg:text-[15px]">Profile</span>
             </a>
 
-            <a href="my-orders.html" class="w-full flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px]  transition-all group {{ request()->routeIs('order*') ? 'bg-[#2A7CFF] text-white font-medium' : 'hover:bg-[#252C33] text-[#898989] text-gray-400 hover:text-white' }} ">
+            <a href="{{ route('orders.index') }}" class="w-full flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px]  transition-all group {{ request()->routeIs('order*') ? 'bg-[#2A7CFF] text-white font-medium' : 'hover:bg-[#252C33] text-[#898989] text-gray-400 hover:text-white' }} ">
                 <svg id="Layer_1" class=" {{ request()->routeIs('order*') ? 'text-[#ffffff]' : 'text-[#898989]' }} w-5 h-5 group-hover:text-white" fill="none" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path class="fill-[#99a1af] group-hover:fill-[#ffffff] transition-all duration-600" d="m19 0h-14a5.006 5.006 0 0 0 -5 5v14a5.006 5.006 0 0 0 5 5h14a5.006 5.006 0 0 0 5-5v-14a5.006 5.006 0 0 0 -5-5zm3 5h-7v-3h4a3 3 0 0 1 3 3zm-11-3h2v5a1 1 0 0 1 -2 0zm-6 0h4v3h-7a3 3 0 0 1 3-3zm14 20h-14a3 3 0 0 1 -3-3v-12h7a3 3 0 0 0 6 0h7v12a3 3 0 0 1 -3 3zm1-3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 0-2h3a1 1 0 0 1 1 1z"/></svg>
                 <span class="text-[10px] lg:text-[15px] ">Orders</span>
             </a>

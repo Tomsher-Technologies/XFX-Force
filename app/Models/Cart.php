@@ -35,36 +35,30 @@ class Cart extends Model
             ->where('status', 'pending')
             ->count();
     }
+
+    public static function updateCartPricesWithLatestPrices()
+    {
+        $user = getFrontEndUser();
+
+        $cartItems = Cart::where([
+            $user['users_id_type'] => $user['users_id'],
+            'status' => 'pending'
+        ])->get();
+
+        foreach ($cartItems as $cart) {
+
+            $stock = ProductStock::where('id', $cart->product_stock_id)->first();
+
+            if (!$stock) continue;
+
+            // Update cart
+            $cart->update([
+                'price' => $stock->price,
+                'offer_price' => $stock->offer_price,
+                'offer_tag' => $stock->offer_tag,
+            ]);
+        }
+    }
 }
 
 
-// $validatedData = $request->validate([
-//             'billing_name' => 'required|string|max:255',
-//             'billing_address' => 'required|string|max:255',
-//             'billing_city' => 'required|string|max:255',
-//             'billing_state' => 'required|string|max:255',
-//             'billing_country' => 'required|string|max:255',
-//             'billing_zipcode' => 'nullable|string',
-//             'billing_phone' => 'required|string|min:10',  // Add phone validation
-//             'billing_email' => 'required|email|max:255', // Add email validation
-//             'shipping_name' => 'nullable|string|max:255',
-//             'shipping_address' => 'nullable|string|max:255',
-//             'shipping_city' => 'nullable|string|max:255',
-//             'shipping_zipcode' => 'nullable|string',
-//             'shipping_phone' => 'nullable|string|min:10', 
-//             'shipping_state' => 'nullable|string|max:255',
-//             'shipping_country' => 'nullable|string|max:255', 
-//         ],[
-//             'billing_name.required' => 'This field is required.',
-//             'billing_address.required' => 'This field is required.',
-//             'billing_city.required' => 'This field is required.',
-//             'billing_state.required' => 'This field is required.',
-//             'billing_country.required' => 'This field is required.',
-//             'billing_zipcode.required' => 'This field is required.',
-//             'billing_phone.required' => 'This field is required.',
-//             'billing_phone.min' => 'The phone number must be at least 10 digits.',
-//             'billing_email.required' => 'This field is required.',
-//             'billing_email.email' => 'The email address must be a valid email.',
-//             'billing_email.max' => 'The email address must not exceed 255 characters.',
-//             'shipping_phone.min' => 'The phone number must be at least 10 digits.',
-//         ]);

@@ -37,7 +37,7 @@
                     $firstStock = $product->stocks->first();
                 @endphp
                 <div class="product-card-list grid grid-cols-4 overflow-hidden bg-black/30 backdrop-blur-[60px] rounded-[20px]"
-                    onclick="window.location= '{{ route('product.details', $product['id']) }}'"
+                    onclick="window.location= '{{ $firstStock ? route('product.details', ['slug' => $product->slug, 'sku' => $firstStock->sku]) : '#' }}'"
                     style="cursor: pointer;">
                     <div class="product-image col-span-1">
                         <img src="{{ Storage::url($product->thumbnail_img) }}" alt="" title=""
@@ -83,7 +83,7 @@
                                     alt="AED"
                                     title="Symbol of AED">{{ $firstStock->offer_price ?? $firstStock->price }}
                             </h5>
-                            @if ($firstStock->offer_price)
+                            @if (filled($firstStock->offer_tag))
                                 <span
                                     class="text-[#898989] font-medium line-through text-[20px]">{{ $firstStock->price }}</span>
                             @endif

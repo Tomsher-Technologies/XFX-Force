@@ -17,6 +17,8 @@ class CartController extends Controller
 {
     public function index()
     {
+        Cart::updateCartPricesWithLatestPrices();
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $guestToken = request()->cookie('guest_token');
 
         if(!$guestToken){
@@ -27,10 +29,10 @@ class CartController extends Controller
         $couponDiscount = 0;
 
         $cartItems = Cart::with(['product', 'product_stock', 'product.warranties'])
-            ->where(function($query) use ($guestToken) {
-                if(auth()->check()) {
+            ->where(function($query) use ($guestToken, $user_id) {
+                if($user_id) {
                     // Logged-in user
-                    $query->where('user_id', auth()->user()->id);
+                    $query->where('user_id', $user_id);
                 } else {
                     // Guest user
                     $query->where('temp_user_id', $guestToken);
@@ -45,10 +47,10 @@ class CartController extends Controller
             });
 
         $couponCode = Cart::where('status', 'pending')
-            ->where(function($query) use ($guestToken) {
-                if(auth()->check()) {
+            ->where(function($query) use ($guestToken, $user_id) {
+                if($user_id) {
                     // Logged-in user
-                    $query->where('user_id', auth()->user()->id);
+                    $query->where('user_id', $user_id);
                 } else {
                     // Guest user
                     $query->where('temp_user_id', $guestToken);
@@ -70,24 +72,29 @@ class CartController extends Controller
         $offerSum  = $cartItems->sum('offerSum');
         $discountSum = $subtotal - $offerSum;
         $cartCount = $cartItems->count();
-        
-        $defaultVat = get_setting('default_vat') ?? 0;
-        $tax = ($offerSum * $defaultVat) / 100;
         $warrantySum  = $cartItems->sum('warranty_price');
 
-        $shipping = get_setting('default_shipping_amount') ?? 0;
-        $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
-
-        if ($offerSum >= $freeShippingMinAmount) {
-            $shipping = 0;
-        }
-        
-        $totalBeforeCouponDicount = $offerSum + $tax + $shipping + $warrantySum;
+        // coupon discount
+        $totalBeforeCouponDicount = $offerSum + $warrantySum;
 
         if ($couponCode) {
             $couponDiscount = $this->getCouponDiscount($couponCode, $totalBeforeCouponDicount);
         }
 
+        // Tax calculation
+        $defaultVat = get_setting('default_vat') ?? 0;
+        $totalBeforeTax = $offerSum - $couponDiscount + $warrantySum;
+        $tax = ($totalBeforeTax * $defaultVat) / 100;
+
+        // Shipping price calculation
+        $totalBeforeShippingPriceApplied = $totalBeforeTax + $tax;
+        $shipping = ($totalBeforeShippingPriceApplied > 0) ? (get_setting('default_shipping_amount') ?? 0) : 0;
+        $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
+        if ($totalBeforeShippingPriceApplied >= $freeShippingMinAmount) {
+            $shipping = 0;
+        }
+
+        // Total
         $total = $offerSum + $tax + $shipping + $warrantySum - $couponDiscount;
 
         return view('frontend.cart', compact('cartItems', 'subtotal', 'discountSum', 'cartCount', 'tax', 'shipping', 'total', 'warrantySum', 'pcBuilderItems', 'directCartItems', 'couponCode' , 'couponDiscount'))
@@ -96,7 +103,7 @@ class CartController extends Controller
 
     public function addProductToCart(Request $request)
     {
-        $userId = auth()->check() ? auth()->user()->id : null;
+        $userId = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
 
         $guestToken = request()->cookie('guest_token');
 
@@ -113,10 +120,10 @@ class CartController extends Controller
         $stock = ProductStock::findOrFail($variantId);
 
         $cartItem = Cart::where('product_stock_id', $variantId)
-            ->where(function($query) use ($guestToken) {
-                if(auth()->check()) {
+            ->where(function($query) use ($guestToken, $userId) {
+                if($userId) {
                     // Logged-in user
-                    $query->where('user_id', auth()->user()->id);
+                    $query->where('user_id', $userId);
                 } else {
                     // Guest user
                     $query->where('temp_user_id', $guestToken);
@@ -198,6 +205,7 @@ class CartController extends Controller
 
     public function getCount()
     {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $guestToken = request()->cookie('guest_token');
 
         if(!$guestToken){
@@ -205,10 +213,10 @@ class CartController extends Controller
             cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
         }
         $cartItems = Cart::with(['product', 'product_stock', 'product.warranties'])
-            ->where(function($query) use ($guestToken) {
-                if(auth()->check()) {
+            ->where(function($query) use ($guestToken, $user_id) {
+                if($user_id) {
                     // Logged-in user
-                    $query->where('user_id', auth()->user()->id);
+                    $query->where('user_id', $user_id);
                 } else {
                     // Guest user
                     $query->where('temp_user_id', $guestToken);
@@ -217,12 +225,12 @@ class CartController extends Controller
             ->where('status', 'pending')
             ->get();
 
-           return $cartItems->sum('quantity');
+           return $cartItems->count();
     }
 
     public function removeCartItem($id)
     {
-        $user = getUser();
+        $user = getFrontEndUser();
 
         if ($id != '' && $user['users_id'] != '') {
 
@@ -245,6 +253,7 @@ class CartController extends Controller
 
     public function updateProductWarranty(Request $request)
     {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $guestToken = request()->cookie('guest_token');
 
         if(!$guestToken){
@@ -255,10 +264,10 @@ class CartController extends Controller
         $warrantyId = $request->warrantyId;
 
         $cart = Cart::where('id', $cartId)
-            ->where(function($query) use ($guestToken) {
-                if(auth()->check()) {
+            ->where(function($query) use ($guestToken, $user_id) {
+                if($user_id) {
                     // Logged-in user
-                    $query->where('user_id', auth()->user()->id);
+                    $query->where('user_id', $user_id);
                 } else {
                     // Guest user
                     $query->where('temp_user_id', $guestToken);
@@ -285,6 +294,7 @@ class CartController extends Controller
      */
     public function getCartSummary()
     {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $guestToken = request()->cookie('guest_token');
 
         if(!$guestToken){
@@ -294,9 +304,9 @@ class CartController extends Controller
 
         $cartItems = Cart::with(['product', 'product_stock', 'product.warranties'])
             ->where('status', 'pending')
-            ->where(function($query) use ($guestToken) {
-                if(auth()->check()) {
-                    $query->where('user_id', auth()->user()->id);
+            ->where(function($query) use ($guestToken, $user_id) {
+                if($user_id) {
+                    $query->where('user_id', $user_id);
                 } else {
                     $query->where('temp_user_id', $guestToken);
                 }
@@ -318,45 +328,51 @@ class CartController extends Controller
         $offerSum     = $cartItems->sum('offer_sum');
         $discountSum  = $subTotal - $offerSum;
 
-        $shipping = ($subTotal > 0) ? (get_setting('default_shipping_amount') ?? 0) : 0;
-        $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
-
-        if ($offerSum >= $freeShippingMinAmount) {
-            $shipping = 0;
-        }
-
-        
-
-        $defaultVat = get_setting('default_vat') ?? 0;
-        $tax = ($offerSum * $defaultVat) / 100;
-
-        $cartCount    = $cartItems->sum('quantity');
+        $cartCount    = $cartItems->count();
         $warrantySum  = $cartItems->sum('warranty_price');
-        $totalBeforeCouponDicount        = $offerSum + $tax + $shipping + $warrantySum;
-        
+
+        // coupon discount
+        $totalBeforeCouponDicount        = $offerSum + $warrantySum;
         $couponDiscount = 0;
         if ($couponCode) {
             $couponDiscount = $this->getCouponDiscount($couponCode, $totalBeforeCouponDicount);
         }
+
+        // Tax calculation
+        $defaultVat = get_setting('default_vat') ?? 0;
+        $totalBeforeTax = $offerSum - $couponDiscount + $warrantySum;
+        $tax = ($totalBeforeTax * $defaultVat) / 100;
+
+        // Shipping price calculation
+        $totalBeforeShippingPriceApplied = $totalBeforeTax + $tax;
+        
+        $shipping = ($totalBeforeShippingPriceApplied > 0) ? (get_setting('default_shipping_amount') ?? 0) : 0;
+        $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
+
+        if ($totalBeforeShippingPriceApplied >= $freeShippingMinAmount) {
+            $shipping = 0;
+        }
+
+        // Total calculation
         $total = $offerSum + $tax + $shipping + $warrantySum - $couponDiscount;
 
         return [
             'status' => true,
-            'sub_total'    => format_price($subTotal),
-            'discount_sum' => format_price($discountSum),
-            'shipping'     => format_price($shipping),
-            'tax'   => format_price($tax),
+            'sub_total'    => $subTotal,
+            'discount_sum' => $discountSum,
+            'shipping'     => $shipping,
+            'tax'   => $tax,
             'cart_count'   => $cartCount,
-            'warranty_sum' => format_price($warrantySum),
-            'couponDiscount' => format_price($couponDiscount),
-            'total'        => format_price($total),
+            'warranty_sum' => $warrantySum,
+            'couponDiscount' => $couponDiscount,
+            'total'        => $total,
         ];
     }
 
 
     public function apply_coupon_code(Request $request)
     {
-        $user = getUser();
+        $user = getFrontEndUser();
         
         if($user['users_id'] != ''){
             $cart_items = Cart::where([$user['users_id_type'] => $user['users_id']])->get();
@@ -500,7 +516,7 @@ class CartController extends Controller
 
     public function remove_coupon_code(Request $request)
     {
-        $user = getUser();
+        $user = getFrontEndUser();
         Cart::where([$user['users_id_type'] => $user['users_id']])->update([
             'discount' => 0.00,
             'coupon_code' => "",
@@ -515,7 +531,7 @@ class CartController extends Controller
 
     public function getCouponDiscount($couponCode, $total)
     {
-        $user = getUser();
+        $user = getFrontEndUser();
 
         if (!$user['users_id']) {
             return 0;
@@ -550,4 +566,5 @@ class CartController extends Controller
 
         return $couponDiscount;
     }
+
 }

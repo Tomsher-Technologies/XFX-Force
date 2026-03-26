@@ -243,41 +243,91 @@ class ProductController extends Controller
         return $products;
     }
 
-    public function productDetails($id, $stockId = null)
+    // public function productDetails($id, $stockId = null)
+    // {
+    //     $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+    //     $guestToken = request()->cookie('guest_token');
+
+    //     if(!$guestToken){
+    //         $guestToken = uniqid('guest_', true);
+    //         cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
+    //     }
+
+    //     $product = Product::with([
+    //         'stocks',
+    //         'stocks.attributes.attribute',
+    //         'stocks.attributes.value'
+    //     ])->findOrFail($id);
+
+    //     $relatedProducts = Product::where('category_id', $product->category_id)
+    //         ->where('id', '!=', $product->id)
+    //         ->get();
+
+    //     // determine selected stock
+    //     $selectedStock = $stockId 
+    //         ? $product->stocks->where('id', $stockId)->first()
+    //         : $product->stocks->first();
+
+    //     // get cart quantity
+    //     $cartQty = 0;
+
+    //     if ($selectedStock) {
+    //         $cartQuery = Cart::where('product_id', $product->id)
+    //             ->where('product_stock_id', $selectedStock->id)
+    //             ->where('status', 'pending')
+    //             ->where(function($query) use ($guestToken, $user_id) {
+    //                 if($user_id) {
+    //                     // Logged-in user
+    //                     $query->where('user_id', $user_id);
+    //                 } else {
+    //                     // Guest user
+    //                     $query->where('temp_user_id', $guestToken);
+    //                 }
+    //             });
+    //         $cartQty = $cartQuery->value('quantity') ?? 0;
+    //     }
+        
+    //     return view('frontend.productDetails', compact('product', 'relatedProducts','stockId', 'cartQty'));
+    // }
+
+    public function productDetails($slug, $sku = null)
     {
+        // Get logged-in user or guest token
+        $user_id = auth('frontend')->check() ? auth('frontend')->user()->id : '';
         $guestToken = request()->cookie('guest_token');
 
-        if(!$guestToken){
+        if (!$guestToken) {
             $guestToken = uniqid('guest_', true);
             cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
         }
 
+        // Fetch product by slug
         $product = Product::with([
             'stocks',
             'stocks.attributes.attribute',
             'stocks.attributes.value'
-        ])->findOrFail($id);
+        ])->where('slug', $slug)->firstOrFail();
 
+        // Related products (same category, excluding this product)
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->get();
 
-        // determine selected stock
-        $selectedStock = $stockId 
-            ? $product->stocks->where('id', $stockId)->first()
+        // Determine selected stock by SKU or default first stock
+        $selectedStock = $sku 
+            ? $product->stocks->where('sku', $sku)->first()
             : $product->stocks->first();
 
-        // get cart quantity
+        // Get cart quantity
         $cartQty = 0;
-
         if ($selectedStock) {
             $cartQuery = Cart::where('product_id', $product->id)
                 ->where('product_stock_id', $selectedStock->id)
                 ->where('status', 'pending')
-                ->where(function($query) use ($guestToken) {
-                    if(auth()->check()) {
+                ->where(function($query) use ($guestToken, $user_id) {
+                    if ($user_id) {
                         // Logged-in user
-                        $query->where('user_id', auth()->user()->id);
+                        $query->where('user_id', $user_id);
                     } else {
                         // Guest user
                         $query->where('temp_user_id', $guestToken);
@@ -285,8 +335,16 @@ class ProductController extends Controller
                 });
             $cartQty = $cartQuery->value('quantity') ?? 0;
         }
-        
-        return view('frontend.productDetails', compact('product', 'relatedProducts','stockId', 'cartQty'));
+
+       $stockId = $selectedStock ?? $selectedStock->id;
+
+        return view('frontend.productDetails', compact(
+            'product', 
+            'relatedProducts', 
+            'selectedStock',
+            'cartQty',
+            'stockId'
+        ));
     }
 
     public function index(Request $request)
@@ -396,6 +454,7 @@ class ProductController extends Controller
 
     public function getVarientDetails(Request $request)
     {
+        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $guestToken = request()->cookie('guest_token');
 
         if(!$guestToken){
@@ -422,10 +481,10 @@ class ProductController extends Controller
 
             $cartQty = Cart::where('product_stock_id', $variant->id)
                 ->where('status', 'pending')
-                ->where(function($query) use ($guestToken) {
-                    if(auth()->check()) {
+                ->where(function($query) use ($guestToken, $user_id) {
+                    if($user_id) {
                         // Logged-in user
-                        $query->where('user_id', auth()->user()->id);
+                        $query->where('user_id', $user_id);
                     } else {
                         // Guest user
                         $query->where('temp_user_id', $guestToken);
@@ -472,10 +531,10 @@ class ProductController extends Controller
             // calculate stock
             $cartQty = Cart::where('product_stock_id', $variant->id)
                 ->where('status', 'pending')
-                ->where(function($query) use ($guestToken) {
-                    if(auth()->check()) {
+                ->where(function($query) use ($guestToken, $user_id) {
+                    if($user_id) {
                         // Logged-in user
-                        $query->where('user_id', auth()->user()->id);
+                        $query->where('user_id', $user_id);
                     } else {
                         // Guest user
                         $query->where('temp_user_id', $guestToken);

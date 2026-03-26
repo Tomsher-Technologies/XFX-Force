@@ -1022,4 +1022,36 @@ ol.lh18 li{
     width: auto;
   }
 
- 
+ #returnModal {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  visibility: hidden;
+  opacity: 0;
+}
+
+input:checked ~ div svg {
+  opacity: 1 !important;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.appearance-none {
+  appearance: none;
+}
+
+.bg-image-none {
+  background-image: none;
+}
+
+.rounded-circle{
+  border-radius: 50%;
+}

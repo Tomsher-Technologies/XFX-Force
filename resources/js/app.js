@@ -183,12 +183,16 @@ document.addEventListener('click', function (e) {
 // Cart page Specification and warranty popups
 document.addEventListener('DOMContentLoaded', () => {
     // --- SPECIFICATION MODAL LOGIC ---
-    const sOverlay = document.querySelector('.spec-modal-overlay');
-    const sContainer = document.querySelector('.spec-modal-container');
+    window.toggleSpecModal = function (btn) {
+        const parent = btn.closest('.cart-box');
+         const sOverlay = parent.querySelector('.spec-modal-overlay');
+        const sContainer = parent.querySelector('.spec-modal-container');
 
-    // function toggleSpecModal() {
-    window.toggleSpecModal = function () {
+        if (!sOverlay || !sContainer) return;
+
         const isHidden = sOverlay.classList.contains('hidden');
+        
+        // const isHidden = sOverlay.classList.contains('hidden');
         if (isHidden) {
             sOverlay.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -258,13 +262,32 @@ window.closeWarrantyModal = function (overlay) {
     }, 300);
 }
 
+// --- CLOSE SPEC MODAL ---
+window.closeSpecModal = function (overlay) {
+
+    const container = overlay.querySelector('.spec-modal-container');
+
+    overlay.classList.remove('opacity-100');
+    container.classList.add('scale-95');
+    container.classList.remove('scale-100');
+
+    setTimeout(() => {
+        overlay.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }, 300);
+}
+
 
 // --- OUTSIDE CLICK CLOSE ---
 window.addEventListener('click', (e) => {
-    if (e.target === sOverlay) toggleSpecModal();
+    // if (e.target === sOverlay) toggleSpecModal();
 
     if (e.target.classList.contains('warranty-modal-overlay')) {
         closeWarrantyModal(e.target);
+    }
+
+    if (e.target.classList.contains('spec-modal-overlay')) {
+        closeSpecModal(e.target);
     }
 
 });
@@ -1221,15 +1244,15 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch('/getCartSummary');
             const data = await response.json();
             if (data.status) {
-                document.getElementById('cart-subtotal').innerText = data.sub_total;
-                document.getElementById('cart-discount').innerText = data.discount_sum;
-                document.getElementById('cart-tax').innerText = data.tax;
-                document.getElementById('cart-total').innerText = data.total;
-                document.getElementById('cart-count').innerText = data.cart_count;
-                document.getElementById('cart-shipping').innerText = data.shipping;
-                document.getElementById('cart-warranty').innerText = data.warranty_sum;
+                document.getElementById('cart-subtotal').innerText = formatPrice(data.sub_total);
+                document.getElementById('cart-discount').innerText = formatPrice(data.discount_sum);
+                document.getElementById('cart-tax').innerText = formatPrice(data.tax);
+                document.getElementById('cart-total').innerText = formatPrice(data.total);
+                document.getElementById('cart-count').innerText =  `(${data.cart_count || 0})`;
+                document.getElementById('cart-shipping').innerText = formatPrice(data.shipping);
+                document.getElementById('cart-warranty').innerText = formatPrice(data.warranty_sum);
                 document.getElementById('total-cart-count-top').innerText = data.cart_count;
-                document.getElementById('coupon_discount').innerHTML = data.couponDiscount;
+                document.getElementById('coupon_discount').innerHTML = formatPrice(data.couponDiscount);
                 
             }
         } catch (err) {
@@ -1428,3 +1451,69 @@ window.removeCouponCode = function() {
 };
 
 
+function formatPrice(amount) {
+    if (isNaN(amount)) amount = 0;
+    return Number(amount)
+        .toFixed(2)           // always 2 decimals
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+
+// Address map section script
+
+let map;
+let marker;
+
+window.initMap = function() {
+    let defaultLocation = { lat: 25.2048, lng: 55.2708 }; // Dubai
+    map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 13,
+        center: defaultLocation,
+    });
+
+    marker = new google.maps.Marker({
+        position: defaultLocation,
+        map: map,
+        draggable: true
+    });
+
+    updateLatLng(defaultLocation);
+
+    // click map
+    map.addListener("click", function(event){
+        marker.setPosition(event.latLng);
+        updateLatLng(event.latLng);
+    });
+
+    // drag marker
+    marker.addListener("dragend", function(event){
+        updateLatLng(event.latLng);
+    });
+}
+
+window.updateLatLng = function(location){
+    let lat = typeof location.lat === "function" ? location.lat() : location.lat;
+    let lng = typeof location.lng === "function" ? location.lng() : location.lng;
+
+    document.getElementById("latitude").value = lat;
+    document.getElementById("longitude").value = lng;
+
+    console.log("Latitude:", lat);
+    console.log("Longitude:", lng);
+}
+
+
+window.getCurrentLocation = function(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(position){
+            let pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            map.setCenter(pos);
+            marker.setPosition(pos);
+            document.getElementById("latitude").value = pos.lat;
+            document.getElementById("longitude").value = pos.lng;
+        });
+    }
+}

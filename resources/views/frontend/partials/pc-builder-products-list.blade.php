@@ -15,7 +15,7 @@
                 } 
             @endphp
             <img src="{{ $image }}" class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1" title="Upcoming Product 1">
-            @if(!empty($stock->offer_tag))
+            @if(filled($stock->offer_tag))
             <badge class="absolute top-[20px] left-[20px] bg-[#077F09] text-white text-[10px] md:text-[11px] font-medium px-[15px] py-[5px] rounded-full capitalize">
                 {{$stock->offer_tag}}
             </badge>
@@ -27,7 +27,7 @@
             </h4>
             <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[15px] leading-[20px] m-[0] font-bold align-center items-center gap-[10px]">
                 <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]" alt="AED" title="Symbol of AED">{{ number_format($stock->offer_price, 2) }} 
-                @if(!empty($product->discount) && $product->discount > 0)
+                @if(filled($stock->offer_tag))
                 <span class="text-[#898989] font-medium line-through">{{ number_format($stock->price, 2) }}</span>
                 @endif
             </h5>
