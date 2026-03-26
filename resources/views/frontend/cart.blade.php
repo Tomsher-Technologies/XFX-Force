@@ -39,7 +39,9 @@
                         <div class="product-cart-item flex flex-col md:col-col md:grid md:grid-cols-12 gap-[20px] xl:gap-[50px] w-full bg-black/30 backdrop-blur-[60px] p-[20px] md:p-[30px] rounded-[20px]">
                             <div class="col-span-7 flex flex-col md:flex-row gap-[20px] md:gap-[30px]">
                                 <div class="product-img h-[150px] md:h-auto w-full md:w-[145px] relative z-[1] bg-[#1E2225] rounded-[10px] overflow-hidden items-center justify-center flex">
-                                    <img src="{{ $image }}" class="absolute object-fit object-center w-auto md:w-full h-[150px] md:h-auto" alt="Upcoming Product 1" title="Upcoming Product 1">
+                                    <a href="{{ route('product.details' ,[$item->product->slug, $item->product_stock->sku]) }}" class="absolute">
+                                    <img src="{{ $image }}" class="object-fit object-center w-auto md:w-full h-[150px] md:h-auto" alt="{{ $image }}" title="{{ $image }}">
+                                    </a>
                                 </div>
                                 <div class="flex flex-col gap-[10px]">
                                     <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 md:line-clamp-1 xl:line-clamp-2 text-center md:text-left">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>
