@@ -50,8 +50,10 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="fs-16">
                             <i class="las la-arrows-alt-v drag-handle mr-2 text-muted"></i>
-                            <strong>{{ $menu->title }}</strong> ({{ ucfirst($menu->type) }})
+                            <strong>{{ $menu->title }}</strong> <span class="text-medium fs-12">({{ $menu->type == 'mega' ? 'Mega Menu' : 'Normal Menu' }})</span>
                         </span>
+
+                        <span class="fs-12" style="color: #4242ff;">{{ getMenuLink($menu) }}</span>
                         <span>
                             <button class="btn btn-xs btn-soft-secondary edit-btn" data-id="{{ $menu->id }}" data-type="menu">
                                 <i class="las la-edit"></i>
@@ -78,6 +80,7 @@
                                             <i class="las la-bars drag-handle mr-2 text-muted"></i>
                                             <strong>{{ $section->title }}</strong>
                                         </span>
+                                        <span class="fs-12" style="color: #4242ff;">{{ getMenuLink($section) }}</span>
                                         <span>
                                             <button class="btn btn-xs btn-soft-secondary edit-btn" data-id="{{ $section->id }}" data-type="section">
                                                 <i class="las la-edit"></i>
@@ -96,7 +99,7 @@
                                             <span >
                                                 <i class="las la-bars drag-handle mr-2 text-muted"></i> {{ $item->title }}
                                             </span>
-
+                                            <span class="fs-12" style="color: #4242ff;">{{ getMenuLink($item) }}</span>
                                             <span>
                                                 <button class="btn btn-xs btn-soft-secondary edit-btn" data-id="{{ $item->id }}" data-type="item">
                                                     <i class="las la-edit"></i>
