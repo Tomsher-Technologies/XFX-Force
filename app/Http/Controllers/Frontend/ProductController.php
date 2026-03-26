@@ -290,7 +290,7 @@ class ProductController extends Controller
     //     return view('frontend.productDetails', compact('product', 'relatedProducts','stockId', 'cartQty'));
     // }
 
-    public function productDetails($slug, $sku = null)
+    public function productDetails($slug, $sku)
     {
         // Get logged-in user or guest token
         $user_id = auth('frontend')->check() ? auth('frontend')->user()->id : '';
@@ -336,7 +336,7 @@ class ProductController extends Controller
             $cartQty = $cartQuery->value('quantity') ?? 0;
         }
 
-       $stockId = $selectedStock ?? $selectedStock->id;
+       $stockId = $selectedStock ? $selectedStock->id : null;
 
         return view('frontend.productDetails', compact(
             'product', 
@@ -464,6 +464,7 @@ class ProductController extends Controller
         
         
         $productId   = $request->productId;
+        $product = Product::where('id', $productId)->first();
         $selectedAttributes = json_decode($request->selectedAttributes, true) ?? [];
         
 
@@ -498,6 +499,8 @@ class ProductController extends Controller
                 'success' => true,
                 'data' => [
                     'variant_id' => $variant->id,
+                    'variant_sku' => $variant->sku ?? '',
+                    'slug' => $product->slug ?? '',
                     'title' => $variant->stock_title ?? $variant->product->name,
                     'price' => $variant->price,
                     'offer_price' => $variant->offer_price,
@@ -547,6 +550,8 @@ class ProductController extends Controller
                 'success' => true,
                 'data' => [
                     'variant_id' => $variant->id,
+                    'variant_sku' => $variant->sku ?? '',
+                    'slug' => $product->slug ?? '',
                     'title' => $variant->stock_title,
                     'price' => $variant->price,
                     'offer_price' => $variant->offer_price,

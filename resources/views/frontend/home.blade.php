@@ -120,7 +120,7 @@
         <div class="swiper-wrapper">
             @foreach ($categories as $category)
                 <div class="swiper-slide" data-swiper-autoplay="8000">
-                    <a href="#" class="flex flex-col items-center justify-center gap-[15px]">
+                    <a href="{{ route('shop.category', $category->id) }}" class="flex flex-col items-center justify-center gap-[15px]">
                         <div class="category-thumb flex align-center bg-[#272930] p-[30px] rounded-full h-full md:h-[150px] w-full md:w-[150px]">
                             <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
                         </div>
@@ -186,6 +186,9 @@
                                 'product_id',
                                 $item['featured_new_product_id']
                             )->with(['specification','specificationItem'])->get();
+
+                            $product = \App\Models\Product::with('stocks')->find($item['featured_new_product_id']);
+                            $firstStock = $product?->stocks?->first();
                             @endphp
                             <div class="specifications w-full transition-all duration-600 ease">
                                 <ul class="m-[0] w-full">
@@ -202,9 +205,11 @@
                                     @endforeach
                                 </ul>
                             </div>
-                            <a href="{{ route('product.details', $item['featured_new_product_id']) }}"
+                            @if($product && $firstStock)
+                            <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}"
                                 class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] bg-white rounded-full transition-all duration-600 hover:bg-[#2a7cff] hover:text-white">shop
                                 now</a>
+                                @endif
                         </div>
                     </div>
                 </div>
@@ -236,6 +241,9 @@
                                 'product_id',
                                 $item['featured_popular_product_id']
                             )->with('specification')->get();
+
+                            $product = \App\Models\Product::with('stocks')->find($item['featured_popular_product_id']);
+                             $firstStock = $product?->stocks?->first();
                             @endphp
 
                             <div class="specifications w-full transition-all duration-600 ease">
@@ -249,9 +257,11 @@
                                     @endforeach
                                 </ul>
                             </div>
-                            <a href="{{ route('product.details', $item['featured_popular_product_id']) }}"
+                            @if($product && $firstStock)
+                            <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}"
                                 class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] bg-white rounded-full transition-all duration-600 hover:bg-[#2a7cff] hover:text-white">shop
                                 now</a>
+                                @endif
                         </div>
                     </div>
                 </div>
@@ -534,7 +544,6 @@
 <!--//Best Deals-->
 
 <!--pro built items-->
-kjhjdbhlfblkhdbfkhf
 @if(!empty($popularGalleryProducts))
 <section class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] md:py-[100px] relative border-b-1 border-[#ffffff10] md:border-hidden">
     <div class="section-title mb-[30px] relative flex items-end justify-between">
