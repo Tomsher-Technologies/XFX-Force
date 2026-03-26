@@ -8,7 +8,7 @@
     <nav class="flex text-gray-400 py-[15px] md:py-[30px] border-t-1 border-[#ffffff30]" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-3 flex-wrap">
             <li class="inline-flex items-center">
-                <a href="index.html" class="inline-flex items-center text-sm font-medium hover:text-[#3E81FF] transition-colors">
+                <a href="{{ route('home') }}" class="inline-flex items-center text-sm font-medium hover:text-[#3E81FF] transition-colors">
                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                     </svg>
@@ -21,7 +21,7 @@
                     <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                     </svg>
-                    <a href="shop.html" class="ml-1 text-sm font-medium hover:text-[#3E81FF] md:ml-2 transition-colors">Shop</a>
+                    <a href="{{ route('products') }}" class="ml-1 text-sm font-medium hover:text-[#3E81FF] md:ml-2 transition-colors">Shop</a>
                 </div>
             </li>
 
@@ -30,7 +30,7 @@
                     <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                     </svg>
-                    <a href="shop-category.html" class="ml-1 text-sm font-medium hover:text-[#3E81FF] md:ml-2 transition-colors">Category Name</a>
+                    <a href="{{ route('shop.category', $product->category->id) }}" class="ml-1 text-sm font-medium hover:text-[#3E81FF] md:ml-2 transition-colors">{{$product->category->name}}</a>
                 </div>
             </li>
 
@@ -99,11 +99,23 @@
             : [];
             @endphp
 
+            <div>
+            @if (filled($firstStock['offer_tag']))
+                <badge
+                    class="bg-[#077F09] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">
+                    {{ $firstStock['offer_tag'] }}</badge>
+            @endif
             <h1 class="text-white text-[20px] md:text-[30px] leading-[30px] 
                 md:leading-[45px] text-center 
-                md:text-left tracking-[0px] variant-title">
+                md:text-left tracking-[0px] variant-title mt-[15px]">
                 {{ $firstStock->stock_title ?? $product->name }}
             </h1>
+            <p class="text-[12px] text-[#ffffff50]">
+                @if($product->brand) {{ $product->brand->name }} | @endif
+                @if($firstStock->model) {{ $firstStock->model }} @endif
+                @if($firstStock->sku) | {{ $firstStock->sku }} @endif
+            </p>
+            </div>
             <input type="hidden" value="{{ $firstStock->id}}" id="stock_id">
 
             <!--varients-->
@@ -144,7 +156,7 @@
                             <img src="{{ asset('assets/images/aed.svg') }}" class="w-[22px] h-[22px]" alt="AED" title="Symbol of AED">
                             <span class="offer-price">{{ number_format($firstStock->offer_price, 2) }}</span>
                         </h5>
-                        @if(!empty($product->discount) && $product->discount > 0)
+                        @if(filled($firstStock->offer_tag))
                         <span class="text-[#898989] font-medium line-through text-[20px] main-price">{{ $firstStock->price }} </span>
                         @endif
                     </div>

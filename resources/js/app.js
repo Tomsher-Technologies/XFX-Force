@@ -513,11 +513,13 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(response => {
                 if (response.success) {
-                    console.log(response.data);
                     if (response.data.image && swiperInstance) {
+                        const newUrl = `/product/${response.data.slug}/${response.data.variant_sku}`;
+                        window.history.replaceState({}, '', newUrl);
+                        // window.location.href = "/product/" +response.data.slug + "/" +response.data.variant_sku;
                         swiperInstance.removeAllSlides();
                         swiperInstance.appendSlide(`
-                            <div class="swiper-slide" data-stock-id="${response.data.id}">
+                            <div class="swiper-slide" data-stock-id="${response.data.variant_id}">
                                 <a href="/storage/${response.data.image}" class="glightbox">
                                     <img src="/storage/${response.data.image}" 
                                         class="w-full h-full object-cover object-center">
@@ -569,18 +571,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // select and trigger the click event default selected variant
-    const stockInput = document.getElementById('selected_stock_id');
+    const stockInput = document.getElementById('stock_id');
     const selectedStockId = stockInput ? stockInput.value : null;
 
     const firstBtn = document.querySelector('.variant-group .variant-btn');
     const activeBtn = document.querySelector('.variant-group .variant-btn.active');
     
 
-    if (selectedStockId && activeBtn) {
+    /*if (selectedStockId && activeBtn) {
         activeBtn.click();
     } else if (firstBtn) {
         firstBtn.click();
-    }
+    }*/
 });
 
 // /**************************************Product variant selection script ends**************************************/
