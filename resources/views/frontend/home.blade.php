@@ -119,14 +119,14 @@
     <div class="swiper categoryswiper relative">
         <div class="swiper-wrapper">
             @foreach ($categories as $category)
-            <div class="swiper-slide" data-swiper-autoplay="8000">
-                <a href="{{ route('shop.category', $category->id) }}" class="flex flex-col items-center justify-center gap-[15px]">
-                    <div class="category-thumb flex align-center bg-[#272930] p-[30px] rounded-full h-full md:h-[150px] w-full md:w-[150px]">
-                        <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
-                    </div>
-                    <h4 class="text-[white] text-center font-medium text-[15px] md:text-[20px] capitalize">{{ $category->name }}</h4>
-                </a>
-            </div>
+                <div class="swiper-slide" data-swiper-autoplay="8000">
+                    <a href="{{ route('shop.category', $category->id) }}" class="flex flex-col items-center justify-center gap-[15px]">
+                        <div class="category-thumb flex align-center bg-[#272930] p-[30px] rounded-full h-full md:h-[150px] w-full md:w-[150px]">
+                            <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
+                        </div>
+                        <h4 class="text-[white] text-center font-medium text-[15px] md:text-[20px] capitalize">{{ $category->name }}</h4>
+                    </a>
+                </div>
             @endforeach
         </div>
         <div class="controls relative md:absolute right-[0px] left-[0px] m-auto mt-[30px] md:mt-[0px] md:top-[-80px] flex items-center gap-[20px] justify-center md:justify-end">

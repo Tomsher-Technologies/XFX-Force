@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\AbandonedCartController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SpecificationController;
 use App\Http\Controllers\Admin\PcBuilderCategorySettingController;
+use App\Http\Controllers\Admin\MenuController;
 
 
 Route::get('/admin/notifications', function () {
@@ -270,6 +271,15 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('attributes', AttributeController::class);
     Route::get('/attributes/delete/{id}', [AttributeController::class, 'destroy'])->name('attributes.delete');
 
+    Route::prefix('menus')->name('menus.')->group(function(){
+        Route::get('/', [MenuController::class,'index'])->name('index');
+        Route::post('/', [MenuController::class,'store'])->name('store');
+        Route::get('{type}/{id}/edit', [MenuController::class,'edit']);
+        Route::put('{type}/{id}', [MenuController::class,'update']);
+        Route::delete('{type}/{id}', [MenuController::class,'destroy']);
+    });
+    Route::get('/menus/get-items/{type}', [MenuController::class, 'getItems'])->name('menus.getItems');
+    Route::post('menus/update-order', [MenuController::class, 'updateOrder'])->name('menus.updateOrder');
 });
 
 Route::get('/env-check', function () {
