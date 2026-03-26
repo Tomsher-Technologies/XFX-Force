@@ -175,7 +175,7 @@
                     <div class="mb-3">
                         <label class="form-label">Menu Type</label>
                         <select name="link_type" id="linkType" class="form-control form-select">
-                            <option value="blank">Blank</option>
+                            <option value="custom">Custom</option>
                             <option value="product">Product</option>
                             <option value="category">Category</option>
                             <option value="brand">Brand</option>
@@ -239,7 +239,7 @@
         const selectionField = document.getElementById('selectionField');
         const selectEl = document.getElementById('linkSelection');
 
-        if(val === 'blank'){
+        if(val === 'custom'){
             customField.style.display = 'block';
             selectionField.style.display = 'none';
             selectEl.innerHTML = '';
@@ -370,7 +370,7 @@
         delete form.dataset.parentType;
 
         // Reset dropdown & custom fields
-        document.getElementById('linkType').value = 'blank';
+        document.getElementById('linkType').value = 'custom';
 
         document.getElementById('customLinkInput').value = '';
         document.getElementById('finalLinkValue').value = '';
@@ -396,7 +396,7 @@
     function fillModal(data, type, id){
         const form = document.getElementById('menuForm');
         form.querySelector('[name="title"]').value = data.title;
-        const linkType = data.link_type || 'blank';
+        const linkType = data.link_type || 'custom';
         form.querySelector('[name="link_type"]').value = linkType;
 
         // Reset fields
@@ -407,7 +407,7 @@
         selectionField.style.display = 'none';
         selectEl.innerHTML = '';
 
-        if(linkType === 'blank'){
+        if(linkType === 'custom'){
             customField.style.display = 'block';
             document.getElementById('customLinkInput').value = data.link_value || '';
             document.getElementById('finalLinkValue').value = data.link_value || '';
@@ -448,7 +448,7 @@
     const finalInput = document.getElementById('finalLinkValue');
 
     // ✅ SET FINAL VALUE CORRECTLY
-    if(linkType === 'blank'){
+    if(linkType === 'custom'){
         finalInput.value = customInput.value;
     } else {
         finalInput.value = selectEl.value;
