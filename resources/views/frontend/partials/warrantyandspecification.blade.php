@@ -4,7 +4,9 @@
 $productSpecifications = \App\Models\ProductSpecification::where(
 'product_id',
 $item->product->id
-)->with(['specification','specificationItem'])->get();
+)->with(['specification','specificationItem'])
+->orderBy('sort_order')
+->get();
 
 $specifications = $productSpecifications
 ->map(function ($ps) {

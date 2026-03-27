@@ -49,6 +49,7 @@
                         @php
                             $productSpecifications = \App\Models\ProductSpecification::where('product_id', $product->id)
                                 ->with(['specification', 'specificationItem'])
+                                ->orderBy('sort_order')
                                 ->get();
                         @endphp
                         @if (!empty($productSpecifications))
