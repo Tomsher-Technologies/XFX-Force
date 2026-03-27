@@ -121,25 +121,63 @@
             <!--varients-->
             <div class="flex flex-col gap-[30px] md:gap-6 text-center md:text-left border-t-1 md:border-t-0 border-[#ffffff30] mt-[30px] md:mt-[0px] py-[30px] md:py-[0px]">
                 @foreach($groupedAttributes as $attributeName => $attrRows)                
-                <div class="variant-group">
-                    <label class="text-[12px] uppercase text-[#ffffff50] mb-3 block">{{ $attributeName }}</label>
-                    <div class="flex flex-wrap gap-3 justify-center md:justify-start variant-list">
-                        
-                        @foreach(
-                        $attrRows
-                        ->unique('attribute_value_id')
-                        ->values()
-                        as $attrRow
-                        )
-                        @php
-                        $isActive = $firstStock && in_array($attrRow->attribute_value_id, $firstVariantValues) ? 'active border-1 border-[#2A7CFF] bg-[#2A7CFF]/10 text-white font-medium' : 'border border-[#ffffff10] bg-[#161B22] text-gray-400 hover:border-[#ffffff30]';
-                        @endphp
-                        <button class="variant-btn px-4 py-3 rounded-xl text-[13px] transition-all  {{ $isActive }}" data-attr-id="{{ $attrRow->attribute_id }}" data-value-id="{{ $attrRow->value->id }}" data-product-id="{{$product->id}}" data-attr-index="{{ $loop->parent->index }}">
-                            {{ $attrRow->value->value }}
-                        </button>
-                        @endforeach
+                    @php
+                        $level = $loop->index; // 0 = first level
+                    @endphp
+                    <div class="variant-group">
+                        <label class="text-[12px] uppercase text-[#ffffff50] mb-3 block">{{ $attributeName }}</label>
+                        <div class="flex flex-wrap gap-3 justify-center md:justify-start variant-list">
+                            @foreach($attrRows->unique('attribute_value_id')->values() as $attrRow)
+                                @php
+                                    $attrId = $attrRow->attribute_id;
+                                    $valueId = $attrRow->value->id;
+
+                                    // Enable logic
+                                    if($level == 0){
+                                        $isEnabled = true; // first level always enabled
+                                    } else {
+                                        // Check if this value exists in allowed variants for this level
+                                        $isEnabled = false;
+                                        foreach($variantsById as $v){
+                                            // match parent levels up to current
+                                            $parentValues = array_slice($selectedLevelValues, 0, $level, true);
+                                            $match = true;
+                                            foreach($parentValues as $pid => $pval){
+                                                if(($v[$pid] ?? null) != $pval){
+                                                    $match = false;
+                                                    break;
+                                                }
+                                            }
+                                            if($match && ($v[$attrId] ?? null) == $valueId){
+                                                $isEnabled = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    // Active logic: exact match with selected SKU
+                                    $isActive = isset($selectedLevelValues[$attrId]) && $selectedLevelValues[$attrId] == $valueId
+                                                ? 'active border-1 border-[#2A7CFF] bg-[#2A7CFF]/10 text-white font-medium'
+                                                : '';
+
+                                    $btnClass = $isEnabled
+                                        ? 'border border-[#ffffff10] bg-[#161B22] text-gray-400 hover:border-[#ffffff30]'
+                                        : 'opacity-30 cursor-not-allowed border border-[#ffffff10] bg-[#161B22] text-gray-400 hover:border-[#ffffff30]';
+                                @endphp
+
+                                <button
+                                    class="variant-btn px-4 py-3 rounded-xl text-[13px] transition-all {{ $btnClass }} {{ $isActive }}"
+                                    data-attr-id="{{ $attrId }}"
+                                    data-value-id="{{ $valueId }}"
+                                    data-product-id="{{ $product->id }}"
+                                    data-attr-index="{{ $loop->parent->index }}"
+                                    {{ $isEnabled ? '' : 'disabled' }}
+                                >
+                                    {{ $attrRow->value->value }}
+                                </button>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
                 @endforeach
             </div>
             <!--//varients-->
@@ -188,14 +226,23 @@
                 <!--//when the item is out of stock-->
             </div>
             <div class="flex flex-col md:flex-row justify-between">
-                <a href="#" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b-1 md:border-hidden border-[#ffffff30]">
+                @php
+                    $conditionMap = [
+                        0 => 'New',
+                        1 => 'Refurbished',
+                        2 => 'Open Box',
+                    ];
+                @endphp 
+                <a href="javascript::void(0)" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b-1 md:border-hidden border-[#ffffff30] cursor-default">
                     <div class="h-[50px] w-[50px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/make-your-order.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
-                        <h4 class="text-white text-[18px] mb-[0px]">Make your Order</h4>
-                        <span class="text-[15px] text-[#ffffff50] underline decoration-wavy underline-offset-8">Ways to receive</span>
+                        <h4 class="text-white text-[18px] mb-[0px]">Condition</h4>
+                        <span class="text-[15px] text-[#ffffff50] underline decoration-wavy underline-offset-8">
+                            {{ $conditionMap[$product->condition] ?? 'New' }}
+                        </span>
                     </div>
                 </a>
-                <a href="#" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b-1 md:border-hidden border-[#ffffff30]">
+                <a href="{{ route('buildyourpc') }}" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b-1 md:border-hidden border-[#ffffff30]">
                     <div class="h-[50px] w-[50px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/configurator.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
                         <h4 class="text-white text-[18px] mb-[0px]">Configurator</h4>
@@ -217,46 +264,61 @@
 
 <!--specification-->
 <div class="bg-[#0F161B] text-gray-300" x-data="{ activeTab: 'overview' }">
+    @php
+        $productSpecifications = \App\Models\ProductSpecification::where(
+        'product_id',
+        $product->id
+        )->with(['specification','specificationItem'])
+        ->orderBy('sort_order')
+        ->get();
+
+        $specifications = $productSpecifications
+        ->map(function ($ps) {
+        if ($ps->specification && $ps->specificationItem) {
+        return [
+        'title' => $ps->specification->main_title,
+        'value' => $ps->specificationItem->title,
+        ];
+        }
+        })
+        ->filter()
+        ->values();
+    @endphp
 
     <nav class="sticky top-[79px] md:top-[148px] z-50 w-full border-b border-gray-800 bg-[#0F151D] backdrop-blur-md">
         <div class="max-w-6xl mx-auto flex overflow-x-auto no-scrollbar whitespace-nowrap px-4 justify-start md:justify-center">
-            <a href="javascript:void(0)" @click="activeTab='overview'" :class="activeTab === 'overview' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Overview</a>
-            <a href="javascript:void(0)" @click="activeTab='specs'" :class="activeTab === 'specs' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Specifications</a>
-            <!-- <a href="javascript:void(0)" @click="activeTab='equipment'" :class="activeTab === 'equipment' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Equipments</a> -->
+            @if($product->description !="")    
+                <a href="javascript:void(0)" @click="activeTab='overview'" :class="activeTab === 'overview' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Overview</a>
+            @endif
+            @if($productSpecifications->isNotEmpty())
+                <a href="javascript:void(0)" @click="activeTab='specs'" :class="activeTab === 'specs' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Specifications</a>
+            @endif
+            @php
+                $productWarrantis = $product->warranties;
+            @endphp
+            @if($productWarrantis->isNotEmpty())
+                <a href="javascript:void(0)" @click="activeTab='services'" :class="activeTab === 'services' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Services</a>
+            @endif
         </div>
     </nav>
 
     <main class="max-w-6xl mx-auto px-4 py-10">
 
+        @if($product->description)
         <section x-show="activeTab === 'overview'" x-transition class="tab-panel" id="overview" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px] md:py-[100px]">
             <h2 class="text-[18px] md:text-[20px] text-left uppercase font-bold text-white pb-[20px] border-b-2 border-[#2A7CFF]">Overview</h2>
             <div class="mt-[30px]">
-                <div class="text-[15px] md:text-[18px] text-justify leading-[30px] text-[#ffffff50]">{{ $product->description }}</div>
+                <div class="text-[15px] md:text-[18px] text-justify leading-[30px] text-[#ffffff50]">{!! $product->description !!}</div>
             </div>
         </section>
+        @endif
 
+        @if($productSpecifications->isNotEmpty())
         <section x-show="activeTab === 'specs'" x-transition class="tab-panel" id="specs" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px]">
             <h2 class="text-[18px] md:text-[20px] text-left uppercase font-bold text-white pb-[20px] border-b-2 border-[#2A7CFF]">Specifications</h2>
             <div class="mt-[30px]">
                 <div class="specifications">
-                    @php
-                    $productSpecifications = \App\Models\ProductSpecification::where(
-                    'product_id',
-                    $product->id
-                    )->with(['specification','specificationItem'])->get();
-
-                    $specifications = $productSpecifications
-                    ->map(function ($ps) {
-                    if ($ps->specification && $ps->specificationItem) {
-                    return [
-                    'title' => $ps->specification->main_title,
-                    'value' => $ps->specificationItem->title,
-                    ];
-                    }
-                    })
-                    ->filter()
-                    ->values();
-                    @endphp
+                    
                     <ul class="flex flex-col gap-[5px]">
                         @foreach ($specifications as $specification)
                         <li class="bg-[#282B3450] flex flex-row px-[15px] rounded-[5px] py-[15px] justify-between gap-[15px] md:gap-[0px]">
@@ -273,6 +335,30 @@
                 </div>
             </div>
         </section>
+        @endif
+        @if($productWarrantis->isNotEmpty())
+         <section x-show="activeTab === 'services'" x-transition class="tab-panel" id="services" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px]">
+        
+            <h2 class="text-[18px] md:text-[20px] text-left uppercase font-bold text-white pb-[20px] border-b-2 border-[#2A7CFF]">Services</h2><p class="mt-4">
+            <div class="mt-[50px]">
+                <ul class="flex flex-col gap-[5px]">
+                    <li class="bg-[#282B3450] flex flex-col md:flex-row p-[30px] rounded-[5px] justify-between gap-[30px] md:gap-[0px]">
+                        <div class="title flex flex-row gap-[20px] w-full">
+                            <h5 class="text-[15px] text-[#636671] uppercase"> Warranty</h5>
+                        </div>
+                        <div class="value w-full">
+                            <h6 class="text-[15px] text-[#C4C4C4] text-left mb-[30px]">Optimal Warranty Package</h6>
+                            <ul class="list-outside list-disc px-[15px] text-[#C4C4C4] text-[15px] leading-[30px]">
+                                @foreach ($productWarrantis as $warranty)
+                                <li>{{$warranty->title}}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        @endif
     </main>
 </div>
 <!--//specification-->

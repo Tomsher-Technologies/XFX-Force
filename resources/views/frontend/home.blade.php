@@ -185,7 +185,9 @@
                             $productSpecifications = \App\Models\ProductSpecification::where(
                                 'product_id',
                                 $item['featured_new_product_id']
-                            )->with(['specification','specificationItem'])->get();
+                            )->with(['specification','specificationItem'])
+                            ->orderBy('sort_order')
+                            ->get();
 
                             $product = \App\Models\Product::with('stocks')->find($item['featured_new_product_id']);
                             $firstStock = $product?->stocks?->first();
@@ -240,7 +242,9 @@
                             $productSpecifications = \App\Models\ProductSpecification::where(
                                 'product_id',
                                 $item['featured_popular_product_id']
-                            )->with('specification')->get();
+                            )->with('specification')
+                            ->orderBy('sort_order')
+                            ->get();
 
                             $product = \App\Models\Product::with('stocks')->find($item['featured_popular_product_id']);
                              $firstStock = $product?->stocks?->first();

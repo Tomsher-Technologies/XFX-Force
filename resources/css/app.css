@@ -690,3 +690,20 @@ input[type=number] {
 .rounded-circle{
   border-radius: 50%;
 }
+
+
+.\!cursor-pointer {
+    cursor: pointer !important;
+  }
+  .cursor-default {
+    cursor: default;
+  }
+  .cursor-none {
+    cursor: none;
+  }
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  .cursor-text {
+    cursor: text;
+  }

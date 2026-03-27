@@ -338,12 +338,103 @@ class ProductController extends Controller
 
        $stockId = $selectedStock ? $selectedStock->id : null;
 
+        //    New changes 
+
+        // Step 1 — Get the selected variant  from SKU
+        $selectedVariant = DB::select("
+            SELECT 
+                p.product_varient_id,
+                p.attribute_value_id,
+                ps.sku
+            FROM product_attributes p
+            LEFT JOIN product_stocks ps 
+                ON ps.id = p.product_varient_id
+            WHERE ps.sku = ?
+            ORDER BY p.attribute_id
+        ", [$sku]);
+
+        
+        // Get first attribute value of the SKU
+        $firstAttribute = DB::selectOne("
+            SELECT 
+                p.product_varient_id,
+                p.attribute_value_id
+            FROM product_attributes p
+            LEFT JOIN product_stocks ps 
+                ON ps.id = p.product_varient_id
+            WHERE ps.sku = ?
+            ORDER BY p.attribute_id
+            LIMIT 1
+        ", [$sku]);
+
+
+
+        $variantsById = [];
+        $selectedLevelValues = [];
+
+        if ($firstAttribute) {
+            
+            $valueId = $firstAttribute->attribute_value_id;
+
+            // Step 2 — Get all variants having this first-level value
+            $variants = DB::select("
+                SELECT 
+                    p.product_varient_id,
+                    ps.sku,
+                    p.attribute_id,
+                    a.name,
+                    p.attribute_value_id,
+                    av.value
+                FROM product_attributes p
+                LEFT JOIN attributes a 
+                    ON p.attribute_id = a.id
+                LEFT JOIN attribute_values av 
+                    ON p.attribute_value_id = av.id
+                LEFT JOIN product_stocks ps 
+                    ON ps.id = p.product_varient_id
+                WHERE p.product_varient_id IN (
+                    SELECT product_varient_id 
+                    FROM product_attributes 
+                    WHERE attribute_value_id = ?
+                )
+                ORDER BY p.product_varient_id, p.attribute_id
+            ", [$valueId]);
+
+            // Transform variants into mapping: variant_id => [attribute_id => value_id]
+            
+            foreach ($variants as $v) {
+                $variantsById[$v->product_varient_id][$v->attribute_id] = $v->attribute_value_id;
+            }
+
+            // Get selected variant attribute values by SKU
+            $selectedVariant = DB::select("
+                SELECT 
+                    p.product_varient_id,
+                    p.attribute_value_id,
+                    p.attribute_id,
+                    ps.sku
+                FROM product_attributes p
+                LEFT JOIN product_stocks ps 
+                    ON ps.id = p.product_varient_id
+                WHERE ps.sku = ?
+                ORDER BY p.attribute_id
+            ", [$sku]);
+
+            $selectedLevelValues = [];
+            foreach ($selectedVariant as $v) {
+                $selectedLevelValues[$v->attribute_id] = $v->attribute_value_id;
+            }
+        }
+
         return view('frontend.productDetails', compact(
             'product', 
             'relatedProducts', 
             'selectedStock',
             'cartQty',
-            'stockId'
+            'stockId',
+            'variantsById',
+            'selectedLevelValues',
+            'selectedVariant'
         ));
     }
 
@@ -442,9 +533,6 @@ class ProductController extends Controller
                 'value_id'     => $attr->attribute_value_id,
             ];
         })->values();
-
-
-
 
         return response()->json([
             'success' => true,
