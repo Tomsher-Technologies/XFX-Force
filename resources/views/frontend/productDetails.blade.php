@@ -71,8 +71,8 @@
 
                     @if(!$hasVariantImage && $product->thumbnail_img)
                     <div class="swiper-slide" data-swiper-autoplay="8000">
-                        <a href="{{ Storage::url($product->thumbnail_img) }}" class="glightbox">
-                            <img src="{{ Storage::url($product->thumbnail_img) }}" alt="{{ $product->name }}" title="{{ $product->name }}" class="w-full h-full object-cover object-center">
+                        <a href="{{ get_product_image($product->thumbnail_img,'300') }}" class="glightbox">
+                            <img src="{{ get_product_image($product->thumbnail_img,'300') }}" alt="{{ $product->name }}" title="{{ $product->name }}" class="w-full h-full object-cover object-center">
                         </a>
                     </div>
                     @endif
