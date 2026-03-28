@@ -347,7 +347,7 @@ Log::info($_REQUEST);
             <div>
                 <!-- Filters -->
                 <form class="hidden lg:block">
-
+                    <div id="clear-filters" class="text-[#898989] text-[14px] text-right mt-2 cursor-pointer">Clear All</div>
                     <!--categories filter-->
                     <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px]">
                         <button type="button" command="--toggle" commandfor="filter-section-categories" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
@@ -553,7 +553,7 @@ Log::info($_REQUEST);
                 <div class="flex items-center justify-between">
                     <h1 class="text-4xl font-bold tracking-tight text-white uppercase">All Products</h1>
                     <div class="flex items-center gap-[30px]">
-                        <span class="text-[#898989] text-[14px]">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
+                        <span class="text-[#898989] text-[14px]" id="product-count">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
                         <el-dropdown class="relative inline-block text-left">
                             <button class="group inline-flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white min-w-[230px]">
                                 <span class="mr-[10px] text-[14px] text-[#898989]">Sort by:
@@ -869,7 +869,19 @@ Log::info($_REQUEST);
 
             .then(html => {
 
-                document.getElementById('product-list-wrapper').innerHTML = html;
+                const wrapper = document.getElementById('product-list-wrapper');
+                wrapper.innerHTML = html;
+
+                // Scroll to top of product list
+                const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100; // adjust 100px if header exists
+                window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                // wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Update product count dynamically
+                const countSpan = document.getElementById('product-count');
+                if (countSpan) {
+                    const productCount = wrapper.querySelectorAll('.product-card').length;
+                    countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                }
 
             })
 
@@ -877,6 +889,37 @@ Log::info($_REQUEST);
 
     }
 
+    /* ===============================
+    CLEAR FILTER
+    =============================== */
+    document.addEventListener('DOMContentLoaded', () => {
+        const clearBtn = document.getElementById('clear-filters');
+        if (!clearBtn) return;
+
+        clearBtn.addEventListener('click', () => {
+            // Reset sliders and inputs
+            const minSlider = document.getElementById('range-min');
+            const maxSlider = document.getElementById('range-max');
+            const minInput = document.getElementById('min-price');
+            const maxInput = document.getElementById('max-price');
+            if (minSlider && maxSlider && minInput && maxInput) {
+                minSlider.value = 0;
+                maxSlider.value = maxSlider.max;
+                minInput.value = 0;
+                maxInput.value = maxSlider.max;
+            }
+
+            // Uncheck all categories and brands
+            document.querySelectorAll('input[name="categories[]"], input[name="brands[]"]').forEach(cb => cb.checked = false);
+            selectedBrands = [];
+
+            // Reset sort and view if desired
+            currentSort = "newest";
+            currentView = "gridview";
+
+            filterProducts();
+        });
+    });
 
     /* ===============================
     CATEGORY + BRAND CHECKBOX CHANGE

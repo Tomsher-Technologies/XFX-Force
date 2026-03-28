@@ -440,12 +440,8 @@ class ProductController extends Controller
         
         $brands = Brand::withCount('products')->where('is_active', 1)->get();
 
-        if ($products->isEmpty()) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'No Products Found!',
-                ]);
-            }
+        if ($products->isEmpty() && $request->ajax()) {
+            return '<div class="text-white text-center py-10">No Products Found!</div>';
         }
         // If AJAX request, return only product list partial
         if ($request->ajax()) {
@@ -678,12 +674,8 @@ class ProductController extends Controller
         $categories = Category::withCount('products')->get();
         $brands = Brand::withCount('products')->get();
 
-        if ($products->isEmpty()) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'No Products Found!',
-                ]);
-            }
+        if ($products->isEmpty() && $request->ajax()) {
+            return '<div class="text-white text-center py-10">No Products Found!</div>';
         }
 
         // Total products for this category after filters
