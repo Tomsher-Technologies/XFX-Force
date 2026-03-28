@@ -16,7 +16,7 @@ Log::info($_REQUEST);
         <div class="swiper-wrapper">
             @foreach ($categories as $category)
             <div class="swiper-slide" data-swiper-autoplay="8000">
-                <a href="{{ route('shop.category',$category->id) }}" class="flex flex-col items-center justify-center gap-[15px]">
+                <a href="{{ route('shop.category',$category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
                     <div class="category-thumb flex align-center bg-[#272930] p-[30px] rounded-full h-[130px] w-[130px]">
                         <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" alt="Graphics Card" title="Graphics Card" class="w-full m-auto">
                     </div>

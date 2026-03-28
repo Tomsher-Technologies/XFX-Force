@@ -35,6 +35,7 @@ class HomeController extends Controller
         if (!empty($banner_ids)) {
             $banners = Banner::with(['mainImage', 'mobileImage'])
                 ->whereIn('id', $banner_ids)
+                ->where('status', 1)
                 ->orderByRaw("FIELD(id," . implode(',', $banner_ids) . ")")
                 ->get();
         }
@@ -44,6 +45,7 @@ class HomeController extends Controller
         if (!empty($page_content['categories'])) {
             $categories = Category::with('iconImage')
                 ->whereIn('id', $page_content['categories'])
+                ->where('is_active', 1)
                 ->get();
         }
 
@@ -59,8 +61,12 @@ class HomeController extends Controller
         $popularUploads = Upload::whereIn('id', $popularImageIds)->get()->keyBy('id');
 
         // Upcoming product details
-        $upcomingNewProducts = Product::whereIn('id', $page_content['upcoming_new_products'] ?? [])->get();
-        $upcomingPopularProducts = Product::whereIn('id', $page_content['upcoming_popular_products'] ?? [])->get();
+        $upcomingNewProducts = Product::whereIn('id', $page_content['upcoming_new_products'] ?? [])
+        ->where('published', 1)
+        ->get();
+        $upcomingPopularProducts = Product::whereIn('id', $page_content['upcoming_popular_products'] ?? [])
+        ->where('published', 1)
+        ->get();
 
         // --- Middle Banners ---
         $middleBannerIds = $page_content['middle_banners'] ?? [];
@@ -68,13 +74,18 @@ class HomeController extends Controller
         if (!empty($middleBannerIds)) {
             $middleBanners = Banner::with(['mainImage', 'mobileImage'])
                 ->whereIn('id', $middleBannerIds)
+                ->where('status', 1)
                 ->orderByRaw("FIELD(id," . implode(',', $middleBannerIds) . ")")
                 ->get();
         }
 
         // Middle featured product details
-        $middleNewProducts = Product::whereIn('id', $page_content['middle_featured_new_arrivals'] ?? [])->get();
-        $middlePopularProducts = Product::whereIn('id', $page_content['middle_featured_popular_products'] ?? [])->get();
+        $middleNewProducts = Product::whereIn('id', $page_content['middle_featured_new_arrivals'] ?? [])
+        ->where('published', 1)
+        ->get();
+        $middlePopularProducts = Product::whereIn('id', $page_content['middle_featured_popular_products'] ?? [])
+        ->where('published', 1)
+        ->get();
 
         //Middle full banner
         $middleFullBannerIds = $page_content['middle_full_banner'] ?? [];
@@ -82,20 +93,26 @@ class HomeController extends Controller
         if (!empty($middleFullBannerIds)) {
             $middleFullBanners = Banner::with(['mainImage', 'mobileImage'])
                 ->whereIn('id', $middleFullBannerIds)
+                ->where('status', 1)
                 ->orderByRaw("FIELD(id," . implode(',', $middleFullBannerIds) . ")")
                 ->get();
         }
 
         // best deals product details
-        $bestDealsProducts = Product::whereIn('id', $page_content['best_deals_products'] ?? [])->get();
+        $bestDealsProducts = Product::whereIn('id', $page_content['best_deals_products'] ?? [])
+        ->where('published', 1)
+        ->get();
 
         // product gallery images
         $popularGalleryProducts = Product::whereIn('id', $page_content['product_gallery_products'] ?? [])
         ->with('stocks')
+        ->where('published', 1)
         ->get();
         
         // Graphic card product details
-        $graphicCardProducts = Product::whereIn('id', $page_content['graphic_cards_products'] ?? [])->get();
+        $graphicCardProducts = Product::whereIn('id', $page_content['graphic_cards_products'] ?? [])
+        ->where('published', 1)
+        ->get();
 
         //Testimoanials details
         $testimonialsText = Testimonials::where('type', 'text')
