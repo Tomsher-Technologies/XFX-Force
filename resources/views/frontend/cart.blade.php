@@ -40,7 +40,7 @@
                             <div class="col-span-7 flex flex-col md:flex-row gap-[20px] md:gap-[30px]">
                                 <div class="product-img h-[150px] md:h-auto w-full md:w-[145px] relative z-[1] bg-[#1E2225] rounded-[10px] overflow-hidden items-center justify-center flex">
                                     <a href="{{ route('product.details' ,[$item->product->slug, $item->product_stock->sku]) }}" class="absolute">
-                                    <img src="{{ $image }}" class="object-fit object-center w-auto md:w-full h-[150px] md:h-auto" alt="{{ $image }}" title="{{ $image }}">
+                                    <img src="{{ $image }}" class="object-fit object-center w-auto md:w-full h-[150px] md:h-auto" alt="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}" title="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}">
                                     </a>
                                 </div>
                                 <div class="flex flex-col gap-[10px]">

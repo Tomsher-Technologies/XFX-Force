@@ -290,7 +290,7 @@
 
                                         <!-- Image -->
                                         <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
-                                            <img src="{{ $image }}" class="w-full h-full object-cover">
+                                            <img src="{{ $image }}" class="w-full h-full object-cover" alt="{{ $item->product_stock->stock_title  ?? '' }}" title="{{ $item->product_stock->stock_title  ?? '' }}">
                                         </div>
 
                                         <!-- Details -->
@@ -597,7 +597,7 @@
 
                         <!-- Product image & info -->
                         <div class="w-14 h-14 bg-[#1C2228] rounded-[5px] border border-white/5 p-2 flex-shrink-0">
-                            <img src="{{ $image }}" class="w-full h-full object-cover" alt="item">
+                            <img src="{{ $image }}" class="w-full h-full object-cover" alt="{{ $detail->product->name ?? '' }}" title="{{ $detail->product->name ?? '' }}">
                         </div>
                         <div class="flex-grow w-full mr-[50px]">
                             <p class="text-white text-sm font-medium line-clamp-1">{{ $detail->product->name ?? '' }} : {{ $detail->product_stock->stock_title ?? '' }}</p>

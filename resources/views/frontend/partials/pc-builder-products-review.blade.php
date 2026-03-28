@@ -61,7 +61,7 @@
                     @endphp
 
                     <a href="{{ $pagelink }}" target="_blank" class="w-20 h-20 bg-[#252c33] rounded-lg flex items-center justify-center">
-                        <img src="{{ $image }}" alt="PC" class="w-full">
+                        <img src="{{ $image }}" alt="{{ $item['variant_name'] ?: $item['product_name'] }}" title="{{ $item['variant_name'] ?: $item['product_name'] }}" class="w-full">
                     </a>
                 </div>
                 <a href="{{ $pagelink }}" target="_blank">

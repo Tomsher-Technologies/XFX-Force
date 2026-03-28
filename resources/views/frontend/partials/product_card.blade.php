@@ -21,8 +21,8 @@
         <a href="{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}"
             class="product-img h-[230px] w-full relative z-[1] bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]">
             <img src="{{ get_product_image($prodData['thumbnail_img'],'300') }}"
-                class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1"
-                title="Upcoming Product 1">
+                class="absolute object-cover object-center w-full h-full" alt="{{ $prodData['name'] ?? '' }}"
+                title="{{ $prodData['name'] ?? '' }}">
             @if (filled($prodData['offer_tag']))
                 <badge
                     class="absolute top-[20px] left-[20px] bg-[#077F09] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">
