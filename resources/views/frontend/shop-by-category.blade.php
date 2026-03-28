@@ -3,19 +3,16 @@
 @section('title', 'Shop - Category')
 @section('content')
 
-@php
-
-Log::info($_REQUEST);
-@endphp
 
     <!--inner banner-->
     <section class="px-[16px] md:px-[140px] pt-[80px] md:pt-[150px] pb-[0px] relative">
         <div class="section-title mb-[0px] relative border-t-1 border-[#ffffff30] pt-[50px]">
             <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase flex flex-col md:flex-row flex-start justify-center md:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">shop: {{ $category->name }}<span class="text-[18px] text-[#2A7CFF] top-[6px] tracking-[0px] relative font-sans h-[0px]">{{ $productCount }}</span></h3>
         </div>
-        <input type="hidden" id="current-category-id" value="{{ $category->id }}">
+        <input type="hidden" id="current-category-id" value="{{ $category->category_translations->first()->slug }}">
     </section>
     <!--//categories-->
+
 
 
 <!--product listing-->
@@ -359,20 +356,7 @@ Log::info($_REQUEST);
                                         <input type="text" id="category-search" placeholder="Search Category" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
                                     </div>
 
-                                    @foreach ($categories as $category)
-                                    <div class="flex gap-[15px] align-center items-center category-item" data-name="{{$category->name}}">
-                                        <div class="flex h-5 shrink-0 items-center">
-                                            <div class="group grid size-4 grid-cols-1 w-full">
-                                                <input id="filter-category-0" type="checkbox" name="categories[]" value="{{$category->id}}" class="h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7] indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                                                    <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <label for="filter-category-0" class="relative top-[5px] text-[15px] text-white">{{$category->name}} <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $category->products_count }}</span></label>
-                                    </div>
-                                    @endforeach
+                                    
                                 </div>
                             </div>
 
@@ -705,7 +689,7 @@ Log::info($_REQUEST);
         // Get URL from Blade data attribute
         let url = categoryId
             ? `/shop/category/${categoryId}`
-            : `/shop`;
+            : `/products`;
 
         // Build query string
         const params = new URLSearchParams({
@@ -739,7 +723,7 @@ Log::info($_REQUEST);
         });
 
         // Initial load
-        filterProducts();
+        // filterProducts();
     });
 
     // FILTER SCRIPT

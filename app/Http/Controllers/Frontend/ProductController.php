@@ -220,7 +220,7 @@ class ProductController extends Controller
         if ($category_slug) {
             $category_ids = Category::whereHas('category_translations', function ($query) use ($category_slug) {
                 $query->where('slug', $category_slug);
-            })->pluck('id')->toArray();
+            })->where('is_active', 1)->pluck('id')->toArray();
 
             $childIds[] = $category_ids;
             if (!empty($category_ids)) {
@@ -243,53 +243,6 @@ class ProductController extends Controller
         return $products;
     }
 
-    // public function productDetails($id, $stockId = null)
-    // {
-    //     $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-    //     $guestToken = request()->cookie('guest_token');
-
-    //     if(!$guestToken){
-    //         $guestToken = uniqid('guest_', true);
-    //         cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
-    //     }
-
-    //     $product = Product::with([
-    //         'stocks',
-    //         'stocks.attributes.attribute',
-    //         'stocks.attributes.value'
-    //     ])->findOrFail($id);
-
-    //     $relatedProducts = Product::where('category_id', $product->category_id)
-    //         ->where('id', '!=', $product->id)
-    //         ->get();
-
-    //     // determine selected stock
-    //     $selectedStock = $stockId 
-    //         ? $product->stocks->where('id', $stockId)->first()
-    //         : $product->stocks->first();
-
-    //     // get cart quantity
-    //     $cartQty = 0;
-
-    //     if ($selectedStock) {
-    //         $cartQuery = Cart::where('product_id', $product->id)
-    //             ->where('product_stock_id', $selectedStock->id)
-    //             ->where('status', 'pending')
-    //             ->where(function($query) use ($guestToken, $user_id) {
-    //                 if($user_id) {
-    //                     // Logged-in user
-    //                     $query->where('user_id', $user_id);
-    //                 } else {
-    //                     // Guest user
-    //                     $query->where('temp_user_id', $guestToken);
-    //                 }
-    //             });
-    //         $cartQty = $cartQuery->value('quantity') ?? 0;
-    //     }
-        
-    //     return view('frontend.productDetails', compact('product', 'relatedProducts','stockId', 'cartQty'));
-    // }
-
     public function productDetails($slug, $sku)
     {
         // Get logged-in user or guest token
@@ -306,11 +259,12 @@ class ProductController extends Controller
             'stocks',
             'stocks.attributes.attribute',
             'stocks.attributes.value'
-        ])->where('slug', $slug)->firstOrFail();
+        ])->where('slug', $slug)->where('published', 1)->firstOrFail();
 
         // Related products (same category, excluding this product)
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
+            ->where('published', 1)
             ->get();
 
         // Determine selected stock by SKU or default first stock
@@ -338,7 +292,7 @@ class ProductController extends Controller
 
        $stockId = $selectedStock ? $selectedStock->id : null;
 
-        //    New changes 
+        // New changes 
 
         // Step 1 — Get the selected variant  from SKU
         $selectedVariant = DB::select("
@@ -444,7 +398,8 @@ class ProductController extends Controller
         $view = $request->get('view', 'gridview');
 
         $products = Product::select('products.*')
-            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id');
+            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->where('published', 1);
 
         // Filters
         if ($request->filled('categories')) {
@@ -653,17 +608,29 @@ class ProductController extends Controller
         }
     }
 
-    public function shopByCategory(Request $request, $categoryId)
+    public function shopByCategory(Request $request, $slug)
     {
         $sort = $request->get('sort', 'newest');
         $view = $request->get('view', 'gridview');
 
-        // Get current category
-        $category = Category::withCount('products')->findOrFail($categoryId);
+        // Get category using slug
+        $category = Category::whereHas('category_translations', function ($q) use ($slug) {
+            $q->where('slug', $slug);
+        })
+        ->with('category_translations')
+        ->withCount('products')
+        ->where('is_active', 1)
+        ->first();
+
+        if (!$category) {
+            abort(404);
+        }
+
+        $categoryId = $category->id;
 
 
         $products = Product::select('products.*')
-            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id');
+            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')->where('published', 1);
 
         // Category from URL (default filter)
         $products->where('products.category_id', $categoryId);
