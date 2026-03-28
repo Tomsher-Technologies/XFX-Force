@@ -662,8 +662,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
             });
-        });
 
+            // Checkbox script
+            const checkboxes = document.querySelectorAll('input[name="selected_addr"]');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+
+                    if(this.checked){
+                        checkboxes.forEach(function(item){
+                            if(item !== checkbox){
+                                item.checked = false;
+                            }
+                        });
+                    }
+                });
+            });
+        });
+       
+    
 
 </script>
 @endsection

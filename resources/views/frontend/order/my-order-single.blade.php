@@ -28,7 +28,7 @@
                             </div>
 
                             <div class="flex flex-col xl:flex-row xl:flex-wrap items-start gap-3 w-full">
-                                @if($order->delivery_status == 'pending') //
+                                @if($order->delivery_status == 'pending') 
                                 <button
                                     class="cancel-order-btn w-full xl:w-fit cursor-pointer flex-1 bg-red-500/5 border border-red-500/20 text-red-500 px-6 py-4 rounded-xl hover:bg-red-500 hover:text-white transition-all text-[13px] font-medium uppercase tracking-wider" data-id="{{ $order->id }}">
                                     Cancel Order

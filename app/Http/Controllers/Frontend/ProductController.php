@@ -435,8 +435,10 @@ class ProductController extends Controller
         }
 
         $products = $products->with('stocks')->distinct()->get();
-        $categories = Category::withCount('products')->get();
-        $brands = Brand::withCount('products')->get();
+        $categories = Category::withCount('products')->where('is_active', 1)->get();
+        $groupedCategories = $categories->groupBy('parent_id');
+        
+        $brands = Brand::withCount('products')->where('is_active', 1)->get();
 
         if ($products->isEmpty()) {
             if ($request->ajax()) {
@@ -450,7 +452,7 @@ class ProductController extends Controller
             return view('frontend.partials.product-list', compact('products', 'view'))->render();
         }
 
-        return view('frontend.products', compact('products', 'categories', 'brands', 'sort', 'view'));
+        return view('frontend.products', compact('products', 'categories', 'brands', 'sort', 'view', 'groupedCategories'));
     }
 
 
