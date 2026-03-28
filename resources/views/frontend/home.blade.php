@@ -609,7 +609,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-[15px]">
         @foreach($popularGalleryProducts as $product)
         <div class="group ftr-card relative border rounded-[20px] overflow-hidden min-h-[415px] cursor-pointer" onclick="window.location.href='{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}'">
-            <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-center object-cover w-full h-full top-0 left-0 transition-all duration-600 group-hover:scale-110" alt="{{ $product->name }}" title="{{ $product->name }}">
+            <img src="{{ get_product_image($product->thumbnail_img,'300') }}" class="absolute object-center object-cover w-full h-full top-0 left-0 transition-all duration-600 group-hover:scale-110" alt="{{ $product->name }}" title="{{ $product->name }}">
             <div class="content flex flex-col md:flex-row items-end justify-end md:justify-between gap-[20px] md:gap-[30px] relative z-[1] w-full h-full bg-gradient-to-b from-transparent to-[#0000008a] p-[30px]">
                 <h6 class="text-white text-[20px] font-medium w-full md:w-fit text-center">{{ $product->name }}</h6>
                 <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full md:w-fit text-center text-black text-[13px] md:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[15px] rounded-full transition-all duration-600 group-hover:bg-[#2A7CFF] group-hover:text-white">Shop Now</a>
