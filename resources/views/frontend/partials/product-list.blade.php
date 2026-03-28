@@ -40,7 +40,7 @@
                     onclick="window.location= '{{ $firstStock ? route('product.details', ['slug' => $product->slug, 'sku' => $firstStock->sku]) : '#' }}'"
                     style="cursor: pointer;">
                     <div class="product-image col-span-1">
-                        <img src="{{ Storage::url($product->thumbnail_img) }}" alt="" title=""
+                        <img src="{{ Storage::url($product->thumbnail_img) }}" alt="{{ $product->name }}" title="{{ $product->name }}"
                             class="h-full w-full object-cover object-center">
                     </div>
                     <div class="col-span-2 p-[30px]">

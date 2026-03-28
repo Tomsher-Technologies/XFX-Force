@@ -63,7 +63,7 @@
                     @php $hasVariantImage = true; @endphp
                     <div class="swiper-slide" data-swiper-autoplay="8000">
                         <a href="{{ Storage::url($stock->image) }}" class="glightbox">
-                            <img src="{{ Storage::url($stock->image) }}" alt="" title="" class="w-full h-full object-cover object-center">
+                            <img src="{{ Storage::url($stock->image) }}" alt="{{ $stock->stock_title }}" title="{{ $stock->stock_title }}" class="w-full h-full object-cover object-center">
                         </a>
                     </div>
                     @endif
@@ -72,7 +72,7 @@
                     @if(!$hasVariantImage && $product->thumbnail_img)
                     <div class="swiper-slide" data-swiper-autoplay="8000">
                         <a href="{{ Storage::url($product->thumbnail_img) }}" class="glightbox">
-                            <img src="{{ Storage::url($product->thumbnail_img) }}" alt="" title="" class="w-full h-full object-cover object-center">
+                            <img src="{{ Storage::url($product->thumbnail_img) }}" alt="{{ $product->name }}" title="{{ $product->name }}" class="w-full h-full object-cover object-center">
                         </a>
                     </div>
                     @endif

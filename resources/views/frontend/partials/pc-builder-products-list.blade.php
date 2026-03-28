@@ -14,7 +14,7 @@
                     $image = Storage::url($product->thumbnail_img);
                 } 
             @endphp
-            <img src="{{ $image }}" class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1" title="Upcoming Product 1">
+            <img src="{{ $image }}" class="absolute object-cover object-center w-full h-full" alt="{{ $stock->stock_title ?? $product->name }}" title="{{ $stock->stock_title ?? $product->name }}">
             @if(filled($stock->offer_tag))
             <badge class="absolute top-[20px] left-[20px] bg-[#077F09] text-white text-[10px] md:text-[11px] font-medium px-[15px] py-[5px] rounded-full capitalize">
                 {{$stock->offer_tag}}

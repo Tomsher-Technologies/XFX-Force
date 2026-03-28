@@ -17,7 +17,7 @@
                                     $image = Storage::url($item->product->thumbnail_img);
                                 }
                             @endphp
-                            <img src="{{ $image }}" class="absolute object-fit object-center w-auto md:w-full h-[150px] md:h-auto" alt="Upcoming Product 1" title="Upcoming Product 1">
+                            <img src="{{ $image }}" class="absolute object-fit object-center w-auto md:w-full h-[150px] md:h-auto" alt="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}" title="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}">
                         </div>
                         <div class="flex flex-col gap-[10px]">
                             <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 md:line-clamp-1 xl:line-clamp-2 text-center md:text-left">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>

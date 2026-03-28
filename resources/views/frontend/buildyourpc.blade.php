@@ -22,7 +22,10 @@ $hideFooter = true;
 
         <div class="p-[30px] border-b-1 border-[#2E363E]">
             <a href="{{ route('home') }}" class="flex items-center gap-[20px]">
-                <img src="src/images/pc-builder-logo.svg" alt="" title="" class="">
+                @php
+                    $logo = get_setting('header_logo');
+                @endphp
+                <img src="{{ uploaded_asset($logo) }}" alt="PC Garage Logo" title="PC Garage Logo" class="">
                 <div>
                     <h1 class="text-white uppercase text-[30px] leading-[30px]">PC Builder</h1>
                     <span class="text-gray-500 text-[15px]">Build your dream PC</span>

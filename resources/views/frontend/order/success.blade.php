@@ -61,7 +61,7 @@
                                 @endphp
                                 <div class="flex items-center gap-6 group">
                                             <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
-                                                <img src="{{$image}}" class="w-full h-full object-cover">
+                                                <img src="{{$image}}" class="w-full h-full object-cover" alt="{{ $item->product->name ?? '' }}" title="{{ $item->product->name ?? '' }}">
                                             </div>
                                             <div class="flex-grow w-full">
                                                 <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1">{{ $item->product->name ?? '' }}</h4>

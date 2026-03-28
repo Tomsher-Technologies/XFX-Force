@@ -18,7 +18,7 @@ Log::info($_REQUEST);
             <div class="swiper-slide" data-swiper-autoplay="8000">
                 <a href="{{ route('shop.category',$category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
                     <div class="category-thumb flex align-center bg-[#272930] p-[30px] rounded-full h-[130px] w-[130px]">
-                        <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" alt="Graphics Card" title="Graphics Card" class="w-full m-auto">
+                        <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{$category->name}}" class="w-full m-auto">
                     </div>
                     <h4 class="text-[white] text-center font-medium text-[16px] capitalize">{{$category->name}}</h4>
                 </a>
@@ -365,7 +365,6 @@ Log::info($_REQUEST);
 
                             <div class="w-full">
                                 <div class="space-y-4">
-
                                     <div class="relative mb-6">
                                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                                             <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -461,15 +460,15 @@ Log::info($_REQUEST);
                                 <div class="flex justify-between items-center mb-8 gap-[20px] align-center">
                                     <div class="w-full">
                                         <span class="text-gray-400 text-xs block mb-2">Min</span>
-                                        <div class="bg-[#282B34] py-[10px] px-[15px] rounded-[10px] border border-white/5 w-full">
-                                            <input type="number" id="min-price" class="w-full text-white bg-transparent font-medium text-[14px] focus:outline-none" value="0" min="0" max="300000" step="100">
+                                        <div class="bg-[#282B34] rounded-[10px] border border-white/5 w-full">
+                                            <input type="number" id="min-price" class="w-full text-white bg-transparent font-medium text-[14px] focus:outline-none border-0" value="0" min="0" max="300000" step="100">
                                         </div>
                                     </div>
                                     <div class="h-[1px] w-4 bg-gray-600"></div>
                                     <div class="w-full">
                                         <span class="text-gray-400 text-xs block mb-2 text-right">Max</span>
-                                        <div class="bg-[#282B34] py-[10px] px-[15px] rounded-[10px] border border-white/5 text-right w-full">
-                                            <input type="number" id="max-price" class="w-full text-white bg-transparent font-medium text-[14px] focus:outline-none text-right" value="300000" min="0" max="300000" step="100">
+                                        <div class="bg-[#282B34] rounded-[10px] border border-white/5 text-right w-full">
+                                            <input type="number" id="max-price" class="w-full text-white bg-transparent font-medium text-[14px] focus:outline-none text-right border-0" value="300000" min="0" max="300000" step="100">
                                         </div>
                                     </div>
                                 </div>

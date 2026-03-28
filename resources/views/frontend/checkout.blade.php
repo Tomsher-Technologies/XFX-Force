@@ -207,7 +207,7 @@
                     <div class="flex gap-4 mb-6">
                         <div class="w-20 h-20 bg-[#0B0F13] bg-[#1E2225] rounded-lg border border-gray-800 flex items-center justify-center">
                             <a href="{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}">
-                                <img src="{{ $image }}" alt="PC" class="w-full">
+                                <img src="{{ $image }}" alt="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}" title="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}" class="w-full">
                             </a>
                         </div>
                         <div class="flex-1">

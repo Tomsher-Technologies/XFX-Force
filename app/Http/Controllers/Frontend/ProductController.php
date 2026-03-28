@@ -606,6 +606,19 @@ class ProductController extends Controller
         }
     }
 
+    public function getCategoryAndChildrenIds($categoryId)
+    {
+        $ids = [$categoryId];
+
+        $children = Category::where('parent_id', $categoryId)->pluck('id');
+
+        foreach ($children as $childId) {
+            $ids = array_merge($ids, $this->getCategoryAndChildrenIds($childId));
+        }
+
+        return $ids;
+    }
+
     public function shopByCategory(Request $request, $slug)
     {
         $sort = $request->get('sort', 'newest');
@@ -616,7 +629,6 @@ class ProductController extends Controller
             $q->where('slug', $slug);
         })
         ->with('category_translations')
-        ->withCount('products')
         ->where('is_active', 1)
         ->first();
 
@@ -624,14 +636,12 @@ class ProductController extends Controller
             abort(404);
         }
 
-        $categoryId = $category->id;
-
+        $categoryIds = $this->getCategoryAndChildrenIds($category->id);
 
         $products = Product::select('products.*')
-            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')->where('published', 1);
-
-        // Category from URL (default filter)
-        $products->where('products.category_id', $categoryId);
+            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->where('published', 1)
+            ->whereIn('products.category_id', $categoryIds);
 
         // Filters
         if ($request->filled('categories')) {
@@ -671,15 +681,13 @@ class ProductController extends Controller
 
         $products = $products->with('stocks')->distinct()->get();
 
+        $brands = Brand::whereIn('id', $products->pluck('brand_id')->filter()->unique())->get();
+
         $categories = Category::withCount('products')->get();
-        $brands = Brand::withCount('products')->get();
+        $groupedCategories = $categories->groupBy('parent_id');
 
-        if ($products->isEmpty() && $request->ajax()) {
-            return '<div class="text-white text-center py-10">No Products Found!</div>';
-        }
-
-        // Total products for this category after filters
         $productCount = $products->count();
+
         // If AJAX request, return only product list partial
         if ($request->ajax()) {
             return view('frontend.partials.product-list', compact('products', 'view'))->render();
@@ -691,7 +699,7 @@ class ProductController extends Controller
             'brands',
             'sort',
             'view',
-            'categoryId',
+            // 'categoryId',
             'category',
             'productCount'
         ));
