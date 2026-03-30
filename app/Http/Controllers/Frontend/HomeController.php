@@ -116,4 +116,49 @@ class HomeController extends Controller
 
         return view('frontend.home', compact('page_content', 'sliders', 'banners', 'categories', 'newArrivals', 'popularItems', 'newUploads', 'popularUploads', 'upcomingNewProducts', 'upcomingPopularProducts', 'middleBanners', 'middleNewProducts', 'middlePopularProducts', 'middleFullBanners', 'bestDealsProducts', 'popularGalleryProducts', 'graphicCardProducts', 'testimonialsText', 'testimonialsVideo','homePageFooters', 'footerUploads'));
     }
+
+    public function about()
+    {
+        $page = Page::where('slug', 'about')->first();
+        return view('frontend.about', compact('page'));
+    }
+    
+    public function terms()
+    {
+        $page = Page::where('type', 'terms')->first();
+        return view('frontend.terms', compact('page'));
+    }
+
+    public function privacy()
+    {
+        $page = Page::where('type', 'privacy_policy')->first();
+        return view('frontend.privacy', compact('page'));
+    }
+
+    public function returnPolicy()
+    {
+        $page = Page::where('type', 'return_policy')->first();
+        return view('frontend.return_policy', compact('page'));
+    }
+
+    public function contact()
+    {
+        $page = Page::where('type', 'contact')->first();
+        return view('frontend.contact', compact('page'));
+    }
+
+    public function submitContactForm(Request $request)
+    {
+        // Validate the form data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'message' => 'required|string',
+        ]);
+
+        // Here you can handle the form submission, e.g., save to database or send an email
+        // For demonstration, we'll just return a success response
+
+        return response()->json(['success' => true, 'message' => 'Thank you for contacting us! We will get back to you soon.']);
+    }
 }

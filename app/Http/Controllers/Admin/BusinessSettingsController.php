@@ -25,8 +25,8 @@ class BusinessSettingsController extends Controller
     {
         $data = $request->except('_token');
         Page::updateOrCreate(
-            ['type' => 'home'],
-            ['slug' => 'home', 'status' => 1, 'data' => json_encode($data)]
+            ['type' => $request->type],
+            ['data' => json_encode($data)]
         );
 
         flash(trans("messages.settings").' '.trans("messages.updated_msg"))->success();
