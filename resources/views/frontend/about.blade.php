@@ -6,7 +6,7 @@
     <section
         class="min-h-screen relative justify-between w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px] border-b-1 border-gray-800 xl:border-none">
 
-        <img src="{{ asset('assets/images/about-banner.webp') }}" alt="" title=""
+        <img src="{{ uploaded_asset($page_content['image1'] ?? '') }}" alt="" title=""
             class="absolute left-0 top-0 w-full h-full object-cover object-center z-[-1]">
 
         <!--breadcrumb-->
@@ -15,7 +15,7 @@
                 aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3 flex-wrap">
                     <li class="inline-flex items-center">
-                        <a href="index.html"
+                        <a href="{{ route('home') }}"
                             class="inline-flex items-center text-sm font-medium hover:text-[#3E81FF] transition-colors">
                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path
@@ -42,15 +42,14 @@
         <div class="text-white w-full xl:w-6xl mx-auto flex flex-col justify-between h-full">
             <div class="flex flex-col xl:flex-row justify-between gap-[20px] xl:gap-[100px]">
                 <div class="w-full">
-                    <h1
-                        class="about-title text-[25px] xl:text-[40px] leading-[35px] xl:leading-[55px] text-center xl:text-left">
-                        Tuned for Glory, Powered by AMD</h1>
+                    <h1 class="about-title text-[25px] xl:text-[40px] leading-[35px] xl:leading-[55px] text-center xl:text-left">
+                        {{ $page_content['title'] ?? 'About Us' }}</h1>
                 </div>
                 <div class="w-full">
                     <p
                         class="text-[#ffffff80] text-[15px] xl:text-[20px] leading-[30px] xl:leading-[40px] text-center xl:text-left">
-                        Where raw power meets precision engineering. At PC Garage, we take the world’s most advanced AMD
-                        architecture and tune it for one thing: Absolute Dominance.</p>
+                        
+                        {{ $page_content['description'] ?? '' }}</p>
                 </div>
             </div>
         </div>
@@ -62,27 +61,24 @@
     <section
         class="h-full xl:min-h-screen relative flex flex-col bg-black justify-start xl:justify-between w-full px-[16px] md:px-[30px] xl:px-[250px] py-[40px] xl:py-[100px] border-b-1 border-gray-800 xl:border-none">
 
-        <img src="{{ asset('assets/images/amd-about-img.webp') }}" alt="" title=""
+        <img src="{{ uploaded_asset($page_content['image2'] ?? '') }}" alt="" title=""
             class="hidden xl:block absolute left-0 top-0 w-full h-full object-contain object-center z-[0]">
 
         <div class="w-full xl:w-1/2 text-left relative z-1 mb-[30px] xl:mb-0">
             <h2
                 class="about-title text-[25px] xl:text-[40px] leading-[35px] xl:leading-[55px] text-white text-center xl:text-left">
-                The Red Revolution: Powering Your Play with AMD
+                {{ $page_content['mid_title'] ?? '' }}
             </h2>
         </div>
 
         <div class="w-full xl:w-1/2 self-end text-center xl:text-left px-0 xl:px-[50px] relative z-1">
             <h3
                 class="about-title text-[18px] xl:text-[25px] leading-[30px] xl:leading-[35px] text-white mb-4 w-full xl:w-sm">
-                Innovation at the Core. Victory in the Frame.
+                {{ $page_content['mid_sub_title'] ?? '' }}
             </h3>
             <p
                 class="text-[#ffffff90] text-[15px] xl:text-[18px] leading-[30px] xl:leading-[35px] full xl:max-w-2xl xl:ml-auto font-medium">
-                At PC Garage, we don't just build PCs; we engineer legends. That’s why we’ve partnered with AMD—the
-                architects of the world’s most advanced gaming processors and graphics cards. Whether you are a competitive
-                eSports athlete, a 4K enthusiast, or a visionary content creator, our AMD-powered systems are built to push
-                the limits of what’s possible.
+                {{ $page_content['mid_description'] ?? '' }}
             </p>
         </div>
 
@@ -96,34 +92,43 @@
             class="text-white w-full xl:w-2xl mx-auto flex flex-col justify-between h-full gap-[20px] md:gap-[30px] text-center">
             <div class="w-full">
                 <h1 class="about-title text-[25px] xl:text-[40px] leading-[35px] xl:leading-[55px] text-center">
-                    Tuned for Glory, Powered by AMD</h1>
+                    
+                    {{ $page_content['last_title'] ?? '' }}</h1>
             </div>
             <div class="w-full">
                 <p class="text-[#ffffff80] text-[15px] xl:text-[20px] leading-[30px] xl:leading-[40px]">Where raw power
-                    meets precision engineering. At PC Garage, we take the world’s most advanced AMD architecture and tune
-                    it for one thing: Absolute Dominance.</p>
+                    {{ $page_content['last_description'] ?? '' }}
+                </p>
             </div>
         </div>
-        <img src="{{ asset('assets/images/why-choose-us.webp') }}" alt="" title="" class="m-auto w-full">
+        <img src="{{ uploaded_asset($page_content['image3'] ?? '') }}" alt="" title="" class="m-auto w-full">
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-[30px] xl:gap-[80px]">
             <div class="border-t-2 border-white pt-[30px]">
-                <h3 class="text-white text-[20px] text-center xl:text-left mb-[15px] about-title">Zen Architecture</h3>
+                <h3 class="text-white text-[20px] text-center xl:text-left mb-[15px] about-title">
+                    {{ $page_content['section1_title'] ?? '' }}
+                </h3>
                 <p
                     class="text-[#ffffff90] text-[15px] xl:text-[18px] leading-[30px] xl:leading-[35px] xl:ml-auto font-medium text-center xl:text-left">
-                    Revolutionary multi-core power for seamless gaming, streaming, and recording at the highest settings.
+                    {{ $page_content['section1_description'] ?? '' }}
                 </p>
             </div>
             <div class="border-t-2 border-white pt-[30px]">
-                <h3 class="text-white text-[20px] text-center xl:text-left mb-[15px] about-title">RDNA™ 3 Graphics</h3>
+                <h3 class="text-white text-[20px] text-center xl:text-left mb-[15px] about-title">
+                    {{ $page_content['section2_title'] ?? '' }}
+                </h3>
                 <p
                     class="text-[#ffffff90] text-[15px] xl:text-[18px] leading-[30px] xl:leading-[35px] xl:ml-auto font-medium text-center xl:text-left">
-                    Next-gen visual fidelity featuring Ray Tracing and FSR for ultra-smooth, lifelike gameplay.</p>
+                    {{ $page_content['section2_description'] ?? '' }}
+                </p>
             </div>
             <div class="border-t-2 border-white pt-[30px]">
-                <h3 class="text-white text-[20px] text-center xl:text-left mb-[15px] about-title">Smart Access Memory</h3>
+                <h3 class="text-white text-[20px] text-center xl:text-left mb-[15px] about-title">
+                    {{ $page_content['section3_title'] ?? '' }}
+                </h3>
                 <p
                     class="text-[#ffffff90] text-[15px] xl:text-[18px] leading-[30px] xl:leading-[35px] xl:ml-auto font-medium text-center xl:text-left">
-                    The "AMD Advantage"—pairing Ryzen and Radeon to unlock up to 15% more gaming performance.</p>
+                    {{ $page_content['section3_description'] ?? '' }}
+                </p>
             </div>
 
         </div>

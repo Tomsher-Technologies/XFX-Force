@@ -170,11 +170,23 @@ class HomeController extends Controller
 
     public function about()
     {
-        $page = Page::where('slug', 'about')->first();
+        $page = Page::where('type', 'about_us')->first();
 
-       
+        $page_content = $page ? json_decode($page->data, true) : [];
 
-        return view('frontend.about', compact('page'));
+        $seoContents = [
+            'title' => $page_content['meta_title'] ?? '',
+            'meta_description' => $page_content['meta_description'] ?? '',
+            'keywords' => $page_content['keywords'] ?? '',
+            'og_title' => $page_content['og_title'] ?? '',
+            'og_description' => $page_content['og_description'] ?? '',
+            'twitter_title' => $page_content['twitter_title'] ?? '',
+            'twitter_description' => $page_content['twitter_description'] ?? '',
+        ];
+
+        $this->loadSEO($page_content);
+
+        return view('frontend.about', compact('page', 'page_content'));
     }
     
     public function terms()
@@ -183,13 +195,13 @@ class HomeController extends Controller
         $page_content = $page ? json_decode($page->data, true) : [];
         
         $seoContents = [
-            'title' => $page_content['meta_title'],
-            'meta_description' => $page_content['meta_description'],
-            'keywords' => $page_content['keywords'],
-            'og_title' => $page_content['og_title'],
-            'og_description' => $page_content['og_description'],
-            'twitter_title' => $page_content['twitter_title'],
-            'twitter_description' => $page_content['twitter_description'],
+            'title' => $page_content['meta_title'] ?? '',
+            'meta_description' => $page_content['meta_description'] ?? '',
+            'keywords' => $page_content['keywords'] ?? '',
+            'og_title' => $page_content['og_title'] ?? '',
+            'og_description' => $page_content['og_description'] ?? '',
+            'twitter_title' => $page_content['twitter_title'] ?? '',
+            'twitter_description' => $page_content['twitter_description'] ?? '',
         ];
         
         $this->loadSEO($page_content);
@@ -202,13 +214,13 @@ class HomeController extends Controller
         $page_content = $page ? json_decode($page->data, true) : [];
         
         $seoContents = [
-            'title' => $page_content['meta_title'],
-            'meta_description' => $page_content['meta_description'],
-            'keywords' => $page_content['keywords'],
-            'og_title' => $page_content['og_title'],
-            'og_description' => $page_content['og_description'],
-            'twitter_title' => $page_content['twitter_title'],
-            'twitter_description' => $page_content['twitter_description'],
+            'title' => $page_content['meta_title'] ?? '',
+            'meta_description' => $page_content['meta_description'] ?? '',
+            'keywords' => $page_content['keywords'] ?? '',
+            'og_title' => $page_content['og_title'] ?? '',
+            'og_description' => $page_content['og_description'] ?? '',
+            'twitter_title' => $page_content['twitter_title'] ?? '',
+            'twitter_description' => $page_content['twitter_description'] ?? '',
         ];
         
         $this->loadSEO($page_content);
@@ -221,13 +233,13 @@ class HomeController extends Controller
         $page_content = $page ? json_decode($page->data, true) : [];
         
         $seoContents = [
-            'title' => $page_content['meta_title'],
-            'meta_description' => $page_content['meta_description'],
-            'keywords' => $page_content['keywords'],
-            'og_title' => $page_content['og_title'],
-            'og_description' => $page_content['og_description'],
-            'twitter_title' => $page_content['twitter_title'],
-            'twitter_description' => $page_content['twitter_description'],
+            'title' => $page_content['meta_title'] ?? '',
+            'meta_description' => $page_content['meta_description'] ?? '',
+            'keywords' => $page_content['keywords'] ?? '',
+            'og_title' => $page_content['og_title'] ?? '',
+            'og_description' => $page_content['og_description'] ?? '',
+            'twitter_title' => $page_content['twitter_title'] ?? '',
+            'twitter_description' => $page_content['twitter_description'] ?? '',
         ];
         
         $this->loadSEO($page_content);

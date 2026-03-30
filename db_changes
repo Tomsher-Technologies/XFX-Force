@@ -419,3 +419,6 @@ INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `create
 -- ADD COLUMN is_ordered TINYINT(1) NOT NULL DEFAULT 0 COMMENT '0=>false, 1=>true' AFTER build_data;
 
 -- ALTER TABLE `orders` ADD `warranty_amount` DOUBLE(20,2) NOT NULL DEFAULT '0.00' AFTER `offer_discount`;
+
+UPDATE `pages` SET `type` = 'about_us' WHERE `pages`.`id` = 2;
+
