@@ -411,11 +411,11 @@ class ProductController extends Controller
         }
 
         if ($request->filled('min_price')) {
-            $products->where('product_stocks.price', '>=', $request->min_price);
+            $products->where('product_stocks.offer_price', '>=', $request->min_price);
         }
 
         if ($request->filled('max_price')) {
-            $products->where('product_stocks.price', '<=', $request->max_price);
+            $products->where('product_stocks.offer_price', '<=', $request->max_price);
         }
 
         // Sorting
@@ -424,10 +424,10 @@ class ProductController extends Controller
                 $products->orderBy('products.created_at', 'asc');
                 break;
             case 'price_low_high':
-                $products->orderBy('product_stocks.price', 'asc');
+                $products->orderBy('product_stocks.offer_price', 'asc');
                 break;
             case 'price_high_low':
-                $products->orderBy('product_stocks.price', 'desc');
+                $products->orderBy('product_stocks.offer_price', 'desc');
                 break;
             default:
                 $products->orderBy('products.created_at', 'desc');
@@ -653,11 +653,11 @@ class ProductController extends Controller
         }
 
         if ($request->filled('min_price')) {
-            $products->where('product_stocks.price', '>=', $request->min_price);
+            $products->where('product_stocks.offer_price', '>=', $request->min_price);
         }
 
         if ($request->filled('max_price')) {
-            $products->where('product_stocks.price', '<=', $request->max_price);
+            $products->where('product_stocks.offer_price', '<=', $request->max_price);
         }
 
         // Sorting
@@ -667,11 +667,11 @@ class ProductController extends Controller
                 break;
 
             case 'price_low_high':
-                $products->orderBy('product_stocks.price', 'asc');
+                $products->orderBy('product_stocks.offer_price', 'asc');
                 break;
 
             case 'price_high_low':
-                $products->orderBy('product_stocks.price', 'desc');
+                $products->orderBy('product_stocks.offer_price', 'desc');
                 break;
 
             default:

@@ -855,7 +855,7 @@ Log::info($_REQUEST);
         selectedBrands.forEach(brand => params.append('brands[]', brand));
 
 
-        fetch(`${url}?${params.toString()}`, {
+        return fetch(`${url}?${params.toString()}`, {
 
                 method: 'GET',
                 headers: {
@@ -872,8 +872,8 @@ Log::info($_REQUEST);
                 wrapper.innerHTML = html;
 
                 // Scroll to top of product list
-                const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100; // adjust 100px if header exists
-                window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                // const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100; // adjust 100px if header exists
+                // window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                 // wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 // Update product count dynamically
                 const countSpan = document.getElementById('product-count');
@@ -908,6 +908,8 @@ Log::info($_REQUEST);
                 maxInput.value = maxSlider.max;
             }
 
+            updateProgress(0, parseInt(maxSlider.max));
+
             // Uncheck all categories and brands
             document.querySelectorAll('input[name="categories[]"], input[name="brands[]"]').forEach(cb => cb.checked = false);
             selectedBrands = [];
@@ -920,16 +922,44 @@ Log::info($_REQUEST);
         });
     });
 
+    function updateProgress(minVal, maxVal) {
+
+        const progress = document.getElementById('slider-progress');
+        const maxPrice = 300000;
+        const minPercent = (minVal / maxPrice) * 100;
+        const maxPercent = 100 - (maxVal / maxPrice) * 100;
+
+        progress.style.left = minPercent + "%";
+        progress.style.right = maxPercent + "%";
+    }
     /* ===============================
     CATEGORY + BRAND CHECKBOX CHANGE
     =============================== */
 
     document.addEventListener('DOMContentLoaded', () => {
+
         document.querySelectorAll(
             'input[name="categories[]"], input[name="brands[]"]'
         ).forEach(input => {
-            input.addEventListener('change', () => filterProducts());
+
+            input.addEventListener('change', () => {
+
+                filterProducts().then(() => {
+
+                    const wrapper = document.getElementById('product-list-wrapper');
+                    const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
+
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+
+                });
+
+            });
+
         });
+
     });
 
     /* ===============================

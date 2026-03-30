@@ -75,7 +75,7 @@ return [
                             <label onclick="selectWarranty(this)" class="warranty-card relative flex items-center justify-between p-5 rounded-xl cursor-pointer transition-all duration-200 {{ $item->warranty_id == $warranty->id 
                                     ? 'border-2 border-[#2A7CFF] bg-[#161B22]' 
                                     : 'border border-gray-800 bg-[#282B3450]' 
-                                }} cursor-pointer transition-all duration-200" data-cartid="{{$item->id}}" data-warrantyid="{{$warranty->id}}">
+                                }} cursor-pointer transition-all duration-200" data-cartid="{{$item->id}}" data-warrantyid="{{$warranty->id}}" data-warrantyname="{{$warranty->title}}">
                                 <div class="flex flex-col gap-1">
                                     <span class="text-white font-bold text-[16px]">{{$warranty->title}}</span>
                                     <p class="text-[13px] text-[#636671]">{{$warranty->description}}</p>
