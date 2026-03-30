@@ -36,6 +36,14 @@ Route::post('register', [AuthController::class, 'register']);
 Route::get('login/', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
 
+Route::get('terms', [HomeController::class, 'terms'])->name('terms');
+Route::get('privacy-policy', [HomeController::class, 'privacy'])->name('privacy-policy');
+Route::get('return-policy', [HomeController::class, 'returnPolicy'])->name('return-policy');
+Route::get('contact', [HomeController::class, 'contact'])->name('contact');
+Route::post('contact', [HomeController::class, 'submitContactForm'])->name('contact.submit');
+Route::get('about', [HomeController::class, 'about'])->name('about');
+
+
 Route::get('forgot-password/', [ForgotPasswordController::class, 'showForgotForm'])->name('forgot-password');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.sendResetLink');
 Route::get('/password/reset/{email}/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
