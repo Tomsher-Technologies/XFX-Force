@@ -370,7 +370,7 @@ function getMenuLink($menu){
             return $slug ? url('/shop/category/'.$slug) : '#';
         case 'brand':
             $brand = Brand::select('slug')->find($menu->link_value);
-            return $brand ? url('/brand/'.$brand->slug) : '#';
+            return $brand ? url('/shop/brand/'.$brand->slug) : '#';
 
         default:
             return $menu->link_value; // custom link

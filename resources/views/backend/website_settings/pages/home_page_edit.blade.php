@@ -2,8 +2,7 @@
 @section('content')
 
 @php
-    $home = \App\Models\Page::where('type', 'home')->first();
-    $homeSettings = $home ? json_decode($home->data, true) : [];
+    $homeSettings = $page ? json_decode($page->data, true) : [];
 @endphp
 <div class="row">
     <div class="col-xl-12 mx-auto">
@@ -11,6 +10,7 @@
             @csrf
             <div class="card">
                 <div class="card-header">
+                    <input type="hidden" name="type" value="{{ $page->slug }}">
                     <h6 class="mb-0">Home Page Settings</h6>
                 </div>
                 <div class="card-body">

@@ -1055,6 +1055,9 @@ input[type=number] {
 .rounded-circle{
   border-radius: 50%;
 }
+h1.about-title, h3.about-title{
+  font-family: "Mona-Sans", sans-serif;
+}
 
 
 .\!cursor-pointer {
