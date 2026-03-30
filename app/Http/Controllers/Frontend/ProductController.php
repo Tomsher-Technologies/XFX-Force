@@ -704,4 +704,117 @@ class ProductController extends Controller
             'productCount'
         ));
     }
+
+    public function shopByBrand(Request $request, $slug)
+    {
+        $sort = $request->get('sort', 'newest');
+        $view = $request->get('view', 'gridview');
+
+        // Get brand using slug directly from brand table
+        $brand = Brand::where('slug', $slug)
+            ->where('is_active', 1)
+            ->first();
+
+        if (!$brand) {
+            abort(404);
+        }
+
+        // Get all products of this brand
+        $productsQuery = Product::select('products.*')
+            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->where('published', 1)
+            ->where('products.brand_id', $brand->id);
+
+        // Filters
+        if ($request->filled('categories')) {
+            $productsQuery->whereIn('products.category_id', $request->categories);
+        }
+
+        if ($request->filled('brands')) {
+            // Only allow the current brand
+            $productsQuery->whereIn('products.brand_id', [$brand->id]);
+        }
+
+        if ($request->filled('min_price')) {
+            $productsQuery->where('product_stocks.offer_price', '>=', $request->min_price);
+        }
+
+        if ($request->filled('max_price')) {
+            $productsQuery->where('product_stocks.offer_price', '<=', $request->max_price);
+        }
+
+        // Sorting
+        switch ($sort) {
+            case 'oldest':
+                $productsQuery->orderBy('products.created_at', 'asc');
+                break;
+
+            case 'price_low_high':
+                $productsQuery->orderBy('product_stocks.offer_price', 'asc');
+                break;
+
+            case 'price_high_low':
+                $productsQuery->orderBy('product_stocks.offer_price', 'desc');
+                break;
+
+            default:
+                $productsQuery->orderBy('products.created_at', 'desc');
+                break;
+        }
+
+        $products = $productsQuery->with('stocks')->distinct()->get();
+
+        // Product count
+        $productCount = $products->count();
+
+        // Fetch categories for filters: only categories that have products of this brand
+        $categoryIds = $products->pluck('category_id')->unique();
+        $categories = Category::whereIn('id', $categoryIds)->get();
+
+        // Grouped categories by parent_id for tree structure
+        $groupedCategories = $categories->groupBy('parent_id');
+
+        // For brand filter: only the current brand
+        $brands = collect([$brand]);
+
+        // AJAX request: return partial
+        if ($request->ajax()) {
+            return view('frontend.partials.product-list', compact('products', 'view'))->render();
+        }
+
+        return view('frontend.shop-by-brand', compact(
+            'products',
+            'categories',
+            'groupedCategories',
+            'brands',
+            'sort',
+            'view',
+            'brand',
+            'productCount'
+        ));
+    }
+
+    public function searchProducts(Request $request)
+{
+    $query = $request->get('query', '');
+
+    if (!$query) return response()->json([]);
+
+    $products = Product::where('published', 1)
+        ->where(function($q) use ($query) {
+            $q->where('name', 'like', "%{$query}%")
+              ->orWhere('tags', 'like', "%{$query}%"); // search inside comma-separated tags
+        })
+        ->limit(10)
+        ->get(['id', 'name', 'slug']); // include id if needed
+
+    $results = $products->map(function($p){
+        return [
+            'name' => $p->name,
+            'url' => route('product.details', ['slug' => $p->slug, 'sku' => $p->stocks->first()->sku ?? ''])
+        ];
+    });
+
+    return response()->json($results);
+}
 }
