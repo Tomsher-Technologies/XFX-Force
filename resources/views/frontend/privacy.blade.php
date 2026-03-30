@@ -2,9 +2,7 @@
 
 @section('title', 'Privacy Policy')
 @section('content')
-    @php
-        $page_content = $page ? json_decode($page->data, true) : [];
-    @endphp
+
     <section class="bg-[#0F161B] w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px]">
         <div class="text-white">
             <div
