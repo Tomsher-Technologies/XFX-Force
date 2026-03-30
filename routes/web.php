@@ -40,7 +40,7 @@ Route::get('terms', [HomeController::class, 'terms'])->name('terms');
 Route::get('privacy-policy', [HomeController::class, 'privacy'])->name('privacy-policy');
 Route::get('return-policy', [HomeController::class, 'returnPolicy'])->name('return-policy');
 Route::get('contact', [HomeController::class, 'contact'])->name('contact');
-Route::post('contact', [HomeController::class, 'submitContactForm'])->name('contact.submit');
+Route::post('/contact-submit', [HomeController::class, 'submitContactForm'])->name('contact.submit');
 Route::get('about', [HomeController::class, 'about'])->name('about');
 
 

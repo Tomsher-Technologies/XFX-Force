@@ -422,3 +422,4 @@ INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `create
 
 UPDATE `pages` SET `type` = 'about_us' WHERE `pages`.`id` = 2;
 
+INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'contact_us', 'Contact Us', NULL, NULL, '1', NULL, NULL);
