@@ -414,3 +414,8 @@ INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `create
 INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'privacy_policy', 'Privacy Policy', NULL, '', '1', NULL, '2026-03-07 14:06:06');
 
 INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'return_policy', 'Return Policy', NULL, '', '1', NULL, '2026-03-07 14:06:06');
+
+-- ALTER TABLE pc_builder_setups 
+-- ADD COLUMN is_ordered TINYINT(1) NOT NULL DEFAULT 0 COMMENT '0=>false, 1=>true' AFTER build_data;
+
+-- ALTER TABLE `orders` ADD `warranty_amount` DOUBLE(20,2) NOT NULL DEFAULT '0.00' AFTER `offer_discount`;

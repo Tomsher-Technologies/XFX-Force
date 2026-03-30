@@ -15,7 +15,7 @@
                         <img src="{{ asset('assets/images/email.svg') }}" alt="Email icon for PC Garage contact information" title="email" />
                         <span class="hidden md:block">{{ get_setting('header_email') }}</span>
                     </a>
-                    <a href="tel:{{ get_setting('header_phone') }}" target="_blank" class="text-[#ffffff] no-underline flex items-center gap-[10px]">
+                    <a href="tel:{{ get_setting('header_phone') }}" class="text-[#ffffff] no-underline flex items-center gap-[10px]">
                         <img src="{{ asset('assets/images/phone.svg') }}" alt="Phone icon for PC Garage contact information" title="phone" />
                         <span class="hidden md:block">{{ get_setting('header_phone') }}</span>
                     </a>

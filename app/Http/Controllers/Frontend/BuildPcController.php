@@ -29,6 +29,7 @@ class BuildPcController extends Controller
         if ($firstCategory) {
             $products = Product::where('category_id', $firstCategory->category_id)
                 ->with('stocks')
+                ->where('published', 1)
                 ->get();
         }
 
@@ -36,9 +37,6 @@ class BuildPcController extends Controller
         $builder = PcBuilderSetup::where('user_id', $user_id)
             ->where('is_ordered', false)
             ->first();
-            // echo "<pre>";
-            // print_r($builder);
-            // exit;
         $buildData = $builder ? $builder->build_data : [];
 
         $reviewProducts = [];
@@ -63,7 +61,9 @@ class BuildPcController extends Controller
 
         $categoryId = $request->category_id;
 
-        $products = Product::where('category_id', $categoryId)->with('stocks')->get();
+        $products = Product::where('category_id', $categoryId)->with('stocks')
+        ->where('published', 1)
+        ->get();
 
         // Return rendered HTML for middle section
         $html = view('frontend.partials.pc-builder-products-list', compact('products'))->render();

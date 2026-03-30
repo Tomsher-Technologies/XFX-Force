@@ -28,12 +28,12 @@
                             </div>
 
                             <div class="flex flex-col xl:flex-row xl:flex-wrap items-start gap-3 w-full">
-                                @if($order->delivery_status == 'pending') //
+                                @if($order->delivery_status == 'pending') 
                                 <button
                                     class="cancel-order-btn w-full xl:w-fit cursor-pointer flex-1 bg-red-500/5 border border-red-500/20 text-red-500 px-6 py-4 rounded-xl hover:bg-red-500 hover:text-white transition-all text-[13px] font-medium uppercase tracking-wider" data-id="{{ $order->id }}">
                                     Cancel Order
                                 </button>
-
+                                @endif         
                                 @php
                                     // Default return period from settings (in days)
                                     $returnDays = get_setting('default_return_time') ?? 0;
@@ -44,31 +44,31 @@
                                     $remainingDays = \Carbon\Carbon::now()->diffInDays($expiryDate, false); // false to get negative if past
                                 @endphp
                                 @if($order->delivery_status == 'delivered')
-                                @if($remainingDays > 0)
-                                @php
-                                    $allFullyReturned = true; // flag to track if all items are fully returned
-                                @endphp
+                                    @if($remainingDays > 0)
+                                        @php
+                                            $allFullyReturned = true; // flag to track if all items are fully returned
+                                        @endphp
 
-                                @foreach($order->orderDetails as $detail)
-                                    @php
-                                        $totalReturnedQty = $detail->returns->where('status','approved')->sum('return_qty');
-                                        if ($totalReturnedQty < $detail->quantity) {
-                                            $allFullyReturned = false; // at least one item not fully returned
-                                        }
-                                    @endphp
-                                @endforeach
-                                @if(!$allFullyReturned)
-                                <div class="w-full xl:w-fit flex flex-col gap-2 flex-1">
-                                    <button id="openReturnBtn" class="cursor-pointer bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all text-[13px] font-medium uppercase tracking-wider">
-                                            Return Order
-                                        </button>
-                                    
-                                    <p class="text-[10px] text-gray-500 italic text-center lg:text-left">
-                                        * Return possible within {{ $remainingDays }} day{{ $remainingDays > 1 ? 's' : '' }}
-                                    </p>
-                                </div>
-                                @endif
-                                @endif
+                                        @foreach($order->orderDetails as $detail)
+                                            @php
+                                                $totalReturnedQty = $detail->returns->where('status','approved')->sum('return_qty');
+                                                if ($totalReturnedQty < $detail->quantity) {
+                                                    $allFullyReturned = false; // at least one item not fully returned
+                                                }
+                                            @endphp
+                                        @endforeach
+                                        @if(!$allFullyReturned)
+                                            <div class="w-full xl:w-fit flex flex-col gap-2 flex-1">
+                                                <button id="openReturnBtn" class="cursor-pointer bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all text-[13px] font-medium uppercase tracking-wider">
+                                                        Return Order
+                                                    </button>
+                                                
+                                                <p class="text-[10px] text-gray-500 italic text-center lg:text-left">
+                                                    * Return possible within {{ $remainingDays }} day{{ $remainingDays > 1 ? 's' : '' }}
+                                                </p>
+                                            </div>
+                                        @endif
+                                    @endif
                                 @endif
 
                                 <button class="w-full cursor-pointer flex-1 bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all text-[13px] font-medium flex items-center justify-center gap-2 uppercase tracking-wider">
@@ -77,7 +77,6 @@
                                     </svg>
                                     Invoice
                                 </button>
-                                @endif
                             </div>
                         </div>
                     </div>
@@ -290,7 +289,7 @@
 
                                         <!-- Image -->
                                         <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
-                                            <img src="{{ $image }}" class="w-full h-full object-cover">
+                                            <img src="{{ $image }}" class="w-full h-full object-cover" alt="{{ $item->product_stock->stock_title  ?? '' }}" title="{{ $item->product_stock->stock_title  ?? '' }}">
                                         </div>
 
                                         <!-- Details -->
@@ -524,49 +523,17 @@
 
         <form id="returnOrderForm">
             <input type="hidden" name="order_id" value="{{ $order->id }}">
-
             <div class="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-2">
-                <!-- @foreach($order->orderDetails as $detail)
-                <label class="group flex items-center gap-5 bg-[#0f161b] p-4 rounded-[15px] border border-white/5 cursor-pointer hover:border-[#2A7CFF]/30 transition-all">
-                    <label class="relative flex items-center justify-center cursor-pointer">
-                        <input type="checkbox" class="peer hidden">
-                        <div class="w-6 h-6 border-2 border-gray-700 rounded-md peer-checked:bg-[#2A7CFF] peer-checked:border-[#2A7CFF] transition-all flex items-center justify-center">
-                            <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none size-3.5 stroke-white opacity-0 transition-opacity">
-                                <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </div>
-                    </label>
-                    <div class="w-14 h-14 bg-[#1C2228] rounded-[5px] border border-white/5 p-2 flex-shrink-0">
-                        <img src="src/images/product-single-01.webp" class="w-full h-full object-cover" alt="item">
-                    </div>
-                    <div class="flex-grow w-full mr-[50px]">
-                        <p class="text-white text-sm font-medium line-clamp-1">{{ $detail->product->name ?? '' }} : {{ $detail->product_stock->stock_title ?? '' }}</p>
-                        <p class="text-gray-500 text-xs uppercase tracking-tighter mt-[5px]">QTY: {{ $detail->quantity }}</p>
-                    </div>
-                    <div class="relative group min-w-[110px]">
-                        <div class="relative">
-
-                            <select name="return_qty[{{ $detail->id }}]" class="w-full bg-[#0B0F13] border border-gray-800 text-white text-[13px] font-medium pl-4 pr-10 py-3 rounded-xl cursor-pointer outline-none appearance-none hover:border-gray-600 focus:border-[#2A7CFF] focus:ring-1 focus:ring-[#2A7CFF]/30 transition-all shadow-inner">
-                                @for($i = 1; $i <= $detail->quantity; $i++)
-                                    <option value="{{ $i }}">Qty: {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                @endfor
-                            </select>
-
-                            <div class="absolute right-0 top-1/2 -translate-y-1/2 h-5 border-l border-gray-800 flex items-center px-2 pointer-events-none group-hover:text-[#2A7CFF] transition-colors">
-                                <svg class="w-4 h-4 text-gray-500 group-hover:text-[#2A7CFF] transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </label>
-                @endforeach -->
-
                 @foreach($order->orderDetails as $detail)
-
+                    @php
+                        // Total quantity already returned for this order detail
+                        $returnedQty = $detail->returns->sum('return_qty');
+                        // Remaining quantity that can still be returned
+                        $remainingQty = $detail->quantity - $returnedQty;
+                        if($remainingQty <= 0) continue;
+                    @endphp
                     @php
                         $image = asset('assets/img/placeholder.jpg');
-
                         if (!empty($detail->product_stock?->image)) {
                             $image = Storage::url($detail->product_stock->image);
                         } elseif (!empty($detail->product?->thumbnail_img)) {
@@ -574,18 +541,6 @@
                         }
                     @endphp
                     <label class="group flex items-center gap-5 bg-[#0f161b] p-4 rounded-[15px] border border-white/5 cursor-pointer hover:border-[#2A7CFF]/30 transition-all">
-                        <!-- Checkbox -->
-                        <!-- <input type="checkbox" 
-                            class="return-checkbox peer hidden" 
-                            data-detail-id="{{ $detail->id }}" 
-                            data-max-qty="{{ $detail->quantity }}">
-
-                        <div class="w-6 h-6 border-2 border-gray-700 rounded-md flex items-center justify-center">
-                            <svg class="w-4 h-4 opacity-0 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 14 14">
-                                <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div> -->
-
                         <label class="relative flex items-center justify-center cursor-pointer">
                             <input type="checkbox" class="return-checkbox peer hidden" data-detail-id="{{ $detail->id }}" data-max-qty="{{ $detail->quantity }}">
                             <div class="w-6 h-6 border-2 border-gray-700 rounded-md peer-checked:bg-[#2A7CFF] peer-checked:border-[#2A7CFF] transition-all flex items-center justify-center">
@@ -597,7 +552,7 @@
 
                         <!-- Product image & info -->
                         <div class="w-14 h-14 bg-[#1C2228] rounded-[5px] border border-white/5 p-2 flex-shrink-0">
-                            <img src="{{ $image }}" class="w-full h-full object-cover" alt="item">
+                            <img src="{{ $image }}" class="w-full h-full object-cover" alt="{{ $detail->product->name ?? '' }}" title="{{ $detail->product->name ?? '' }}">
                         </div>
                         <div class="flex-grow w-full mr-[50px]">
                             <p class="text-white text-sm font-medium line-clamp-1">{{ $detail->product->name ?? '' }} : {{ $detail->product_stock->stock_title ?? '' }}</p>
@@ -607,14 +562,6 @@
                         <!-- Quantity dropdown -->
                          
                         <div class="return-qty-container hidden min-w-[110px]">
-                            
-                            @php
-                                // Total quantity already returned for this order detail
-                                $returnedQty = $detail->returns->sum('return_qty');
-                                // Remaining quantity that can still be returned
-                                $remainingQty = $detail->quantity - $returnedQty;
-                            @endphp
-
                             @if($remainingQty > 0)
                                 <select name="return_qty[{{ $detail->id }}]" 
                                         class="w-full bg-[#0B0F13] border border-gray-800 text-white text-[13px] font-medium pl-4 pr-10 py-3 rounded-xl cursor-pointer outline-none appearance-none hover:border-gray-600 focus:border-[#2A7CFF] focus:ring-1 focus:ring-[#2A7CFF]/30 transition-all shadow-inner">
@@ -1195,8 +1142,6 @@
 
 
 // Return Modal Script
-
-
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('returnModal');
     const openBtn = document.getElementById('openReturnBtn');
@@ -1264,7 +1209,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         const formData = new FormData(this);
-        console.log(formData);return;
 
         fetch(`/my-orders/${formData.get('order_id')}/return`, {
             method: 'POST',

@@ -21,8 +21,8 @@
         <a href="{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}"
             class="product-img h-[230px] w-full relative z-[1] bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]">
             <img src="{{ get_product_image($prodData['thumbnail_img'],'300') }}"
-                class="absolute object-cover object-center w-full h-full" alt="Upcoming Product 1"
-                title="Upcoming Product 1">
+                class="absolute object-cover object-center w-full h-full" alt="{{ $prodData['name'] ?? '' }}"
+                title="{{ $prodData['name'] ?? '' }}">
             @if (filled($prodData['offer_tag']))
                 <badge
                     class="absolute top-[20px] left-[20px] bg-[#077F09] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">
@@ -30,7 +30,7 @@
             @endif
         </a>
         <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1]">
-            <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2">
+            <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2 cursor-pointer" onclick="window.location= '{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}'">
                 {{ $prodData['name'] ?? '' }}</h4>
             <h5 class="price flex flex-row text-[#2A7CFF] text-[18px] m-[0] font-bold align-center items-center gap-[5px]">
                 {{-- <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]" alt="AED"
@@ -45,7 +45,7 @@
                 @endif
             </h5>
             <a href="{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}"
-                class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white">Add to cart</a>
+                class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white">View Details</a>
         </div>
 
     </div>

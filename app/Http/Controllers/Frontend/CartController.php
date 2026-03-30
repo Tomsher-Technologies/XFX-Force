@@ -263,6 +263,7 @@ class CartController extends Controller
         $cartId = $request->cartId;
         $warrantyId = $request->warrantyId;
 
+
         $cart = Cart::where('id', $cartId)
             ->where(function($query) use ($guestToken, $user_id) {
                 if($user_id) {
@@ -275,10 +276,16 @@ class CartController extends Controller
             })
             ->firstOrFail();
 
-        $warranty = ProductWarranty::find($warrantyId);
+        // If warranty removed
+        if(empty($warrantyId)) {
+            $cart->warranty_id = null;
+            $cart->warranty_price = 0;
+        } else {
+            $warranty = ProductWarranty::find($warrantyId);
 
-        $cart->warranty_id = $warranty->id;
-        $cart->warranty_price = $warranty->price ?? 0;
+            $cart->warranty_id = $warranty->id;
+            $cart->warranty_price = $warranty->price ?? 0;
+        }
         $cart->save();
 
         return response()->json([

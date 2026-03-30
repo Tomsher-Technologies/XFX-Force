@@ -40,7 +40,7 @@
                     onclick="window.location= '{{ $firstStock ? route('product.details', ['slug' => $product->slug, 'sku' => $firstStock->sku]) : '#' }}'"
                     style="cursor: pointer;">
                     <div class="product-image col-span-1">
-                        <img src="{{ Storage::url($product->thumbnail_img) }}" alt="" title=""
+                        <img src="{{ get_product_image($product->thumbnail_img,'300') }}" alt="{{ $product->name }}" title="{{ $product->name }}"
                             class="h-full w-full object-cover object-center">
                     </div>
                     <div class="col-span-2 p-[30px]">
@@ -49,6 +49,7 @@
                         @php
                             $productSpecifications = \App\Models\ProductSpecification::where('product_id', $product->id)
                                 ->with(['specification', 'specificationItem'])
+                                ->orderBy('sort_order')
                                 ->get();
                         @endphp
                         @if (!empty($productSpecifications))
@@ -92,10 +93,10 @@
                             <a href="#"
                                 class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view
                                 details</a>
-                            <button
+                            <!-- <button
                                 class="flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img
                                     src="{{ asset('assets/images/cart.svg') }}" alt="" title=""
-                                    class="mr-[15px]">Buy now</button>
+                                    class="mr-[15px]">View Details</button> -->
                         </div>
                     </div>
                 </div>

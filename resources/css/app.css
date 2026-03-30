@@ -1058,3 +1058,20 @@ input[type=number] {
 h1.about-title, h3.about-title{
   font-family: "Mona-Sans", sans-serif;
 }
+
+
+.\!cursor-pointer {
+    cursor: pointer !important;
+  }
+  .cursor-default {
+    cursor: default;
+  }
+  .cursor-none {
+    cursor: none;
+  }
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  .cursor-text {
+    cursor: text;
+  }

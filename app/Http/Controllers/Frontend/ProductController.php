@@ -220,7 +220,7 @@ class ProductController extends Controller
         if ($category_slug) {
             $category_ids = Category::whereHas('category_translations', function ($query) use ($category_slug) {
                 $query->where('slug', $category_slug);
-            })->pluck('id')->toArray();
+            })->where('is_active', 1)->pluck('id')->toArray();
 
             $childIds[] = $category_ids;
             if (!empty($category_ids)) {
@@ -243,53 +243,6 @@ class ProductController extends Controller
         return $products;
     }
 
-    // public function productDetails($id, $stockId = null)
-    // {
-    //     $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-    //     $guestToken = request()->cookie('guest_token');
-
-    //     if(!$guestToken){
-    //         $guestToken = uniqid('guest_', true);
-    //         cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
-    //     }
-
-    //     $product = Product::with([
-    //         'stocks',
-    //         'stocks.attributes.attribute',
-    //         'stocks.attributes.value'
-    //     ])->findOrFail($id);
-
-    //     $relatedProducts = Product::where('category_id', $product->category_id)
-    //         ->where('id', '!=', $product->id)
-    //         ->get();
-
-    //     // determine selected stock
-    //     $selectedStock = $stockId 
-    //         ? $product->stocks->where('id', $stockId)->first()
-    //         : $product->stocks->first();
-
-    //     // get cart quantity
-    //     $cartQty = 0;
-
-    //     if ($selectedStock) {
-    //         $cartQuery = Cart::where('product_id', $product->id)
-    //             ->where('product_stock_id', $selectedStock->id)
-    //             ->where('status', 'pending')
-    //             ->where(function($query) use ($guestToken, $user_id) {
-    //                 if($user_id) {
-    //                     // Logged-in user
-    //                     $query->where('user_id', $user_id);
-    //                 } else {
-    //                     // Guest user
-    //                     $query->where('temp_user_id', $guestToken);
-    //                 }
-    //             });
-    //         $cartQty = $cartQuery->value('quantity') ?? 0;
-    //     }
-        
-    //     return view('frontend.productDetails', compact('product', 'relatedProducts','stockId', 'cartQty'));
-    // }
-
     public function productDetails($slug, $sku)
     {
         // Get logged-in user or guest token
@@ -306,11 +259,12 @@ class ProductController extends Controller
             'stocks',
             'stocks.attributes.attribute',
             'stocks.attributes.value'
-        ])->where('slug', $slug)->firstOrFail();
+        ])->where('slug', $slug)->where('published', 1)->firstOrFail();
 
         // Related products (same category, excluding this product)
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
+            ->where('published', 1)
             ->get();
 
         // Determine selected stock by SKU or default first stock
@@ -338,12 +292,103 @@ class ProductController extends Controller
 
        $stockId = $selectedStock ? $selectedStock->id : null;
 
+        // New changes 
+
+        // Step 1 — Get the selected variant  from SKU
+        $selectedVariant = DB::select("
+            SELECT 
+                p.product_varient_id,
+                p.attribute_value_id,
+                ps.sku
+            FROM product_attributes p
+            LEFT JOIN product_stocks ps 
+                ON ps.id = p.product_varient_id
+            WHERE ps.sku = ?
+            ORDER BY p.attribute_id
+        ", [$sku]);
+
+        
+        // Get first attribute value of the SKU
+        $firstAttribute = DB::selectOne("
+            SELECT 
+                p.product_varient_id,
+                p.attribute_value_id
+            FROM product_attributes p
+            LEFT JOIN product_stocks ps 
+                ON ps.id = p.product_varient_id
+            WHERE ps.sku = ?
+            ORDER BY p.attribute_id
+            LIMIT 1
+        ", [$sku]);
+
+
+
+        $variantsById = [];
+        $selectedLevelValues = [];
+
+        if ($firstAttribute) {
+            
+            $valueId = $firstAttribute->attribute_value_id;
+
+            // Step 2 — Get all variants having this first-level value
+            $variants = DB::select("
+                SELECT 
+                    p.product_varient_id,
+                    ps.sku,
+                    p.attribute_id,
+                    a.name,
+                    p.attribute_value_id,
+                    av.value
+                FROM product_attributes p
+                LEFT JOIN attributes a 
+                    ON p.attribute_id = a.id
+                LEFT JOIN attribute_values av 
+                    ON p.attribute_value_id = av.id
+                LEFT JOIN product_stocks ps 
+                    ON ps.id = p.product_varient_id
+                WHERE p.product_varient_id IN (
+                    SELECT product_varient_id 
+                    FROM product_attributes 
+                    WHERE attribute_value_id = ?
+                )
+                ORDER BY p.product_varient_id, p.attribute_id
+            ", [$valueId]);
+
+            // Transform variants into mapping: variant_id => [attribute_id => value_id]
+            
+            foreach ($variants as $v) {
+                $variantsById[$v->product_varient_id][$v->attribute_id] = $v->attribute_value_id;
+            }
+
+            // Get selected variant attribute values by SKU
+            $selectedVariant = DB::select("
+                SELECT 
+                    p.product_varient_id,
+                    p.attribute_value_id,
+                    p.attribute_id,
+                    ps.sku
+                FROM product_attributes p
+                LEFT JOIN product_stocks ps 
+                    ON ps.id = p.product_varient_id
+                WHERE ps.sku = ?
+                ORDER BY p.attribute_id
+            ", [$sku]);
+
+            $selectedLevelValues = [];
+            foreach ($selectedVariant as $v) {
+                $selectedLevelValues[$v->attribute_id] = $v->attribute_value_id;
+            }
+        }
+
         return view('frontend.productDetails', compact(
             'product', 
             'relatedProducts', 
             'selectedStock',
             'cartQty',
-            'stockId'
+            'stockId',
+            'variantsById',
+            'selectedLevelValues',
+            'selectedVariant'
         ));
     }
 
@@ -353,7 +398,8 @@ class ProductController extends Controller
         $view = $request->get('view', 'gridview');
 
         $products = Product::select('products.*')
-            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id');
+            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->where('published', 1);
 
         // Filters
         if ($request->filled('categories')) {
@@ -365,11 +411,11 @@ class ProductController extends Controller
         }
 
         if ($request->filled('min_price')) {
-            $products->where('product_stocks.price', '>=', $request->min_price);
+            $products->where('product_stocks.offer_price', '>=', $request->min_price);
         }
 
         if ($request->filled('max_price')) {
-            $products->where('product_stocks.price', '<=', $request->max_price);
+            $products->where('product_stocks.offer_price', '<=', $request->max_price);
         }
 
         // Sorting
@@ -378,10 +424,10 @@ class ProductController extends Controller
                 $products->orderBy('products.created_at', 'asc');
                 break;
             case 'price_low_high':
-                $products->orderBy('product_stocks.price', 'asc');
+                $products->orderBy('product_stocks.offer_price', 'asc');
                 break;
             case 'price_high_low':
-                $products->orderBy('product_stocks.price', 'desc');
+                $products->orderBy('product_stocks.offer_price', 'desc');
                 break;
             default:
                 $products->orderBy('products.created_at', 'desc');
@@ -389,22 +435,20 @@ class ProductController extends Controller
         }
 
         $products = $products->with('stocks')->distinct()->get();
-        $categories = Category::withCount('products')->get();
-        $brands = Brand::withCount('products')->get();
+        $categories = Category::withCount('products')->where('is_active', 1)->get();
+        $groupedCategories = $categories->groupBy('parent_id');
+        
+        $brands = Brand::withCount('products')->where('is_active', 1)->get();
 
-        if ($products->isEmpty()) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'No Products Found!',
-                ]);
-            }
+        if ($products->isEmpty() && $request->ajax()) {
+            return '<div class="text-white text-center py-10">No Products Found!</div>';
         }
         // If AJAX request, return only product list partial
         if ($request->ajax()) {
             return view('frontend.partials.product-list', compact('products', 'view'))->render();
         }
 
-        return view('frontend.products', compact('products', 'categories', 'brands', 'sort', 'view'));
+        return view('frontend.products', compact('products', 'categories', 'brands', 'sort', 'view', 'groupedCategories'));
     }
 
 
@@ -442,9 +486,6 @@ class ProductController extends Controller
                 'value_id'     => $attr->attribute_value_id,
             ];
         })->values();
-
-
-
 
         return response()->json([
             'success' => true,
@@ -565,20 +606,42 @@ class ProductController extends Controller
         }
     }
 
-    public function shopByCategory(Request $request, $categoryId)
+    public function getCategoryAndChildrenIds($categoryId)
+    {
+        $ids = [$categoryId];
+
+        $children = Category::where('parent_id', $categoryId)->pluck('id');
+
+        foreach ($children as $childId) {
+            $ids = array_merge($ids, $this->getCategoryAndChildrenIds($childId));
+        }
+
+        return $ids;
+    }
+
+    public function shopByCategory(Request $request, $slug)
     {
         $sort = $request->get('sort', 'newest');
         $view = $request->get('view', 'gridview');
 
-        // Get current category
-        $category = Category::withCount('products')->findOrFail($categoryId);
+        // Get category using slug
+        $category = Category::whereHas('category_translations', function ($q) use ($slug) {
+            $q->where('slug', $slug);
+        })
+        ->with('category_translations')
+        ->where('is_active', 1)
+        ->first();
 
+        if (!$category) {
+            abort(404);
+        }
+
+        $categoryIds = $this->getCategoryAndChildrenIds($category->id);
 
         $products = Product::select('products.*')
-            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id');
-
-        // Category from URL (default filter)
-        $products->where('products.category_id', $categoryId);
+            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->where('published', 1)
+            ->whereIn('products.category_id', $categoryIds);
 
         // Filters
         if ($request->filled('categories')) {
@@ -590,11 +653,11 @@ class ProductController extends Controller
         }
 
         if ($request->filled('min_price')) {
-            $products->where('product_stocks.price', '>=', $request->min_price);
+            $products->where('product_stocks.offer_price', '>=', $request->min_price);
         }
 
         if ($request->filled('max_price')) {
-            $products->where('product_stocks.price', '<=', $request->max_price);
+            $products->where('product_stocks.offer_price', '<=', $request->max_price);
         }
 
         // Sorting
@@ -604,11 +667,11 @@ class ProductController extends Controller
                 break;
 
             case 'price_low_high':
-                $products->orderBy('product_stocks.price', 'asc');
+                $products->orderBy('product_stocks.offer_price', 'asc');
                 break;
 
             case 'price_high_low':
-                $products->orderBy('product_stocks.price', 'desc');
+                $products->orderBy('product_stocks.offer_price', 'desc');
                 break;
 
             default:
@@ -618,19 +681,13 @@ class ProductController extends Controller
 
         $products = $products->with('stocks')->distinct()->get();
 
+        $brands = Brand::whereIn('id', $products->pluck('brand_id')->filter()->unique())->get();
+
         $categories = Category::withCount('products')->get();
-        $brands = Brand::withCount('products')->get();
+        $groupedCategories = $categories->groupBy('parent_id');
 
-        if ($products->isEmpty()) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'No Products Found!',
-                ]);
-            }
-        }
-
-        // Total products for this category after filters
         $productCount = $products->count();
+
         // If AJAX request, return only product list partial
         if ($request->ajax()) {
             return view('frontend.partials.product-list', compact('products', 'view'))->render();
@@ -642,7 +699,7 @@ class ProductController extends Controller
             'brands',
             'sort',
             'view',
-            'categoryId',
+            // 'categoryId',
             'category',
             'productCount'
         ));

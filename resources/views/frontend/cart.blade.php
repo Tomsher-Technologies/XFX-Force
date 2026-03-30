@@ -40,11 +40,11 @@
                             <div class="col-span-7 flex flex-col md:flex-row gap-[20px] md:gap-[30px]">
                                 <div class="product-img h-[150px] md:h-auto w-full md:w-[145px] relative z-[1] bg-[#1E2225] rounded-[10px] overflow-hidden items-center justify-center flex">
                                     <a href="{{ route('product.details' ,[$item->product->slug, $item->product_stock->sku]) }}" class="absolute">
-                                    <img src="{{ $image }}" class="object-fit object-center w-auto md:w-full h-[150px] md:h-auto" alt="{{ $image }}" title="{{ $image }}">
+                                    <img src="{{ $image }}" class="object-fit object-center w-auto md:w-full h-[150px] md:h-auto" alt="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}" title="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}">
                                     </a>
                                 </div>
                                 <div class="flex flex-col gap-[10px]">
-                                    <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 md:line-clamp-1 xl:line-clamp-2 text-center md:text-left">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>
+                                    <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 md:line-clamp-1 xl:line-clamp-2 text-center md:text-left cursor-pointer" onclick="window.location='{{ route('product.details' ,[$item->product->slug, $item->product_stock->sku]) }}'">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>
                                     <!-- specification popup link -->
                                     @php
                                         $productSpecifications = $item->product->specifications;
@@ -56,9 +56,12 @@
                                     <!-- Warranty popup link -->
                                     @php
                                         $productWarranties = $item->product->warranties;
+                                        $selectedWarranty = $productWarranties->firstWhere('id', $item->warranty_id);
                                     @endphp
                                     @if($productWarranties->isNotEmpty())
-                                    <a onclick="toggleWarrantyModal(this)" class="text-center xl:text-left w-full py-[5px] text-[12px] text-white flex flex-row items-center justify-center md:justify-start gap-[10px] leading-[0px] cursor-pointer"><i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i>Choose Your Warranty Plan</a>
+                                    <a onclick="toggleWarrantyModal(this)" class="text-center xl:text-left w-full py-[5px] text-[12px] text-white flex flex-row items-center justify-center md:justify-start gap-[10px] leading-[0px] cursor-pointer" data-cartid="{{$item->id}}"><i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i>
+                                        {{ $selectedWarranty ? 'Warranty: '.$selectedWarranty->title : 'Choose Your Warranty Plan' }}
+                                    </a>
                                     @endif
                                 </div>
                             </div>
@@ -139,7 +142,7 @@
                             <p class="mt-2 text-xs text-gray-500">Apply your discount coupon here.</p>
                         </div>
                     </form>
-                    <ul class="border-y-1 border-[#282B34] py-[20px] mt-[20px] border-b-0">
+                    <ul class="border-y-1 border-[#282B34] py-[20px] mt-[20px] border-b-0" id="summary_list">
                         <li class="py-[10px]">
                             <div class="flex flex-row justify-between">
                                 <span class="text-[#99a1af] text-[15px] justify-start text-left">Subtotal</span>
@@ -162,6 +165,7 @@
                                 </span>
                             </div>
                         </li>
+                        @if($couponDiscount > 0)
                         <li class="py-[10px]">
                             <div class="flex flex-row justify-between">
                                 <span class="text-[#99a1af] text-[15px] justify-start text-left">Coupon Discount</span>
@@ -174,8 +178,9 @@
 
                             </div>
                         </li>
-
-                        <li class="py-[10px]">
+                        @endif
+                        @if($warrantySum > 0)
+                        <li class="py-[10px]" id="warranty-section">
                             <div class="flex flex-row justify-between">
                                 <span class="text-[#99a1af] text-[15px] justify-start text-left">Warranty (Premium Care+)</span>
                                 <span class="flex flex-row text-[#99a1af] items-center justify-end text-right gap-[10px] text-[15px]">
@@ -186,7 +191,7 @@
                                 </span>
                             </div>
                         </li>
-
+                        @endif
                         <li class="py-[10px]">
                             <div class="flex flex-row justify-between">
                                 <span class="text-[#99a1af] text-[15px] justify-start text-left">Estimated Tax</span>

@@ -407,7 +407,7 @@ if (!function_exists('get_product_image')) {
             }
         }
 
-        return app('url')->asset('admin_assets/assets/img/placeholder.jpg');
+        return app('url')->asset('/assets/img/placeholder.jpg');
     }
 }
 

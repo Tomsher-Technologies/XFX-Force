@@ -22,7 +22,10 @@ $hideFooter = true;
 
         <div class="p-[30px] border-b-1 border-[#2E363E]">
             <a href="{{ route('home') }}" class="flex items-center gap-[20px]">
-                <img src="src/images/pc-builder-logo.svg" alt="" title="" class="">
+                @php
+                    $logo = get_setting('header_logo');
+                @endphp
+                <img src="{{ uploaded_asset($logo) }}" alt="PC Garage Logo" title="PC Garage Logo" class="">
                 <div>
                     <h1 class="text-white uppercase text-[30px] leading-[30px]">PC Builder</h1>
                     <span class="text-gray-500 text-[15px]">Build your dream PC</span>
@@ -577,11 +580,12 @@ $hideFooter = true;
         
             if (isCategoryLimitExceeded(categoryElement, maxLimit, categoryId)) {
                 toastr.warning(`You can only select ${maxLimit} products in this category`);
-                return;
+                return false;
             }
         }
-        
+        return true;
     }
+
     /**
      * Universal Quantity Controller
      * Handles "Select" button toggle and +/- quantity logic
@@ -597,7 +601,9 @@ $hideFooter = true;
         const productCard = buttonElement.closest('.product-card');
         productCard.classList.add('product-selected');
 
-        checkCategoryLimit(categoryId);
+        if (!checkCategoryLimit(categoryId)) {
+            return;
+        }
 
         buttonElement.classList.add('hidden');
         counter.classList.remove('hidden');
@@ -640,8 +646,9 @@ $hideFooter = true;
         const categoryId = container.dataset.categoryId;
 
         
-
-        checkCategoryLimit(categoryId);
+        if (!checkCategoryLimit(categoryId)) {
+            return;
+        }
 
         if (newVal >= 0) {
             if(source == 'list'){
@@ -1005,29 +1012,44 @@ $hideFooter = true;
             return;
         }
 
-        if (!confirm('Are you sure you want to reset this configuration?')) {
-            return;
-        }
+        // if (!confirm('Are you sure you want to reset this configuration?')) {
+        //     return;
+        // }
 
-        $.ajax({
-            url: "{{ route('pc.builder.reset') }}",
-            type: "POST",
-            data: {
-                builder_id: builderId,
-                _token: "{{ csrf_token() }}"
-            },
-            success: function (response) {
-                if (response.status) {
-                    toastr.success(response.message);
-                    location.reload();
-
-                } else {
-                    toastr.error(response.message);
-                }
-            },
-            error: function () {
-                toastr.error('Something went wrong');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You want to reset this configuration?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, reset it',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                return;
             }
+
+            $.ajax({
+                url: "{{ route('pc.builder.reset') }}",
+                type: "POST",
+                data: {
+                    builder_id: builderId,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (response) {
+                    if (response.status) {
+                        toastr.success(response.message);
+                        location.reload();
+
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function () {
+                    toastr.error('Something went wrong');
+                }
+            });
         });
     }
 

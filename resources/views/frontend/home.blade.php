@@ -3,6 +3,7 @@
 @section('title', 'Custom Gaming PCs & High-End Hardware in UAE')
 @section('content')
 
+
 @if(!empty($sliders))
 <section class="home-slider">
     <div class="hero-slider">
@@ -62,7 +63,18 @@
                                             break;
 
                                         case 'category':
-                                            $url = route('shop.category', $slider->link_ref_id);
+                                            $category = \App\Models\Category::with('category_translations')
+                                                ->find($slider->link_ref_id);
+
+                                            if ($category && $category->category_translations->isNotEmpty()) {
+                                                $url = route(
+                                                    'shop.category',
+                                                    ['slug' => $category->category_translations->first()->slug ]
+                                                    
+                                                );
+                                            } else {
+                                                $url = '#';
+                                            }
                                             break;
                                             
                                         default:
@@ -96,12 +108,53 @@
     <div class="flex flex-col md:grid md:grid-cols-[3fr_6fr_3fr] gap-[15px] top-[0px] md:top-[-100px] relative z-[1]">
 
         @foreach($banners as $banner)
+
+        @php
+            switch ($banner->link_type) {
+                case 'external':
+                    $url = $banner->link;
+                    break;
+
+                case 'product':
+                    // Get product by ID to retrieve slug and default stock
+                    $product = \App\Models\Product::with('stocks')->find($banner->link_ref_id);
+
+                    if ($product && $product->stocks->count() > 0) {
+                        $defaultStock = $product->stocks->first(); // first stock as default
+                        $url = route('product.details', [
+                            'slug' => $product->slug,
+                            'sku'  => $defaultStock->sku
+                        ]);
+                    } else {
+                        $url = '#';
+                    }
+                    break;
+
+                case 'category':
+                    $category = \App\Models\Category::with('category_translations')
+                        ->find($banner->link_ref_id);
+
+                    if ($category && $category->category_translations->isNotEmpty()) {
+                        $url = route(
+                            'shop.category',
+                            ['slug' => $category->category_translations->first()->slug ]
+                            
+                        );
+                    } else {
+                        $url = '#';
+                    }
+                    break;
+                    
+                default:
+                    $url = '#';
+            }
+        @endphp
         <div class="seg-card rounded-[20px] items-center flex flex-col gap-[20px] justify-end p-[30px] md:p-[40px] relative overflow-hidden min-h-[450px]">
-            <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="PC Builder Icon" title="PC Builder" class="absolute object-cover object-top w-full h-full">
+            <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" title="{{ $banner->title }}" class="absolute object-cover object-top w-full h-full">
             <div class="content relative z-[1] flex flex-col items-center justify-end h-full w-full">
                 <h2 class="text-[25px] md:text-[30px] text-[white] capitalize font-bold text-center">{{ $banner->title }}</h2>
                 <p class="text-[15px] text-[#ffffff] text-center">{{ $banner->sub_title }}</p>
-                <a href="{{ $banner->getALink() }}" class="btn btn-cta w-full md:w-fit text-center !rounded-full !text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium mt-[20px]" title="">{{ $banner->btn_text }}</a>
+                <a href="{{ $url }}" class="btn btn-cta w-full md:w-fit text-center !rounded-full !text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium mt-[20px]" title="">{{ $banner->btn_text }}</a>
             </div>
         </div>
         @endforeach
@@ -120,7 +173,7 @@
         <div class="swiper-wrapper">
             @foreach ($categories as $category)
                 <div class="swiper-slide" data-swiper-autoplay="8000">
-                    <a href="{{ route('shop.category', $category->id) }}" class="flex flex-col items-center justify-center gap-[15px]">
+                    <a href="{{ route('shop.category', $category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
                         <div class="category-thumb flex align-center bg-[#272930] p-[30px] rounded-full h-full md:h-[150px] w-full md:w-[150px]">
                             <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
                         </div>
@@ -185,7 +238,9 @@
                             $productSpecifications = \App\Models\ProductSpecification::where(
                                 'product_id',
                                 $item['featured_new_product_id']
-                            )->with(['specification','specificationItem'])->get();
+                            )->with(['specification','specificationItem'])
+                            ->orderBy('sort_order')
+                            ->get();
 
                             $product = \App\Models\Product::with('stocks')->find($item['featured_new_product_id']);
                             $firstStock = $product?->stocks?->first();
@@ -240,7 +295,9 @@
                             $productSpecifications = \App\Models\ProductSpecification::where(
                                 'product_id',
                                 $item['featured_popular_product_id']
-                            )->with('specification')->get();
+                            )->with('specification')
+                            ->orderBy('sort_order')
+                            ->get();
 
                             $product = \App\Models\Product::with('stocks')->find($item['featured_popular_product_id']);
                              $firstStock = $product?->stocks?->first();
@@ -380,8 +437,8 @@
         <div class="swiper-wrapper">
             @foreach($middleBanners as $banner)
             <div class="swiper-slide" data-swiper-autoplay="8000">
-                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full" alt="ads banner"
-                    title="ads banner">
+                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full" alt="{{ $banner->name}}"
+                    title="{{ $banner->name}}">
             </div>
             @endforeach
         </div>
@@ -493,8 +550,8 @@
         <div class="swiper-wrapper">
             @foreach($middleFullBanners as $banner)
             <div class="swiper-slide" data-swiper-autoplay="8000">
-                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full" alt="ads banner"
-                    title="ads banner">
+                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full" alt="{{ $banner->name }}"
+                    title="{{ $banner->name }}">
             </div>
             @endforeach
         </div>
@@ -552,7 +609,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-[15px]">
         @foreach($popularGalleryProducts as $product)
         <div class="group ftr-card relative border rounded-[20px] overflow-hidden min-h-[415px] cursor-pointer" onclick="window.location.href='{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}'">
-            <img src="{{ Storage::url($product->thumbnail_img) }}" class="absolute object-center object-cover w-full h-full top-0 left-0 transition-all duration-600 group-hover:scale-110" alt="pro build 01" title="pro build 01">
+            <img src="{{ get_product_image($product->thumbnail_img,'300') }}" class="absolute object-center object-cover w-full h-full top-0 left-0 transition-all duration-600 group-hover:scale-110" alt="{{ $product->name }}" title="{{ $product->name }}">
             <div class="content flex flex-col md:flex-row items-end justify-end md:justify-between gap-[20px] md:gap-[30px] relative z-[1] w-full h-full bg-gradient-to-b from-transparent to-[#0000008a] p-[30px]">
                 <h6 class="text-white text-[20px] font-medium w-full md:w-fit text-center">{{ $product->name }}</h6>
                 <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full md:w-fit text-center text-black text-[13px] md:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[15px] rounded-full transition-all duration-600 group-hover:bg-[#2A7CFF] group-hover:text-white">Shop Now</a>
