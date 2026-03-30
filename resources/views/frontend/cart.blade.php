@@ -56,9 +56,12 @@
                                     <!-- Warranty popup link -->
                                     @php
                                         $productWarranties = $item->product->warranties;
+                                        $selectedWarranty = $productWarranties->firstWhere('id', $item->warranty_id);
                                     @endphp
                                     @if($productWarranties->isNotEmpty())
-                                    <a onclick="toggleWarrantyModal(this)" class="text-center xl:text-left w-full py-[5px] text-[12px] text-white flex flex-row items-center justify-center md:justify-start gap-[10px] leading-[0px] cursor-pointer"><i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i>Choose Your Warranty Plan</a>
+                                    <a onclick="toggleWarrantyModal(this)" class="text-center xl:text-left w-full py-[5px] text-[12px] text-white flex flex-row items-center justify-center md:justify-start gap-[10px] leading-[0px] cursor-pointer" data-cartid="{{$item->id}}"><i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i>
+                                        {{ $selectedWarranty ? 'Warranty: '.$selectedWarranty->title : 'Choose Your Warranty Plan' }}
+                                    </a>
                                     @endif
                                 </div>
                             </div>
@@ -139,7 +142,7 @@
                             <p class="mt-2 text-xs text-gray-500">Apply your discount coupon here.</p>
                         </div>
                     </form>
-                    <ul class="border-y-1 border-[#282B34] py-[20px] mt-[20px] border-b-0">
+                    <ul class="border-y-1 border-[#282B34] py-[20px] mt-[20px] border-b-0" id="summary_list">
                         <li class="py-[10px]">
                             <div class="flex flex-row justify-between">
                                 <span class="text-[#99a1af] text-[15px] justify-start text-left">Subtotal</span>
@@ -177,7 +180,7 @@
                         </li>
                         @endif
                         @if($warrantySum > 0)
-                        <li class="py-[10px]">
+                        <li class="py-[10px]" id="warranty-section">
                             <div class="flex flex-row justify-between">
                                 <span class="text-[#99a1af] text-[15px] justify-start text-left">Warranty (Premium Care+)</span>
                                 <span class="flex flex-row text-[#99a1af] items-center justify-end text-right gap-[10px] text-[15px]">

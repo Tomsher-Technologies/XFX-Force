@@ -228,7 +228,7 @@ class CheckoutController
 
         /* ---------------- Estimated Delivery ---------------- */
 
-        $maxDeliveryDays = $carts->max(fn($cart) => get_setting('default_delivery_days') ?? 0);
+        $maxDeliveryDays = get_setting('default_delivery_days') ?? 0;
         $estimated_delivery = now()->addDays($maxDeliveryDays);
 
         /* ---------------- Create Order ---------------- */
@@ -246,6 +246,7 @@ class CheckoutController
             'payment_status' => 'un_paid',
             'grand_total' => 0,
             'tax' => 0,
+            'warranty_amount' => 0,
             'sub_total' => 0,
             'offer_discount' => 0,
             'coupon_discount' => 0,
@@ -293,7 +294,7 @@ class CheckoutController
                 'product_stock_id' => $data->product_stock->id,
                 'og_price' => $data->price,
                 'tax' => $data->tax,
-                'shipping_cost' => $data->shipping_cost,
+                'shipping_cost' => ($request->fulfillment_method == 'pickup') ? 0 : $data->shipping_cost, // Set shipping cost to 0 if pickup is selected
                 'offer_price' => $data->offer_price,
                 'price' => $data->offer_price * $data->quantity,
                 'quantity' => $data->quantity,
@@ -308,20 +309,22 @@ class CheckoutController
         }
 
         OrderDetail::insert($orderItems);
-
-       
-
         $cartSummary = app(CartController::class)->getCartSummary();
 
-         $grand_total = ($sub_total + $cartSummary['tax'] + $cartSummary['shipping']) - ($discount + $total_coupon_discount);
+        // $grand_total = ($sub_total + $cartSummary['tax'] + $cartSummary['shipping']) - ($discount + $total_coupon_discount);
+        $shipping = ($request->fulfillment_method == 'pickup') ? 0 : $cartSummary['shipping'];
+        $grand_total = ($sub_total + $cartSummary['tax'] + $shipping + $cartSummary['warranty_sum']) - ($discount + $total_coupon_discount);
 
         $order->update([
             'grand_total' => $grand_total,
             'sub_total' => $sub_total,
             'offer_discount' => $discount,
             'tax' => $cartSummary['tax'],
-            'shipping_cost' => $cartSummary['shipping'],
-            'shipping_type' => ($total_shipping == 0) ? 'free_shipping' : 'flat_rate',
+            'warranty_amount' => $cartSummary['warranty_sum'],
+            'shipping_cost' => $shipping,
+            'shipping_type' =>  ($request->fulfillment_method == 'pickup') 
+                    ? 'pickup' 
+                    : (($total_shipping == 0) ? 'free_shipping' : 'flat_rate'),
             'coupon_discount' => round($total_coupon_discount),
             'coupon_code' => $coupon_code
         ]);

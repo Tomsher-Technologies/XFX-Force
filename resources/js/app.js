@@ -333,6 +333,18 @@ window.selectWarranty = async function (selectedElement) {
 
     if (data.status) {
         updateCartSummary();
+        // Update the link text dynamically
+        const warrantyLink = document.querySelector(`a[data-cartid="${cartId}"]`); // add data-cartid to your link
+        if (warrantyLink) {
+            if (warrantyId) {
+                // find warranty name from the selected element
+                console.log(selectedElement.dataset);
+                const warrantyName = selectedElement.dataset.warrantyname || 'Warranty'; 
+                warrantyLink.innerHTML = `<i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i> Warranty: ${warrantyName}`;
+            } else {
+                warrantyLink.innerHTML = `<i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i> Choose Your Warranty Plan`;
+            }
+        }
     }
 };
 });
@@ -1301,11 +1313,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('cart-total').innerText = formatPrice(data.total);
                 document.getElementById('cart-count').innerText =  `(${data.cart_count || 0})`;
                 document.getElementById('cart-shipping').innerText = formatPrice(data.shipping);
-                document.getElementById('cart-warranty').innerText = formatPrice(data.warranty_sum);
+                let warrantyElement = document.getElementById('cart-warranty');
+                if(warrantyElement) {
+                    document.getElementById('cart-warranty').innerText = formatPrice(data.warranty_sum);
+                }
+                
                 document.getElementById('total-cart-count-top').innerText = data.cart_count;
                 let couponDiscountElement = document.getElementById('coupon_discount');
                 if(couponDiscountElement) {
                 document.getElementById('coupon_discount').innerHTML = formatPrice(data.couponDiscount);
+                }
+
+                const warrantySection = document.getElementById('warranty-section');
+                if (data.warranty_sum > 0) {
+                    if (warrantySection) {
+                        warrantySection.style.display = 'list-item'; // or 'block' depending on your layout
+                    } else {
+                        // optionally create the li dynamically if it doesn't exist
+                    }
+                } else if (warrantySection) {
+                    warrantySection.style.display = 'none';
                 }
                 
             }
