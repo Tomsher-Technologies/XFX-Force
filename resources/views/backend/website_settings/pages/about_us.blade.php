@@ -49,7 +49,7 @@
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <label class="col-form-label">Description</label>
-                                <textarea name="description" class="form-control form-control-sm" rows="5">{{ $settings['description'] ?? '' }}</textarea>
+                                <textarea name="description" class="form-control" rows="5">{{ $settings['description'] ?? '' }}</textarea>
                             </div>
                         </div>
 
