@@ -23,6 +23,7 @@
         "glightbox": "^3.3.1",
         "jquery": "^3.7.1",
         "medium-zoom": "^1.1.0",
+        "sweetalert2": "^11.26.24",
         "swiper": "^11.2.10",
         "toastr": "^2.1.4",
         "tom-select": "^2.4.3",
