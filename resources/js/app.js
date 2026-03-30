@@ -9,6 +9,7 @@ import 'glightbox/dist/css/glightbox.min.css';
 
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
+import Swal from 'sweetalert2';
 // import '../css/app.css';
 
 
@@ -19,6 +20,7 @@ window.toastr = toastr; // Make toastr globally available
 window.Alpine = Alpine;
 Alpine.start();
 
+window.Swal = Swal;
 
 // âœ… Categories Swiper
 new Swiper("#category-swiper", {
@@ -301,7 +303,10 @@ window.selectWarranty = async function (selectedElement) {
     const cards = modal.querySelectorAll('.warranty-card');
 
     const cartId = selectedElement.dataset.cartid;
-    const warrantyId = selectedElement.dataset.warrantyid;
+    let warrantyId = selectedElement.dataset.warrantyid;
+
+    // Check if already selected
+    const isAlreadySelected = selectedElement.classList.contains('border-2');
 
     // reset all cards
     cards.forEach(card => {
@@ -310,13 +315,17 @@ window.selectWarranty = async function (selectedElement) {
         const icon = card.querySelector('.check-icon');
         if (icon) icon.classList.add('hidden');
     });
+    
+    if (isAlreadySelected) {
+        warrantyId = ''; // remove warranty
+    } else {
+        // activate selected
+        selectedElement.classList.add('border-2','border-[#2A7CFF]','bg-[#161B22]');
+        selectedElement.classList.remove('border','border-gray-800','bg-[#282B3450]');
 
-    // activate selected
-    selectedElement.classList.add('border-2','border-[#2A7CFF]','bg-[#161B22]');
-    selectedElement.classList.remove('border','border-gray-800','bg-[#282B3450]');
-
-    const activeIcon = selectedElement.querySelector('.check-icon');
-    if (activeIcon) activeIcon.classList.remove('hidden');
+        const activeIcon = selectedElement.querySelector('.check-icon');
+        if (activeIcon) activeIcon.classList.remove('hidden');
+    }
 
     // update warranty
     const response = await fetch(`/updateProductWarranty?cartId=${cartId}&warrantyId=${warrantyId}`);
@@ -542,11 +551,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.querySelector(".out-of-stock-block").style.display = 'none';
                         document.querySelector(".add-to-cart-block").style.display = 'grid';
                         if(response.data.cartQty > 0){
-                            // alert('already once added in cart');
                             document.querySelector(".add-to-cart").classList.add('hidden');
                             document.querySelector(".go-to-cart").classList.remove('hidden');
                         }else{
-                            // alert('no items in the cart');
                             document.querySelector(".go-to-cart").classList.add('hidden');
                             document.querySelector(".add-to-cart").classList.remove('hidden');
                         }
@@ -1185,7 +1192,20 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // DELETE LOGIC: If qty is 1 and user clicks minus
         if (currentVal === 1 && change === -1) {
-            if (confirm("Remove this item?")) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Are you sure you want to remove this item from the cart?',
+                icon: 'warning',
+                width: '320px', 
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel'
+            }).then(async(result) => {
+                if (!result.isConfirmed) {
+                    return;
+                }
                 try {
                     const res = await fetch(`/removeCartItem/${cartId}`);
                     const response = await res.json();
@@ -1197,14 +1217,21 @@ document.addEventListener('DOMContentLoaded', function () {
                         container.remove();
                         toastr.success(response.message, 'Success');
                         updateCartSummary();
-                        $("#main-cart-section").load(location.href + " #main-cart-section>*", "");
+                        // $("#main-cart-section").load(location.href + " #main-cart-section>*", "");
+                        $("#main-cart-section").load(location.href + " #main-cart-section>*", "", function () {
+                            document.querySelectorAll('.product-item').forEach(container => {
+                                const input = container.querySelector('.qty-input');
+                                const qty = parseInt(input.value) || 1;
+                                updateQtyIcons(container, qty);
+                            });
+                        });
                     } else {
                         toastr.error(response.message, 'Error');
                     }
                 } catch (error) {
                     toastr.error('Something went wrong', 'Error');
                 }
-            }
+            });
             return;
         }
         
@@ -1222,7 +1249,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if(cartOfferPrice) cartOfferPrice.textContent = response.offerPrice;
             if(cartPrice) cartPrice.textContent = response.price;
                        
-            if (newVal === 1) {
+            /*if (newVal === 1) {
                 minusBtn.classList.add('hidden');
                 trashBtn.classList.remove('hidden');
                 decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
@@ -1233,13 +1260,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
                 decrementBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
-            }
+            }*/
+           updateQtyIcons(container, newVal);
 
             // Pulse animation
             input.classList.add('text-[#2A7CFF]', 'scale-110');
             setTimeout(() => input.classList.remove('text-[#2A7CFF]', 'scale-110'), 150);
         }
     };
+
+    function updateQtyIcons(container, qty) {
+        const iconWrapper = container.querySelector('.icon-wrapper');
+        const minusBtn = iconWrapper.querySelector('.minus-btn');
+        const trashBtn = iconWrapper.querySelector('.trash-btn');
+        const decrementBtn = container.querySelector('.decrement-btn');
+
+        if (qty <= 1) {
+            minusBtn.classList.add('hidden');
+            trashBtn.classList.remove('hidden');
+
+            decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
+            decrementBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+        } else {
+            trashBtn.classList.add('hidden');
+            minusBtn.classList.remove('hidden');
+
+            decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
+            decrementBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+        }
+    }
 
     window.updateCartSummary = async function () {
         try {
@@ -1254,7 +1303,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('cart-shipping').innerText = formatPrice(data.shipping);
                 document.getElementById('cart-warranty').innerText = formatPrice(data.warranty_sum);
                 document.getElementById('total-cart-count-top').innerText = data.cart_count;
+                let couponDiscountElement = document.getElementById('coupon_discount');
+                if(couponDiscountElement) {
                 document.getElementById('coupon_discount').innerHTML = formatPrice(data.couponDiscount);
+                }
                 
             }
         } catch (err) {
@@ -1519,3 +1571,15 @@ window.getCurrentLocation = function(){
         });
     }
 }
+
+
+// Always scroll to top on page reload
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+
+window.addEventListener('load', function () {
+    if (!window.isAjaxNavigation) {
+        window.scrollTo(0, 0);
+    }
+});

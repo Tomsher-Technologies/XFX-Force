@@ -44,7 +44,7 @@
                                     </a>
                                 </div>
                                 <div class="flex flex-col gap-[10px]">
-                                    <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 md:line-clamp-1 xl:line-clamp-2 text-center md:text-left">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>
+                                    <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 md:line-clamp-1 xl:line-clamp-2 text-center md:text-left cursor-pointer" onclick="window.location='{{ route('product.details' ,[$item->product->slug, $item->product_stock->sku]) }}'">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>
                                     <!-- specification popup link -->
                                     @php
                                         $productSpecifications = $item->product->specifications;
@@ -162,6 +162,7 @@
                                 </span>
                             </div>
                         </li>
+                        @if($couponDiscount > 0)
                         <li class="py-[10px]">
                             <div class="flex flex-row justify-between">
                                 <span class="text-[#99a1af] text-[15px] justify-start text-left">Coupon Discount</span>
@@ -174,7 +175,8 @@
 
                             </div>
                         </li>
-
+                        @endif
+                        @if($warrantySum > 0)
                         <li class="py-[10px]">
                             <div class="flex flex-row justify-between">
                                 <span class="text-[#99a1af] text-[15px] justify-start text-left">Warranty (Premium Care+)</span>
@@ -186,7 +188,7 @@
                                 </span>
                             </div>
                         </li>
-
+                        @endif
                         <li class="py-[10px]">
                             <div class="flex flex-row justify-between">
                                 <span class="text-[#99a1af] text-[15px] justify-start text-left">Estimated Tax</span>

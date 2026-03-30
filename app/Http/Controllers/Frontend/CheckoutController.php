@@ -228,7 +228,7 @@ class CheckoutController
 
         /* ---------------- Estimated Delivery ---------------- */
 
-        $maxDeliveryDays = $carts->max(fn($cart) => $cart->product->estimated_delivery_days ?? 0);
+        $maxDeliveryDays = $carts->max(fn($cart) => get_setting('default_delivery_days') ?? 0);
         $estimated_delivery = now()->addDays($maxDeliveryDays);
 
         /* ---------------- Create Order ---------------- */
