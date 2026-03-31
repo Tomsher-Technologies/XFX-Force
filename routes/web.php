@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Frontend\BrandController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Frontend\BuildPcController;
@@ -67,10 +68,12 @@ Route::get('/updateProductWarranty', [CartController::class, 'updateProductWarra
 Route::post('/apply_coupon_code', [CartController::class, 'apply_coupon_code']);
 Route::post('/remove_coupon_code', [CartController::class, 'remove_coupon_code']);
 
-// Route::get('/shop/category/{categoryId}', [ProductController::class, 'shopByCategory'])->name('shop.category');
 Route::get('/shop/category/{slug}', [ProductController::class, 'shopByCategory'])->name('shop.category');
+
+Route::get('/shop/brand/{slug}', [ProductController::class, 'shopByBrand'])->name('shop.brand');
+
 Route::get('/buildyourpc', [BuildPcController::class, 'index'])->name('buildyourpc');
-Route::get('/buildyourpc/products/{category_id}', [BuildPcController::class, 'getProductsByCategory']);
+Route::get('/buildyourpc/products/{category_id}/{brand_id?}', [BuildPcController::class, 'getProductsByCategory']);
 Route::get('/buildyourpc/products/details/{stockId}', [BuildPcController::class, 'getProductDetails']);
 Route::get('/buildyourpc/savePcBuilder', [BuildPcController::class, 'savePcBuilder']);
 Route::get('/buildyourpc/getBuildData', [BuildPcController::class, 'getBuildData']);
@@ -88,8 +91,10 @@ Route::get('/my-orders/{id}', [OrderController::class, 'myOrderSingle'])->name('
 Route::post('/my-orders/{id}/cancel', [OrderController::class, 'cancelOrder'])
     ->name('orders.cancel');
 
-    Route::post('/my-orders/{id}/return', [OrderController::class, 'returnOrder'])
+Route::post('/my-orders/{id}/return', [OrderController::class, 'returnOrder'])
     ->name('orders.return');
+Route::get('/search-products', [ProductController::class, 'searchProducts']);
+Route::get('/brands', [BrandController::class, 'index'])->name('brands.list');
     
 
 Route::group(['middleware' => ['auth:frontend']], function () {

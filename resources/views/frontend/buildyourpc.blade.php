@@ -20,7 +20,7 @@ $hideFooter = true;
     </div>
     <aside id="mobile-sidebar" class="fixed xl:static left-[-100%] xl:left-0 col-span-2 bg-[#1C2228] border border-[#1E2529] rounded-[0px] md:rounded-[20px] flex flex-col overflow-hidden shadow-2xl transition-all duration-300 h-screen xl:h-[calc(100vh-60px)] top-0 z-[99999]">
 
-        <div class="p-[30px] border-b-1 border-[#2E363E]">
+        <div class="p-[30px] border-b border-[#2E363E]">
             <a href="{{ route('home') }}" class="flex items-center gap-[20px]">
                 @php
                     $logo = get_setting('header_logo');
@@ -115,16 +115,22 @@ $hideFooter = true;
             <!-- Filters in list page -->
             <div class="hidden xl:flex items-center bg-[#252B31] border border-[#1E2529] rounded-[15px] h-[50px] relative">
                 <div class="relative h-full border-r border-[#2E3239] min-w-[200px]">
-                    <button onclick="toggleDropdown('manufacturer-menu')" class="flex items-center px-6 w-full h-full hover:bg-[#252C33] transition-colors rounded-[15px]">
-                        <span class="text-gray-400 text-[14px]">Brand: <b id="manufacturer-label" class="text-white ml-1 text-[14px] font-medium">All</b></span>
+                    <button onclick="toggleDropdown('brand-menu')" class="flex items-center px-6 w-full h-full hover:bg-[#252C33] transition-colors rounded-[15px]">
+                        <span class="text-gray-400 text-[14px]">Brand: <b id="brand-label" class="text-white ml-1 text-[14px] font-medium" data-id="0">All Brands</b></span>
                         <svg class="ml-auto text-gray-500" width="12" height="12" viewBox="0 0 12 12" fill="none">
                             <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" />
                         </svg>
                     </button>
 
-                    <div id="manufacturer-menu" class="hidden absolute top-[70px] left-0 w-64 bg-[#1C2228] border border-[#1E2529] rounded-xl shadow-2xl z-50 p-2">
-                        <a href="javascript:void(0)" onclick="selectOption('manufacturer', 'ASUS ROG')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm transition-all">ASUS ROG</a>
-                        <a href="javascript:void(0)" onclick="selectOption('manufacturer', 'MSI Gaming')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm transition-all">MSI Gaming</a>
+                    <div id="brand-menu" class="hidden absolute top-[70px] left-0 w-64 bg-[#1C2228] border border-[#1E2529] rounded-xl shadow-2xl z-50 p-2">
+                        <a href="javascript:void(0)" 
+                        onclick="selectOption('brand', 'All', '0')" 
+                        class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">
+                        All Brands
+                        </a>
+                        @foreach ($brands as $brand)
+                            <a href="javascript:void(0)" onclick="selectOption('brand', '{{ $brand->name }}', '{{ $brand->id }}')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm transition-all">{{ $brand->name }}</a>
+                        @endforeach
                     </div>
                 </div>
 
@@ -147,7 +153,7 @@ $hideFooter = true;
                         <circle cx="11" cy="11" r="8" />
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
                     </svg>
-                    <input type="text" placeholder="Search your brand here" class="bg-transparent border-none outline-none text-[14px] text-white w-full placeholder:text-gray-600">
+                    <input type="text" placeholder="Search your brand here" class="bg-transparent border-none outline-none text-[14px] text-white w-full placeholder:text-gray-600" id="brand-search">
                 </div>
 
                 <div class="flex items-center h-full px-6 gap-8">
@@ -161,13 +167,13 @@ $hideFooter = true;
                     <div id="mega-menu" class="hidden absolute top-[70px] right-0 w-auto bg-[#1C2228] border border-[#1E2529] rounded-[20px] shadow-2xl z-50 p-8">
                         <div>
                             <div class="space-y-3">
-                                <label class="flex items-center gap-3 text-gray-400 text-[14px] cursor-pointer hover:text-white"><input type="checkbox" class="accent-[#2A7CFF] transform scale-[25px]"> Price: Low to High</label>
-                                <label class="flex items-center gap-3 text-gray-400 text-[14px] cursor-pointer hover:text-white"><input type="checkbox" class="accent-[#2A7CFF] transform scale-[25px]"> Price: High to Low</label>
+                                <label class="flex items-center gap-3 text-gray-400 text-[14px] cursor-pointer hover:text-white"><input type="checkbox" class="sort-checkbox accent-[#2A7CFF] transform scale-[25px]" data-sort="price_low_high"> Price: Low to High</label>
+                                <label class="flex items-center gap-3 text-gray-400 text-[14px] cursor-pointer hover:text-white"><input type="checkbox" class="sort-checkboxaccent-[#2A7CFF] transform scale-[25px]" data-sort="price_high_low"> Price: High to Low</label>
                             </div>
                         </div>
                     </div>
 
-                    <button class="text-gray-500 font-medium border-gray-600 hover:text-white hover:border-white transition-all cursor-pointer">
+                    <button class="text-gray-500 font-medium border-gray-600 hover:text-white hover:border-white transition-all cursor-pointer" id="reset-filters">
                         <svg class="w-[15px]" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path class="group-hover:fill-[#ffffff] transition-all duration-600" d="M1.66876 9.99976C1.66223 11.9385 2.33049 13.8193 3.5592 15.3203C4.7879 16.8212 6.50069 17.8491 8.40448 18.2281C10.3083 18.607 12.2848 18.3134 13.9958 17.3976C15.7067 16.4817 17.0459 15.0005 17.7841 13.2074C18.5222 11.4143 18.6136 9.42067 18.0424 7.56772C17.4712 5.71478 16.2731 4.11764 14.653 3.04959C13.0329 1.98154 11.0915 1.50897 9.16098 1.71272C7.23049 1.91648 5.43089 2.7839 4.0701 4.16656H7.50939V5.83319H3.2182C2.8074 5.83275 2.41355 5.66957 2.12307 5.37946C1.83259 5.08935 1.6692 4.69601 1.66876 4.28573V0H3.33751V2.56494C5.04522 1.04118 7.22484 0.148957 9.51209 0.0373691C11.7993 -0.0742183 14.0557 0.601595 15.9039 1.95186C17.7522 3.30213 19.0805 5.24505 19.6667 7.45589C20.253 9.66674 20.0617 12.0116 19.1249 14.0985C18.1881 16.1854 16.5625 17.888 14.5197 18.9217C12.477 19.9554 10.1409 20.2575 7.90189 19.7777C5.66288 19.2978 3.6566 18.065 2.21835 16.2853C0.780105 14.5056 -0.00296646 12.2868 8.55458e-06 9.99976H1.66876Z" fill="#9F9FA9" />
                         </svg>
@@ -464,7 +470,7 @@ $hideFooter = true;
 
 
     function toggleDropdown(menuId) {
-        const menus = ['manufacturer-menu', 'model-menu', 'mega-menu'];
+        const menus = ['brand-menu', 'model-menu', 'mega-menu'];
         menus.forEach(id => {
             const menu = document.getElementById(id);
             if (id === menuId) {
@@ -475,25 +481,26 @@ $hideFooter = true;
         });
     }
 
-    function selectOption(type, value) {
-        // 1. Update the UI Label (e.g., #manufacturer-label)
+    function selectOption(type, value, brandId=0) {
         const label = document.getElementById(`${type}-label`);
         if (label) {
             label.innerText = value;
+            label.setAttribute('data-id', brandId);
         }
 
-        // 2. Close the menu after selection
-        document.getElementById(`${type}-menu`).classList.add('hidden');
+        const activeCategory = document.querySelector('.nav-item.active');
 
-        // 3. Google Ads / SEO Analytics Hook
-        // You can trigger your filtering logic here
-        console.log(`Filtering by ${type}: ${value}`);
+        if(activeCategory){
+            const categoryId = activeCategory.dataset.categoryId;
+            loadProducts(categoryId, brandId);
+        }
+        document.getElementById(`${type}-menu`).classList.add('hidden');
     }
 
     // Close if clicked outside
     window.onclick = function(event) {
         if (!event.target.closest('.relative')) {
-            const menus = ['manufacturer-menu', 'model-menu', 'mega-menu'];
+            const menus = ['brand-menu', 'model-menu', 'mega-menu'];
             menus.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.add('hidden');
@@ -512,6 +519,33 @@ $hideFooter = true;
         document.querySelector('.category-sub-heading').innerText = categoryName;
     }
 
+    function loadProducts(categoryId, brandId, search ="", sort = "") {
+        const productsList = document.getElementById('products-list');
+        const loader = document.getElementById('products-loader');
+
+        productsList.innerHTML = '';
+        loader.classList.remove('hidden');
+
+        fetch(`/buildyourpc/products/${categoryId}/${brandId}?search=${search}&sort=${sort}`)
+            .then(res => res.json())
+            .then(data => {
+
+                loader.classList.add('hidden');
+
+                if (!data.html || data.html.trim() === '') {
+                    productsList.innerHTML = `
+                        <div class="text-center text-gray-400 py-10">
+                            No Products Found
+                        </div>
+                    `;
+                    return;
+                }
+
+                productsList.innerHTML = data.html;
+                viewSelectedPcBuildProducts();
+            });
+    }
+
     navItems.forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
@@ -528,31 +562,30 @@ $hideFooter = true;
             // Set clicked item as active and show its icon
             this.classList.add('active');
             const categoryId = this.dataset.categoryId;
+            const brandId = document.getElementById('brand-label').dataset.id;
             
             document.getElementById('proceed-to-order-btn').classList.add('hidden');
 
             updateNavButtons();
             backToConfiguration();
 
-            // Show loader & clear previous products
-            const productsList = document.getElementById('products-list');
-            const loader = document.getElementById('products-loader');
-            productsList.innerHTML = ''; // clear previous products
-            loader.classList.remove('hidden');
-
-
-            fetch(`/buildyourpc/products/${categoryId}`)
-                .then(res => res.json())
-                .then(data => {
-                    console.log("loading Data = " + data.html)
-                    loader.classList.add('hidden'); 
-                    document.getElementById('products-list').innerHTML = data.html;
-                    viewSelectedPcBuildProducts();
-                });
-
+            loadProducts(categoryId, brandId);
         });
     });
 
+    document.getElementById('brand-search').addEventListener('keyup', function(){
+        const search = this.value;
+        const brandId = document.getElementById('brand-label').dataset.id || 0;
+        const activeCategory = document.querySelector('.nav-item.active');
+
+        if(activeCategory){
+            const categoryId = activeCategory.dataset.categoryId;
+            loadProducts(categoryId, brandId, search);
+        }
+
+    });
+
+    // pc builder save function
     function savePcBuilder(productId, variantId, categoryId, builderId, qty){
         fetch(`/buildyourpc/savePcBuilder?productId=${productId}&variantId=${variantId}&categoryId=${categoryId}&builder_id=${builderId}&qty=${qty}`)
             .then(response => response.json())
@@ -1052,6 +1085,49 @@ $hideFooter = true;
             });
         });
     }
+
+    document.getElementById('reset-filters').addEventListener('click', function(){
+
+        // Reset brand label and ID
+        const brandLabel = document.getElementById('brand-label');
+        brandLabel.innerText = 'All';
+        brandLabel.dataset.id = 0;
+
+        // Clear brand search input
+        document.getElementById('brand-search').value = '';
+
+        // Optional: reset sort, model, etc. if needed
+        // document.getElementById('filter-sort').value = '';
+        // document.getElementById('filter-model').value = '';
+
+        // Reload products for active category
+        const activeCategory = document.querySelector('.nav-item.active');
+        if(activeCategory){
+            const categoryId = activeCategory.dataset.categoryId;
+            loadProducts(categoryId, 0, ''); // brandId=0, search=''
+        }
+    });
+
+    document.querySelectorAll('.sort-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function(){
+
+            // Uncheck all others
+            document.querySelectorAll('.sort-checkbox').forEach(cb => {
+                if(cb !== this) cb.checked = false;
+            });
+
+            const sort = this.checked ? this.dataset.sort : ''; // '' if unchecked
+
+            const brandId = document.getElementById('brand-label').dataset.id || 0;
+            const activeCategory = document.querySelector('.nav-item.active');
+            const search = document.getElementById('brand-search').value || '';
+
+            if(activeCategory){
+                const categoryId = activeCategory.dataset.categoryId;
+                loadProducts(categoryId, brandId, search, sort);
+            }
+        });
+    });
 
 </script>
 @endsection

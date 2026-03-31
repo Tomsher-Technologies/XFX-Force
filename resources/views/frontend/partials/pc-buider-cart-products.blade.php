@@ -1,6 +1,6 @@
 @if($pcBuilderItems->isNotEmpty())
 <div class="flex flex-col w-full bg-black/30 backdrop-blur-[60px] p-[20px] xl:p-[30px] rounded-[20px]">
-    <h2 class="text-center md:text-left text-white text-[20px] uppercase mb-[0px] pb-[20px] border-b-1 border-[#282B34]">Build your PC</h2>
+    <h2 class="text-center md:text-left text-white text-[20px] uppercase mb-[0px] pb-[20px] border-b border-[#282B34]">Build your PC</h2>
     <div class="flex flex-col divide-y-1 divide-[#282B34] mb-[20px]">
         @foreach($pcBuilderItems as $builderId => $items)
             @foreach($items as $item)
@@ -83,30 +83,30 @@
                             <!--//price-->
                         </div>
                     </div>
-                    @php
-                        $productSpecifications = \App\Models\ProductSpecification::where(
-                        'product_id',
-                        $item->product->id
-                        )->with(['specification','specificationItem'])
-                        ->orderBy('sort_order')
-                        ->get();
-
-                        $specifications = $productSpecifications
-                        ->map(function ($ps) {
-                        if ($ps->specification && $ps->specificationItem) {
-                        return [
-                        'title' => $ps->specification->main_title,
-                        'value' => $ps->specificationItem->title,
-                        ];
-                        }
-                        })
-                        ->filter()
-                        ->values();
-                        $productWarrantis = $item->product->warranties;
-                    @endphp
-
-                    @include('frontend.partials.warrantyandspecification',['specifications'=>$specifications, 'productWarrantis'=>$productWarrantis])
                 </div>
+                @php
+                    $productSpecifications = \App\Models\ProductSpecification::where(
+                    'product_id',
+                    $item->product->id
+                    )->with(['specification','specificationItem'])
+                    ->orderBy('sort_order')
+                    ->get();
+
+                    $specifications = $productSpecifications
+                    ->map(function ($ps) {
+                    if ($ps->specification && $ps->specificationItem) {
+                    return [
+                    'title' => $ps->specification->main_title,
+                    'value' => $ps->specificationItem->title,
+                    ];
+                    }
+                    })
+                    ->filter()
+                    ->values();
+                    $productWarrantis = $item->product->warranties;
+                @endphp
+
+                @include('frontend.partials.warrantyandspecification',['specifications'=>$specifications, 'productWarrantis'=>$productWarrantis])
             </div>
             @endforeach
     </div>
