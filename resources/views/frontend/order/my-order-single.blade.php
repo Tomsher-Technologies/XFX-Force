@@ -615,9 +615,10 @@
         </div>
 
         <form id="returnOrderForm">
+            @csrf
             <input type="hidden" name="order_id" value="{{ $order->id }}">
             <div class="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-2">
-                @foreach($order->orderDetails as $detail)
+                @foreach($order->orderDetails->where('is_pc_builder', 0) as $detail)
                     @php
                         // Total quantity already returned for this order detail
                         $returnedQty = $detail->returns->sum('return_qty');
@@ -648,7 +649,13 @@
                             <img src="{{ $image }}" class="w-full h-full object-cover" alt="{{ $detail->product->name ?? '' }}" title="{{ $detail->product->name ?? '' }}">
                         </div>
                         <div class="flex-grow w-full mr-[50px]">
-                            <p class="text-white text-sm font-medium line-clamp-1">{{ $detail->product->name ?? '' }} : {{ $detail->product_stock->stock_title ?? '' }}</p>
+                            <p class="text-white text-sm font-medium line-clamp-1">
+                                 {{ $detail->product->name ?? '' }}
+                                @if(!empty($detail->product_stock->stock_title))
+                                    : {{ $detail->product_stock->stock_title }}
+                                @endif
+                                
+                            </p>
                             <p class="text-gray-500 text-xs uppercase tracking-tighter mt-[5px]">QTY: <span class="item-total-qty">{{ $detail->quantity }}</span></p>
                         </div>
 
@@ -668,7 +675,7 @@
                     </label>
                 @endforeach
 
-                <div class="pt-4">
+                <div class="pt-4 return-reason-container">
                     <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 px-1">Reason for return</p>
                     <textarea rows="3" class="w-full bg-[#0f161b] border border-[#282B34] rounded-2xl p-4 text-white text-sm focus:border-[#2A7CFF] outline-none transition-all placeholder:text-gray-700 resize-none" placeholder="Write your reason here..."></textarea>
                 </div>
@@ -1145,43 +1152,6 @@
     //     }
     // });
 
-    // document.getElementById('returnOrderForm').addEventListener('submit', function (e) {
-    //     e.preventDefault();
-
-    //     const formData = new FormData(this);
-
-    //     fetch(`/my-orders/${formData.get('order_id')}/return`, {
-    //         method: 'POST',
-    //         headers: {
-    //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
-    //         },
-    //         body: formData
-    //     })
-    //     .then(res => res.json())
-    //     .then(res => {
-    //         if(res.status == 'success'){
-    //             toastr.success(res.message);
-    //         } else{
-    //             toastr.error(res.message);
-    //         }
-            
-    //         if (res.status === 'success') {
-    //             document.getElementById('returnOrderModal').classList.add('hidden');
-
-    //             const button = document.getElementById('openReturnBtn');
-    //             if (button) {
-    //                 button.innerText = 'Returned';
-    //                 button.disabled = true;
-    //                 button.classList.add('opacity-50', 'cursor-not-allowed');
-    //             }
-
-    //             const statusText = document.querySelector('.order-status-text');
-    //             if (statusText) statusText.innerText = 'Returned';
-    //         }
-    //     })
-    //     .catch(() => toastr.error('Something went wrong!'));
-    // });
-
 //     document.addEventListener('DOMContentLoaded', () => {
 //     const returnCheckboxes = document.querySelectorAll('.return-checkbox');
 //     const returnOrderForm = document.getElementById('returnOrderForm');
@@ -1287,20 +1257,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const qtyContainer = cb.closest('label.group').querySelector('.return-qty-container');
         const select = qtyContainer.querySelector('select');
 
+        // Initially disable
+        select.disabled = true;
+
+
         // Show/hide dropdown on check
         cb.addEventListener('change', () => {
             if (cb.checked) {
                 qtyContainer.classList.remove('hidden');
-                // Populate dropdown with remaining quantity
-                // select.innerHTML = '';
-                // for (let i = 1; i <= remainingQty[detailId]; i++) {
-                //     const opt = document.createElement('option');
-                //     opt.value = i;
-                //     opt.text = `Qty: ${String(i).padStart(2,'0')}`;
-                //     select.appendChild(opt);
-                // }
+                select.disabled = false;   // enable only when checked
             } else {
                 qtyContainer.classList.add('hidden');
+                select.disabled = true;
             }
         });
     });
@@ -1349,8 +1317,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     qtyContainer.classList.add('hidden');
                 });
 
+                alert('Return request submitted successfully!');
                 // Hide submit if all returned
                 updateSubmitVisibility();
+
+                alert('sdsdsdsdd');
 
                 // Disable open button if all returned
                 if(Object.values(remainingQty).every(qty => qty <= 0)) {
