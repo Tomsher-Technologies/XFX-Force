@@ -634,7 +634,7 @@ input:checked ~ div svg {
   top: 100%;
   left: 0;
   width: 100%;
-  background: #ffffff;
+  background: rgb(40 43 52 / 90%);
   padding: 40px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   opacity: 0;
@@ -1101,3 +1101,8 @@ h1.about-title, h3.about-title{
 
 /*===================================*/
 
+@media (min-width: 320px) and (max-width: 1280px) {
+  .footer-top{
+    background-color: #000000 !important;
+  }
+}

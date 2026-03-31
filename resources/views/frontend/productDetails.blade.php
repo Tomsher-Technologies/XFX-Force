@@ -4,8 +4,8 @@
 @section('content')
 
 <!--breadcrumb-->
-<section class="px-[16px] md:px-[140px] pt-[80px] md:pt-[150px] pb-[0px] relative">
-    <nav class="flex text-gray-400 py-[15px] md:py-[30px] border-t-1 border-[#ffffff30]" aria-label="Breadcrumb">
+<section class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[0px] relative">
+    <nav class="flex text-gray-400 py-[15px] md:py-[30px] border-t border-[#ffffff30]" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-3 flex-wrap">
             <li class="inline-flex items-center">
                 <a href="{{ route('home') }}" class="inline-flex items-center text-sm font-medium hover:text-[#3E81FF] transition-colors">
@@ -48,9 +48,9 @@
 <!--//breadcrumb-->
 <div id="flash-message"></div>
 <!--product single intro-->
-<section class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] md:pt-[0px] md:mb-[100px]">
-    <div class="flex flex-col md:grid md:grid-cols-11 gap-[30px] md:gap-[100px]">
-        <div class="col-span-5 overflow-hidden h-[50vh] md:h-[70vh] w-full">
+<section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] md:pt-[0px] xl:mb-[100px]">
+    <div class="flex flex-col xl:grid xl:grid-cols-11 gap-[30px] xl:gap-[100px]">
+        <div class="col-span-5 overflow-hidden h-[50vh] xl:h-[70vh] w-full">
             <div class="swiper singleprdswiper relative overflow-hidden h-full w-full">
                 <input type="hidden" value="{{$product->id}}" id="main_product_id">
                 <input type="hidden" value="{{$stockId}}" id="selected_stock_id">
@@ -71,8 +71,8 @@
 
                     @if(!$hasVariantImage && $product->thumbnail_img)
                     <div class="swiper-slide" data-swiper-autoplay="8000">
-                        <a href="{{ get_product_image($product->thumbnail_img,'300') }}" class="glightbox">
-                            <img src="{{ get_product_image($product->thumbnail_img,'300') }}" alt="{{ $product->name }}" title="{{ $product->name }}" class="w-full h-full object-cover object-center">
+                        <a href="{{ get_product_image($product->thumbnail_img,'500') }}" class="glightbox">
+                            <img src="{{ get_product_image($product->thumbnail_img,'500') }}" alt="{{ $product->name }}" title="{{ $product->name }}" class="w-full h-full object-cover object-center">
                         </a>
                     </div>
                     @endif
@@ -82,7 +82,7 @@
                 <div class="swiper-button-prev !absolute left-[0%] !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
             </div>
         </div>
-        <div class="product-info flex flex-col gap-[20px] md:gap-[50px] md:col-span-6 w-full">
+        <div class="product-info flex flex-col gap-[20px] xl:gap-[50px] xl:col-span-6 w-full">
             @php
             $firstStock = $selectedStock;
         
@@ -102,15 +102,15 @@
             <div>
             @if (filled($firstStock['offer_tag']))
                 <badge
-                    class="bg-[#077F09] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize">
+                    class="flex w-fit bg-[#077F09] text-white text-[12px] font-medium px-[15px] py-[5px] rounded-full capitalize m-auto xl:m-0">
                     {{ $firstStock['offer_tag'] }}</badge>
             @endif
             <h1 class="text-white text-[20px] md:text-[30px] leading-[30px] 
                 md:leading-[45px] text-center 
-                md:text-left tracking-[0px] variant-title mt-[15px]">
+                xl:text-left tracking-[0px] variant-title mt-[15px]">
                 {{ $firstStock->stock_title ?? $product->name }}
             </h1>
-            <p class="text-[12px] text-[#ffffff50]">
+            <p class="text-[12px] text-[#ffffff50] text-center xl:text-left py-1">
                 @if($product->brand) {{ $product->brand->name }} | @endif
                 @if($firstStock->model) {{ $firstStock->model }} @endif
                 @if($firstStock->sku) | {{ $firstStock->sku }} @endif
@@ -119,7 +119,7 @@
             <input type="hidden" value="{{ $firstStock->id}}" id="stock_id">
 
             <!--varients-->
-            <div class="flex flex-col gap-[30px] md:gap-6 text-center md:text-left border-t-1 md:border-t-0 border-[#ffffff30] mt-[30px] md:mt-[0px] py-[30px] md:py-[0px]">
+            <div class="flex flex-col gap-[30px] md:gap-6 text-center md:text-left border-t md:border-t-0 border-[#ffffff30] mt-[30px] md:mt-[0px] py-[30px] md:py-[0px]">
                 @foreach($groupedAttributes as $attributeName => $attrRows)                
                     @php
                         $level = $loop->index; // 0 = first level
@@ -182,7 +182,7 @@
             </div>
             <!--//varients-->
 
-            <div class="flex flex-col md:flex-row gap-[30px] border-y-1 border-[#ffffff30] py-[30px] w-full justify-between flex-end items-center md:items-end">
+            <div class="flex flex-col md:flex-row gap-[30px] border-y border-[#ffffff30] py-[30px] w-full justify-between flex-end items-center md:items-end">
                 <div>
                     @php
                     // Get the first stock for this product
@@ -203,17 +203,27 @@
                 <!-- When item exist-->
                 <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block">
                     
-                    <button onclick="window.location.href='{{ route('cart') }}'" class="go-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Go to cart</button>
+                    <button onclick="window.location.href='{{ route('cart') }}'" class="go-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Go to cart</button>
                    
                     <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
+
+
+        
+
+                    <button data-product-id="{{ $product->id }}" data-page="product-details" data-stock-id="{{ $stockId }}" class="wishlist-toggle right-[20px] z-[10] mt-2 w-[35px] h-[35px] md:w-[40px] md:h-[40px] bg-black/20 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white bg-black/20 transition-all duration-300 hover:bg-transparent hover:text-red-500 cursor-pointer group/heart" id="wishlist-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-active/heart:scale-125" fill="none"  viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
                     
-                    
-                    <a href="#" class="w-full text-center bg-white md:bg-transparent text-black md:text-white uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 hover:bg-white hover:text-black">Add to Wishlist</a>
                 </div>
+
+                
+
                 <!-- When item exist -->
 
                 <!--when the item is out of stock-->
-                <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit out-of-stock-block hide" style="display: none;">
+                <div class="button-group flex flex-col xl:grid xl:grid-cols-2 gap-[15px] h-fit w-full md:w-fit out-of-stock-block hide" style="display: none;">
                     <div class="flex justify-center items-center gap-2 px-4 py-2 bg-[#c0392b20] border border-[#c0392b50] rounded-[15px] w-full h-full mx-auto md:mx-0 align-center">
                             <span class="relative flex h-2 w-2">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -221,7 +231,7 @@
                             </span>
                             <span class="text-[#e74c3c] text-[12px] font-medium uppercase tracking-wider">Out of Stock</span>
                         </div>
-                    <a href="#" class="w-full text-center bg-white md:bg-transparent text-black md:text-white uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 hover:bg-white hover:text-black">Add to Wishlist</a>
+                    <a href="#" class="w-full text-center bg-white md:bg-transparent text-black md:text-white uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] hover:bg-white hover:text-black">Add to Wishlist</a>
                 </div>
                 <!--//when the item is out of stock-->
             </div>
@@ -364,9 +374,9 @@
 <!--//specification-->
 
 <!--related products-->
-<section class="bg-[#0F161B] px-[16px] md:px-[140px] py-[50px] md:py-[100px] relative">
-    <div class="section-title mb-[30px] md:mb-[50px] relative flex flex-col md:flex-row items-center md:items-end justify-between">
-        <h3 class="w-full text-[30px] md:text-[50px] text-white capitalize font-bold text-center uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] mb-[30px] md:mb-[0px]">Related Products</h3>
+<section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] md:py-[100px] relative">
+    <div class="section-title mb-[30px] relative flex flex-col xl:flex-row items-center xl:items-end justify-between">
+        <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center uppercase text-center xl:text-left leading-[40px] xl:leading-[50px] m-[0] mb-[30px] xl:mb-[0px]">Related Products</h3>
     </div>
     <div class="relative group">
         <div class="swiper productswiper relative overflow-x-hidden">
@@ -392,8 +402,8 @@
                 @endforeach
             </div>
         </div>
-        <div class="swiper-pagination !relative flex flex-start mt-[50px] hidden md:block"></div>
-        <div class="controls relative md:!absolute right-[0px] m-auto mt-[30px] md:mt-[0px] md:top-[-80px] flex items-center gap-[20px] justify-center md:justify-end">
+        <div class="swiper-pagination !relative flex flex-start mt-[50px] hidden xl:block"></div>
+        <div class="controls relative xl:!absolute right-[0px] m-auto mt-[30px] xl:mt-[0px] xl:top-[-80px] flex items-center gap-[30px] justify-center xl:justify-end">
             <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
             <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
         </div>

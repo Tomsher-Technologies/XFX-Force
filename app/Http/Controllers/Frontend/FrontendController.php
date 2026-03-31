@@ -25,7 +25,7 @@ class FrontendController extends Controller
 
         SEOTools::twitter()->setTitle($model['twitter_title']);
         SEOTools::twitter()->setDescription($model['twitter_description']);
-        SEOTools::twitter()->setSite('@homeiq');
+        SEOTools::twitter()->setSite('@pcgarage');
 
         // Replace default WebPage schema
         $jsonLd = SEOTools::jsonLd();
@@ -77,7 +77,7 @@ class FrontendController extends Controller
         JsonLd::setType('Page');
 
         TwitterCard::setTitle($model['twitter_title']);
-        TwitterCard::setSite('@homeiq');
+        TwitterCard::setSite('@pcgarage');
         TwitterCard::setDescription($model['twitter_description']);
 
         SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.ico')));
@@ -103,7 +103,7 @@ class FrontendController extends Controller
         JsonLd::setType('Page');
 
         TwitterCard::setTitle($model->twitter_title);
-        TwitterCard::setSite('@homeiq');
+        TwitterCard::setSite('@pcgarage');
         TwitterCard::setDescription($model->twitter_description);
 
         SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.ico')));

@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="footer-mid bg-black pt-[50px] lg:pt-[80px] px-[16px] md:px-[30px] xl:px-[140px] text-center md:text-left">
-        <div class="footer-links border-y-1 border-[#282B34] py-[0px] md:py-[50px]">
+        <div class="footer-links border-y border-[#282B34] py-[0px] md:py-[50px]">
             <div class="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-5 gap-[0px] md:gap-[50px]">
                 <div class="py-[50px] md:py-[0px] border-b border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('widget_one') }}</h6>
@@ -34,7 +34,7 @@
                         @if ($sectionOneTitles && $sectionOneLinks)
                             @foreach ($sectionOneTitles as $index => $title)
                                 <li>
-                                    <a href="{{ $sectionOneLinks[$index] ?? '#' }}"  class="text-[#898989] text-[15px] transition-all duration-600 hover:text-blue-500 leading-[35px]">
+                                    <a href="{{ $sectionOneLinks[$index] ?? '#' }}"  class="text-[#898989] text-[15px] transition-all duration-[600ms] hover:text-blue-500 leading-[35px]">
                                         {{ $title }}
                                     </a>
                                 </li>
@@ -53,7 +53,7 @@
                         @if ($sectionTwoTitles && $sectionTwoLinks)
                             @foreach ($sectionTwoTitles as $index => $title)
                                 <li>
-                                    <a href="{{ $sectionTwoLinks[$index] ?? '#' }}" class="text-[#898989] text-[15px] transition-all duration-600 hover:text-blue-500 leading-[35px]">
+                                    <a href="{{ $sectionTwoLinks[$index] ?? '#' }}" class="text-[#898989] text-[15px] transition-all duration-[600ms] hover:text-blue-500 leading-[35px]">
                                         {{ $title }}
                                     </a>
                                 </li>
@@ -72,7 +72,7 @@
                         @if ($sectionThreeTitles && $sectionThreeLinks)
                             @foreach ($sectionThreeTitles as $index => $title)
                                 <li>
-                                    <a href="{{ $sectionThreeLinks[$index] ?? '#' }}" class="text-[#898989] text-[15px] transition-all duration-600 hover:text-blue-500 leading-[35px]">
+                                    <a href="{{ $sectionThreeLinks[$index] ?? '#' }}" class="text-[#898989] text-[15px] transition-all duration-[600ms] hover:text-blue-500 leading-[35px]">
                                         {{ $title }}
                                     </a>
                                 </li>
@@ -91,7 +91,7 @@
                         @if ($sectionFourTitles && $sectionFourLinks)
                             @foreach ($sectionFourTitles as $index => $title)
                                 <li>
-                                    <a href="{{ $sectionFourLinks[$index] ?? '#' }}" class="text-[#898989] text-[15px] transition-all duration-600 hover:text-blue-500 leading-[35px] block w-full py-[10px] border-b border-[#282B34]">
+                                    <a href="{{ $sectionFourLinks[$index] ?? '#' }}" class="text-[#898989] text-[15px] transition-all duration-[600ms] hover:text-blue-500 leading-[35px]">
                                         {{ $title }}
                                     </a>
                                 </li>
@@ -109,7 +109,7 @@
     <div class="footer-bottom bg-black py-[30px] px-[16px] md:px-[30px] xl:px-[140px]">
         <div class="flex flex-col md:grid grid-cols-3 gap-[30px] md:gap-[0px]">
             <div class="flex align-center justify-center md:justify-start items-center">
-                <p class="text-white text-[15px] font-medium text-center md:text-left">
+                <p class="text-white text-[14px] font-medium text-center md:text-left">
                     {{ str_replace('{year}', date('Y'), get_setting('frontend_copyright_text')) }} | Website by <a href="https://www.tomsher.com/" target="_blank">Tomsher</a>
                 </p>
             </div>

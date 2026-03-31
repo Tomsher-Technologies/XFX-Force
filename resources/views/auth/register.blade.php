@@ -14,15 +14,15 @@
             <form action="{{ route('register') }}" method="POST" class="space-y-5" autocomplete="off">
                 @csrf
                 <div>
-                    <label class="text-gray-500 text-[12px] font-medium uppercase mb-1 block tracking-wider">Full Name</label>
+                    <label class="text-gray-500 text-[12px] font-medium uppercase mb-1 block tracking-wider">Full Name <span class="text-red-600">*</span></label>
                     <input type="text" placeholder="Enter your name"  id="name" name="name" value="{{ old('name') }}"
-                        class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all placeholder:text-gray-700">
+                        class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all placeholder:text-gray-700" pattern="[A-Za-z\s]+" oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')">
                     
                     @error('name') <span class="text-red-600">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
-                    <label class="text-gray-500 text-[12px] font-medium uppercase mb-1 block tracking-wider">Email Address</label>
+                    <label class="text-gray-500 text-[12px] font-medium uppercase mb-1 block tracking-wider">Email Address <span class="text-red-600">*</span></label>
                     <input type="email" placeholder="example@gmail.com"  id="email" name="email" value="{{ old('email') }}"
                         class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all placeholder:text-gray-700">
                     
@@ -30,14 +30,14 @@
                 </div>
 
                 <div>
-                    <label class="text-gray-500 text-[12px] font-medium uppercase mb-1 block tracking-wider">Phone Number</label>
-                    <input type="tel" name="phone" id="phone" autocomplete="off" class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all placeholder:text-gray-700"  value="{{ old('phone') }}" placeholder="Enter phone..">
+                    <label class="text-gray-500 text-[12px] font-medium uppercase mb-1 block tracking-wider">Phone Number <span class="text-red-600">*</span></label>
+                    <input type="tel" name="phone" id="phone" autocomplete="off" class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all placeholder:text-gray-700"  value="{{ old('phone') }}" placeholder="+971xxxxxxxxxx">
                     @error('phone') <span class="text-red-600">{{ $message }}</span> @enderror
                 </div>
 
                 
                 <div x-data="{ show: false }" class="mb-4">
-                    <label for="password" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider mb-1">Password</label>
+                    <label for="password" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider mb-1">Password <span class="text-red-600">*</span></label>
                 
                     <div class="relative">
                         <!-- Password Input -->
@@ -72,7 +72,7 @@
                 
                 
                 <div x-data="{ show: false }" class="mb-4">
-                    <label for="password" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider mb-1">Confirm Password</label>
+                    <label for="password" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider mb-1">Confirm Password <span class="text-red-600">*</span></label>
                 
                     <div class="relative">
                         <!-- Password Input -->
@@ -104,13 +104,13 @@
                     @if ($errors->has('password_confirmation'))
                         <p class="text-red-600">{{ $errors->first('password_confirmation') }}</p>
                     @elseif ($errors->has('password'))
-                        @if (str_contains($errors->first('password'), 'confirmation'))
+                        {{-- @if (str_contains($errors->first('password'), 'confirmation'))
                             <p class="text-red-600">{{ $errors->first('password') }}</p>
-                        @endif
+                        @endif --}}
                     @endif
                 </div>
 
-                <button type="submit" class="cursor-pointer transition-all duration-600 w-full bg-[#2A7CFF] py-4 rounded-xl font-medium text-white text-[14px] uppercase hover:bg-[#1A6BFF] transition-all shadow-lg shadow-[#2A7CFF]/20 mt-4 active:scale-[0.98]">
+                <button type="submit" class="cursor-pointer transition-all duration-[600ms] w-full bg-[#2A7CFF] py-4 rounded-xl font-medium text-white text-[14px] uppercase hover:bg-[#1A6BFF] transition-all shadow-lg shadow-[#2A7CFF]/20 mt-4 active:scale-[0.98]">
                     Create Account
                 </button>
             </form>

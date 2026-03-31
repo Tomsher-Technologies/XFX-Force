@@ -40,7 +40,7 @@ class ProfileController extends Controller
         $user = auth('frontend')->user();
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20|unique:users,phone,' . $user->id,
+            'phone' => 'required|string|max:12|unique:users,phone,' . $user->id,
         ]);
 
         if ($validator->fails()) {

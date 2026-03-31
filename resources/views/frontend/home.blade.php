@@ -175,7 +175,7 @@
             <div class="content relative z-[1] flex flex-col items-center justify-end h-full w-full">
                 <h2 class="text-[25px] md:text-[30px] text-[white] capitalize font-bold text-center">{{ $banner->title }}</h2>
                 <p class="text-[15px] text-[#ffffff] text-center">{{ $banner->sub_title }}</p>
-                <a href="{{ $url }}" class="btn btn-cta w-full md:w-fit text-center !rounded-full !text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium mt-[20px]" title="">{{ $banner->btn_text }}</a>
+                <a href="{{ $url }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full !text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium mt-[20px]" title="">{{ $banner->btn_text }}</a>
             </div>
         </div>
         @endforeach
@@ -196,17 +196,17 @@
                 @foreach ($categories as $category)
                     <div class="swiper-slide" data-swiper-autoplay="8000">
                         <a href="{{ route('shop.category', $category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
-                            <div class="category-thumb flex align-center bg-[#272930] p-[30px] rounded-full h-[100px] lg:h-[150px] w-[100px] lg:w-[150px]">
+                            <div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] xl:p-[35px] rounded-full h-[100px] lg:h-[80px] xl:h-[150px] w-[100px] lg:w-[80px] xl:w-[150px] overflow-hidden">
                                 <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
                             </div>
-                            <h4 class="text-[white] text-center font-medium text-[15px] xl:text-[20px] capitalize">{{ $category->name }}</h4>
+                            <h4 class="text-white text-center font-medium text-[15px] xl:text-[20px] capitalize">{{ $category->name }}</h4>
                         </a>
                     </div>
                 @endforeach
             </div>
         </div>
         <!-- <div class="swiper-pagination !relative mt-[50px]  block xl:hidden m-auto"></div> -->
-        <div class="controls relative md:absolute right-[0px] left-[0px] m-auto mt-[30px]mt-[0px] md:top-[-80px] items-center gap-[30px] justify-center md:justify-end hidden lg:flex flex-row">
+        <div class="controls relative md:absolute right-[0px] left-[0px] m-auto mt-[30px]mt-[0px] md:top-[-80px] items-center gap-[30px] justify-center md:justify-end hidden xl:flex flex-row">
             <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
             <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
         </div>
@@ -383,14 +383,14 @@
     <div class="section-title mb-[30px] relative flex flex-col xl:flex-row items-center xl:items-end justify-between">
         <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center uppercase text-center xl:text-left leading-[40px] xl:leading-[50px] m-[0] mb-[30px] xl:mb-[0px]">{{$page_content['upcoming_products_title'] ?? ''}}</h3>
         <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] xl:mr-[150px] justify-center xl:justify-end align-center">
-            <div class="flex gap-[20px] tab-container">
+            <div class="flex gap-[20px] tab-container z-20">
                 @if(!empty($upcomingNewProducts))
                 <button @click="activeTab='newUpcoming'"
-                        class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="true">New Arrivals</button>
+                        class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer z-20" data-active="true">New Arrivals</button>
                 @endif
                 @if(!empty($upcomingPopularProducts))
                     <button @click="activeTab='popularUpcoming'" 
-                    class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="false">Popular Items</button>
+                    class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer z-20" data-active="false">Popular Items</button>
                 @endif
             </div>
             <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden xl:block"></div>
@@ -500,7 +500,7 @@
     <div class="section-title mb-[30px] relative flex flex-col xl:flex-row items-center xl:items-end justify-between">
         <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center uppercase text-center xl:text-left leading-[40px] xl:leading-[50px] m-[0] mb-[30px] xl:mb-[0px]">{{ $page_content['middle_featured_products_title'] ?? ''}}</h3>
         <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] xl:mr-[150px] justify-center xl:justify-end align-center">
-            <div class="flex gap-[20px] tab-container">
+            <div class="flex gap-[20px] tab-container z-20">
                 @if(!empty($middleNewProducts))
                 <button @click="activeTab='newMiddleProducts'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="true">New Arrivals</button>
                 @endif
@@ -651,7 +651,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[15px]">
         @foreach($popularGalleryProducts as $product)
         <div class="group ftr-card relative rounded-[20px] overflow-hidden min-h-[300px] xl:min-h-[400px] cursor-pointer" onclick="window.location.href='{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}'">
-            <img src="{{ get_product_image($product->thumbnail_img,'300') }}" class="absolute object-center object-cover w-full h-full top-0 left-0 transition-all duration-[600ms] group-hover:scale-110" alt="{{ $product->name }}" title="{{ $product->name }}">
+            <img src="{{ get_product_image($product->thumbnail_img,'500') }}" class="absolute object-center object-cover w-full h-full top-0 left-0 transition-all duration-[600ms] group-hover:scale-110" alt="{{ $product->name }}" title="{{ $product->name }}">
             <div class="content flex flex-col xl:flex-row items-end justify-end xl:justify-between gap-[20px] xl:gap-[30px] relative z-[1] w-full h-full bg-gradient-to-b from-transparent to-[#0000008a] p-[30px]">
                 <h6 class="text-white text-[20px] font-medium w-full xl:w-[50%] text-center xl:text-left line-clamp-2">{{ $product->name }}</h6>
                 <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full xl:w-fit text-center text-black text-[13px] xl:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[15px] rounded-full transition-all duration-[600ms] group-hover:bg-[#2A7CFF] group-hover:text-white">Shop Now</a>

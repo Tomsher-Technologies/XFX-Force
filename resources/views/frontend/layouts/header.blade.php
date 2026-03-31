@@ -2,7 +2,7 @@
     @php
         $logo = get_setting('header_logo');
     @endphp
-    <header id="main-header" class="w-full fixed bg-transparent z-[9999] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] transition-all duration-600 bg-gradient-to-b from-black/90 via-black/30 to-transparent">
+    <header id="main-header" class="w-full fixed bg-transparent z-[9999] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] transition-all duration-[600ms] bg-gradient-to-b from-black/90 via-black/30 to-transparent">
         <div class="top-bar w-full flex items-center justify-center sm:justify-content-center hidden xl:block">
             <div class="w-full m-auto flex items-center justify-center md:justify-between border-b border-[#393939] pt-[20px] pb-[20px]">
                 <div class="contact-info">
@@ -65,7 +65,7 @@
                                         @foreach($menu->sections as $section)
                                             <div>
                                                 
-                                                <h4 class="text-sm text-gray-400 uppercase pb-[10px] mb-[15px] border-b border-gray-300">
+                                                <h4 class="text-sm text-white uppercase pb-[10px] mb-[15px] border-b border-[#89898950]">
                                                     <a href="{{ getMenuLink($section) }}" class="">
                                                         {{ $section->title }}
                                                     </a>
@@ -75,7 +75,7 @@
                                                     @foreach($section->items as $item)
                                                         <li>
                                                             <a href="{{ getMenuLink($item) }}"
-                                                            class="transition-all duration-600 hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">
+                                                            class="transition-all duration-[600ms] text-[#898989] hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">
                                                                 {{ $item->title }}
                                                             </a>
                                                         </li>
@@ -162,7 +162,7 @@
                             </a>
 
                             <a href="{{ route('orders.index') }}" class="w-full text-gray-400 flex flex-row items-start gap-4 p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
-                                <svg id="Layer_1" class="text-[#898989] w-5 h-5 group-hover:text-white" fill="none" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path class="fill-[#99a1af] group-hover:fill-[#ffffff] transition-all duration-600" d="m19 0h-14a5.006 5.006 0 0 0 -5 5v14a5.006 5.006 0 0 0 5 5h14a5.006 5.006 0 0 0 5-5v-14a5.006 5.006 0 0 0 -5-5zm3 5h-7v-3h4a3 3 0 0 1 3 3zm-11-3h2v5a1 1 0 0 1 -2 0zm-6 0h4v3h-7a3 3 0 0 1 3-3zm14 20h-14a3 3 0 0 1 -3-3v-12h7a3 3 0 0 0 6 0h7v12a3 3 0 0 1 -3 3zm1-3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 0-2h3a1 1 0 0 1 1 1z"/></svg>
+                                <svg id="Layer_1" class="text-[#898989] w-5 h-5 group-hover:text-white" fill="none" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path class="fill-[#99a1af] group-hover:fill-[#ffffff] transition-all duration-[600ms]" d="m19 0h-14a5.006 5.006 0 0 0 -5 5v14a5.006 5.006 0 0 0 5 5h14a5.006 5.006 0 0 0 5-5v-14a5.006 5.006 0 0 0 -5-5zm3 5h-7v-3h4a3 3 0 0 1 3 3zm-11-3h2v5a1 1 0 0 1 -2 0zm-6 0h4v3h-7a3 3 0 0 1 3-3zm14 20h-14a3 3 0 0 1 -3-3v-12h7a3 3 0 0 0 6 0h7v12a3 3 0 0 1 -3 3zm1-3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 0-2h3a1 1 0 0 1 1 1z"/></svg>
                                 <span class="text-[15px]">Orders</span>
                             </a>
 
@@ -271,7 +271,7 @@
                                                 @foreach($section->items as $item)
                                                     <li>
                                                         <a href="{{ getMenuLink($item) }}"
-                                                        class="transition-all duration-600 text-white hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">
+                                                        class="transition-all duration-[600ms] text-white hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">
                                                             {{ $item->title }}
                                                         </a>
                                                     </li>
