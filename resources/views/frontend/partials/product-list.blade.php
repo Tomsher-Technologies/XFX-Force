@@ -56,7 +56,7 @@
                             <div class="specifications">
                                 <ul>
                                     @foreach ($productSpecifications as $specification)
-                                        <li class="flex flex-row py-[15px] border-b-1 border-[#282B34] justify-between">
+                                        <li class="flex flex-row py-[15px] border-b border-[#282B34] justify-between">
                                             <div class="title flex flex-row gap-[20px] w-full">
                                                 <img src="{{ asset('assets/images/processor-icon.svg') }}"
                                                     alt="" title="" class="w-[20px] h-[20px]">

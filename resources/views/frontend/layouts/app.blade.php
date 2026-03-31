@@ -64,7 +64,7 @@
     </style>
 </head>
 
-<body class="m-[0] bg-[#0F161B]">
+<body class="m-[0] !overflow-x-hidden bg-[#0F161B]">
     <!-- Header -->
      @if(!isset($hideHeader) || !$hideHeader)
         @include('frontend.layouts.header')

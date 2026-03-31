@@ -604,8 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }*/
 });
 
-// /**************************************Product variant selection script ends**************************************/
-
+// /**************************************Product variant selection script ends**************************************/ //
 
 // theme-script.js starts
 const trigger = document.getElementById("menuTrigger");
@@ -623,12 +622,16 @@ if (trigger && overlay) {
     });
 }
 
-var swiper = new Swiper(".categoryswiper", {
+var swiper = new Swiper(".cateswiper", {
     slidesPerView: 7,
     spaceBetween: 50,
     grabCursor: true,
-    pagination: false,
-    loop: false,
+    pagination: {
+        enabled: true,
+        el: ".swiper-pagination",
+        dynamicBullets: true,
+    },
+    loop: true,
     speed: 5000,
     parallax: false,
     navigation: {
@@ -638,10 +641,13 @@ var swiper = new Swiper(".categoryswiper", {
     autoplay: { delay: 3000, disableOnInteraction: false },
     allowTouchMove: true,
     breakpoints: {
+        320: { slidesPerView: 3, spaceBetween: 15 },
         640: { slidesPerView: 3, spaceBetween: 15 },
-        768: { slidesPerView: 3, spaceBetween: 15 },
-        1024: { slidesPerView: 5, spaceBetween: 30 },
-        1280: { slidesPerView: 7, spaceBetween: 30 },
+        768: { slidesPerView: 5, spaceBetween: 15 },
+        1024: { slidesPerView: 5, spaceBetween: 15 },
+        1280: { slidesPerView: 5, spaceBetween: 15 },
+        1300: { slidesPerView: 6, spaceBetween: 15 },
+        1366: { slidesPerView: 7, spaceBetween: 15 },
     },
 });
 
@@ -653,33 +659,6 @@ var swiper = new Swiper(".gamepcswiper", {
         el: ".swiper-pagination",
         dynamicBullets: true,
     },
-    loop: false,
-    speed: 5000,
-    freeMode: false,
-    parallax: true,
-    navigation: {
-        prevEl: ".swiper-button-prev",
-        nextEl: ".swiper-button-next",
-    },
-    autoplay: { delay: 3000, disableOnInteraction: false },
-    allowTouchMove: true,
-    breakpoints: {
-        640: { slidesPerView: 1, spaceBetween: 15 },
-        768: { slidesPerView: 2, spaceBetween: 15 },
-        1024: { slidesPerView: 4, spaceBetween: 15 },
-        1280: { slidesPerView: 4, spaceBetween: 15 },
-    },
-});
-
-var swiper = new Swiper(".productswiper", {
-    slidesPerView: 5,
-    spaceBetween: 15,
-    grabCursor: true,
-    pagination: {
-        el: ".swiper-pagination",
-        dynamicBullets: true,
-    },
-    dots: true,
     loop: true,
     speed: 5000,
     freeMode: false,
@@ -691,10 +670,42 @@ var swiper = new Swiper(".productswiper", {
     autoplay: { delay: 3000, disableOnInteraction: false },
     allowTouchMove: true,
     breakpoints: {
-        640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
+        320: { slidesPerView: 1, spaceBetween: 15 },
+        640: { slidesPerView: 2, spaceBetween: 15 },
         768: { slidesPerView: 2, spaceBetween: 15 },
         1024: { slidesPerView: 3, spaceBetween: 15 },
-        1280: { slidesPerView: 4, spaceBetween: 15 },
+        1280: { slidesPerView: 3, spaceBetween: 15 },
+        1300: { slidesPerView: 3, spaceBetween: 15 },
+        1366: { slidesPerView: 3, spaceBetween: 15 },
+        1400: { slidesPerView: 4, spaceBetween: 15 },
+    },
+});
+
+var swiper = new Swiper(".productswiper", {
+    slidesPerView: 5,
+    spaceBetween: 15,
+    grabCursor: true,
+    pagination: {
+        el: ".swiper-pagination",
+        dynamicBullets: true,
+    },
+    loop: true,
+    speed: 5000,
+    navigation: {
+        prevEl: ".swiper-button-prev",
+        nextEl: ".swiper-button-next",
+    },
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    allowTouchMove: true,
+    breakpoints: {
+        320: { slidesPerView: 1, spaceBetween: 15 },
+        640: { slidesPerView: 2, spaceBetween: 15 },
+        768: { slidesPerView: 2, spaceBetween: 15 },
+        1024: { slidesPerView: 3, spaceBetween: 15 },
+        1280: { slidesPerView: 3, spaceBetween: 15 },
+        1300: { slidesPerView: 3, spaceBetween: 15 },
+        1366: { slidesPerView: 3, spaceBetween: 15 },
+        1400: { slidesPerView: 5, spaceBetween: 15 },
     },
 });
 
@@ -715,10 +726,14 @@ var swiper = new Swiper(".equipmentswiper", {
     autoplay: { delay: 3000, disableOnInteraction: false },
     allowTouchMove: true,
     breakpoints: {
-        640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
+        320: { slidesPerView: 1, spaceBetween: 15 },
+        640: { slidesPerView: 1, spaceBetween: 15 },
         768: { slidesPerView: 2, spaceBetween: 15 },
         1024: { slidesPerView: 3, spaceBetween: 15 },
-        1280: { slidesPerView: 4, spaceBetween: 15 },
+        1280: { slidesPerView: 3, spaceBetween: 15 },
+        1300: { slidesPerView: 3, spaceBetween: 15 },
+        1366: { slidesPerView: 3, spaceBetween: 15 },
+        1400: { slidesPerView: 4, spaceBetween: 15 },
     },
 });
 
@@ -735,10 +750,14 @@ var swiper = new Swiper(".adswipertwo", {
     autoplay: { delay: 3000, disableOnInteraction: false },
     allowTouchMove: true,
     breakpoints: {
+        320: { slidesPerView: 1, spaceBetween: 15 },
         640: { slidesPerView: 1, spaceBetween: 15 },
-        768: { slidesPerView: 1, spaceBetween: 30 },
-        1024: { slidesPerView: 2, spaceBetween: 30 },
-        1280: { slidesPerView: 2, spaceBetween: 30 },
+        768: { slidesPerView: 2, spaceBetween: 15 },
+        1024: { slidesPerView: 2, spaceBetween: 15 },
+        1280: { slidesPerView: 2, spaceBetween: 15 },
+        1300: { slidesPerView: 2, spaceBetween: 15 },
+        1366: { slidesPerView: 2, spaceBetween: 15 },
+        1400: { slidesPerView: 2, spaceBetween: 15 },
     },
 });
 
@@ -768,12 +787,6 @@ var swiper = new Swiper(".promobnrswiper", {
     navigation: false,
     autoplay: { delay: 3000, disableOnInteraction: false },
     allowTouchMove: true,
-    breakpoints: {
-        640: { slidesPerView: 2, spaceBetween: 15 },
-        768: { slidesPerView: 2, spaceBetween: 30 },
-        1024: { slidesPerView: 4, spaceBetween: 30 },
-        1280: { slidesPerView: 4, spaceBetween: 30 },
-    },
 });
 
 // const buttons = document.querySelectorAll('.tab-btn');

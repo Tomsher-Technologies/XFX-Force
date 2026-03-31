@@ -2,9 +2,9 @@
     @php
         $logo = get_setting('header_logo');
     @endphp
-    <header id="main-header" class="w-full fixed bg-transparent z-[9999] px-[16px] md:px-[30px] xl:px-[140px] transition-all duration-600">
+    <header id="main-header" class="w-full fixed bg-transparent z-[9999] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] transition-all duration-600 bg-gradient-to-b from-black/90 via-black/30 to-transparent">
         <div class="top-bar w-full flex items-center justify-center sm:justify-content-center hidden xl:block">
-            <div class="w-full m-auto flex items-center justify-center md:justify-between border-b-1 border-[#393939] pt-[20px] pb-[20px]">
+            <div class="w-full m-auto flex items-center justify-center md:justify-between border-b border-[#393939] pt-[20px] pb-[20px]">
                 <div class="contact-info">
                     <a href="#" target="_blank" class="text-[#ffffff] no-underline flex items-center gap-[10px]">
                         <img src="{{ asset('assets/images/location-marker.svg') }}" alt="address" title="address" /> <span class="hidden md:block">{{ get_setting('header_address') }}</span>
@@ -58,7 +58,7 @@
                                     <img src="{{ asset('assets/images/caret-down.svg') }}" class="img-fluid" alt="Caret Down Icon">
                                 </a>
 
-                                <div class="mega-menu absolute top-full m-auto left-0 right-0 w-5xl bg-white p-10 shadow-[0_10px_30px_rgba(0,0,0,0.1)] opacity-0 invisible translate-y-[0px] transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:visible group-hover:translate-y-[55px]">
+                                <div class="mega-menu absolute top-full m-auto left-0 right-0 w-5xl bg-[#ffffff20] backdrop-blur-[100px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.1)] opacity-0 invisible translate-y-[0px] transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:visible group-hover:translate-y-[55px]">
                                         
                                     <div class="mega-grid w-full mx-auto grid gap-[50px] grid-cols-{{ count($menu->sections) }} gap-[50px]">
 
@@ -118,20 +118,20 @@
 
                     
                     <!--profile trigger-->
-                    @if(Auth('frontend')->check())
-                        <button type="button"  onclick="toggleSidePanel()" id="profile-trigger" class="cursor-pointer action-btn hidden md:flex items-center justify-center hover:bg-white/5 p-2 rounded-lg transition-all">
-                            <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8.15234 8.74992C8.97353 8.75104 9.76112 9.07746 10.3418 9.65813C10.9225 10.2388 11.2489 11.0264 11.25 11.8476V14.9999H10V11.8476C9.99938 11.3578 9.80437 10.8883 9.45801 10.5419C9.11164 10.1956 8.64217 10.0005 8.15234 9.99992H3.09863C2.60865 10.0004 2.13847 10.1954 1.79199 10.5419C1.44568 10.8883 1.25062 11.3578 1.25 11.8476V14.9999H0V11.8476C0.00111301 11.0264 0.328507 10.2388 0.90918 9.65813C1.48992 9.0776 2.27748 8.75092 3.09863 8.74992H8.15234ZM4.89355 0.0721893C5.62096 -0.0725011 6.37534 0.0012594 7.06055 0.28508C7.74554 0.568873 8.33118 1.04948 8.74316 1.66594C9.15521 2.28261 9.375 3.00826 9.375 3.74992C9.37396 4.74408 8.97837 5.69733 8.27539 6.40031C7.57238 7.10323 6.61915 7.49893 5.625 7.49992C4.88352 7.4999 4.15855 7.27996 3.54199 6.86809C2.92533 6.45604 2.44495 5.8697 2.16113 5.18449C1.87737 4.49941 1.80266 3.74577 1.94727 3.01848C2.09194 2.29115 2.44929 1.62296 2.97363 1.09856C3.49805 0.574143 4.16618 0.21689 4.89355 0.0721893ZM5.625 1.24992C5.13068 1.24995 4.64736 1.39623 4.23633 1.67082C3.82525 1.9455 3.50465 2.33613 3.31543 2.79289C3.12625 3.24961 3.07647 3.75238 3.17285 4.23723C3.26931 4.72217 3.5078 5.16788 3.85742 5.5175C4.20704 5.86711 4.65277 6.10561 5.1377 6.20207C5.62253 6.29844 6.12534 6.24866 6.58203 6.05949C7.03878 5.87027 7.42943 5.54967 7.7041 5.1386C7.97869 4.72758 8.12496 4.24423 8.125 3.74992C8.125 3.08691 7.86139 2.45117 7.39258 1.98235C6.92375 1.51352 6.28802 1.24992 5.625 1.24992Z" fill="white"/>
-                            </svg>
-                        </button>
-                    @else
-                        <a href="{{ route('login') }}" class="action-btn hidden md:flex items-center justify-center hover:bg-white/5 p-2 rounded-lg transition-all">
-                            <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8.15234 8.74992C8.97353 8.75104 9.76112 9.07746 10.3418 9.65813C10.9225 10.2388 11.2489 11.0264 11.25 11.8476V14.9999H10V11.8476C9.99938 11.3578 9.80437 10.8883 9.45801 10.5419C9.11164 10.1956 8.64217 10.0005 8.15234 9.99992H3.09863C2.60865 10.0004 2.13847 10.1954 1.79199 10.5419C1.44568 10.8883 1.25062 11.3578 1.25 11.8476V14.9999H0V11.8476C0.00111301 11.0264 0.328507 10.2388 0.90918 9.65813C1.48992 9.0776 2.27748 8.75092 3.09863 8.74992H8.15234ZM4.89355 0.0721893C5.62096 -0.0725011 6.37534 0.0012594 7.06055 0.28508C7.74554 0.568873 8.33118 1.04948 8.74316 1.66594C9.15521 2.28261 9.375 3.00826 9.375 3.74992C9.37396 4.74408 8.97837 5.69733 8.27539 6.40031C7.57238 7.10323 6.61915 7.49893 5.625 7.49992C4.88352 7.4999 4.15855 7.27996 3.54199 6.86809C2.92533 6.45604 2.44495 5.8697 2.16113 5.18449C1.87737 4.49941 1.80266 3.74577 1.94727 3.01848C2.09194 2.29115 2.44929 1.62296 2.97363 1.09856C3.49805 0.574143 4.16618 0.21689 4.89355 0.0721893ZM5.625 1.24992C5.13068 1.24995 4.64736 1.39623 4.23633 1.67082C3.82525 1.9455 3.50465 2.33613 3.31543 2.79289C3.12625 3.24961 3.07647 3.75238 3.17285 4.23723C3.26931 4.72217 3.5078 5.16788 3.85742 5.5175C4.20704 5.86711 4.65277 6.10561 5.1377 6.20207C5.62253 6.29844 6.12534 6.24866 6.58203 6.05949C7.03878 5.87027 7.42943 5.54967 7.7041 5.1386C7.97869 4.72758 8.12496 4.24423 8.125 3.74992C8.125 3.08691 7.86139 2.45117 7.39258 1.98235C6.92375 1.51352 6.28802 1.24992 5.625 1.24992Z" fill="white"/>
-                            </svg>
-                            <span class="text-white ml-1">Login</span>
-                        </a>
-                    @endif
+                    <div class="hidden md:block">
+                        @if(Auth('frontend')->check())
+                            <button onclick="toggleSidePanel()" class="p-2 hover:bg-white/10 rounded-full transition-all">
+                                <svg width="18" height="18" viewBox="0 0 12 15" fill="white"><path d="M8.15234 8.74992C8.97353 8.75104 9.76112 9.07746 10.3418 9.65813C10.9225 10.2388 11.2489 11.0264 11.25 11.8476V14.9999H10V11.8476C9.99938 11.3578 9.80437 10.8883 9.45801 10.5419C9.11164 10.1956 8.64217 10.0005 8.15234 9.99992H3.09863C2.60865 10.0004 2.13847 10.1954 1.79199 10.5419C1.44568 10.8883 1.25062 11.3578 1.25 11.8476V14.9999H0V11.8476C0.00111301 11.0264 0.328507 10.2388 0.90918 9.65813C1.48992 9.0776 2.27748 8.75092 3.09863 8.74992H8.15234ZM4.89355 0.0721893C5.62096 -0.0725011 6.37534 0.0012594 7.06055 0.28508C7.74554 0.568873 8.33118 1.04948 8.74316 1.66594C9.15521 2.28261 9.375 3.00826 9.375 3.74992C9.37396 4.74408 8.97837 5.69733 8.27539 6.40031C7.57238 7.10323 6.61915 7.49893 5.625 7.49992C4.88352 7.4999 4.15855 7.27996 3.54199 6.86809C2.92533 6.45604 2.44495 5.8697 2.16113 5.18449C1.87737 4.49941 1.80266 3.74577 1.94727 3.01848C2.09194 2.29115 2.44929 1.62296 2.97363 1.09856C3.49805 0.574143 4.16618 0.21689 4.89355 0.0721893ZM5.625 1.24992C5.13068 1.24995 4.64736 1.39623 4.23633 1.67082C3.82525 1.9455 3.50465 2.33613 3.31543 2.79289C3.12625 3.24961 3.07647 3.75238 3.17285 4.23723C3.26931 4.72217 3.5078 5.16788 3.85742 5.5175C4.20704 5.86711 4.65277 6.10561 5.1377 6.20207C5.62253 6.29844 6.12534 6.24866 6.58203 6.05949C7.03878 5.87027 7.42943 5.54967 7.7041 5.1386C7.97869 4.72758 8.12496 4.24423 8.125 3.74992C8.125 3.08691 7.86139 2.45117 7.39258 1.98235C6.92375 1.51352 6.28802 1.24992 5.625 1.24992Z" /></svg>
+                            </button>
+                        @else
+                            <a href="{{ route('login') }}" class="flex items-center gap-2 text-white hover:text-[#2A7CFF] text-sm font-medium transition-colors">
+                                <span class="p-1.5 border border-white/20 rounded-full">
+                                    <svg width="14" height="14" viewBox="0 0 12 15" fill="currentColor"><path d="M8.15234 8.74992C8.97353 8.75104 9.76112 9.07746 10.3418 9.65813C10.9225 10.2388 11.2489 11.0264 11.25 11.8476V14.9999H10V11.8476C9.99938 11.3578 9.80437 10.8883 9.45801 10.5419C9.11164 10.1956 8.64217 10.0005 8.15234 9.99992H3.09863C2.60865 10.0004 2.13847 10.1954 1.79199 10.5419C1.44568 10.8883 1.25062 11.3578 1.25 11.8476V14.9999H0V11.8476C0.00111301 11.0264 0.328507 10.2388 0.90918 9.65813C1.48992 9.0776 2.27748 8.75092 3.09863 8.74992H8.15234ZM4.89355 0.0721893C5.62096 -0.0725011 6.37534 0.0012594 7.06055 0.28508C7.74554 0.568873 8.33118 1.04948 8.74316 1.66594C9.15521 2.28261 9.375 3.00826 9.375 3.74992C9.37396 4.74408 8.97837 5.69733 8.27539 6.40031C7.57238 7.10323 6.61915 7.49893 5.625 7.49992C4.88352 7.4999 4.15855 7.27996 3.54199 6.86809C2.92533 6.45604 2.44495 5.8697 2.16113 5.18449C1.87737 4.49941 1.80266 3.74577 1.94727 3.01848C2.09194 2.29115 2.44929 1.62296 2.97363 1.09856C3.49805 0.574143 4.16618 0.21689 4.89355 0.0721893ZM5.625 1.24992C5.13068 1.24995 4.64736 1.39623 4.23633 1.67082C3.82525 1.9455 3.50465 2.33613 3.31543 2.79289C3.12625 3.24961 3.07647 3.75238 3.17285 4.23723C3.26931 4.72217 3.5078 5.16788 3.85742 5.5175C4.20704 5.86711 4.65277 6.10561 5.1377 6.20207C5.62253 6.29844 6.12534 6.24866 6.58203 6.05949C7.03878 5.87027 7.42943 5.54967 7.7041 5.1386C7.97869 4.72758 8.12496 4.24423 8.125 3.74992C8.125 3.08691 7.86139 2.45117 7.39258 1.98235C6.92375 1.51352 6.28802 1.24992 5.625 1.24992Z" /></svg>
+                                </span>
+                                Login
+                            </a>
+                        @endif
+                    </div>
                     <!--profile trigger-->
                 </div>
             </div>
@@ -198,8 +198,7 @@
         <div class="container mx-auto px-6 py-12">
             <div class="max-w-4xl mx-auto mb-12">
                 <div class="relative group">
-                    <input type="text" id="mega-search-input" placeholder="What are you looking for?" class="w-full bg-transparent border-b-2 border-white/10 py-6 text-2xl md:text-4xl text-white placeholder-gray-700 focus:outline-none focus:border-[#2A7CFF] transition-all">
-                    
+                    <input type="text" id="mega-search-input" placeholder="What are you looking for?" class="w-full bg-transparent border-0 border-b-2 border-white/10 outline-none focus:outline-none focus:ring-0 active:outline-none  py-6 text-2xl md:text-4xl text-white placeholder-gray-700 focus:outline-none focus:border-[#2A7CFF] transition-all">
                     <div class="absolute right-0 bottom-6 text-[#2A7CFF] opacity-0 group-focus-within:opacity-100 transition-opacity">
                         <span class="text-[12px] font-medium uppercase tracking-widest">Press Enter to Search</span>
                     </div>

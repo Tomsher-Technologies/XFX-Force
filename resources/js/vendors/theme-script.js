@@ -17,25 +17,25 @@ trigger.addEventListener("click", () => {
 });
 
 var swiper = new Swiper(".categoryswiper", {
-  slidesPerView: 7,
-  spaceBetween: 50,
-  grabCursor: true,
-  pagination: false,
-  loop: false,
-  speed: 5000,
-  parallax: false,
-  navigation: {
-    prevEl: ".swiper-button-prev",
-    nextEl: ".swiper-button-next",
-  },
-  autoplay: { delay: 3000, disableOnInteraction: false },
-  allowTouchMove: true,
-  breakpoints: {
-    640: { slidesPerView: 3, spaceBetween: 15 },
-    768: { slidesPerView: 3, spaceBetween: 15 },
-    1024: { slidesPerView: 4, spaceBetween: 30 },
-    1280: { slidesPerView: 4, spaceBetween: 30 },
-  },
+    slidesPerView: 7,
+    spaceBetween: 50,
+    grabCursor: true,
+    pagination: false,
+    loop: false,
+    speed: 5000,
+    parallax: false,
+    navigation: {
+        prevEl: ".swiper-button-prev",
+        nextEl: ".swiper-button-next",
+    },
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    allowTouchMove: true,
+    breakpoints: {
+        640: { slidesPerView: 3, spaceBetween: 15 },
+        768: { slidesPerView: 3, spaceBetween: 15 },
+        1024: { slidesPerView: 4, spaceBetween: 30 },
+        1280: { slidesPerView: 4, spaceBetween: 30 },
+    },
 });
 
 var swiper = new Swiper(".gamepcswiper", {

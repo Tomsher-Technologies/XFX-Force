@@ -1,6 +1,6 @@
 <!--footer-->
 <footer class="bg-[#0F161B]">
-    <div style="background: url('{{ asset('assets/images/footer-top.png') }}')" class="footer-top bg-[#000000] xl:bg-transparent xl:bg-[url('/assets/images/footer-top.png')] bg-no-repeat px-[16px] md:px-[30px] xl:px-[140px] pt-[50px] xl:pt-[80px] z-[1] relative">
+    <div style="background: url('{{ asset('assets/images/footer-top.png') }}')" class="footer-top bg-black xl:bg-transparent xl:bg-[url(/src/images/footer-top.png)] bg-no-repeat px-[16px] md:px-[30px] xl:px-[140px] pt-[50px] xl:pt-[80px] z-[1] relative">
         <div class="flex flex-col md:grid md:grid-cols-3 gap-4 w-full">
                 <div class="grid col-span-1 col-start-1 xl:col-start-2">
                     <div class="footer-logo w-full flex items-center md:items-start justify-start">
@@ -23,7 +23,7 @@
     <div class="footer-mid bg-black pt-[50px] lg:pt-[80px] px-[16px] md:px-[30px] xl:px-[140px] text-center md:text-left">
         <div class="footer-links border-y-1 border-[#282B34] py-[0px] md:py-[50px]">
             <div class="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-5 gap-[0px] md:gap-[50px]">
-                <div class="py-[50px] md:py-[0px] border-b-1 border-[#282B34] md:border-hidden">
+                <div class="py-[50px] md:py-[0px] border-b border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('widget_one') }}</h6>
                     <ul>
                         @php
@@ -42,7 +42,7 @@
                         @endif
                     </ul>
                 </div>
-                <div class="py-[50px] md:py-[0px] border-b-1 border-[#282B34] md:border-hidden">
+                <div class="py-[50px] md:py-[0px] border-b border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('widget_two') }}</h6>
                     <ul>
                         @php
@@ -61,7 +61,7 @@
                         @endif
                     </ul>
                 </div>
-                <div class="py-[50px] md:py-[0px] border-b-1 border-[#282B34] md:border-hidden">
+                <div class="py-[50px] md:py-[0px] border-b border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('widget_three') }}</h6>
                     <ul>
                         @php
@@ -80,7 +80,7 @@
                         @endif
                     </ul>
                 </div>
-                <div class="py-[50px] md:py-[0px] border-b-1 border-[#282B34] md:border-hidden">
+                <div class="py-[50px] md:py-[0px] border-b border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('widget_four') }}</h6>
                     <ul class="border-list">
                         @php
@@ -99,7 +99,7 @@
                         @endif
                     </ul>
                 </div>
-                <div class="py-[50px] md:py-[0px] border-b-1 border-[#282B34] md:border-hidden">
+                <div class="py-[50px] md:py-[0px] border-b border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('footer_address_title') }}</h6>
                     <p class="text-[#898989] text-[15px] leading-[30px]">{{ get_setting('footer_address') }}</p>
                 </div>

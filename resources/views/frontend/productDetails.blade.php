@@ -233,7 +233,7 @@
                         2 => 'Open Box',
                     ];
                 @endphp 
-                <a href="javascript::void(0)" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b-1 md:border-hidden border-[#ffffff30] cursor-default">
+                <a href="javascript::void(0)" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30] cursor-default">
                     <div class="h-[50px] w-[50px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/make-your-order.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
                         <h4 class="text-white text-[18px] mb-[0px]">Condition</h4>
@@ -242,14 +242,14 @@
                         </span>
                     </div>
                 </a>
-                <a href="{{ route('buildyourpc') }}" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b-1 md:border-hidden border-[#ffffff30]">
+                <a href="{{ route('buildyourpc') }}" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30]">
                     <div class="h-[50px] w-[50px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/configurator.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
                         <h4 class="text-white text-[18px] mb-[0px]">Configurator</h4>
                         <span class="text-[15px] text-[#ffffff50]">Create your dream PC</span>
                     </div>
                 </a>
-                <a href="#" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b-1 md:border-hidden border-[#ffffff30]">
+                <a href="#" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30]">
                     <div class="h-[50px] w-[50px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/need-help.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
                         <h4 class="text-white text-[18px] mb-[0px]">Need help?</h4>
