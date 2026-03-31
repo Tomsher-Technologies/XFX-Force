@@ -188,7 +188,7 @@ class HomeController extends Controller
             'twitter_description' => $page_content['twitter_description'] ?? '',
         ];
 
-        $this->loadSEO($page_content);
+        $this->loadSEO($seoContents);
 
         return view('frontend.about', compact('page', 'page_content'));
     }
@@ -208,7 +208,7 @@ class HomeController extends Controller
             'twitter_description' => $page_content['twitter_description'] ?? '',
         ];
         
-        $this->loadSEO($page_content);
+        $this->loadSEO($seoContents);
         return view('frontend.terms', compact('page','page_content'));
     }
 
@@ -227,7 +227,7 @@ class HomeController extends Controller
             'twitter_description' => $page_content['twitter_description'] ?? '',
         ];
         
-        $this->loadSEO($page_content);
+        $this->loadSEO($seoContents);
         return view('frontend.privacy', compact('page','page_content'));
     }
 
@@ -246,7 +246,7 @@ class HomeController extends Controller
             'twitter_description' => $page_content['twitter_description'] ?? '',
         ];
         
-        $this->loadSEO($page_content);
+        $this->loadSEO($seoContents);
         return view('frontend.return_policy', compact('page','page_content'));
     }
 

@@ -366,13 +366,19 @@ class OrderController extends Controller
 
     public function myOrderSingle($id)
     {
+        try {
+            $orderId = decrypt($id);
+        } catch (\Exception $e) {
+            abort(404);
+        }
+        
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $order = Order::with('orderDetails.product')
-            ->where('id', $id)
+            ->where('id', $orderId)
             ->where('user_id', $user_id) // security
             ->firstOrFail();
 
-        $trackingHistory = OrderTracking::where('order_id', $id)
+        $trackingHistory = OrderTracking::where('order_id', $orderId)
             ->orderBy('created_at')
             ->get()
             ->keyBy('status');

@@ -76,6 +76,18 @@
                                                 $url = '#';
                                             }
                                             break;
+                                        
+                                        case 'brand':
+                                            $brand = \App\Models\Brand::find($slider->link_ref_id);
+
+                                            if ($brand && $brand->slug) {
+                                                $url = route('shop.brand', [
+                                                    'slug' => $brand->slug
+                                                ]);
+                                            } else {
+                                                $url = '#';
+                                            }
+                                            break;
                                             
                                         default:
                                             $url = '#';
@@ -140,6 +152,18 @@
                             ['slug' => $category->category_translations->first()->slug ]
                             
                         );
+                    } else {
+                        $url = '#';
+                    }
+                    break;
+
+                case 'brand':
+                    $brand = \App\Models\Brand::find($banner->link_ref_id);
+
+                    if ($brand && $brand->slug) {
+                        $url = route('shop.brand', [
+                            'slug' => $brand->slug
+                        ]);
                     } else {
                         $url = '#';
                     }

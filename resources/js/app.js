@@ -411,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const runFilters = () => {
         const query = searchInput.value.toLowerCase();
-        const selectedCat = categorySelect.value;
+        const selectedCat = categorySelect ? categorySelect.value : 'all';
 
         brandItems.forEach(item => {
             const name = item.getAttribute('data-name').toLowerCase();
