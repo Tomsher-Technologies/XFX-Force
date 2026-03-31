@@ -23,7 +23,7 @@
                     <input type="hidden" name="order_id" id="order_id" value="">
                     <div class="flex flex-col min-h-screen bg-black/30 backdrop-blur-[60px] p-[20px] md:p-[40px] rounded-[20px] mb-[10px] text-white gap-[50px]">
                         <section>
-                            <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b-1 border-[#282B34] gap-3">
+                            <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3">
                                 <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">1</span> Billing Information
                             </h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -162,7 +162,7 @@
                         </section>
 
                         <section>
-                            <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b-1 border-[#282B34] gap-3">
+                            <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3">
                                 <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">4</span> Payment Methods
                             </h2>
                             <div class="space-y-3">
@@ -190,7 +190,7 @@
             <div class="col-span-4">
                 <!--summary widget-->
                 <div class="sticky top-[180px] w-full bg-black/30 backdrop-blur-[60px] p-[20px] md:p-[40px] rounded-[20px] mb-[10px]">
-                    <h2 class="text-white text-[20px] uppercase mb-[25px] pb-[20px] border-b-1 border-[#282B34]">Order Summary</h2>
+                    <h2 class="text-white text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34]">Order Summary</h2>
 
 
                     <div>

@@ -381,6 +381,12 @@ h3 {
     opacity: 1;
 }
 
+.product-card:hover .prd-card-btn{
+  background-color: #2A7CFF;
+}
+
+
+
 /* .product-card:hover button{
     background-color: #2a7cff;
     color: #fff;
@@ -1072,3 +1078,23 @@ input[type=number] {
   .cursor-text {
     cursor: text;
   }
+
+  .swiper-pagination-bullet{
+    background: #ffffff !important;
+  }
+
+  /* Customizing the dots for visibility */
+.swiper-pagination-bullet {
+    background: #ffffff !important; /* White dots for dark backgrounds */
+    opacity: 0.5;
+}
+
+.swiper-pagination-bullet-active {
+    background: #2A7CFF !important; /* Your brand blue for active slide */
+    opacity: 1;
+}
+
+
+
+/*===================================*/
+

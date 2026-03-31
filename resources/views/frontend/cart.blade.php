@@ -113,7 +113,7 @@
             <div class="col-span-4">
                 <!--summary widget-->
                 <div class="sticky top-[180px] w-full bg-black/30 backdrop-blur-[60px] p-[20px] md:p-[30px] rounded-[20px] mb-[10px]">
-                    <h2 class="text-white text-center md:text-left text-[20px] uppercase mb-[20px] pb-[20px] border-b-1 border-[#282B34]">Order Summary</h2>
+                    <h2 class="text-white text-center md:text-left text-[20px] uppercase mb-[20px] pb-[20px] border-b border-[#282B34]">Order Summary</h2>
                     <form>
                         <div class="max-w-sm md:max-w-screen-xl">
                             <label for="coupon" class="block text-sm font-medium text-gray-400 mb-2">Discount code / Promo code</label>

@@ -1,6 +1,5 @@
 
-<div>
-    <div class="product-card w-full relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
+<div class="product-card group w-full h-full relative border-hidden rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-600">
         
         @php
             // Get product object
@@ -29,7 +28,7 @@
                     {{ $prodData['offer_tag'] }}</badge>
             @endif
         </a>
-        <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1]">
+        <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1] w-full">
             <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2">
                 {{ $prodData['name'] ?? '' }}</h4>
             <h5 class="price flex flex-row text-[#2A7CFF] text-[18px] m-[0] font-bold align-center items-center gap-[5px]">
@@ -45,8 +44,7 @@
                 @endif
             </h5>
             <a href="{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}"
-                class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white">View Details</a>
+                class="prd-card-btn w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white">View Details</a>
         </div>
 
     </div>
-</div>

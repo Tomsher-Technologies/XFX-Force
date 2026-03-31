@@ -20,7 +20,7 @@ $hideFooter = true;
     </div>
     <aside id="mobile-sidebar" class="fixed xl:static left-[-100%] xl:left-0 col-span-2 bg-[#1C2228] border border-[#1E2529] rounded-[0px] md:rounded-[20px] flex flex-col overflow-hidden shadow-2xl transition-all duration-300 h-screen xl:h-[calc(100vh-60px)] top-0 z-[99999]">
 
-        <div class="p-[30px] border-b-1 border-[#2E363E]">
+        <div class="p-[30px] border-b border-[#2E363E]">
             <a href="{{ route('home') }}" class="flex items-center gap-[20px]">
                 @php
                     $logo = get_setting('header_logo');
