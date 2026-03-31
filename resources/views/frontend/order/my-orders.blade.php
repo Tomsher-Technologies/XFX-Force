@@ -125,7 +125,7 @@
                                     </div>
 
                                     <div class="w-full md:w-fit gap-[15px]">
-                                        <a href="{{ route('orders.show', $order->id) }}" class="block w-full text-center bg-[#252C33] hover:bg-[#2A7CFF] text-white text-[13px] tracking-[0.5px] uppercase font-medium px-8 py-4 rounded-xl transition-all">
+                                        <a href="{{ route('orders.show', encrypt($order->id)) }}" class="block w-full text-center bg-[#252C33] hover:bg-[#2A7CFF] text-white text-[13px] tracking-[0.5px] uppercase font-medium px-8 py-4 rounded-xl transition-all">
                                             View Details
                                         </a>
                                     </div>

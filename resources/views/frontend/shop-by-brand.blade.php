@@ -1,37 +1,18 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Shop')
+@section('title', 'Shop - Brand')
 @section('content')
 
-@php
 
-Log::info($_REQUEST);
-@endphp
-<!--inner banner-->
-<section class="bg-[#000000] px-[16px] md:px-[250px] pt-[200px] pb-[100px] relative border rounded-br-[100px] rounded-bl-[100px] before:content-[''] before:absolute before:top-[-130%] before:left-[50%] before:translate-x-[-50%] before:w-[900px] before:h-[900px] before:bg-[#2161C7] before:rounded-full before:filter before:blur-[200px] before:z-[0] before:opacity-[0.7]">
-    <div class="section-title mb-[30px] relative">
-        <h3 class="text-[50px] text-[white] capitalize font-bold text-center uppercase text-center">Shop by Categories</h3>
-    </div>
-    <div class="swiper categoryswiper relative">
-        <div class="swiper-wrapper">
-            @foreach ($categories as $category)
-            <div class="swiper-slide" data-swiper-autoplay="8000">
-                <a href="{{ route('shop.category',$category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
-                    <div class="category-thumb flex align-center bg-[#272930] p-[30px] rounded-full h-[130px] w-[130px]">
-                        <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{$category->name}}" class="w-full m-auto">
-                    </div>
-                    <h4 class="text-[white] text-center font-medium text-[16px] capitalize">{{$category->name}}</h4>
-                </a>
-            </div>
-            @endforeach
+    <!--inner banner-->
+    <section class="px-[16px] md:px-[140px] pt-[80px] md:pt-[150px] pb-[0px] relative">
+        <div class="section-title mb-[0px] relative border-t-1 border-[#ffffff30] pt-[50px]">
+            <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase flex flex-col md:flex-row flex-start justify-center md:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">shop: {{ $brand->name }}<span class="text-[18px] text-[#2A7CFF] top-[6px] tracking-[0px] relative font-sans h-[0px]" id="total-product-count">{{ $products->count() }}</span></h3>
         </div>
-        <div class="controls absolute flex items-center justify-between gap-[40px] w-full top-[50%] left-[0] right-[0] z-[1]">
-            <div class="swiper-button-prev !relative !left-[-100px] !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
-            <div class="swiper-button-next !relative !right-[-100px] !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
-        </div>
-    </div>
-</section>
-<!--//categories-->
+        <input type="hidden" id="current-brand-id" value="{{ $brand->slug }}">
+    </section>
+    <!--//categories-->
+
 
 
 <!--product listing-->
@@ -342,7 +323,7 @@ Log::info($_REQUEST);
         </dialog>
     </el-dialog>
 
-    <main class="px-[16px] md:px-[140px] py-[100px]">
+    <main class="px-[16px] md:px-[140px] pt-[50px] pb-[100px]">
         <div class="grid grid-cols-4 gap-[50px]">
             <div>
                 <!-- Filters -->
@@ -499,32 +480,18 @@ Log::info($_REQUEST);
                         <el-disclosure id="filter-section-brand" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[20px]">
 
                             <div class="w-full">
-                                <div id="brand-grid" class="space-y-4">
-                                    <div class="relative mb-6">
-                                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                            </svg>
-                                        </span>
-                                        <input type="text" id="brand-search" placeholder="Search brands (e.g. Nvidia)" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
-                                    </div>
-                                
-                                    @if(!empty($brands))
-                                    @foreach ($brands as $brand)
-                                    <div class="flex gap-[15px] align-center items-center brand-item" data-name="{{$brand->name}}">
+                                <div id="brand-grid" class="space-y-4">                                
+                                    <div class="flex gap-[15px] items-center brand-item" data-name="{{ $brand->name }}">
                                         <div class="flex h-5 shrink-0 items-center">
                                             <div class="group grid size-4 grid-cols-1 w-full">
-                                                <input id="filter-brand-0" type="checkbox" name="brands[]" value="{{$brand->id}}" class="h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7] indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                                                    <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                                                </svg>
+                                                <input id="filter-brand-{{ $brand->id }}" type="checkbox" name="brands[]" value="{{ $brand->id }}" class="brand-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-brand-{{ $brand->id }}" checked style="pointer-events: none;"> 
                                             </div>
                                         </div>
-                                        <label for="filter-brand-0" class="relative top-[5px] text-[15px] text-white">{{$brand->name}} <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $brand->products_count }}</span></label>
+                                        <label for="filter-brand-{{ $brand->id }}" class="relative top-[5px] text-[15px] text-white">
+                                            {{ $brand->name ?? $brand->name }}
+                                            <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $productCount }}</span>
+                                        </label>
                                     </div>
-                                    @endforeach
-                                    @endif
                                 
                                 <a href="#" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view all brands</a>
                             </div>
@@ -549,10 +516,9 @@ Log::info($_REQUEST);
 
             <div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 
-                <div class="flex items-center justify-between">
-                    <h1 class="text-4xl font-bold tracking-tight text-white uppercase">All Products</h1>
-                    <div class="flex items-center gap-[30px]">
-                        <span class="text-[#898989] text-[14px]" id="product-count">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
+                <div class="flex flex-col md:flex-row items-center justify-between gap-[15px] md:gap-[0px] w-full">
+                    <span class="text-[#898989] text-[14px] w-full text-center md:text-left"  id="product-count">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
+                    <div class="flex flex-col md:flex-row items-center gap-[15px] md:gap-[30px] w-full justify-end">
                         <el-dropdown class="relative inline-block text-left">
                             <button class="group inline-flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white min-w-[230px]">
                                 <span class="mr-[10px] text-[14px] text-[#898989]">Sort by:
@@ -615,292 +581,150 @@ Log::info($_REQUEST);
 </section>
 <!--//product listing-->
 
+
 <script>
-    // FILTER SCRIPT
-    /* ===============================
-    GLOBAL STATE VARIABLES
-    =============================== */
+/* ===============================
+   GLOBAL STATE VARIABLES
+   =============================== */
+let currentSort = "newest";
+let currentView = "gridview";
 
-    let selectedBrands = [];
-    let currentSort = "newest";
-    let currentView = "gridview";
+/* ===============================
+   INITIAL SETUP
+   =============================== */
+document.addEventListener('DOMContentLoaded', () => {
 
+    // ======== FORCE CURRENT BRAND CHECKED ========
+    document.querySelectorAll('input[name="brands[]"]').forEach(cb => {
+        cb.checked = true;
+        cb.disabled = true; // prevent unchecking
+    });
 
-    /* ===============================
-    PRICE RANGE FILTER
-    =============================== */
+    // ======== INITIALIZE PRICE SLIDER ========
+    const minSlider = document.getElementById('range-min');
+    const maxSlider = document.getElementById('range-max');
+    const minInput = document.getElementById('min-price');
+    const maxInput = document.getElementById('max-price');
+    const progress = document.getElementById('slider-progress');
 
-    document.addEventListener('DOMContentLoaded', () => {
-
-        const minSlider = document.getElementById('range-min');
-        const maxSlider = document.getElementById('range-max');
-        const minInput = document.getElementById('min-price');
-        const maxInput = document.getElementById('max-price');
-        const progress = document.getElementById('slider-progress');
-
-        if (!minSlider || !maxSlider || !minInput || !maxInput || !progress) return;
-
+    if (minSlider && maxSlider && minInput && maxInput && progress) {
         const maxPrice = parseInt(maxSlider.max);
 
-        function updateProgress(minVal, maxVal) {
+        const updateProgress = (minVal, maxVal) => {
             const minPercent = (minVal / maxPrice) * 100;
             const maxPercent = 100 - (maxVal / maxPrice) * 100;
             progress.style.left = minPercent + "%";
             progress.style.right = maxPercent + "%";
-        }
+        };
 
-        // Update slider when input changes
-        function inputChanged() {
-        
+        const inputChanged = () => {
             let minVal = parseInt(minInput.value) || 0;
             let maxVal = parseInt(maxInput.value) || maxPrice;
-
-            // Clamp values
             minVal = Math.max(0, Math.min(minVal, maxPrice));
             maxVal = Math.max(0, Math.min(maxVal, maxPrice));
-
             minInput.value = minVal;
             maxInput.value = maxVal;
-
             minSlider.value = minVal;
             maxSlider.value = maxVal;
-
             updateProgress(minVal, maxVal);
             filterProducts();
-        }
+        };
 
-        // Update input when slider changes
-        function sliderChanged() {
+        const sliderChanged = () => {
             let minVal = parseInt(minSlider.value);
             let maxVal = parseInt(maxSlider.value);
-
             minInput.value = minVal;
             maxInput.value = maxVal;
-
             updateProgress(minVal, maxVal);
             filterProducts();
-        }
+        };
 
         minSlider.addEventListener('input', sliderChanged);
         maxSlider.addEventListener('input', sliderChanged);
-
         minInput.addEventListener('input', inputChanged);
         maxInput.addEventListener('input', inputChanged);
 
         // Initialize progress
         updateProgress(parseInt(minSlider.value), parseInt(maxSlider.value));
-    });
-
-    /* ===============================
-    BRAND FILTER
-    =============================== */
-
-    document.addEventListener('DOMContentLoaded', () => {
-
-        const searchInput = document.getElementById('brand-search');
-        const brandItems = document.querySelectorAll('.brand-item');
-
-        if (!searchInput || brandItems.length === 0) {
-            return;
-        }
-
-        searchInput.addEventListener('input', (e) => {
-
-            const query = e.target.value.toLowerCase();
-
-            brandItems.forEach(item => {
-
-                const name = item.getAttribute('data-name').toLowerCase();
-
-                if (name.includes(query)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-
-            });
-
-        });
-
-    });
-
-
-    /* ===============================
-    CATEGORY FILTER SEARCH
-    =============================== */
-
-    document.addEventListener('DOMContentLoaded', () => {
-
-        const searchInput = document.getElementById('category-search');
-        const categoryItems = document.querySelectorAll('.category-item');
-
-        if (!searchInput || categoryItems.length === 0) {
-            return;
-        }
-
-        searchInput.addEventListener('input', (e) => {
-
-            const query = e.target.value.toLowerCase();
-
-            categoryItems.forEach(item => {
-
-                const name = item.getAttribute('data-name').toLowerCase();
-
-                if (name.includes(query)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-
-            });
-
-        });
-
-    });
-
-
-    /* ===============================
-    SORTING
-    =============================== */
-
-    document.addEventListener('DOMContentLoaded', () => {
-
-        const sortButton = document.querySelector('el-dropdown button');
-        const sortOptions = document.querySelectorAll('.sort-option');
-
-        if (!sortButton || sortOptions.length === 0) return;
-
-        sortOptions.forEach(option => {
-
-            option.addEventListener('click', (e) => {
-
-                e.preventDefault();
-
-                currentSort = option.dataset.sort;
-
-                const sortText = option.textContent;
-
-                sortButton.querySelector('span').textContent = `Sort by: ${sortText}`;
-
-                filterProducts();
-
-            });
-
-        });
-
-    });
-
-
-    /* ===============================
-    VIEW SWITCH
-    =============================== */
-
-    document.addEventListener('DOMContentLoaded', () => {
-
-        const viewButtons = document.querySelectorAll('.view-switch');
-
-        viewButtons.forEach(btn => {
-
-            btn.addEventListener('click', function() {
-
-                currentView = this.dataset.view;
-
-                filterProducts();
-
-            });
-
-        });
-
-    });
-
-
-    /* ===============================
-    FILTER FUNCTION
-    =============================== */
-
-    function filterProducts() {
-
-        const categories = Array.from(
-            document.querySelectorAll('input[name="categories[]"]:checked')
-        ).map(el => el.value);
-
-        const selectedBrands = Array.from(
-            document.querySelectorAll('input[name="brands[]"]:checked')
-        ).map(el => el.value);
-
-
-        const min_price = parseInt(
-            document.getElementById('min-price')?.value
-        ) || 0;
-
-        const max_price = parseInt(
-            document.getElementById('max-price')?.value
-        ) || 300000;
-
-
-        const url = `/products`;
-
-
-        const params = new URLSearchParams({
-
-            min_price,
-            max_price,
-            sort: currentSort,
-            view: currentView
-
-        });
-
-
-        categories.forEach(cat => params.append('categories[]', cat));
-        selectedBrands.forEach(brand => params.append('brands[]', brand));
-
-
-        return fetch(`${url}?${params.toString()}`, {
-
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-
-            })
-
-            .then(res => res.text())
-
-            .then(html => {
-
-                const wrapper = document.getElementById('product-list-wrapper');
-                wrapper.innerHTML = html;
-
-                // Scroll to top of product list
-                // const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100; // adjust 100px if header exists
-                // window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                // wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                // Update product count dynamically
-                const countSpan = document.getElementById('product-count');
-                if (countSpan) {
-                    const productCount = wrapper.querySelectorAll('.product-card').length;
-                    countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
-                }
-
-            })
-
-            .catch(err => console.error('Filter products error:', err));
-
     }
 
-    /* ===============================
-    CLEAR FILTER
-    =============================== */
-    document.addEventListener('DOMContentLoaded', () => {
-        const clearBtn = document.getElementById('clear-filters');
-        if (!clearBtn) return;
+    // ======== BRAND SEARCH ========
+    const brandSearch = document.getElementById('brand-search');
+    const brandItems = document.querySelectorAll('.brand-item');
 
+    if (brandSearch && brandItems.length) {
+        brandSearch.addEventListener('input', e => {
+            const query = e.target.value.toLowerCase();
+            brandItems.forEach(item => {
+                const name = item.getAttribute('data-name').toLowerCase();
+                item.style.display = name.includes(query) ? 'flex' : 'none';
+            });
+        });
+    }
+
+    // ======== CATEGORY SEARCH ========
+    const categorySearch = document.getElementById('category-search');
+    const categoryItems = document.querySelectorAll('.category-item');
+
+    if (categorySearch && categoryItems.length) {
+        categorySearch.addEventListener('input', e => {
+            const query = e.target.value.toLowerCase();
+            categoryItems.forEach(item => {
+                const name = item.getAttribute('data-name').toLowerCase();
+                item.style.display = name.includes(query) ? 'flex' : 'none';
+            });
+        });
+    }
+
+    // ======== SORTING ========
+    const sortButton = document.querySelector('el-dropdown button');
+    const sortOptions = document.querySelectorAll('.sort-option');
+
+    if (sortButton && sortOptions.length) {
+        sortOptions.forEach(option => {
+            option.addEventListener('click', e => {
+                e.preventDefault();
+                currentSort = option.dataset.sort;
+                const sortText = option.textContent;
+                sortButton.querySelector('span').textContent = `Sort by: ${sortText}`;
+                filterProducts();
+            });
+        });
+    }
+
+    // ======== VIEW SWITCH ========
+    const viewButtons = document.querySelectorAll('.view-switch');
+    viewButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+            currentView = this.dataset.view;
+            filterProducts();
+        });
+    });
+
+    // ======== CATEGORY CHECKBOXES ========
+    document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const checkedCount = document.querySelectorAll('.category-checkbox:checked').length;
+            if (checkedCount === 0) {
+                this.checked = true;
+                toastr.error("At least one category must be selected.");
+            }
+
+            const childIds = this.dataset.childIds ? this.dataset.childIds.split(',') : [];
+            childIds.forEach(id => {
+                const childCheckbox = document.getElementById(`filter-category-${id}`);
+                if (childCheckbox) childCheckbox.checked = this.checked;
+            });
+
+            filterProducts();
+        });
+    });
+
+    // ======== CLEAR FILTERS ========
+    const clearBtn = document.getElementById('clear-filters');
+    if (clearBtn) {
         clearBtn.addEventListener('click', () => {
-            // Reset sliders and inputs
-            const minSlider = document.getElementById('range-min');
-            const maxSlider = document.getElementById('range-max');
-            const minInput = document.getElementById('min-price');
-            const maxInput = document.getElementById('max-price');
+            // Reset price
             if (minSlider && maxSlider && minInput && maxInput) {
                 minSlider.value = 0;
                 maxSlider.value = maxSlider.max;
@@ -908,82 +732,67 @@ Log::info($_REQUEST);
                 maxInput.value = maxSlider.max;
             }
 
-            updateProgress(0, parseInt(maxSlider.max));
+            // Reset categories (all checked)
+            document.querySelectorAll('input[name="categories[]"]').forEach(cb => cb.checked = true);
 
-            // Uncheck all categories and brands
-            document.querySelectorAll('input[name="categories[]"], input[name="brands[]"]').forEach(cb => cb.checked = false);
-            selectedBrands = [];
-
-            // Reset sort and view if desired
+            // Sort & view
             currentSort = "newest";
             currentView = "gridview";
 
             filterProducts();
         });
-    });
-
-    function updateProgress(minVal, maxVal) {
-
-        const progress = document.getElementById('slider-progress');
-        const maxPrice = 300000;
-        const minPercent = (minVal / maxPrice) * 100;
-        const maxPercent = 100 - (maxVal / maxPrice) * 100;
-
-        progress.style.left = minPercent + "%";
-        progress.style.right = maxPercent + "%";
     }
-    /* ===============================
-    CATEGORY + BRAND CHECKBOX CHANGE
-    =============================== */
 
-    document.addEventListener('DOMContentLoaded', () => {
-
-        document.querySelectorAll(
-            'input[name="categories[]"], input[name="brands[]"]'
-        ).forEach(input => {
-
-            input.addEventListener('change', () => {
-
-                filterProducts().then(() => {
-
-                    const wrapper = document.getElementById('product-list-wrapper');
-                    const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
-
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-
-                });
-
-            });
-
-        });
-
+    // ======== CATEGORY + BRAND CHECKBOX CHANGE ========
+    document.querySelectorAll('input[name="categories[]"]').forEach(input => {
+        input.addEventListener('change', filterProducts);
     });
 
-    /* ===============================
-    INITIAL LOAD
-    =============================== */
+    // ======== INITIAL LOAD ========
+    filterProducts();
 
-    document.addEventListener('DOMContentLoaded', () => {
-        filterProducts();
-    });
+});
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.category-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const childIds = this.dataset.childIds ? this.dataset.childIds.split(',') : [];
-                childIds.forEach(id => {
-                    const childCheckbox = document.getElementById(`filter-category-${id}`);
-                    if (childCheckbox) childCheckbox.checked = this.checked;
-                });
+/* ===============================
+   FILTER FUNCTION
+   =============================== */
+function filterProducts() {
+    const categories = Array.from(
+        document.querySelectorAll('input[name="categories[]"]:checked')
+    ).map(el => el.value);
 
-                // Trigger your filter function after selection
-                filterProducts();
-            });
-        });
-    });
-    // FILTER SCRIPT
+    const brandId = Array.from(
+        document.querySelectorAll('input[name="brands[]"]:checked')
+    ).map(el => el.value); // will be single brand, locked
+
+    const min_price = parseInt(document.getElementById('min-price')?.value) || 0;
+    const max_price = parseInt(document.getElementById('max-price')?.value) || 300000;
+
+    const url = `/products`; // your AJAX route
+
+    const params = new URLSearchParams({ min_price, max_price, sort: currentSort, view: currentView });
+    categories.forEach(cat => params.append('categories[]', cat));
+    brandId.forEach(b => params.append('brands[]', b));
+
+    fetch(`${url}?${params.toString()}`, { method: 'GET', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(res => res.text())
+        .then(html => {
+            const wrapper = document.getElementById('product-list-wrapper');
+            wrapper.innerHTML = html;
+
+            // Scroll to product list
+            const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
+            window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+
+            // Update product count dynamically
+            const countSpan = document.getElementById('product-count');
+            if (countSpan) {
+                const productCount = wrapper.querySelectorAll('.product-card').length;
+                countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                document.getElementById('total-product-count').textContent = `${productCount}`;
+            }
+        })
+        .catch(err => console.error('Filter products error:', err));
+}
 </script>
 @endsection

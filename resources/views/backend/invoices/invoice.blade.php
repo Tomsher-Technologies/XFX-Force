@@ -119,7 +119,10 @@
 <body>
     <div class="invoice">
         <div class="invoice-header">
-            <img width="140" src="{{ $imagePath }}" alt="{{ env('APP_NAME') }}" class="invoice-logo">
+            @php
+                $logo = get_setting('header_logo');
+            @endphp
+            <img width="140" src="{{ $imagePath }}" alt="{{ env('APP_NAME') }}" title="{{ env('APP_NAME') }}" class="invoice-logo">
             <h1>Invoice</h1>
         </div>
 
@@ -155,7 +158,6 @@
                     {{ $billingAddress?->name }} <br>
                     {{ $billingAddress?->address }}<br>
                     {{ $billingAddress?->city }}<br>
-                    {{ $billingAddress?->zipcode }}<br>
                     {{ $billingAddress?->phone }}<br>
                     {{ $billingAddress?->email }}<br>
                 </p>
@@ -169,7 +171,6 @@
                     {{ $shippingAddress?->name }}<br>
                     {{ $shippingAddress?->address }} <br>
                     {{ $shippingAddress?->city }} <br>
-                    {{ $shippingAddress?->zipcode }} <br>
                     {{ $shippingAddress?->phone }} <br>
                     {{ $shippingAddress?->email }} <br>
                 </p>
@@ -186,7 +187,52 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($order->orderDetails as $key => $orderDetail)
+                @php
+                $pcBuilderItems = $order->orderDetails->where('is_pc_builder', 1);
+                $normalItems = $order->orderDetails->where('is_pc_builder', 0);
+                @endphp
+
+                @if($pcBuilderItems->count() > 0)
+                    <tr class="bg-light">
+                        <td class="fw-bold text-dark" colspan="4">PC Builder Items</td>
+                    </tr>
+                    @foreach ($pcBuilderItems as $key => $orderDetail)
+                        <tr>
+                            <td class="text-start">
+                                <span class="fw-medium">
+                                    {{ $orderDetail->product->name }}
+                                </span>
+                                @if ($orderDetail->variation != null)
+                                    @php
+                                        $variations = json_decode($orderDetail->variation);
+                                        
+                                    @endphp
+                                    <ul>
+                                        @foreach($variations as $var)
+                                            <li> {{ $var->name ?? '' }} : {{ $var->value ?? '' }}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </td>
+                            <td class="gry-color currency">
+                                @if ($orderDetail->og_price != $orderDetail->offer_price)
+                                    <del>{{ single_price($orderDetail->og_price) }}</del> <br>
+                                @endif
+                                {{ single_price($orderDetail->price / $orderDetail->quantity) }}</td>
+                            <td class="gry-color">{{ $orderDetail->quantity }}</td>
+                            <td class="text-right currency">
+                                {{ single_price($orderDetail->price) }}
+                            </td>
+                        
+                        </tr>
+                    @endforeach
+
+                <!-- Other Products -->
+                <tr class="bg-light">
+                    <td class="fw-bold text-dark" colspan="4">Other products</td>
+                </tr>
+                @endif
+                @foreach ($normalItems as $key => $orderDetail)
                     <tr>
                         <td class="text-start">
                             <span class="fw-medium">
@@ -221,13 +267,17 @@
 
         <div class="invoice-total">
             <p><strong>Subtotal:</strong> {{ single_price($order->sub_total) }}</p>
-            <p><strong>VAT:</strong> {{ single_price($order->orderDetails->sum('tax')) }}</p>
+            <p><strong>VAT:</strong> {{ single_price($order->tax) }}</p>
             @if ($order->offer_discount != 0)
                 <p><strong>Discount:</strong> {{ single_price($order->offer_discount) }}</p>
             @endif
             
             @if ($order->coupon_discount != 0)
                 <p><strong>Coupon Discount:</strong> {{ single_price($order->coupon_discount) }}</p>
+            @endif
+
+            @if ($order->warranty_amount != 0)
+                <p><strong>Warranty (Premium Care+):</strong> {{ single_price($order->warranty_amount) }}</p>
             @endif
             
             <p><strong>Shipping Charge:</strong> {{ single_price($order->shipping_cost) }}</p>

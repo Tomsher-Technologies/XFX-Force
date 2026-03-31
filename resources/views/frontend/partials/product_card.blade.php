@@ -29,7 +29,7 @@
             @endif
         </a>
         <div class="product-content p-[20px] flex flex-col gap-[20px] z-[1] w-full">
-            <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2">
+            <h4 class="text-white text-[18px] leading-[25px] font-medium line-clamp-2" onclick="window.location= '{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}'">
                 {{ $prodData['name'] ?? '' }}</h4>
             <h5 class="price flex flex-row text-[#2A7CFF] text-[18px] m-[0] font-bold align-center items-center gap-[5px]">
                 {{-- <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]" alt="AED"

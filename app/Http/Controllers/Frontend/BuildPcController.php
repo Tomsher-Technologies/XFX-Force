@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\PcBuilderCategorySetting;
-use App\Models\Product;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\PcBuilderCategorySetting;
 use App\Models\PcBuilderSetup;
+use App\Models\Product;
 use App\Models\ProductStock;
+use Illuminate\Http\Request;
 
 class BuildPcController extends Controller
 {
@@ -45,24 +46,46 @@ class BuildPcController extends Controller
             $reviewProducts = $this->getReviewProducts($buildData);
         }
 
+        $brands = Brand::where('is_active', 1)->get();
+
         return view('frontend.buildyourpc', compact(
             'builderCategories',
             'products',
             'firstCategory',
             'builder',
             'buildData',
-            'reviewProducts'
+            'reviewProducts',
+            'brands'
         ));
     }
 
     // AJAX to get products by category
     public function getProductsByCategory(Request $request)
     {
-
         $categoryId = $request->category_id;
+        $brandId = $request->brand_id;
 
         $products = Product::where('category_id', $categoryId)->with('stocks')
         ->where('published', 1)
+        ->when(!empty($brandId) && $brandId != 0, function ($query) use ($brandId) {
+            $query->whereNotNull('brand_id')   // skip null brands
+                  ->where('brand_id', $brandId);
+        })
+        ->when($request->search, function ($query) use ($request) {
+            $query->whereHas('brand', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%');
+            });
+        })
+        ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+        ->select('products.*') 
+        ->when($request->sort, function ($query) use ($request) {
+            if($request->sort == 'price_low_high'){
+                $query->orderBy('product_stocks.offer_price','asc');
+            }
+            elseif($request->sort == 'price_high_low'){
+                $query->orderBy('product_stocks.offer_price','desc');
+            }
+        })
         ->get();
 
         // Return rendered HTML for middle section

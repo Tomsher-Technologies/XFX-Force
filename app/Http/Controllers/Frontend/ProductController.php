@@ -46,6 +46,34 @@ class ProductController extends Controller
         $this->frontController = $frontController;
     }
 
+    public function loadSEO($model)
+    {
+        SEOTools::setTitle($model['title']);
+        OpenGraph::setTitle($model['title']);
+        TwitterCard::setTitle($model['title']);
+
+        SEOMeta::setTitle($model['title']);
+        SEOMeta::setDescription($model['meta_description']);
+        SEOMeta::addKeyword($model['keywords']);
+
+        OpenGraph::setTitle($model['og_title']);
+        OpenGraph::setDescription($model['og_description']);
+        OpenGraph::setUrl(URL::full());
+        OpenGraph::addProperty('locale', 'en_US');
+        OpenGraph::addProperty('type', $model['og_type'] ?? 'website');
+        OpenGraph::addImage(uploaded_asset(get_setting('header_logo')) ?? URL::to(asset('assets/img/logo.png')));
+
+        JsonLd::setTitle($model['title']);
+        JsonLd::setDescription($model['meta_description']);
+        JsonLd::setType('Page');
+
+        TwitterCard::setTitle($model['twitter_title']);
+        TwitterCard::setSite('@homeiq');
+        TwitterCard::setDescription($model['twitter_description']);
+
+        SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.ico')));
+    }
+
     public function searchSuggestions(Request $request)
     {
         $sort_search = $request->get('search');
@@ -380,6 +408,21 @@ class ProductController extends Controller
             }
         }
 
+        $seo = $product->seo->first();
+
+        $seoContents = [
+            'title' => $seo->meta_title ?? '',
+            'meta_description' => $seo->meta_description ?? '',
+            'keywords' => $seo->keywords ?? '',
+            'og_title' => $seo->og_title ?? '',
+            'og_description' => $seo->og_description ?? '',
+            'twitter_title' => $seo->twitter_title ?? '',
+            'twitter_description' => $seo->twitter_description ?? '',
+        ];
+
+        $this->loadSEO($seoContents);
+
+
         return view('frontend.productDetails', compact(
             'product', 
             'relatedProducts', 
@@ -411,12 +454,27 @@ class ProductController extends Controller
         }
 
         if ($request->filled('min_price')) {
-            $products->where('product_stocks.price', '>=', $request->min_price);
+            $products->where('product_stocks.offer_price', '>=', $request->min_price);
         }
 
         if ($request->filled('max_price')) {
-            $products->where('product_stocks.price', '<=', $request->max_price);
+            $products->where('product_stocks.offer_price', '<=', $request->max_price);
         }
+
+        // Global Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $products->where(function ($query) use ($search) {
+                $query->where('products.name', 'LIKE', "%{$search}%")
+                    ->orWhere('products.slug', 'LIKE', "%{$search}%")
+                    ->orWhere('products.tags', 'LIKE', "%{$search}%")
+                    ->orWhereHas('stocks', function ($q) use ($search) {
+                        $q->where('stock_title', 'LIKE', "%{$search}%");
+                    });
+            });
+        }
+
 
         // Sorting
         switch ($sort) {
@@ -424,10 +482,10 @@ class ProductController extends Controller
                 $products->orderBy('products.created_at', 'asc');
                 break;
             case 'price_low_high':
-                $products->orderBy('product_stocks.price', 'asc');
+                $products->orderBy('product_stocks.offer_price', 'asc');
                 break;
             case 'price_high_low':
-                $products->orderBy('product_stocks.price', 'desc');
+                $products->orderBy('product_stocks.offer_price', 'desc');
                 break;
             default:
                 $products->orderBy('products.created_at', 'desc');
@@ -450,8 +508,6 @@ class ProductController extends Controller
 
         return view('frontend.products', compact('products', 'categories', 'brands', 'sort', 'view', 'groupedCategories'));
     }
-
-
 
     public function getVariantsByValue(Request $request)
     {
@@ -653,11 +709,11 @@ class ProductController extends Controller
         }
 
         if ($request->filled('min_price')) {
-            $products->where('product_stocks.price', '>=', $request->min_price);
+            $products->where('product_stocks.offer_price', '>=', $request->min_price);
         }
 
         if ($request->filled('max_price')) {
-            $products->where('product_stocks.price', '<=', $request->max_price);
+            $products->where('product_stocks.offer_price', '<=', $request->max_price);
         }
 
         // Sorting
@@ -667,11 +723,11 @@ class ProductController extends Controller
                 break;
 
             case 'price_low_high':
-                $products->orderBy('product_stocks.price', 'asc');
+                $products->orderBy('product_stocks.offer_price', 'asc');
                 break;
 
             case 'price_high_low':
-                $products->orderBy('product_stocks.price', 'desc');
+                $products->orderBy('product_stocks.offer_price', 'desc');
                 break;
 
             default:
@@ -703,5 +759,118 @@ class ProductController extends Controller
             'category',
             'productCount'
         ));
+    }
+
+    public function shopByBrand(Request $request, $slug)
+    {
+        $sort = $request->get('sort', 'newest');
+        $view = $request->get('view', 'gridview');
+
+        // Get brand using slug directly from brand table
+        $brand = Brand::where('slug', $slug)
+            ->where('is_active', 1)
+            ->first();
+
+        if (!$brand) {
+            abort(404);
+        }
+
+        // Get all products of this brand
+        $productsQuery = Product::select('products.*')
+            ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->where('published', 1)
+            ->where('products.brand_id', $brand->id);
+
+        // Filters
+        if ($request->filled('categories')) {
+            $productsQuery->whereIn('products.category_id', $request->categories);
+        }
+
+        if ($request->filled('brands')) {
+            // Only allow the current brand
+            $productsQuery->whereIn('products.brand_id', [$brand->id]);
+        }
+
+        if ($request->filled('min_price')) {
+            $productsQuery->where('product_stocks.offer_price', '>=', $request->min_price);
+        }
+
+        if ($request->filled('max_price')) {
+            $productsQuery->where('product_stocks.offer_price', '<=', $request->max_price);
+        }
+
+        // Sorting
+        switch ($sort) {
+            case 'oldest':
+                $productsQuery->orderBy('products.created_at', 'asc');
+                break;
+
+            case 'price_low_high':
+                $productsQuery->orderBy('product_stocks.offer_price', 'asc');
+                break;
+
+            case 'price_high_low':
+                $productsQuery->orderBy('product_stocks.offer_price', 'desc');
+                break;
+
+            default:
+                $productsQuery->orderBy('products.created_at', 'desc');
+                break;
+        }
+
+        $products = $productsQuery->with('stocks')->distinct()->get();
+
+        // Product count
+        $productCount = $products->count();
+
+        // Fetch categories for filters: only categories that have products of this brand
+        $categoryIds = $products->pluck('category_id')->unique();
+        $categories = Category::whereIn('id', $categoryIds)->get();
+
+        // Grouped categories by parent_id for tree structure
+        $groupedCategories = $categories->groupBy('parent_id');
+
+        // For brand filter: only the current brand
+        $brands = collect([$brand]);
+
+        // AJAX request: return partial
+        if ($request->ajax()) {
+            return view('frontend.partials.product-list', compact('products', 'view'))->render();
+        }
+
+        return view('frontend.shop-by-brand', compact(
+            'products',
+            'categories',
+            'groupedCategories',
+            'brands',
+            'sort',
+            'view',
+            'brand',
+            'productCount'
+        ));
+    }
+
+    public function searchProducts(Request $request)
+    {
+        $query = $request->get('query', '');
+
+        if (!$query) return response()->json([]);
+
+        $products = Product::where('published', 1)
+            ->where(function($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                ->orWhere('tags', 'like', "%{$query}%"); // search inside comma-separated tags
+            })
+            ->limit(10)
+            ->get(['id', 'name', 'slug']); // include id if needed
+
+        $results = $products->map(function($p){
+            return [
+                'name' => $p->name,
+                'url' => route('product.details', ['slug' => $p->slug, 'sku' => $p->stocks->first()->sku ?? ''])
+            ];
+        });
+
+        return response()->json($results);
     }
 }

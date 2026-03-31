@@ -135,7 +135,79 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($order->orderDetails as $key => $orderDetail)
+                            @php
+                                $pcBuilderItems = $order->orderDetails->where('is_pc_builder', 1);
+                                $normalItems = $order->orderDetails->where('is_pc_builder', 0);
+                            @endphp 
+                            @if($pcBuilderItems->count() > 0)
+                            <tr class="bg-light">
+                                <td class="fw-bold text-dark">
+                                    PC Builder Items
+                                </td>
+                            </tr>
+                            @foreach ($pcBuilderItems as $key => $orderDetail)
+                                @php
+                                    $returnRequest = $orderDetail->returns()->latest()->first(); // Get the latest return request for the product
+                                @endphp
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>
+                                        @if ($orderDetail->product != null)
+                                            <img height="50" src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}">
+                                        @else
+                                            <strong>N/A</strong>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($orderDetail->product != null)
+                                            <strong class="text-muted fs-13">{{ $orderDetail->product->name }}</strong>
+                                            {{-- <small> --}}
+                                                @if ($orderDetail->variation != null)
+                                                    @php
+                                                        $variations = json_decode($orderDetail->variation);
+                                                    
+                                                    @endphp
+                                                    <ul>
+                                                        @foreach($variations as $var)
+                                                        <li> {{ $var->name ?? '' }} : <b>{{ $var->value ?? '' }}</b></li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            {{-- </small> --}}
+                                        @else
+                                            <strong>Product Unavailable</strong>
+                                        @endif
+                                        @if ($order->delivery_status == 'delivered')
+                                            {{-- @if ($returnRequest)
+                                                <p><br><b>Return Status</b>: 
+                                                    <span class="badge badge-lg badge-inline 
+                                                        @if($returnRequest->status == 'pending') bg-warning
+                                                        @elseif($returnRequest->status == 'approved') bg-success
+                                                        @else bg-danger @endif">
+                                                        {{ ucfirst($returnRequest->status) }}
+                                                    </span>
+                                                </p>
+                                            @else
+                                                <br><p>No return request for this product.</p>
+                                            @endif --}}
+                                        @endif
+                                    </td>
+                                   
+                                    <td class="text-center">{{ $orderDetail->quantity }}</td>
+                                    <td class="text-center">
+                                        @if ($orderDetail->og_price != $orderDetail->offer_price)
+                                            <del>{{ single_price($orderDetail->og_price) }}</del> <br>
+                                        @endif
+                                        {{ single_price($orderDetail->price / $orderDetail->quantity) }}
+                                    </td>
+                                    <td class="text-center">{{ single_price($orderDetail->price) }}</td>
+                                </tr>
+                            @endforeach
+                            <tr class="bg-light">
+                                <td class="fw-bold text-dark">Other Products</td>
+                            </tr>
+                            @endif
+                            @foreach ($normalItems as $key => $orderDetail)
                                 @php
                                     $returnRequest = $orderDetail->returns()->latest()->first(); // Get the latest return request for the product
                                 @endphp
@@ -213,7 +285,7 @@
                                 <strong class="text-muted">Tax :</strong>
                             </td>
                             <td>
-                                {{ single_price($order->orderDetails->sum('tax')) }}
+                                {{ single_price($order->tax) }}
                             </td>
                         </tr>
                         <tr>
@@ -221,7 +293,12 @@
                                 <strong class="text-muted">Shipping :</strong>
                             </td>
                             <td>
-                                {{ single_price($order->orderDetails->sum('shipping_cost')) }}
+                                @if($order->shipping_cost > 0)
+                                    {{ single_price($order->shipping_cost) }}
+                                @else 
+                                    <span class="badge badge-inline badge-success">Free</span>
+                                @endif
+                                
                             </td>
                         </tr>
                         <tr>

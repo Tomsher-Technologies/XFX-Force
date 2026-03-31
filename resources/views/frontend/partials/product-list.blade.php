@@ -93,10 +93,10 @@
                             <a href="#"
                                 class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view
                                 details</a>
-                            <button
+                            <!-- <button
                                 class="flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img
                                     src="{{ asset('assets/images/cart.svg') }}" alt="" title=""
-                                    class="mr-[15px]">View Details</button>
+                                    class="mr-[15px]">View Details</button> -->
                         </div>
                     </div>
                 </div>

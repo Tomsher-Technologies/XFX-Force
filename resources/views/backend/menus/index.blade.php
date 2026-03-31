@@ -50,8 +50,10 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="fs-16">
                             <i class="las la-arrows-alt-v drag-handle mr-2 text-muted"></i>
-                            <strong>{{ $menu->title }}</strong> ({{ ucfirst($menu->type) }})
+                            <strong>{{ $menu->title }}</strong> <span class="text-medium fs-12">({{ $menu->type == 'mega' ? 'Mega Menu' : 'Normal Menu' }})</span>
                         </span>
+
+                        <span class="fs-12" style="color: #4242ff;">{{ getMenuLink($menu) }}</span>
                         <span>
                             <button class="btn btn-xs btn-soft-secondary edit-btn" data-id="{{ $menu->id }}" data-type="menu">
                                 <i class="las la-edit"></i>
@@ -78,6 +80,7 @@
                                             <i class="las la-bars drag-handle mr-2 text-muted"></i>
                                             <strong>{{ $section->title }}</strong>
                                         </span>
+                                        <span class="fs-12" style="color: #4242ff;">{{ getMenuLink($section) }}</span>
                                         <span>
                                             <button class="btn btn-xs btn-soft-secondary edit-btn" data-id="{{ $section->id }}" data-type="section">
                                                 <i class="las la-edit"></i>
@@ -96,7 +99,7 @@
                                             <span >
                                                 <i class="las la-bars drag-handle mr-2 text-muted"></i> {{ $item->title }}
                                             </span>
-
+                                            <span class="fs-12" style="color: #4242ff;">{{ getMenuLink($item) }}</span>
                                             <span>
                                                 <button class="btn btn-xs btn-soft-secondary edit-btn" data-id="{{ $item->id }}" data-type="item">
                                                     <i class="las la-edit"></i>
@@ -175,7 +178,7 @@
                     <div class="mb-3">
                         <label class="form-label">Menu Type</label>
                         <select name="link_type" id="linkType" class="form-control form-select">
-                            <option value="blank">Blank</option>
+                            <option value="custom">Custom</option>
                             <option value="product">Product</option>
                             <option value="category">Category</option>
                             <option value="brand">Brand</option>
@@ -239,7 +242,7 @@
         const selectionField = document.getElementById('selectionField');
         const selectEl = document.getElementById('linkSelection');
 
-        if(val === 'blank'){
+        if(val === 'custom'){
             customField.style.display = 'block';
             selectionField.style.display = 'none';
             selectEl.innerHTML = '';
@@ -370,7 +373,7 @@
         delete form.dataset.parentType;
 
         // Reset dropdown & custom fields
-        document.getElementById('linkType').value = 'blank';
+        document.getElementById('linkType').value = 'custom';
 
         document.getElementById('customLinkInput').value = '';
         document.getElementById('finalLinkValue').value = '';
@@ -396,7 +399,7 @@
     function fillModal(data, type, id){
         const form = document.getElementById('menuForm');
         form.querySelector('[name="title"]').value = data.title;
-        const linkType = data.link_type || 'blank';
+        const linkType = data.link_type || 'custom';
         form.querySelector('[name="link_type"]').value = linkType;
 
         // Reset fields
@@ -407,7 +410,7 @@
         selectionField.style.display = 'none';
         selectEl.innerHTML = '';
 
-        if(linkType === 'blank'){
+        if(linkType === 'custom'){
             customField.style.display = 'block';
             document.getElementById('customLinkInput').value = data.link_value || '';
             document.getElementById('finalLinkValue').value = data.link_value || '';
@@ -448,7 +451,7 @@
     const finalInput = document.getElementById('finalLinkValue');
 
     // ✅ SET FINAL VALUE CORRECTLY
-    if(linkType === 'blank'){
+    if(linkType === 'custom'){
         finalInput.value = customInput.value;
     } else {
         finalInput.value = selectEl.value;

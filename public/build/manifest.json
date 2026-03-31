@@ -4,7 +4,7 @@
     "src": "public/assets/fonts/JuanCock.woff"
   },
   "resources/css/app.css": {
-    "file": "assets/app-3a87c643.css",
+    "file": "assets/app-d9458a01.css",
     "isEntry": true,
     "src": "resources/css/app.css"
   },
@@ -16,7 +16,7 @@
     "css": [
       "assets/app-64efd51c.css"
     ],
-    "file": "assets/app-fac74fa9.js",
+    "file": "assets/app-809d8b62.js",
     "isEntry": true,
     "src": "resources/js/app.js"
   }

@@ -8,151 +8,108 @@
             </div>
         </div>
     </div>
-    <div class="card">
-        {{-- <ul class="nav nav-tabs nav-fill border-light">
-            @foreach (\App\Models\Language::all() as $key => $language)
-                <li class="nav-item">
-                    <a class="nav-link text-reset @if ($language->code == $lang) active @else bg-soft-dark border-light border-left-0 @endif py-3" href="{{ route('custom-pages.edit', ['id'=>$page->type, 'lang'=> $language->code] ) }}">
-                        <img src="{{ static_asset('assets/img/flags/'.$language->code.'.png') }}" height="11" class="mr-1">
-                        <span>{{$language->name}}</span>
-                    </a>
-                </li>
-            @endforeach
-        </ul> --}}
+    @php
+        $settings = $page ? json_decode($page->data, true) : [];
+    @endphp
+    <div class="row">
+        <div class="col-xl-12 mx-auto">
+            <form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+            
+                <div class="card">
+                    <div class="card-header">
+                        <input type="hidden" name="type" value="{{ $page->type }}">
+                        <h6 class="mb-0">Details</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Title</label>
+                                <input type="text" name="title" value="{{ $settings['title'] ?? '' }}" class="form-control form-control-sm">
+                            </div>
+                        </div>
 
-        <form class="p-4" action="{{ route('custom-pages.update', $page->id) }}" method="POST"
-            enctype="multipart/form-data">
-            @csrf
-            <input type="hidden" name="_method" value="PATCH">
-            <input  type="hidden" name='lang' value="{{$lang}}">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Sub Title</label>
+                                <input type="text" name="sub_title" value="{{ $settings['sub_title'] ?? '' }}" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        
+                       <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Form Title</label>
+                                <input type="text" name="form_title" value="{{ $settings['form_title'] ?? '' }}" class="form-control form-control-sm">
+                            </div>
+                        </div>
 
-            <div class="card-header px-0">
-                <h6 class="fw-600 mb-0">Page Content</h6>
-            </div>
-            <div class="card-body px-0">
-                
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">Title <span
-                            class="text-danger">*</span> </label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control"  @if($lang == 'ae') dir="rtl" @endif  placeholder="Enter.." name="title" value="{{ $page->getTranslation('title', $lang) }}">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Description</label>
+                                <textarea name="google_map_link" class="form-control" rows="5">{{ $settings['google_map_link'] ?? '' }}</textarea>
+                            </div>
+                        </div>
+
+                        <h6 class="mb-1"><u>Address Section</u> </h6>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Heading</label>
+                                <input type="text" name="address_heading" value="{{ $settings['address_heading'] ?? '' }}" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Content</label>
+                                <input type="text" name="address_content" value="{{ $settings['address_content'] ?? '' }}" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        
+                        <h6 class="mb-1"><u>Phone Section</u> </h6>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Heading</label>
+                                <input type="text" name="phone_heading" value="{{ $settings['phone_heading'] ?? '' }}" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Content</label>
+                                <input type="text" name="phone_content" value="{{ $settings['phone_content'] ?? '' }}" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                       
+                        <h6 class="mb-1"><u>Email Section</u> </h6>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Heading</label>
+                                <input type="text" name="email_heading" value="{{ $settings['email_heading'] ?? '' }}" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Content</label>
+                                <input type="text" name="email_content" value="{{ $settings['email_content'] ?? '' }}" class="form-control form-control-sm">
+                            </div>
+                        </div>
+
                     </div>
                 </div>
+            
+            
+                @include('backend.inc.page_seo', ['settings' => $settings])
 
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="heading1">Subtitle <span
-                            class="text-danger">*</span> </label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="Enter.." name="sub_title" value="{{ $page->getTranslation('sub_title', $lang) }}" required>
-                    </div>
+
+                <div class="text-right mb-2">
+                    <button type="submit" class="btn btn-info btn-sm">Update</button>
                 </div>
-
-                
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="sub_heading1">Detials Heading <span
-                            class="text-danger">*</span> </label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="Enter.." name="heading2" value="{{ $page->getTranslation('heading2', $lang) }}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="content">Address <span
-                            class="text-danger">*</span> </label>
-                    <div class="col-sm-10">
-                        <textarea class="form-control" name="content">{!! $page->getTranslation('content', $lang) !!}</textarea>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="heading2">Phone <span
-                            class="text-danger">*</span> </label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="Enter.." name="heading3" value="{{ $page->getTranslation('heading3', $lang) }}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="sub_heading2">Email <span
-                            class="text-danger">*</span> </label>
-                    <div class="col-sm-10">
-                        <input type="email" class="form-control" placeholder="Enter.." name="heading4" value="{{ $page->getTranslation('heading4', $lang) }}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="sub_heading2">Google Map Link <span
-                            class="text-danger">*</span> </label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="Enter.." name="content1" value="{{ $page->getTranslation('content1', $lang) }}">
-                    </div>
-                </div>
-                
-            </div>
-
-            <div class="card-header px-0">
-                <h6 class="fw-600 mb-0">Seo Fields</h6>
-            </div>
-            <div class="card-body px-0">
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.meta_title') }}</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="Enter.." name="meta_title" value="{{ $page->getTranslation('meta_title', $lang) }}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.meta_description') }}</label>
-                    <div class="col-sm-10">
-                        <textarea  class="resize-off form-control" placeholder="Enter.." name="meta_description">{!! $page->getTranslation('meta_description', $lang) !!}</textarea>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.meta_keywords') }}</label>
-                    <div class="col-sm-10">
-                        <textarea class="resize-off form-control" placeholder="Enter.." name="keywords">{!! $page->getTranslation('keywords', $lang) !!}</textarea>
-                        <small class="text-muted">Separate with coma</small>
-                    </div>
-                </div>
-
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.og_title') }}</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="Enter.." name="og_title" value="{{ $page->getTranslation('og_title', $lang) }}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.og_description') }}</label>
-                    <div class="col-sm-10">
-                        <textarea class="resize-off form-control" placeholder="Enter.." name="og_description">{!! $page->getTranslation('og_description', $lang) !!}</textarea>
-                    </div>
-                </div>
-
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.twitter_title') }}</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="Enter.." name="twitter_title" value="{{ $page->getTranslation('twitter_title', $lang) }}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.twitter_description') }}</label>
-                    <div class="col-sm-10">
-                        <textarea class="resize-off form-control" placeholder="Enter.." name="twitter_description">{!! $page->getTranslation('twitter_description', $lang) !!}</textarea>
-                    </div>
-                </div>
-
-                <div class="text-right">
-                    <button type="submit" class="btn btn-primary">Update Page</button>
-                    <a href="{{ route('website.pages') }}" class="btn btn-cancel">Cancel</a>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
     
 @endsection

@@ -15,7 +15,7 @@
                         <img src="{{ asset('assets/images/email.svg') }}" alt="Email icon for PC Garage contact information" title="email" />
                         <span class="hidden md:block">{{ get_setting('header_email') }}</span>
                     </a>
-                    <a href="tel:{{ get_setting('header_phone') }}" target="_blank" class="text-[#ffffff] no-underline flex items-center gap-[10px]">
+                    <a href="tel:{{ get_setting('header_phone') }}" class="text-[#ffffff] no-underline flex items-center gap-[10px]">
                         <img src="{{ asset('assets/images/phone.svg') }}" alt="Phone icon for PC Garage contact information" title="phone" />
                         <span class="hidden md:block">{{ get_setting('header_phone') }}</span>
                     </a>
@@ -206,18 +206,8 @@
             </div>
             <div class="max-w-4xl mx-auto">
                 <div class="flex flex-col">
-                    <a href="/product/rtx-5090" class="group flex items-center justify-between py-5 border-b border-white/5 hover:bg-white/[0.02] px-4 transition-all">
-                        <div class="flex items-center gap-6">
-                            <svg class="w-4 h-4 text-gray-600 group-hover:text-[#2A7CFF] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5"/></svg>
-                            <span class="text-white text-sm font-medium group-hover:text-[#2A7CFF] transition-all">NVIDIA GeForce RTX 5090 Founders Edition</span>
-                        </div>
-                    </a>
-                    <a href="/product/i9-14900k" class="group flex items-center justify-between py-5 border-b border-white/5 hover:bg-white/[0.02] px-4 transition-all">
-                        <div class="flex items-center gap-6">
-                            <svg class="w-4 h-4 text-gray-600 group-hover:text-[#2A7CFF] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5"/></svg>
-                            <span class="text-white text-sm font-medium group-hover:text-[#2A7CFF] transition-all">Intel Core i9-14900K Processor</span>
-                        </div>
-                    </a>
+                    <div id="mega-search-results" class="mt-4 max-h-96 overflow-y-auto"></div>
+                     
                 </div>
             </div>
         </div>

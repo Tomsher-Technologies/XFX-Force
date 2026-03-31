@@ -208,7 +208,7 @@ return [
     'type_hit_enter_add_keyword' => 'Type and hit enter to add a keyword',
     'save_draft' => 'Save As Draft',
     'save_publish' => 'Save & Publish',
-    'return_refund' => 'Return & Refund',
+    'return_refund' => 'Return',
     'tags' => 'Tags',
     'vat' => 'VAT',
     'image' => 'Image',

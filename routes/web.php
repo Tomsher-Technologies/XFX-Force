@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Frontend\BrandController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Frontend\BuildPcController;
@@ -36,6 +37,14 @@ Route::post('register', [AuthController::class, 'register']);
 Route::get('login/', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
 
+Route::get('terms', [HomeController::class, 'terms'])->name('terms');
+Route::get('privacy-policy', [HomeController::class, 'privacy'])->name('privacy-policy');
+Route::get('return-policy', [HomeController::class, 'returnPolicy'])->name('return-policy');
+Route::get('contact', [HomeController::class, 'contact'])->name('contact');
+Route::post('/contact-submit', [HomeController::class, 'submitContactForm'])->name('contact.submit');
+Route::get('about', [HomeController::class, 'about'])->name('about');
+
+
 Route::get('forgot-password/', [ForgotPasswordController::class, 'showForgotForm'])->name('forgot-password');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.sendResetLink');
 Route::get('/password/reset/{email}/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
@@ -59,10 +68,12 @@ Route::get('/updateProductWarranty', [CartController::class, 'updateProductWarra
 Route::post('/apply_coupon_code', [CartController::class, 'apply_coupon_code']);
 Route::post('/remove_coupon_code', [CartController::class, 'remove_coupon_code']);
 
-// Route::get('/shop/category/{categoryId}', [ProductController::class, 'shopByCategory'])->name('shop.category');
 Route::get('/shop/category/{slug}', [ProductController::class, 'shopByCategory'])->name('shop.category');
+
+Route::get('/shop/brand/{slug}', [ProductController::class, 'shopByBrand'])->name('shop.brand');
+
 Route::get('/buildyourpc', [BuildPcController::class, 'index'])->name('buildyourpc');
-Route::get('/buildyourpc/products/{category_id}', [BuildPcController::class, 'getProductsByCategory']);
+Route::get('/buildyourpc/products/{category_id}/{brand_id?}', [BuildPcController::class, 'getProductsByCategory']);
 Route::get('/buildyourpc/products/details/{stockId}', [BuildPcController::class, 'getProductDetails']);
 Route::get('/buildyourpc/savePcBuilder', [BuildPcController::class, 'savePcBuilder']);
 Route::get('/buildyourpc/getBuildData', [BuildPcController::class, 'getBuildData']);
@@ -80,8 +91,10 @@ Route::get('/my-orders/{id}', [OrderController::class, 'myOrderSingle'])->name('
 Route::post('/my-orders/{id}/cancel', [OrderController::class, 'cancelOrder'])
     ->name('orders.cancel');
 
-    Route::post('/my-orders/{id}/return', [OrderController::class, 'returnOrder'])
+Route::post('/my-orders/{id}/return', [OrderController::class, 'returnOrder'])
     ->name('orders.return');
+Route::get('/search-products', [ProductController::class, 'searchProducts']);
+Route::get('/brands', [BrandController::class, 'index'])->name('brands.list');
     
 
 Route::group(['middleware' => ['auth:frontend']], function () {
