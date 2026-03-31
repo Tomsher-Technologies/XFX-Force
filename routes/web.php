@@ -96,6 +96,8 @@ Route::post('/my-orders/{id}/return', [OrderController::class, 'returnOrder'])
     ->name('orders.return');
 Route::get('/search-products', [ProductController::class, 'searchProducts']);
 Route::get('/brands', [BrandController::class, 'index'])->name('brands.list');
+
+Route::get('/brands/{slug}', [BrandController::class, 'show'])->name('brands.show');
     
 
 Route::group(['middleware' => ['auth:frontend']], function () {

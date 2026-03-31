@@ -76,6 +76,9 @@ class BrandController extends Controller
         $slug_suffix = $same_slug_count ? '-' . $same_slug_count + 1 : '';
         $slug .= $slug_suffix;
         $brand->slug = $slug;
+        if(!empty($request->input('details'))){
+            $brand->details = json_encode($request->input('details'));
+        }
         $brand->save();
 
         // save brand seo
@@ -90,27 +93,27 @@ class BrandController extends Controller
         $brand_translation->save();
 
         // saving sections
-        if ($request->has('sections')) {
+        // if ($request->has('sections')) {
             
-            foreach ($request->sections as $section) {
+        //     foreach ($request->sections as $section) {
 
-                // Skip completely empty section
-                if (!empty($section['section_title'])) {
-                    $imagePath = "";
-                    if (isset($section['section_image']) && 
-                        $section['section_image'] instanceof \Illuminate\Http\UploadedFile) {
-                        $imagePath = $section['section_image']->store('brand_sections/images', 'public');
-                    }
+        //         // Skip completely empty section
+        //         if (!empty($section['section_title'])) {
+        //             $imagePath = "";
+        //             if (isset($section['section_image']) && 
+        //                 $section['section_image'] instanceof \Illuminate\Http\UploadedFile) {
+        //                 $imagePath = $section['section_image']->store('brand_sections/images', 'public');
+        //             }
 
-                    $brand->sections()->create([
-                        'title' => $section['section_title'] ?? "",
-                        'description' => $section['section_description'],
-                        'status' => $section['section_status'] ?? 0,
-                        'image' => $imagePath,
-                    ]);
-                }
-            }
-        }
+        //             $brand->sections()->create([
+        //                 'title' => $section['section_title'] ?? "",
+        //                 'description' => $section['section_description'],
+        //                 'status' => $section['section_status'] ?? 0,
+        //                 'image' => $imagePath,
+        //             ]);
+        //         }
+        //     }
+        // }
 
         // saving Tabs
         if ($request->has('tabs')) {

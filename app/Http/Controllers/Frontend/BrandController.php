@@ -16,4 +16,16 @@ class BrandController extends Controller
 
         return view('frontend.brands-list', compact('brands'));
     }
+
+    public function show($slug)
+    {
+        // Fetch the brand by slug
+        $brand = Brand::where('slug', $slug)->firstOrFail();
+
+        // Get details JSON as array
+        $details = $brand->details ?? [];
+
+        // Pass to Blade
+        return view('frontend.brands.show', compact('brand', 'details'));
+    }
 }

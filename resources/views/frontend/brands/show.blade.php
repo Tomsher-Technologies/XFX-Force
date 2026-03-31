@@ -43,7 +43,7 @@
             <div class="flex flex-col xl:flex-row justify-between gap-[20px] xl:gap-[100px]">
                 <div class="w-full">
                     <h1 class="about-title text-[25px] xl:text-[40px] leading-[35px] xl:leading-[55px] text-center xl:text-left">
-                        {{ $page_content['title'] ?? 'About Us' }}</h1>
+                        {{ $   ['title'] ?? 'About Us' }}</h1>
                 </div>
                 <div class="w-full">
                     <p

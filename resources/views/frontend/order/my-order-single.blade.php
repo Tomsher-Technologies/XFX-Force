@@ -59,8 +59,8 @@
                                         @endforeach
                                         @if(!$allFullyReturned)
                                             <div class="w-full xl:w-fit flex flex-col gap-2 flex-1">
-                                                <button id="openReturnBtn" class="cursor-pointer bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all text-[13px] font-medium uppercase tracking-wider">
-                                                        Return Order
+                                                <button id="openReturnBtn" class="bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all text-[13px] font-medium uppercase tracking-wider  @if($allReturned) cursor-not-allowed @else cursor-pointer @endif" @if($allReturned) disabled @endif>
+                                                        {{ $allReturned ? 'Returned' : 'Return Order' }}
                                                     </button>
                                                 
                                                 <p class="text-[10px] text-gray-500 italic text-center lg:text-left">
@@ -1284,6 +1284,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Form Submission ---
     returnOrderForm.addEventListener('submit', function(e) {
         e.preventDefault();
+        // Disable submit immediately to prevent double clicks
+        submitBtn.disabled = true;
 
         const formData = new FormData(this);
 
@@ -1296,50 +1298,18 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => {
             if(res.status === 'success'){
                 toastr.success(res.message);
-
-                // Update remaining quantities & UI
-                document.querySelectorAll('.return-checkbox').forEach(cb => {
-                    if (!cb.checked) return;
-
-                    const detailId = cb.dataset.detailId;
-                    const qtyContainer = cb.closest('label').querySelector('.return-qty-container');
-                    const select = qtyContainer.querySelector('select');
-                    const selectedQty = parseInt(select.value);
-
-                    remainingQty[detailId] -= selectedQty;
-
-                    // Update displayed qty
-                    const qtySpan = cb.closest('label').querySelector('.item-total-qty');
-                    if(qtySpan) qtySpan.innerText = remainingQty[detailId];
-
-                    // Reset checkbox & dropdown
-                    cb.checked = false;
-                    qtyContainer.classList.add('hidden');
-                });
-
-                alert('Return request submitted successfully!');
-                // Hide submit if all returned
-                updateSubmitVisibility();
-
-                alert('sdsdsdsdd');
-
-                // Disable open button if all returned
-                if(Object.values(remainingQty).every(qty => qty <= 0)) {
-                    if(openBtn) {
-                        openBtn.innerText = 'Returned';
-                        openBtn.disabled = true;
-                        openBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                    }
-                    const statusText = document.querySelector('.order-status-text');
-                    if(statusText) statusText.innerText = 'Returned';
-                }
+                location.reload(); // Refresh to update all details and hide return/cancel options
                 closeModal;
 
             } else {
                 toastr.error(res.message);
             }
         })
-        .catch(() => toastr.error('Something went wrong!'));
+        .catch(() => toastr.error('Something went wrong!'))
+        .finally(() => {
+            // Re-enable button only if needed
+            submitBtn.disabled = false;
+        });
     });
 });
 
