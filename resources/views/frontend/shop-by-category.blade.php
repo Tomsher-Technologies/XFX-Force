@@ -483,7 +483,7 @@
                                     @endforeach
                                     @endif
                                 
-                                <a href="#" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view all brands</a>
+                                <a href="{{ route('brands.list') }}" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view all brands</a>
                             </div>
                             </div>
 
@@ -507,7 +507,13 @@
             <div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 
                 <div class="flex flex-col md:flex-row items-center justify-between gap-[15px] md:gap-[0px] w-full">
-                    <span class="text-[#898989] text-[14px] w-full text-center md:text-left"  id="product-count">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
+                    <span class="text-[#898989] text-[14px] w-full text-center md:text-left"  id="product-count">
+                        @if($products->count() > 0)
+                            Items 1-{{ $products->count() }} of {{ $products->count() }}
+                        @else
+                            Items 0 of 0
+                        @endif
+                    </span>
                     <div class="flex flex-col md:flex-row items-center gap-[15px] md:gap-[30px] w-full justify-end">
                         <el-dropdown class="relative inline-block text-left">
                             <button class="group inline-flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white min-w-[230px]">
@@ -1037,7 +1043,11 @@
                 const countSpan = document.getElementById('product-count');
                 if (countSpan) {
                     const productCount = wrapper.querySelectorAll('.product-card').length;
-                    countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                    if (productCount === 0) {
+                        countSpan.textContent = `Items 0 of 0`;
+                    } else {
+                        countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                    }
                     document.getElementById('total-product-count').textContent = `${productCount}`;
                 }
 

@@ -65,10 +65,10 @@ class BuildPcController extends Controller
         $categoryId = $request->category_id;
         $brandId = $request->brand_id;
 
-        $products = Product::where('category_id', $categoryId)->with('stocks')
+        $products = Product::where('category_id', $categoryId)
         ->where('published', 1)
         ->when(!empty($brandId) && $brandId != 0, function ($query) use ($brandId) {
-            $query->whereNotNull('brand_id')   // skip null brands
+            $query->whereNotNull('brand_id') // skip null brands
                   ->where('brand_id', $brandId);
         })
         ->when($request->search, function ($query) use ($request) {
@@ -76,8 +76,9 @@ class BuildPcController extends Controller
                 $q->where('name', 'like', '%' . $request->search . '%');
             });
         })
+        // Join stocks only for sorting
         ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
-        ->select('products.*') 
+        ->select('products.*') // Only select product columns
         ->when($request->sort, function ($query) use ($request) {
             if($request->sort == 'price_low_high'){
                 $query->orderBy('product_stocks.offer_price','asc');
@@ -86,7 +87,16 @@ class BuildPcController extends Controller
                 $query->orderBy('product_stocks.offer_price','desc');
             }
         })
+        ->distinct() // REMOVE duplicates caused by join
+        ->with('stocks') // load stocks for display
         ->get();
+
+        // If no products found, return a message
+        if($products->isEmpty()){
+            return response()->json([
+                'html' => '<div class="text-center text-gray-400 py-10">No Products Found</div>'
+            ]);
+        }
 
         // Return rendered HTML for middle section
         $html = view('frontend.partials.pc-builder-products-list', compact('products'))->render();
@@ -99,7 +109,6 @@ class BuildPcController extends Controller
         $stockId = $request->stockId;
 
         $stock = ProductStock::with('product')->find($stockId);
-
         if (!$stock) return response()->json(['error' => 'Product not found'], 404);
 
         // Return rendered HTML for middle section

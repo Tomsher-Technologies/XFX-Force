@@ -824,8 +824,22 @@ class ProductController extends Controller
         $productCount = $products->count();
 
         // Fetch categories for filters: only categories that have products of this brand
-        $categoryIds = $products->pluck('category_id')->unique();
-        $categories = Category::whereIn('id', $categoryIds)->get();
+        $categoryIds = $products->pluck('category_id')->unique()->toArray();
+
+        // Get parent categories also
+        $allCategoryIds = $categoryIds;
+
+        $parentIds = Category::whereIn('id', $categoryIds)
+            ->pluck('parent_id')
+            ->filter()
+            ->toArray();
+
+        $allCategoryIds = array_unique(array_merge($allCategoryIds, $parentIds));
+
+        $categories = Category::whereIn('id', $allCategoryIds)
+            ->where('is_active', 1)
+            ->get();
+        
 
         // Grouped categories by parent_id for tree structure
         $groupedCategories = $categories->groupBy('parent_id');

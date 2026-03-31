@@ -73,8 +73,9 @@ Route::get('/shop/category/{slug}', [ProductController::class, 'shopByCategory']
 Route::get('/shop/brand/{slug}', [ProductController::class, 'shopByBrand'])->name('shop.brand');
 
 Route::get('/buildyourpc', [BuildPcController::class, 'index'])->name('buildyourpc');
-Route::get('/buildyourpc/products/{category_id}/{brand_id?}', [BuildPcController::class, 'getProductsByCategory']);
 Route::get('/buildyourpc/products/details/{stockId}', [BuildPcController::class, 'getProductDetails']);
+Route::get('/buildyourpc/products/{category_id}/{brand_id?}', [BuildPcController::class, 'getProductsByCategory']);
+
 Route::get('/buildyourpc/savePcBuilder', [BuildPcController::class, 'savePcBuilder']);
 Route::get('/buildyourpc/getBuildData', [BuildPcController::class, 'getBuildData']);
 Route::get('/buildyourpc/place-order', [BuildPcController::class, 'placePcBuilderOrder'])->name('pcbuilder.place.order');
