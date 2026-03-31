@@ -383,7 +383,24 @@ class OrderController extends Controller
             ->get()
             ->keyBy('status');
 
-        return view('frontend.order.my-order-single', compact('order', 'trackingHistory'));
+        
+        // Only consider orderDetails where is_pc_builder = 0
+        $details = $order->orderDetails->where('is_pc_builder', 0);
+
+        // Total quantity in order (non-PC-builder items)
+        $totalOrderedQty = $details->sum('quantity');
+
+        // Total quantity returned (non-PC-builder items)
+        $totalReturnedQty = $details->sum(function($detail) {
+            return $detail->returns->sum('return_qty');
+        });
+
+        $allReturned = false;
+        if ($totalReturnedQty >= $totalOrderedQty) {
+            $allReturned = true;
+        }
+        
+        return view('frontend.order.my-order-single', compact('order', 'trackingHistory', 'allReturned'));
     }
 
     public function cancelOrder($id)

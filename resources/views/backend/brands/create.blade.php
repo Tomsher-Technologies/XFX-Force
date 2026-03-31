@@ -56,10 +56,7 @@
                     <hr>
                     <div class="repeater" id="brand-sections-repeater">
                         <div data-repeater-list="sections">
-                            @include('backend.brands.partials.section')
-                        </div>
-                        <div class="text-right">
-                            <button type="button" data-repeater-create class="btn btn-primary btn-xs my-2">Add More Section</button>
+                            @include('backend.brands.partials.brand-details')
                         </div>
                     </div>
                     <!-- Brand section ends -->
