@@ -175,7 +175,7 @@
             <div class="content relative z-[1] flex flex-col items-center justify-end h-full w-full">
                 <h2 class="text-[25px] md:text-[30px] text-[white] capitalize font-bold text-center">{{ $banner->title }}</h2>
                 <p class="text-[15px] text-[#ffffff] text-center">{{ $banner->sub_title }}</p>
-                <a href="{{ $url }}" class="btn btn-cta w-full md:w-fit text-center !rounded-full !text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium mt-[20px]" title="">{{ $banner->btn_text }}</a>
+                <a href="{{ $url }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full !text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium mt-[20px]" title="">{{ $banner->btn_text }}</a>
             </div>
         </div>
         @endforeach
