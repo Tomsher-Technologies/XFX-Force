@@ -46,7 +46,7 @@ class HomeController extends Controller
         JsonLd::setType('Page');
 
         TwitterCard::setTitle($model['twitter_title']);
-        TwitterCard::setSite('@homeiq');
+        TwitterCard::setSite('@pcgarage');
         TwitterCard::setDescription($model['twitter_description']);
 
         SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.ico')));
@@ -63,6 +63,7 @@ class HomeController extends Controller
         if (!empty($slider_ids)) {
             $sliders = HomeSlider::with(['mainImage', 'mobileImage', 'mainVideo', 'mobileVideo'])
                 ->whereIn('id', $slider_ids)
+                ->where('status', 1)
                 ->orderByRaw("FIELD(id," . implode(',', $slider_ids) . ")")
                 ->get();
         }

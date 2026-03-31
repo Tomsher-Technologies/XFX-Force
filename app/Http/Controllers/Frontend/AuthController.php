@@ -113,7 +113,7 @@ class AuthController extends Controller
         }
 
         // If authentication fails
-        return redirect('login')->withErrors(['email' => 'Invalid credentials'])->withInput();
+        return redirect('login')->withErrors(['password' => 'Invalid credentials'])->withInput();
     }
 
     // Logout the user

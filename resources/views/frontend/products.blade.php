@@ -540,7 +540,11 @@ Log::info($_REQUEST);
                                     @endforeach
                                     @endif
                                 
+<<<<<<< HEAD
                                 <a href="#" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-white hover:text-black">view all brands</a>
+=======
+                                <a href="{{ route('brands.list') }}" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view all brands</a>
+>>>>>>> ee1b8e461c87a5ef81c2f7636f5f7e9e231b2cf0
                             </div>
                             </div>
 
@@ -895,7 +899,11 @@ Log::info($_REQUEST);
                 const countSpan = document.getElementById('product-count');
                 if (countSpan) {
                     const productCount = wrapper.querySelectorAll('.product-card').length;
-                    countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                    if(productCount === 0) {
+                        countSpan.textContent = `Items 0 of 0`;
+                    } else {
+                        countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                    }
                 }
 
             })

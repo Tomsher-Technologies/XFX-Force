@@ -118,4 +118,13 @@ class WishlistController extends Controller
         }
     }
 
+    public function check(Request $request)
+    {
+        $exists = isWishlisted($request->product_id, $request->stock_id);
+
+        return response()->json([
+            'status' => $exists
+        ]);
+    }
+
 }

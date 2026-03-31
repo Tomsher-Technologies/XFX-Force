@@ -570,7 +570,33 @@ document.addEventListener('DOMContentLoaded', () => {
                             document.querySelector(".add-to-cart").classList.remove('hidden');
                         }
                     }
+
+                    updateWishlistUI(productId, response.data.variant_id);
                 }
+            });
+    }
+
+    // Update wishlist button UI based on current variant selection
+    function updateWishlistUI(productId, stockId) {
+        fetch(`/wishlist/check?product_id=${productId}&stock_id=${stockId}`)
+            .then(res => res.json())
+            .then(data => {
+                const btn = document.getElementById('wishlist-button');
+                const svg = btn.querySelector('svg');
+
+                if (data.status) {
+                    btn.classList.add('text-red-500');
+                    btn.classList.remove('text-white');
+
+                    svg.setAttribute('fill', 'currentColor');
+                } else {
+                    btn.classList.remove('text-red-500');
+                    btn.classList.add('text-white');
+
+                    svg.setAttribute('fill', 'none');
+                }
+
+                btn.setAttribute('data-stock-id', stockId);
             });
     }
 
@@ -1359,7 +1385,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-
+let originalValues = {};
 window.toggleEditMode = function() {
     const inputs = document.querySelectorAll(".profile-input");
     const saveContainer = document.getElementById("save-button-container");
@@ -1369,6 +1395,12 @@ window.toggleEditMode = function() {
 
     // Check current state based on first input
     const isReadOnly = inputs[0].readOnly;
+
+    if (isReadOnly) {
+        inputs.forEach((input) => {
+            originalValues[input.name] = input.value;
+        });
+    }
 
     inputs.forEach((input) => {
         input.readOnly = !isReadOnly;
@@ -1402,7 +1434,13 @@ window.toggleEditMode = function() {
 
         inputs[0].focus();
     } else {
-        // --- EXITING / CANCELING ---
+        
+        inputs.forEach((input) => {
+            if (originalValues[input.name] !== undefined) {
+                input.value = originalValues[input.name];
+            }
+        });
+        
         saveContainer.classList.add("hidden");
         saveContainer.classList.remove("flex");
 

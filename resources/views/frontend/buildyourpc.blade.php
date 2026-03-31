@@ -731,6 +731,8 @@ $hideFooter = true;
 
 <script>
     function viewProductDetails(stockId) {
+        
+
         // 1. Logic to populate data (Same as your previous script)
         document.getElementById('default-view').classList.add('hidden');
         document.getElementById('details-view').classList.remove('hidden');

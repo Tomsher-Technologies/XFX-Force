@@ -1049,7 +1049,11 @@
                 const countSpan = document.getElementById('product-count');
                 if (countSpan) {
                     const productCount = wrapper.querySelectorAll('.product-card').length;
-                    countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                    if (productCount === 0) {
+                        countSpan.textContent = `Items 0 of 0`;
+                    } else {
+                        countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                    }
                     document.getElementById('total-product-count').textContent = `${productCount}`;
                 }
 

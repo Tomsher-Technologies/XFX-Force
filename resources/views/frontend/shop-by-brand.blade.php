@@ -358,13 +358,17 @@
 
                                     @php
                                     if (!function_exists('renderCategories')) {
-                                        function renderCategories($categories, $groupedCategories, $level = 0) {
+                                        function renderCategories($categories, $groupedCategories, $brand, $level = 0) {
                                             foreach ($categories as $category) {
                                                 // Calculate sum of products for this category + all its children
                                                 $childIds = getAllChildIds($category->id, $groupedCategories);
                                                 $allIds = array_merge([$category->id], $childIds);
 
-                                                $productCount = \App\Models\Product::whereIn('category_id', $allIds)->count();
+                                               
+                                                $productCount = \App\Models\Product::whereIn('category_id', $allIds)
+                                                    ->where('brand_id', $brand->id)
+                                                    ->where('published', 1)
+                                                    ->count();
 
                                                 $padding = $level * 20; // indentation
                                     @endphp
@@ -390,7 +394,7 @@
 
                                     @php
                                                 if (isset($groupedCategories[$category->id])) {
-                                                    renderCategories($groupedCategories[$category->id], $groupedCategories, $level + 1);
+                                                    renderCategories($groupedCategories[$category->id], $groupedCategories, $brand, $level + 1);
                                                 }
                                             }
                                         }
@@ -414,7 +418,7 @@
                                     {{-- Group categories by parent_id --}}
                                     @php
                                     $groupedCategories = $categories->groupBy('parent_id');
-                                    renderCategories($groupedCategories[0] ?? [], $groupedCategories);
+                                    renderCategories($groupedCategories[0] ?? [], $groupedCategories, $brand);
                                     @endphp
                                 </div>
                             </div>
@@ -493,7 +497,7 @@
                                         </label>
                                     </div>
                                 
-                                <a href="#" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-white hover:text-black">view all brands</a>
+                                <a href="{{ route('brands.list') }}" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view all brands</a>
                             </div>
                             </div>
 
@@ -517,7 +521,13 @@
             <div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 
                 <div class="flex flex-col md:flex-row items-center justify-between gap-[15px] md:gap-[0px] w-full">
-                    <span class="text-[#898989] text-[14px] w-full text-center md:text-left"  id="product-count">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
+                    <span class="text-[#898989] text-[14px] w-full text-center md:text-left"  id="product-count">
+                        @if($products->count() > 0)
+                            Items 1-{{ $products->count() }} of {{ $products->count() }}
+                        @else
+                            Items 0 of 0
+                        @endif
+                    </span>
                     <div class="flex flex-col md:flex-row items-center gap-[15px] md:gap-[30px] w-full justify-end">
                         <el-dropdown class="relative inline-block text-left">
                             <button class="group inline-flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white min-w-[230px]">
@@ -705,10 +715,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.category-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', function () {
             const checkedCount = document.querySelectorAll('.category-checkbox:checked').length;
-            if (checkedCount === 0) {
-                this.checked = true;
-                toastr.error("At least one category must be selected.");
-            }
+            // if (checkedCount === 0) {
+            //     this.checked = true;
+            //     toastr.error("At least one category must be selected.");
+            // }
 
             const childIds = this.dataset.childIds ? this.dataset.childIds.split(',') : [];
             childIds.forEach(id => {
@@ -788,7 +798,11 @@ function filterProducts() {
             const countSpan = document.getElementById('product-count');
             if (countSpan) {
                 const productCount = wrapper.querySelectorAll('.product-card').length;
-                countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                if (productCount === 0) {
+                    countSpan.textContent = `Items 0 of 0`;
+                } else {
+                    countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                }
                 document.getElementById('total-product-count').textContent = `${productCount}`;
             }
         })
