@@ -430,6 +430,7 @@ class OrderController extends Controller
             ]);
         }
 
+        
         foreach ($order->orderDetails as $detail) {
             $qtyToReturn = isset($returnQtys[$detail->id]) ? intval($returnQtys[$detail->id]) : 0;
 

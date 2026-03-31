@@ -526,7 +526,7 @@ Log::info($_REQUEST);
                                     @endforeach
                                     @endif
                                 
-                                <a href="#" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view all brands</a>
+                                <a href="{{ route('brands.list') }}" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view all brands</a>
                             </div>
                             </div>
 
@@ -552,7 +552,13 @@ Log::info($_REQUEST);
                 <div class="flex items-center justify-between">
                     <h1 class="text-4xl font-bold tracking-tight text-white uppercase">All Products</h1>
                     <div class="flex items-center gap-[30px]">
-                        <span class="text-[#898989] text-[14px]" id="product-count">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
+                        <span class="text-[#898989] text-[14px]" id="product-count">
+                            @if($products->count() > 0)
+                                Items 1-{{ $products->count() }} of {{ $products->count() }}
+                            @else
+                                Items 0 of 0
+                            @endif
+                        </span>
                         <el-dropdown class="relative inline-block text-left">
                             <button class="group inline-flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white min-w-[230px]">
                                 <span class="mr-[10px] text-[14px] text-[#898989]">Sort by:
@@ -879,7 +885,11 @@ Log::info($_REQUEST);
                 const countSpan = document.getElementById('product-count');
                 if (countSpan) {
                     const productCount = wrapper.querySelectorAll('.product-card').length;
-                    countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                    if(productCount === 0) {
+                        countSpan.textContent = `Items 0 of 0`;
+                    } else {
+                        countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
+                    }
                 }
 
             })
