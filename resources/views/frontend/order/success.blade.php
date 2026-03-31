@@ -165,7 +165,7 @@
                             <a href="{{ route('products') }}" class="flex-1 bg-white text-black text-center py-5 rounded-2xl font-medium uppercase text-[13px] hover:bg-[#2A7CFF] hover:text-white transition-all duration-300">
                                 Continue Shopping
                             </a>
-                            <a href="{{ route('orders.show', $order->id) }}" class="flex-1 border border-white/10 text-white text-center py-5 rounded-2xl font-medium uppercase text-[13px] hover:bg-white/5 transition-all">
+                            <a href="{{ route('orders.show', encrypt($order->id)) }}" class="flex-1 border border-white/10 text-white text-center py-5 rounded-2xl font-medium uppercase text-[13px] hover:bg-white/5 transition-all">
                                 Go to Order
                             </a>
                         </div>

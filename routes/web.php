@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Frontend\BrandController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Frontend\BuildPcController;
@@ -72,7 +73,7 @@ Route::get('/shop/category/{slug}', [ProductController::class, 'shopByCategory']
 Route::get('/shop/brand/{slug}', [ProductController::class, 'shopByBrand'])->name('shop.brand');
 
 Route::get('/buildyourpc', [BuildPcController::class, 'index'])->name('buildyourpc');
-Route::get('/buildyourpc/products/{category_id}', [BuildPcController::class, 'getProductsByCategory']);
+Route::get('/buildyourpc/products/{category_id}/{brand_id?}', [BuildPcController::class, 'getProductsByCategory']);
 Route::get('/buildyourpc/products/details/{stockId}', [BuildPcController::class, 'getProductDetails']);
 Route::get('/buildyourpc/savePcBuilder', [BuildPcController::class, 'savePcBuilder']);
 Route::get('/buildyourpc/getBuildData', [BuildPcController::class, 'getBuildData']);
@@ -93,6 +94,7 @@ Route::post('/my-orders/{id}/cancel', [OrderController::class, 'cancelOrder'])
 Route::post('/my-orders/{id}/return', [OrderController::class, 'returnOrder'])
     ->name('orders.return');
 Route::get('/search-products', [ProductController::class, 'searchProducts']);
+Route::get('/brands', [BrandController::class, 'index'])->name('brands.list');
     
 
 Route::group(['middleware' => ['auth:frontend']], function () {

@@ -46,6 +46,34 @@ class ProductController extends Controller
         $this->frontController = $frontController;
     }
 
+    public function loadSEO($model)
+    {
+        SEOTools::setTitle($model['title']);
+        OpenGraph::setTitle($model['title']);
+        TwitterCard::setTitle($model['title']);
+
+        SEOMeta::setTitle($model['title']);
+        SEOMeta::setDescription($model['meta_description']);
+        SEOMeta::addKeyword($model['keywords']);
+
+        OpenGraph::setTitle($model['og_title']);
+        OpenGraph::setDescription($model['og_description']);
+        OpenGraph::setUrl(URL::full());
+        OpenGraph::addProperty('locale', 'en_US');
+        OpenGraph::addProperty('type', $model['og_type'] ?? 'website');
+        OpenGraph::addImage(uploaded_asset(get_setting('header_logo')) ?? URL::to(asset('assets/img/logo.png')));
+
+        JsonLd::setTitle($model['title']);
+        JsonLd::setDescription($model['meta_description']);
+        JsonLd::setType('Page');
+
+        TwitterCard::setTitle($model['twitter_title']);
+        TwitterCard::setSite('@homeiq');
+        TwitterCard::setDescription($model['twitter_description']);
+
+        SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.ico')));
+    }
+
     public function searchSuggestions(Request $request)
     {
         $sort_search = $request->get('search');
@@ -380,6 +408,21 @@ class ProductController extends Controller
             }
         }
 
+        $seo = $product->seo->first();
+
+        $seoContents = [
+            'title' => $seo->meta_title ?? '',
+            'meta_description' => $seo->meta_description ?? '',
+            'keywords' => $seo->keywords ?? '',
+            'og_title' => $seo->og_title ?? '',
+            'og_description' => $seo->og_description ?? '',
+            'twitter_title' => $seo->twitter_title ?? '',
+            'twitter_description' => $seo->twitter_description ?? '',
+        ];
+
+        $this->loadSEO($seoContents);
+
+
         return view('frontend.productDetails', compact(
             'product', 
             'relatedProducts', 
@@ -418,6 +461,21 @@ class ProductController extends Controller
             $products->where('product_stocks.offer_price', '<=', $request->max_price);
         }
 
+        // Global Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $products->where(function ($query) use ($search) {
+                $query->where('products.name', 'LIKE', "%{$search}%")
+                    ->orWhere('products.slug', 'LIKE', "%{$search}%")
+                    ->orWhere('products.tags', 'LIKE', "%{$search}%")
+                    ->orWhereHas('stocks', function ($q) use ($search) {
+                        $q->where('stock_title', 'LIKE', "%{$search}%");
+                    });
+            });
+        }
+
+
         // Sorting
         switch ($sort) {
             case 'oldest':
@@ -450,8 +508,6 @@ class ProductController extends Controller
 
         return view('frontend.products', compact('products', 'categories', 'brands', 'sort', 'view', 'groupedCategories'));
     }
-
-
 
     public function getVariantsByValue(Request $request)
     {
@@ -795,26 +851,26 @@ class ProductController extends Controller
     }
 
     public function searchProducts(Request $request)
-{
-    $query = $request->get('query', '');
+    {
+        $query = $request->get('query', '');
 
-    if (!$query) return response()->json([]);
+        if (!$query) return response()->json([]);
 
-    $products = Product::where('published', 1)
-        ->where(function($q) use ($query) {
-            $q->where('name', 'like', "%{$query}%")
-              ->orWhere('tags', 'like', "%{$query}%"); // search inside comma-separated tags
-        })
-        ->limit(10)
-        ->get(['id', 'name', 'slug']); // include id if needed
+        $products = Product::where('published', 1)
+            ->where(function($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                ->orWhere('tags', 'like', "%{$query}%"); // search inside comma-separated tags
+            })
+            ->limit(10)
+            ->get(['id', 'name', 'slug']); // include id if needed
 
-    $results = $products->map(function($p){
-        return [
-            'name' => $p->name,
-            'url' => route('product.details', ['slug' => $p->slug, 'sku' => $p->stocks->first()->sku ?? ''])
-        ];
-    });
+        $results = $products->map(function($p){
+            return [
+                'name' => $p->name,
+                'url' => route('product.details', ['slug' => $p->slug, 'sku' => $p->stocks->first()->sku ?? ''])
+            ];
+        });
 
-    return response()->json($results);
-}
+        return response()->json($results);
+    }
 }
