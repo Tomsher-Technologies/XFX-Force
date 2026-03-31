@@ -329,7 +329,7 @@
                             </div>
                         </li>
                     </ul>
-                    <a href="javascript:void(0)" onclick="completeYourOrder(event)" class="mt-[0px] w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">Place Your Order</a>
+                    <a href="javascript:void(0)" onclick="completeYourOrder(event)" class="mt-[0px] w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">Place Your Order</a>
                 </div>
                 <!--//categories filter-->
             </div>

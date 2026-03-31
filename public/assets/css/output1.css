@@ -2600,7 +2600,7 @@
     --tw-duration: 300ms;
     transition-duration: 300ms;
   }
-  .duration-600 {
+  .duration-[600ms] {
     --tw-duration: 600ms;
     transition-duration: 600ms;
   }

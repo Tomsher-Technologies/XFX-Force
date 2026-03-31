@@ -47,7 +47,7 @@
             @foreach($brands as $brand)
                 <div class="brand-item w-full cursor-pointer group p-4 transition-all flex items-center min-h-[200px] border border-[#1E2529] hover:bg-[#1E2529]/30" 
                 data-name="{{ $brand->name }}'">
-                    <img src="{{ $brand->logo ? Storage::url($brand->logo) : asset('assets/img/placeholder.jpg') }}" class="m-auto opacity-[0.5] group-hover:opacity-[1] transition-all duration-600 w-[55%]" title="{{ $brand->name }}" alt="{{ $brand->name }}">
+                    <img src="{{ $brand->logo ? Storage::url($brand->logo) : asset('assets/img/placeholder.jpg') }}" class="m-auto opacity-[0.5] group-hover:opacity-[1] transition-all duration-[600ms] w-[55%]" title="{{ $brand->name }}" alt="{{ $brand->name }}">
                 </div>
             @endforeach
             

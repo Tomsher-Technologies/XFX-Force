@@ -239,7 +239,7 @@
                             </div>
                         </li>
                     </ul>
-                    <a href="{{ route('checkout') }}" class="mt-[20px] w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">{{ trans('messages.proceed_to_checkout') }}</a>
+                    <a href="{{ route('checkout') }}" class="mt-[20px] w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">{{ trans('messages.proceed_to_checkout') }}</a>
                 </div>
                 <!--//categories filter-->
             </div>

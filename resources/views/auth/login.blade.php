@@ -57,7 +57,7 @@
                     @enderror
                 </div>
 
-                <button type="submit" class="cursor-pointer transition-all duration-600 w-full bg-[#2A7CFF] py-4 rounded-xl font-medium text-white text-[14px] uppercase hover:bg-[#1A6BFF] transition-all shadow-lg shadow-[#2A7CFF]/20 active:scale-[0.98]">
+                <button type="submit" class="cursor-pointer transition-all duration-[600ms] w-full bg-[#2A7CFF] py-4 rounded-xl font-medium text-white text-[14px] uppercase hover:bg-[#1A6BFF] transition-all shadow-lg shadow-[#2A7CFF]/20 active:scale-[0.98]">
                     Log In
                 </button>
             </form>

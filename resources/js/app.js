@@ -127,10 +127,10 @@ $(window).scroll(function () {
     if ($(this).scrollTop() > 50) {
         // STYLE WHEN STICKY
         header.addClass('bg-[#0b0b0b] shadow-xl border-b border-[#1E2529]')
-            .removeClass('h-24 bg-transparent');
+            .removeClass('bg-transparent');
     } else {
         // ORIGINAL STYLE
-        header.addClass('h-24 bg-transparent')
+        header.addClass('bg-transparent')
             .removeClass('bg-[#0b0b0b] shadow-xl border-b border-[#1E2529]');
     }
 });
@@ -644,7 +644,7 @@ var swiper = new Swiper(".cateswiper", {
         320: { slidesPerView: 3, spaceBetween: 15 },
         640: { slidesPerView: 3, spaceBetween: 15 },
         768: { slidesPerView: 5, spaceBetween: 15 },
-        1024: { slidesPerView: 5, spaceBetween: 15 },
+        1024: { slidesPerView: 7, spaceBetween: 15 },
         1280: { slidesPerView: 5, spaceBetween: 15 },
         1300: { slidesPerView: 6, spaceBetween: 15 },
         1366: { slidesPerView: 7, spaceBetween: 15 },
@@ -698,7 +698,7 @@ var swiper = new Swiper(".productswiper", {
     autoplay: { delay: 3000, disableOnInteraction: false },
     allowTouchMove: true,
     breakpoints: {
-        320: { slidesPerView: 1, spaceBetween: 15 },
+        320: { slidesPerView: 2, spaceBetween: 5 },
         640: { slidesPerView: 2, spaceBetween: 15 },
         768: { slidesPerView: 2, spaceBetween: 15 },
         1024: { slidesPerView: 3, spaceBetween: 15 },

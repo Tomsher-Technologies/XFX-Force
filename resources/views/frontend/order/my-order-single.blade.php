@@ -307,9 +307,9 @@
                                                 <div>
                                                     @if($totalPendingQty > 0)
                                                         
-                                                        <button onclick="openStatusModal()" class="mt-[10px] cursor-pointer flex items-center gap-2 px-3 py-1 bg-yellow-500/5 border border-yellow-500/20 rounded-full hover:bg-yellow-500 transition-all duration-600 group/btn">
-                                                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse font-medium group-hover:bg-white transition-all duration-600"></span>
-                                                        <span class="text-yellow-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-600">
+                                                        <button onclick="openStatusModal()" class="mt-[10px] cursor-pointer flex items-center gap-2 px-3 py-1 bg-yellow-500/5 border border-yellow-500/20 rounded-full hover:bg-yellow-500 transition-all duration-[600ms] group/btn">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                        <span class="text-yellow-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
                                                             Return Requested {{ $totalPendingQty }}@if($totalPendingQty <  $item->quantity) out of {{ $item->quantity }} @endif
                                                         </span>
                                                     </button>
@@ -322,9 +322,9 @@
                                                     @endif
 
                                                     @if($totalRejectedQty > 0)
-                                                        <button class="mt-[10px] cursor-pointer flex items-center gap-2 px-3 py-1 bg-red-500/5 border border-red-500/20 rounded-full hover:bg-red-500 transition-all duration-600 group/btn">
-                                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse font-medium group-hover:bg-white transition-all duration-600"></span>
-                                                        <span class="text-red-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-600">Return Rejected  {{ $totalRejectedQty }}@if($totalRejectedQty <  $item->quantity) out of {{ $item->quantity }} @endif
+                                                        <button class="mt-[10px] cursor-pointer flex items-center gap-2 px-3 py-1 bg-red-500/5 border border-red-500/20 rounded-full hover:bg-red-500 transition-all duration-[600ms] group/btn">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                        <span class="text-red-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">Return Rejected  {{ $totalRejectedQty }}@if($totalRejectedQty <  $item->quantity) out of {{ $item->quantity }} @endif
                                                         </button>
                                                     @endif
                                                 </div>
@@ -404,9 +404,9 @@
                                                 <div>
                                                     @if($totalPendingQty > 0)
                                                         
-                                                        <button onclick="openStatusModal()" class="mt-[10px] cursor-pointer flex items-center gap-2 px-3 py-1 bg-yellow-500/5 border border-yellow-500/20 rounded-full hover:bg-yellow-500 transition-all duration-600 group/btn">
-                                                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse font-medium group-hover:bg-white transition-all duration-600"></span>
-                                                        <span class="text-yellow-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-600">
+                                                        <button onclick="openStatusModal()" class="mt-[10px] cursor-pointer flex items-center gap-2 px-3 py-1 bg-yellow-500/5 border border-yellow-500/20 rounded-full hover:bg-yellow-500 transition-all duration-[600ms] group/btn">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                        <span class="text-yellow-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
                                                             Return Requested {{ $totalPendingQty }}@if($totalPendingQty <  $item->quantity) out of {{ $item->quantity }} @endif
                                                         </span>
                                                     </button>
@@ -419,9 +419,9 @@
                                                     @endif
 
                                                     @if($totalRejectedQty > 0)
-                                                        <button class="mt-[10px] cursor-pointer flex items-center gap-2 px-3 py-1 bg-red-500/5 border border-red-500/20 rounded-full hover:bg-red-500 transition-all duration-600 group/btn">
-                                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse font-medium group-hover:bg-white transition-all duration-600"></span>
-                                                        <span class="text-red-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-600">Return Rejected  {{ $totalRejectedQty }}@if($totalRejectedQty <  $item->quantity) out of {{ $item->quantity }} @endif
+                                                        <button class="mt-[10px] cursor-pointer flex items-center gap-2 px-3 py-1 bg-red-500/5 border border-red-500/20 rounded-full hover:bg-red-500 transition-all duration-[600ms] group/btn">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                        <span class="text-red-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">Return Rejected  {{ $totalRejectedQty }}@if($totalRejectedQty <  $item->quantity) out of {{ $item->quantity }} @endif
                                                         </button>
                                                     @endif
                                                 </div>
