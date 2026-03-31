@@ -1342,7 +1342,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-
+let originalValues = {};
 window.toggleEditMode = function() {
     const inputs = document.querySelectorAll(".profile-input");
     const saveContainer = document.getElementById("save-button-container");
@@ -1352,6 +1352,12 @@ window.toggleEditMode = function() {
 
     // Check current state based on first input
     const isReadOnly = inputs[0].readOnly;
+
+    if (isReadOnly) {
+        inputs.forEach((input) => {
+            originalValues[input.name] = input.value;
+        });
+    }
 
     inputs.forEach((input) => {
         input.readOnly = !isReadOnly;
@@ -1385,7 +1391,13 @@ window.toggleEditMode = function() {
 
         inputs[0].focus();
     } else {
-        // --- EXITING / CANCELING ---
+        
+        inputs.forEach((input) => {
+            if (originalValues[input.name] !== undefined) {
+                input.value = originalValues[input.name];
+            }
+        });
+        
         saveContainer.classList.add("hidden");
         saveContainer.classList.remove("flex");
 

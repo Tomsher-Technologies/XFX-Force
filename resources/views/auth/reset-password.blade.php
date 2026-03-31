@@ -17,12 +17,12 @@
                 @csrf
                 <div class="space-y-2">
                     <input type="hidden" name="token" value="{{ $token }}">
-                    <label for="email" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">Email</label>
+                    <label for="email" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">Email <span class="text-red-600">*</span></label>
                     <input type="email" id="email" placeholder="Email.." class="w-full bg-[#0B0F13] border border-white/5 p-4 pr-12 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all" name="email" readonly value="{{ old('email', $email) }}">
                 </div>
 
                 <div x-data="{ show: false }" class="space-y-2">
-                    <label for="password" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">New Password</label>
+                    <label for="password" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">New Password <span class="text-red-600">*</span></label>
                 
                     <div class="relative group">
                         <!-- Password Input -->
@@ -53,7 +53,7 @@
                 </div>
 
                 <div x-data="{ show: false }" class="space-y-2">
-                    <label for="password" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">Confirm New Password</label>
+                    <label for="password" class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">Confirm New Password <span class="text-red-600">*</span></label>
                 
                     <div class="relative group">
                         <!-- Password Input -->

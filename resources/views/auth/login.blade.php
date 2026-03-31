@@ -15,7 +15,9 @@
             <form action="{{ url('login') }}" method="POST" class="space-y-6">
                 @csrf
                 <div>
-                    <label class="text-gray-500 text-[12px] font-medium uppercase mb-2 block tracking-wider">Email Address</label>
+                    <label class="text-gray-500 text-[12px] font-medium uppercase mb-1 block tracking-wider">
+                        Email Address <span class="text-red-600">*</span>
+                    </label>
                     <input type="email" placeholder="example@gmail.com" id="email" 
                         class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all placeholder:text-gray-700" name="email" value="{{ old('email') }}">
                     @error('email') <span class="text-red-600">{{ $message }}</span> @enderror
@@ -23,7 +25,7 @@
 
                 <div x-data="{ show: false }" class="space-y-2">
                     <div class="flex justify-between">
-                        <label class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">Password</label>
+                        <label class="text-gray-500 text-[12px] font-medium uppercase block tracking-wider">Password  <span class="text-red-600">*</span></label>
                         <a href="{{ route('forgot-password') }}" class="text-[#2A7CFF] text-[12px] font-medium uppercase hover:underline">Forgot Password?</a>
                     </div>
                     <div class="relative">
