@@ -206,10 +206,20 @@
                     <button onclick="window.location.href='{{ route('cart') }}'" class="go-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Go to cart</button>
                    
                     <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
+
+
+        
+
+                    <button data-product-id="{{ $product->id }}" data-page="product-details" data-stock-id="{{ $stockId }}" class="wishlist-toggle right-[20px] z-[10] mt-2 w-[35px] h-[35px] md:w-[40px] md:h-[40px] bg-black/20 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white bg-black/20 transition-all duration-300 hover:bg-transparent hover:text-red-500 cursor-pointer group/heart" id="wishlist-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-active/heart:scale-125" fill="none"  viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
                     
-                    
-                    <a href="#" class="w-full text-center bg-white md:bg-transparent text-black md:text-white uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 hover:bg-white hover:text-black">Add to Wishlist</a>
                 </div>
+
+                
+
                 <!-- When item exist -->
 
                 <!--when the item is out of stock-->

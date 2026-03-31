@@ -112,4 +112,5 @@ Route::group(['middleware' => ['auth:frontend']], function () {
 
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::get('/wishlist/check', [WishlistController::class, 'check'])->name('wishlist.check');
 });
