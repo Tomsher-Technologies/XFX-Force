@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Resources\WebHomeProductsCollection;
 use App\Models\Brand;
-use App\Models\BusinessSetting;
+use App\Models\Banner;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\HomeSlider;
@@ -68,7 +68,7 @@ class ProductController extends Controller
         JsonLd::setType('Page');
 
         TwitterCard::setTitle($model['twitter_title']);
-        TwitterCard::setSite('@homeiq');
+        TwitterCard::setSite('@pcgarage');
         TwitterCard::setDescription($model['twitter_description']);
 
         SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.ico')));
@@ -506,7 +506,42 @@ class ProductController extends Controller
             return view('frontend.partials.product-list', compact('products', 'view'))->render();
         }
 
-        return view('frontend.products', compact('products', 'categories', 'brands', 'sort', 'view', 'groupedCategories'));
+
+        $page = Page::where('type', 'product_listing')->first();
+
+        $page_content = $page ? json_decode($page->data, true) : [];
+
+        $seoContents = [
+            'title' => $page_content['meta_title'] ?? '',
+            'meta_description' => $page_content['meta_description'] ?? '',
+            'keywords' => $page_content['keywords'] ?? '',
+            'og_title' => $page_content['og_title'] ?? '',
+            'og_description' => $page_content['og_description'] ?? '',
+            'twitter_title' => $page_content['twitter_title'] ?? '',
+            'twitter_description' => $page_content['twitter_description'] ?? '',
+        ];
+
+        $categorySlider = [];
+
+        if (!empty($page_content['categories'])) {
+            $categorySlider = Category::with('iconImage')
+                ->whereIn('id', $page_content['categories'])
+                ->where('is_active', 1)
+                ->get();
+        }
+
+        $banner_ids = $page_content['banners'] ?? [];
+        $banners = collect();
+        if (!empty($banner_ids)) {
+            $banners = Banner::with(['mainImage', 'mobileImage'])
+                ->whereIn('id', $banner_ids)
+                ->where('status', 1)
+                ->orderByRaw("FIELD(id," . implode(',', $banner_ids) . ")")
+                ->get();
+        }
+
+        $this->loadSEO($seoContents);
+        return view('frontend.products', compact('products', 'banners', 'categorySlider','page_content', 'categories', 'brands', 'sort', 'view', 'groupedCategories'));
     }
 
     public function getVariantsByValue(Request $request)

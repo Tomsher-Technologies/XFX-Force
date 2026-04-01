@@ -114,8 +114,10 @@ class PageController extends Controller
             return view('backend.website_settings.pages.home_page_edit', compact('page', 'categories', 'brands', 'products', 'lang','page_id', 'sliders', 'banners'));
             
           }
-          else if ($id == 'blogs' || $id == 'product_list' || $id == 'service_list') {
-            return view('backend.website_settings.pages.blog_listing', compact('page','lang','page_id'));
+          else if ($id == 'product_listing') {
+            $categories = Category::where('parent_id', 0)->where('is_active',1)->with('childrenCategories')->get();
+            $banners = Banner::where('status',1)->orderBy('name', 'asc')->get();
+            return view('backend.website_settings.pages.blog_listing', compact('page','lang','page_id', 'categories', 'banners'));
           }
           else if ($id == 'contact_us') {
             return view('backend.website_settings.pages.contact_us', compact('page','lang','page_id'));

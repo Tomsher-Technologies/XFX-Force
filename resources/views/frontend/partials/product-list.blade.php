@@ -45,6 +45,12 @@
                 <div class="product-image w-[100px] sm:w-[180px] md:w-full md:col-span-1 shrink-0 overflow-hidden relative">
                     <img src="{{ get_product_image($product->thumbnail_img,'300') }}" alt="{{ $product->name }}" title="{{ $product->name }}"
                         class="absolute left-0 top-0 h-full w-full object-cover object-center">
+
+                        @include('frontend.partials.wishlist-icon', [
+                                'product' => $product->id,
+                                'stock' => $firstStock->id,
+                                'page' => 'product-list' ?? null,
+                            ])
                 </div>
 
                 <div class="flex flex-col flex-1 md:contents">
