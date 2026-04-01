@@ -1,12 +1,13 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'About Us')
+@section('title', 'Brands')
 @section('content')
+
     <!--about banner intro-->
     <section
         class="min-h-screen relative justify-between w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px] border-b-1 border-gray-800 xl:border-none">
 
-        <img src="{{ uploaded_asset($page_content['image1'] ?? '') }}" alt="" title=""
+        <img src="{{ uploaded_asset($details['image1'] ?? '') }}" alt="" title=""
             class="absolute left-0 top-0 w-full h-full object-cover object-center z-[-1]">
 
         <!--breadcrumb-->
@@ -25,13 +26,13 @@
                         </a>
                     </li>
                     <li aria-current="page">
-                        <div class="flex items-center">
+                        <div class="flex items-center cursor-pointer" onclick="window.location='{{ route('shop.brand', $brand->slug) }}'">
                             <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            <span class="ml-1 text-sm font-medium text-white md:ml-2">About us</span>
+                            <span class="ml-1 text-sm font-medium text-white md:ml-2">{{$brand->name}}</span>
                         </div>
                     </li>
                 </ol>
@@ -43,13 +44,13 @@
             <div class="flex flex-col xl:flex-row justify-between gap-[20px] xl:gap-[100px]">
                 <div class="w-full">
                     <h1 class="about-title text-[25px] xl:text-[40px] leading-[35px] xl:leading-[55px] text-center xl:text-left">
-                        {{ $   ['title'] ?? 'About Us' }}</h1>
+                        {{ $details['title'] ?? 'About Us' }}</h1>
                 </div>
                 <div class="w-full">
                     <p
                         class="text-[#ffffff80] text-[15px] xl:text-[20px] leading-[30px] xl:leading-[40px] text-center xl:text-left">
                         
-                        {{ $page_content['description'] ?? '' }}</p>
+                        {{ $details['description'] ?? '' }}</p>
                 </div>
             </div>
         </div>
@@ -61,24 +62,24 @@
     <section
         class="h-full xl:min-h-screen relative flex flex-col bg-black justify-start xl:justify-between w-full px-[16px] md:px-[30px] xl:px-[250px] py-[40px] xl:py-[100px] border-b-1 border-gray-800 xl:border-none">
 
-        <img src="{{ uploaded_asset($page_content['image2'] ?? '') }}" alt="" title=""
+        <img src="{{ uploaded_asset($details['image2'] ?? '') }}" alt="" title=""
             class="hidden xl:block absolute left-0 top-0 w-full h-full object-contain object-center z-[0]">
 
         <div class="w-full xl:w-1/2 text-left relative z-1 mb-[30px] xl:mb-0">
             <h2
                 class="about-title text-[25px] xl:text-[40px] leading-[35px] xl:leading-[55px] text-white text-center xl:text-left">
-                {{ $page_content['mid_title'] ?? '' }}
+                {{ $details['mid_title'] ?? '' }}
             </h2>
         </div>
 
         <div class="w-full xl:w-1/2 self-end text-center xl:text-left px-0 xl:px-[50px] relative z-1">
             <h3
                 class="about-title text-[18px] xl:text-[25px] leading-[30px] xl:leading-[35px] text-white mb-4 w-full xl:w-sm">
-                {{ $page_content['mid_sub_title'] ?? '' }}
+                {{ $details['mid_sub_title'] ?? '' }}
             </h3>
             <p
                 class="text-[#ffffff90] text-[15px] xl:text-[18px] leading-[30px] xl:leading-[35px] full xl:max-w-2xl xl:ml-auto font-medium">
-                {{ $page_content['mid_description'] ?? '' }}
+                {{ $details['mid_description'] ?? '' }}
             </p>
         </div>
 
@@ -93,41 +94,41 @@
             <div class="w-full">
                 <h1 class="about-title text-[25px] xl:text-[40px] leading-[35px] xl:leading-[55px] text-center">
                     
-                    {{ $page_content['last_title'] ?? '' }}</h1>
+                    {{ $details['last_title'] ?? '' }}</h1>
             </div>
             <div class="w-full">
                 <p class="text-[#ffffff80] text-[15px] xl:text-[20px] leading-[30px] xl:leading-[40px]">Where raw power
-                    {{ $page_content['last_description'] ?? '' }}
+                    {{ $details['last_description'] ?? '' }}
                 </p>
             </div>
         </div>
-        <img src="{{ uploaded_asset($page_content['image3'] ?? '') }}" alt="" title="" class="m-auto w-full">
+        <img src="{{ uploaded_asset($details['image3'] ?? '') }}" alt="" title="" class="m-auto w-full">
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-[30px] xl:gap-[80px]">
             <div class="border-t-2 border-white pt-[30px]">
                 <h3 class="text-white text-[20px] text-center xl:text-left mb-[15px] about-title">
-                    {{ $page_content['section1_title'] ?? '' }}
+                    {{ $details['section1_title'] ?? '' }}
                 </h3>
                 <p
                     class="text-[#ffffff90] text-[15px] xl:text-[18px] leading-[30px] xl:leading-[35px] xl:ml-auto font-medium text-center xl:text-left">
-                    {{ $page_content['section1_description'] ?? '' }}
+                    {{ $details['section1_description'] ?? '' }}
                 </p>
             </div>
             <div class="border-t-2 border-white pt-[30px]">
                 <h3 class="text-white text-[20px] text-center xl:text-left mb-[15px] about-title">
-                    {{ $page_content['section2_title'] ?? '' }}
+                    {{ $details['section2_title'] ?? '' }}
                 </h3>
                 <p
                     class="text-[#ffffff90] text-[15px] xl:text-[18px] leading-[30px] xl:leading-[35px] xl:ml-auto font-medium text-center xl:text-left">
-                    {{ $page_content['section2_description'] ?? '' }}
+                    {{ $details['section2_description'] ?? '' }}
                 </p>
             </div>
             <div class="border-t-2 border-white pt-[30px]">
                 <h3 class="text-white text-[20px] text-center xl:text-left mb-[15px] about-title">
-                    {{ $page_content['section3_title'] ?? '' }}
+                    {{ $details['section3_title'] ?? '' }}
                 </h3>
                 <p
                     class="text-[#ffffff90] text-[15px] xl:text-[18px] leading-[30px] xl:leading-[35px] xl:ml-auto font-medium text-center xl:text-left">
-                    {{ $page_content['section3_description'] ?? '' }}
+                    {{ $details['section3_description'] ?? '' }}
                 </p>
             </div>
 

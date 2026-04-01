@@ -9,10 +9,15 @@
                     <div class="col-span-7 flex flex-col md:flex-row gap-[20px] md:gap-[30px]">
                         <div class="product-img h-[150px] md:h-auto w-full md:w-[200px] relative z-[1] bg-[#1E2225] rounded-[10px] overflow-hidden items-center justify-center flex">
                             @php
-                                $image = asset('assets/img/placeholder.jpg');
+                                $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
                                 if (!empty($item->product_stock?->image)) {
-                                    $image = Storage::url($item->product_stock->image);
+                                    // Handle multiple stock images (comma-separated) and take the first
+                                    $stockImages = explode(',', $item->product_stock->image);
+                                    $firstStockImage = trim($stockImages[0]);
+                                    if ($firstStockImage) {
+                                        $image = Storage::url($firstStockImage);
+                                    }
                                 } elseif (!empty($item->product?->thumbnail_img)) {
                                     $image = Storage::url($item->product->thumbnail_img);
                                 }

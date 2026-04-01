@@ -28,7 +28,7 @@
             @endif
         </a>
         <div class="product-content w-full p-[15px] md:p-[20px] flex flex-col gap-[10px] md:gap-[20px] z-[1]">
-            <h4 class="text-white text-[13px] md:text-[18px] leading-[20px] md:leading-[25px] font-medium line-clamp-2 h-[40px]" onclick="window.location= '{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}'">
+            <h4 class="text-white text-[13px] md:text-[18px] leading-[20px] md:leading-[25px] font-medium line-clamp-2 h-[40px] cursor-pointer" onclick="window.location= '{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}'">
                 {{ $prodData['name'] ?? '' }}</h4>
             <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[18px] leading-[20px] m-[0] font-bold align-center items-center gap-[10px]">
                 {{-- <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]" alt="AED"

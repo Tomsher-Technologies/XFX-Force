@@ -492,17 +492,18 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $products->with('stocks')->distinct()->get();
+        $products = $products->with('stocks')->distinct()->paginate(3);
         $categories = Category::withCount('products')->where('is_active', 1)->get();
         $groupedCategories = $categories->groupBy('parent_id');
         
         $brands = Brand::withCount('products')->where('is_active', 1)->get();
 
-        if ($products->isEmpty() && $request->ajax()) {
-            return '<div class="text-white text-center py-10">No Products Found!</div>';
-        }
-        // If AJAX request, return only product list partial
+
         if ($request->ajax()) {
+            if ($products->isEmpty() && !$request->scroll) {
+                // Only show "No Products Found" for filter/search, not scroll
+                return '<div class="text-white text-center py-10">No Products Found!</div>';
+            }
             return view('frontend.partials.product-list', compact('products', 'view'))->render();
         }
 
@@ -735,7 +736,7 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $products->with('stocks')->distinct()->get();
+        $products = $products->with('stocks')->distinct()->paginate(2);
 
         $brands = Brand::whereIn('id', $products->pluck('brand_id')->filter()->unique())->get();
 

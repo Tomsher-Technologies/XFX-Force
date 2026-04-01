@@ -3,7 +3,8 @@
 @section('title', 'Shop - Category')
 @section('content')
 
-
+<input type="hidden" id="category-last-page" value="{{ $products->lastPage() }}">
+<input type="hidden" id="category-current-page" value="{{ $products->currentPage() }}">
     <!--inner banner-->
     <section class="px-[16px] md:px-[140px] pt-[80px] md:pt-[150px] pb-[0px] relative">
         <div class="section-title mb-[0px] relative border-t-1 border-[#ffffff30] pt-[30px] md:pt-0 xl:pt-[50px]">
@@ -1144,6 +1145,46 @@
     document.querySelectorAll('.category-checkbox').forEach(checkbox => {
     checkbox.addEventListener('change', function(e) {
         
+    });
+
+    // Load more products on scroll for category page
+    let page = parseInt(document.getElementById('category-current-page').value) || 1;
+    const lastPage = parseInt(document.getElementById('category-last-page').value) || 1;
+    let loading = false;
+
+    function observeLastProductCategory() {
+        const products = document.querySelectorAll('#product-list .product-item');
+        const lastProduct = products[products.length - 1];
+        if (!lastProduct) return;
+
+        const observer = new IntersectionObserver(async (entries) => {
+            if (entries[0].isIntersecting && page < lastPage && !loading) {
+                observer.unobserve(lastProduct);
+                page++;
+                await loadMoreCategoryProducts(page);
+                observeLastProductCategory();
+            }
+        }, { threshold: 1 });
+
+        observer.observe(lastProduct);
+    }
+
+    async function loadMoreCategoryProducts(pageNumber) {
+        loading = true;
+
+        const url = `{{ url()->current() }}?page=${pageNumber}&sort={{ request()->get('sort', 'newest') }}&view={{ $view }}`;
+        const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
+        const html = await res.text();
+
+        if (html.trim() !== '') {
+            document.querySelector('#product-list').insertAdjacentHTML('beforeend', html);
+        }
+
+        loading = false;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        observeLastProductCategory();
     });
 });
     // FILTER SCRIPT

@@ -536,18 +536,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.success) {
                     if (response.data.image && swiperInstance) {
                         const newUrl = `/product/${response.data.slug}/${response.data.variant_sku}`;
-                        window.history.replaceState({}, '', newUrl);
-                        // window.location.href = "/product/" +response.data.slug + "/" +response.data.variant_sku;
-                        swiperInstance.removeAllSlides();
-                        swiperInstance.appendSlide(`
-                            <div class="swiper-slide" data-stock-id="${response.data.variant_id}">
-                                <a href="/storage/${response.data.image}" class="glightbox">
-                                    <img src="/storage/${response.data.image}" 
-                                        class="w-full h-full object-cover object-center">
-                                </a>
-                            </div>
-                        `);
-                        swiperInstance.slideTo(0);
+                        // window.history.replaceState({}, '', newUrl);
+                        window.location.href = "/product/" +response.data.slug + "/" +response.data.variant_sku;
                     }
 
                     const mainPrice = document.querySelector('.price span.main-price');
@@ -557,16 +547,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('stock_id').value = response.data.variant_id;
 
                     if (response.data.availableQty <= 0) {
-                        document.querySelector(".out-of-stock-block").style.display = 'grid';
-                        document.querySelector(".add-to-cart-block").style.display = 'none';
+                        // document.querySelector(".out-of-stock-block").style.display = 'grid';
+                        // document.querySelector(".add-to-cart-block").style.display = 'none';
                     } else {
-                        document.querySelector(".out-of-stock-block").style.display = 'none';
-                        document.querySelector(".add-to-cart-block").style.display = 'grid';
+                        // document.querySelector(".out-of-stock-block").style.display = 'none';
+                        // document.querySelector(".add-to-cart-block").style.display = 'grid';
                         if(response.data.cartQty > 0){
                             document.querySelector(".add-to-cart").classList.add('hidden');
-                            document.querySelector(".go-to-cart").classList.remove('hidden');
+                            document.querySelector(".counter-wrapper").classList.remove('hidden');
+                            const qtyInput = document.querySelector('.qty-input');
+                            if (qtyInput) qtyInput.value = response.data.cartQty;
                         }else{
-                            document.querySelector(".go-to-cart").classList.add('hidden');
+                            document.querySelector(".counter-wrapper").classList.add('hidden');
                             document.querySelector(".add-to-cart").classList.remove('hidden');
                         }
                     }
@@ -612,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load default variant
     const mainProductInput = document.getElementById('main_product_id');
     if (mainProductInput) {
-        getVarientDetails(mainProductInput.value);
+        // getVarientDetails(mainProductInput.value);
     }
     
     // select and trigger the click event default selected variant
@@ -1148,7 +1140,7 @@ window.handleSortClick = function (selectedBtn) {
 }
 // theme-script ends
 
-document.addEventListener('DOMContentLoaded', function () {
+
     async function addToCart(productId, variantId, quantity, mode="set") {
         try {
             const res = await fetch(`/addProductToCart?productId=${productId}&variantId=${variantId}&quantity=${quantity}&mode=${mode}`);
@@ -1166,24 +1158,27 @@ document.addEventListener('DOMContentLoaded', function () {
             const addCartBlocks = document.querySelectorAll('.add-to-cart-block');
 
             if (response.availableQty <= 0) {
-                if(outStockBlocks) outStockBlocks.forEach(el => el.style.display = 'grid');
-                if(addCartBlocks) addCartBlocks.forEach(el => el.style.display = 'none');
+                if(outStockBlocks) outStockBlocks.forEach(el => el.classList.remove('!hidden'));
+                if(addCartBlocks) addCartBlocks.forEach(el => el.classList.add('!hidden'));
             } else {
-                if(outStockBlocks) outStockBlocks.forEach(el => el.style.display = 'none');
-                if(addCartBlocks) addCartBlocks.forEach(el => el.style.display = 'grid');
-                
+                if(outStockBlocks) outStockBlocks.forEach(el => el.classList.add('!hidden'));
+                if(addCartBlocks) addCartBlocks.forEach(el => el.classList.remove('!hidden'));
+
                 const addToCartBtn = document.querySelector(".add-to-cart");
-                const goToCartBtn = document.querySelector(".go-to-cart");
+                const counterWrapper = document.querySelector(".counter-wrapper");
 
                 if(response.cartQty > 0){
                     if (addToCartBtn) addToCartBtn.classList.add('hidden');
-                    if (goToCartBtn) goToCartBtn.classList.remove('hidden');
+                    if (counterWrapper) counterWrapper.classList.remove('hidden');
+                    const qtyInput = counterWrapper?.querySelector('.qty-input');
+                    if (qtyInput) qtyInput.value = response.cartQty;
+                    if (counterWrapper) updateQtyIcons(counterWrapper, response.cartQty);
+
                 }else{
-                    if (goToCartBtn) goToCartBtn.classList.add('hidden');
                     if (addToCartBtn) addToCartBtn.classList.remove('hidden');
+                    if (counterWrapper) counterWrapper.classList.add('hidden');
                 }
             }
-
             return response; // return the full response
         } catch (error) {
             toastr.error(error, 'Error');
@@ -1191,6 +1186,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    document.addEventListener('DOMContentLoaded', function () {
     $('.add-to-cart').on('click', function () {
         const productId = document.getElementById('main_product_id')?.value;
         const variantId = document.getElementById('stock_id')?.value;
@@ -1235,9 +1231,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const variantId = container.dataset.variantId;
         const cartId = container.dataset.cartId;
         const cartItemBox = btn.closest('.product-cart-item');
-        const cartPrice = cartItemBox.querySelector('.cart_price');
-        const cartOfferPrice = cartItemBox.querySelector('.cart_offer_price');
-        // cartPrice.classList.add('ddddddddd');
+        const cartPrice = cartItemBox ? cartItemBox.querySelector('.cart_price') : null;
+        const cartOfferPrice = cartItemBox ? cartItemBox.querySelector('.cart_offer_price') : null;
+
+        const outStockBlocks = document.querySelectorAll('.out-of-stock-block');
+        const addCartBlocks = document.querySelectorAll('.add-to-cart-block');
+        
         
         let currentVal = parseInt(input.value);
         
@@ -1294,33 +1293,24 @@ document.addEventListener('DOMContentLoaded', function () {
             input.value = newVal;
             updateCartSummary();
 
-            console.log(cartOfferPrice);
-            console.log(cartPrice);
-
             if(cartOfferPrice) cartOfferPrice.textContent = response.offerPrice;
             if(cartPrice) cartPrice.textContent = response.price;
-                       
-            /*if (newVal === 1) {
-                minusBtn.classList.add('hidden');
-                trashBtn.classList.remove('hidden');
-                decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
-                decrementBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
-            } else {
-                trashBtn.classList.add('hidden');
-                minusBtn.classList.remove('hidden');
-                
-                decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
-                decrementBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
-            }*/
-           updateQtyIcons(container, newVal);
+
+            updateQtyIcons(container, newVal);
 
             // Pulse animation
             input.classList.add('text-[#2A7CFF]', 'scale-110');
             setTimeout(() => input.classList.remove('text-[#2A7CFF]', 'scale-110'), 150);
+
+            if(response.availableQty == 0) {
+                if(outStockBlocks) outStockBlocks.forEach(el => el.classList.remove('!hidden'));
+                if(addCartBlocks) addCartBlocks.forEach(el => el.classList.add('!hidden'));
+            }
         }
     };
 
-    function updateQtyIcons(container, qty) {
+
+    window.updateQtyIcons = function(container, qty) {
         const iconWrapper = container.querySelector('.icon-wrapper');
         const minusBtn = iconWrapper.querySelector('.minus-btn');
         const trashBtn = iconWrapper.querySelector('.trash-btn');
@@ -1346,11 +1336,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch('/getCartSummary');
             const data = await response.json();
             if (data.status) {
-                document.getElementById('cart-subtotal').innerText = formatPrice(data.sub_total);
-                document.getElementById('cart-discount').innerText = formatPrice(data.discount_sum);
-                document.getElementById('cart-tax').innerText = formatPrice(data.tax);
-                document.getElementById('cart-total').innerText = formatPrice(data.total);
-                document.getElementById('cart-count').innerText =  `(${data.cart_count || 0})`;
+                if(document.getElementById('cart-subtotal')) document.getElementById('cart-subtotal').innerText = formatPrice(data.sub_total);
+                if(document.getElementById('cart-discount')) document.getElementById('cart-discount').innerText = formatPrice(data.discount_sum);
+                if(document.getElementById('cart-tax')) document.getElementById('cart-tax').innerText = formatPrice(data.tax);
+                if(document.getElementById('cart-total')) document.getElementById('cart-total').innerText = formatPrice(data.total);
+                if(document.getElementById('cart-count')) document.getElementById('cart-count').innerText =  `(${data.cart_count || 0})`;
                 let shippingElement = document.getElementById('cart-shipping');
                 if(shippingElement){
                 document.getElementById('cart-shipping').innerText = formatPrice(data.shipping);
@@ -1743,5 +1733,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    window.buyNow = async function(button) {
+        const productId = document.getElementById('main_product_id')?.value;
+        const variantId = document.getElementById('stock_id')?.value;
+        const response = await addToCart(productId, variantId, 1, 'increment');
+
+        if(response.success){
+            window.location.href = "/checkout";
+        }
+    }
 
 });

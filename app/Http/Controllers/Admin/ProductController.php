@@ -307,8 +307,21 @@ class ProductController extends Controller
             $product_stock->model = $request->model;
             $product_stock->stock_title = $request->stock_title;
             $product_stock->image = '';
-            if ($request->hasFile('image')) {
-                $product_stock->image = ImageHelper::downloadAndResizeImage('sub_product', $request->file('image'), $product->sku, true);
+            
+            $stockgallery = [];
+            if ($request->hasfile('variant_images')) {
+                if ($product_stock->image == null) {
+                    $count = 1;
+                    $old_stock_gallery = [];
+                } else {
+                    $old_stock_gallery = explode(',', $product_stock->image);
+                    $count = count($old_stock_gallery) + 1;
+                }
+
+                foreach ($request->file('variant_images') as $key => $file) {
+                    $stockgallery[] = ImageHelper::downloadAndResizeImage('sub_product', $file, $product_stock->sku, false, $count + $key);
+                }
+                $product_stock->image = implode(',', array_merge($old_stock_gallery, $stockgallery));
             }
 
             $offertag = '';
@@ -356,13 +369,22 @@ class ProductController extends Controller
                 $stock->model = $variantData['model'] ?? '';
                 $stock->stock_title = $variantData['stock_title'] ?? '';
 
-                if (isset($variantData['image']) && $request->hasFile("variants.$index.image")) {
-                    $stock->image = ImageHelper::downloadAndResizeImage(
-                        'sub_product', 
-                        $request->file("variants.$index.image"), 
-                        $product->sku, 
-                        true
-                    );
+
+                if(isset($variantData['variant_images']) && $request->hasFile("variants.$index.variant_images")){
+                    $stock_images_gallery = [];
+
+                    foreach($request->file("variants.$index.variant_images") as $key => $file){
+                        $stock_images_gallery[] = ImageHelper::downloadAndResizeImage(
+                            'sub_product', 
+                            $file, 
+                            $product->sku, 
+                            true,
+                            $key + 1
+                        );
+                    }
+
+                    // Option 1: Save as comma-separated string (quick)
+                    $stock->image = implode(',', $stock_images_gallery);
                 }
 
                 $offertag = '';
@@ -588,7 +610,7 @@ class ProductController extends Controller
 
         //save product tabs
         if ($request->has('tabs')) {
-            ProductTabs::where('lang', $request->lang)->where('product_id', $product->id)->delete();
+            ProductTabs::where('product_id', $product->id)->delete();
             foreach ($request->tabs as $tab) {
                 if ($tab['tab_heading'] != '' && $tab['tab_description'] != '') {
                     $p_tab = $product->tabs()->create([
@@ -639,9 +661,27 @@ class ProductController extends Controller
             $product_stock->model = $request->model;
             $product_stock->stock_title = $request->stock_title; 
 
-            if ($request->hasFile('image')) {
-                $product_stock->image = ImageHelper::downloadAndResizeImage('sub_product', $request->file('image'), $product->sku, true);
+            // if ($request->hasFile('image')) {
+            //     $product_stock->image = ImageHelper::downloadAndResizeImage('sub_product', $request->file('image'), $product->sku, true);
+            // }
+
+            $stock_gallery = [];
+            if ($request->hasfile('variant_images')) {
+                if ($product_stock->image == null) {
+                    $count = 1;
+                    $old_stock_gallery = [];
+                } else {
+                    $old_stock_gallery = explode(',', $product_stock->image);
+                    $count = count($old_stock_gallery) + 1;
+                }
+
+                foreach ($request->file('variant_images') as $key => $file) {
+                    $stock_gallery[] = ImageHelper::downloadAndResizeImage('sub_product', $file, $product_stock->sku, false, $count + $key);
+                }
+
+                $product_stock->image = implode(',', array_merge($old_stock_gallery, $stock_gallery));
             }
+            
             $offertag = '';
             $productOrgPrice = $request->price;
             $discountPrice = $productOrgPrice;
@@ -696,15 +736,24 @@ class ProductController extends Controller
                 $stock->model = $variantData['model'] ?? '';
                 $stock->stock_title = $variantData['stock_title'] ?? '';
                 
-                if (isset($variantData['image']) && $request->hasFile("variants.$index.image")) {
-                    $stock->image = ImageHelper::downloadAndResizeImage(
-                        'sub_product', 
-                        $request->file("variants.$index.image"), 
-                        $product->sku, 
-                        true
-                    );
-                }
+                if($request->hasFile("variants.$index.variant_images")) {
+                    // Existing images
+                    $old_stock_gallery = $stock->image ? explode(',', $stock->image) : [];
 
+                    // New uploaded images
+                    $new_stock_gallery = [];
+                    foreach($request->file("variants.$index.variant_images") as $key => $file){
+                        $new_stock_gallery[] = ImageHelper::downloadAndResizeImage(
+                            'sub_product',
+                            $file,
+                            $product->sku,
+                            true
+                        );
+                    }
+
+                    // Only append new images to existing DB values
+                    $stock->image = implode(',', array_merge($old_stock_gallery, $new_stock_gallery));
+                }
                 $offertag = '';
                 $productOrgPrice = $variantData['price'];
                 $discountPrice = $productOrgPrice;
@@ -877,6 +926,41 @@ class ProductController extends Controller
             }
 
             $product->save();
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public function delete_stock_gallery(Request $request)
+    {
+        $stock = ProductStock::where('id', $request->id)->first();
+        
+        $fil_url = str_replace('/storage/', '', $request->url);
+        $fil_url = $path = Storage::disk('public')->path($fil_url);
+
+        if (File::exists($fil_url)) {
+            $info = pathinfo($fil_url);
+            $file_name = basename($fil_url, '.' . $info['extension']);
+            $ext = $info['extension'];
+
+            $sizes = config('app.img_sizes');
+            foreach ($sizes as $size) {
+                $path = $info['dirname'] . '/' . $file_name . '_' . $size . 'px.' . $ext;
+                unlink($path);
+            }
+
+            unlink($fil_url);
+
+            $stock_images = explode(',', $stock->image);
+            $stock_images =  array_diff($stock_images, [$request->url]);
+            if ($stock_images) {
+                $stock->image = implode(',', $stock_images);
+            } else {
+                $stock->image = null;
+            }
+
+            $stock->save();
             return 1;
         } else {
             return 0;

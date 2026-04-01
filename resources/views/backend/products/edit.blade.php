@@ -509,12 +509,28 @@
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label>Variant Image</label>
-                                            <input type="file" name="image" class="form-control form-control-sm" accept="image/*">
+                                            <input type="file" name="variant_images[]" multiple class="form-control form-control-sm" accept="image/*">
 
-                                            @if(isset($product->stocks->first()->image) && $product->stocks->first()->image)
-                                            <div class="mt-2">
-                                                <img src="{{ Storage::url($product->stocks->first()->image) }}" class="img-fit size-50px" alt="Variant Image">
-                                            </div>
+                                            @if ($product->stocks->first()?->image)
+                                                <div class="file-preview box sm">
+                                                    @php
+                                                    $photos = explode(',', $product->stocks->first()?->image);
+                                                    @endphp
+                                                    @foreach ($photos as $photo)
+                                                    <div
+                                                        class="d-flex justify-content-between align-items-center mt-2 file-preview-item">
+                                                        <div
+                                                            class="align-items-center align-self-stretch d-flex justify-content-center thumb">
+                                                            <img src="{{ Storage::url($photo) }}" class="img-fit">
+                                                        </div>
+                                                        <div class="remove">
+                                                            <button class="btn btn-link remove-stock-galley"
+                                                                data-url="{{ $photo }}" data-id="{{ $product->stocks->first()?->id }}" type="button">
+                                                                <i class="la la-close"></i></button>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
                                             @endif
                                         </div>
                                     </div>
@@ -600,11 +616,27 @@
                                             <div class="form-group row">
                                                 <div class="col-md-6">
                                                     <label>Variant Image</label>
-                                                    <input type="file" name="variants[{{ $index }}][image]" class="form-control form-control-sm" accept="image/*">
-                                                    @if(isset($stock->image) && $stock->image)
-                                                    <div class="mt-2">
-                                                        <img src="{{ Storage::url($stock->image) }}" class="img-fit size-50px" alt="Variant Image">
-                                                    </div>
+                                                    <input type="file" name="variants[{{ $index }}][variant_images][]" multiple   class="form-control form-control-sm" accept="image/*">
+                                                    @if ($stock->image)
+                                                        <div class="file-preview box sm">
+                                                            @php
+                                                            $photos = explode(',', $stock->image);
+                                                            @endphp
+                                                            @foreach ($photos as $photo)
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center mt-2 file-preview-item">
+                                                                <div
+                                                                    class="align-items-center align-self-stretch d-flex justify-content-center thumb">
+                                                                    <img src="{{ Storage::url($photo) }}" class="img-fit">
+                                                                </div>
+                                                                <div class="remove">
+                                                                    <button class="btn btn-link remove-stock-galley"
+                                                                        data-url="{{ $photo }}" data-id="{{ $stock->id }}" type="button">
+                                                                        <i class="la la-close"></i></button>
+                                                                </div>
+                                                            </div>
+                                                            @endforeach
+                                                        </div>
                                                     @endif
                                                 </div>
                                             </div>
@@ -886,6 +918,24 @@
             data: {
                 url: $(thumbnail).data('url'),
                 id: '{{ $product->id }}'
+            },
+            success: function(data) {
+                $(thumbnail).closest('.file-preview-item').remove();
+            }
+        });
+    });
+
+    $('.remove-stock-galley').on('click', function() {
+        thumbnail = $(this)
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: "POST",
+            url: "{{ route('products.delete_stock_gallery') }}",
+            data: {
+                url: $(thumbnail).data('url'),
+                id: $(thumbnail).data('id')
             },
             success: function(data) {
                 $(thumbnail).closest('.file-preview-item').remove();

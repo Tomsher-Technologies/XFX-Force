@@ -27,12 +27,17 @@
                 @if(!empty($directCartItems))
                 @foreach ($directCartItems as $item)
                     @php
-                    $image = asset('assets/img/placeholder.jpg');
+                    $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
                     if (!empty($item->product_stock?->image)) {
-                    $image = Storage::url($item->product_stock->image);
+                        // Split by comma and take the first image
+                        $stockImages = explode(',', $item->product_stock->image);
+                        $firstStockImage = trim($stockImages[0]);
+                        if ($firstStockImage) {
+                            $image = Storage::url($firstStockImage);
+                        }
                     } elseif (!empty($item->product?->thumbnail_img)) {
-                    $image = Storage::url($item->product->thumbnail_img);
+                        $image = Storage::url($item->product->thumbnail_img);
                     }
                     @endphp
                     <div class="cart-box">

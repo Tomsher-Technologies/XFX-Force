@@ -269,12 +269,17 @@
                                         <h3 class="text-white text-lg font-semibold p-6">PC Builder Items</h3>
                                         @foreach($pcBuilderItems as $item)
                                             @php
-                                                $image = asset('assets/img/placeholder.jpg');
+                                                $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
                                                 if (!empty($item->product_stock?->image)) {
-                                                $image = Storage::url($item->product_stock->image);
+                                                    // Split multiple images and take the first
+                                                    $stockImages = explode(',', $item->product_stock->image);
+                                                    $firstStockImage = trim($stockImages[0]);
+                                                    if ($firstStockImage) {
+                                                        $image = Storage::url($firstStockImage);
+                                                    }
                                                 } elseif (!empty($item->product?->thumbnail_img)) {
-                                                $image = Storage::url($item->product->thumbnail_img);
+                                                    $image = Storage::url($item->product->thumbnail_img);
                                                 }
                                                 
 
@@ -365,12 +370,17 @@
                                         @endif
                                     @foreach($normalItems as $item)
                                         @php
-                                            $image = asset('assets/img/placeholder.jpg');
+                                            $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
                                             if (!empty($item->product_stock?->image)) {
-                                            $image = Storage::url($item->product_stock->image);
+                                                // If there are multiple images, take the first one
+                                                $stockImages = explode(',', $item->product_stock->image);
+                                                $firstStockImage = trim($stockImages[0]);
+                                                if ($firstStockImage) {
+                                                    $image = Storage::url($firstStockImage);
+                                                }
                                             } elseif (!empty($item->product?->thumbnail_img)) {
-                                            $image = Storage::url($item->product->thumbnail_img);
+                                                $image = Storage::url($item->product->thumbnail_img);
                                             }
                                             
 
@@ -627,9 +637,15 @@
                         if($remainingQty <= 0) continue;
                     @endphp
                     @php
-                        $image = asset('assets/img/placeholder.jpg');
+                        $image = asset('assets/img/placeholder.jpg'); // default placeholder
+
                         if (!empty($detail->product_stock?->image)) {
-                            $image = Storage::url($detail->product_stock->image);
+                            // If multiple images exist, take the first one
+                            $stockImages = explode(',', $detail->product_stock->image);
+                            $firstStockImage = trim($stockImages[0]);
+                            if ($firstStockImage) {
+                                $image = Storage::url($firstStockImage);
+                            }
                         } elseif (!empty($detail->product?->thumbnail_img)) {
                             $image = Storage::url($detail->product->thumbnail_img);
                         }

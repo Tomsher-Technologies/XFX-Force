@@ -335,7 +335,7 @@
                                         <div class="form-group row">
                                             <div class="col-md-6">
                                                 <label>Variant Image</label>
-                                                <input type="file" name="image" class="form-control form-control-sm" accept="image/*">
+                                                <input type="file" name="variant_images[]" multiple class="form-control form-control-sm" accept="image/*">
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -709,7 +709,7 @@ function addVariantBox() {
             <div class="form-group row">
                 <div class="col-md-6">
                     <label>Variant Image</label>
-                    <input type="file" name="variants[${index}][image]" class="form-control form-control-sm" accept="image/*">
+                    <input type="file"  name="variants[${index}][variant_images][]" multiple class="form-control form-control-sm" accept="image/*">
                 </div>
             </div>
             <div class="form-group row">

@@ -50,33 +50,55 @@
 <!--product single intro-->
 <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] md:pt-[0px] xl:mb-[100px]">
     <div class="flex flex-col xl:grid xl:grid-cols-11 gap-[30px] xl:gap-[100px]">
-        <div class="col-span-5 overflow-hidden h-[50vh] xl:h-[70vh] w-full">
+        <div class="col-span-5 overflow-hidden h-[50vh] xl:h-[70vh] w-full relative">
+            @php
+                $firstStock = $selectedStock; // This should be the stock user has selected
+                $slides = [];
+            @endphp
+
+            <button data-product-id="{{ $product->id }}" data-page="product-details" data-stock-id="{{ $stockId }}" class="wishlist-toggle absolute top-[20px] right-[20px] z-[10] mt-2 w-[35px] h-[35px] md:w-[40px] md:h-[40px] bg-black/20 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white bg-black/20 transition-all duration-300 hover:bg-transparent hover:text-red-500 cursor-pointer group/heart" id="wishlist-button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-active/heart:scale-125" fill="none"  viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </button>
             <div class="swiper singleprdswiper relative overflow-hidden h-full w-full">
                 <input type="hidden" value="{{$product->id}}" id="main_product_id">
                 <input type="hidden" value="{{$stockId}}" id="selected_stock_id">
                 
+                
                 <div class="swiper-wrapper">
-                    @php $hasVariantImage = false; @endphp
-                    @foreach($product->stocks as $stock)
-                    <input type="hidden" value="{{ $stock->stock_title }}" id="variant_type">
-                    @if($stock->image)
-                    @php $hasVariantImage = true; @endphp
-                    <div class="swiper-slide" data-swiper-autoplay="8000">
-                        <a href="{{ Storage::url($stock->image) }}" class="glightbox">
-                            <img src="{{ Storage::url($stock->image) }}" alt="{{ $stock->stock_title }}" title="{{ $stock->stock_title }}" class="w-full h-full object-cover object-center">
-                        </a>
-                    </div>
+                    {{-- Variant/stock images --}}
+                    @if($firstStock && $firstStock->image)
+                        @php 
+                            $variant_images = explode(',', $firstStock->image); 
+                            $slides = array_merge($slides, $variant_images);
+                        @endphp
                     @endif
+
+                    {{-- If no stock images, fallback to product gallery --}}
+                    @if(empty($slides) && $product->photos)
+                        @php 
+                            $product_images = explode(',', $product->photos); 
+                            $slides = $product_images;
+                        @endphp
+                    @endif
+
+                    {{-- If still empty, fallback to thumbnail --}}
+                    @if(empty($slides) && $product->thumbnail_img)
+                        @php $slides = [$product->thumbnail_img]; @endphp
+                    @endif
+
+                    {{-- Render slides --}}
+                    @foreach($slides as $img)
+                        <div class="swiper-slide" data-swiper-autoplay="8000">
+                            <a href="{{ Storage::url($img) }}" class="glightbox">
+                                <img src="{{ Storage::url($img) }}" 
+                                    alt="{{ $product->name }}" 
+                                    title="{{ $product->name }}" 
+                                    class="w-full h-full object-cover object-center">
+                            </a>
+                        </div>
                     @endforeach
-
-                    @if(!$hasVariantImage && $product->thumbnail_img)
-                    <div class="swiper-slide" data-swiper-autoplay="8000">
-                        <a href="{{ get_product_image($product->thumbnail_img,'500') }}" class="glightbox">
-                            <img src="{{ get_product_image($product->thumbnail_img,'500') }}" alt="{{ $product->name }}" title="{{ $product->name }}" class="w-full h-full object-cover object-center">
-                        </a>
-                    </div>
-                    @endif
-
                 </div>
                 <div class="swiper-button-next !absolute right-[0%] !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
                 <div class="swiper-button-prev !absolute left-[0%] !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
@@ -181,18 +203,14 @@
                 @endforeach
             </div>
             <!--//varients-->
-
             <div class="flex flex-col md:flex-row gap-[30px] border-y border-[#ffffff30] py-[30px] w-full justify-between flex-end items-center md:items-end">
                 <div>
-                    @php
-                    // Get the first stock for this product
-                    $firstStock = $product->stocks->first();
-                    @endphp
+                    
                     <label class="text-[15px] text-white mb-[15px] block text-center md:text-left">Price</label>
                     <div class="price w-full flex flex-row items-end gap-[15px]">
                         <h5 class="price flex flex-row text-[#2A7CFF] text-left text-[25px] m-[0] font-bold align-center items-center gap-[10px] leading-[35px]">
                             <img src="{{ asset('assets/images/aed.svg') }}" class="w-[22px] h-[22px]" alt="AED" title="Symbol of AED">
-                            <span class="offer-price">{{ number_format($firstStock->offer_price, 2) }}</span>
+                            <span class="offer-price">{{ format_price($firstStock->offer_price, 2) }}</span>
                         </h5>
                         @if(filled($firstStock->offer_tag))
                         <span class="text-[#898989] font-medium line-through text-[20px] main-price">{{ $firstStock->price }} </span>
@@ -200,38 +218,48 @@
                     </div>
                 </div>
 
+                
                 <!-- When item exist-->
-                <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block">
+                <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block  {{ ($cartQty < $firstStock->qty) ? '' : 'hidden' }}">
+                    <!--counter-->
+                    <div class="counter-wrapper product-item flex items-center gap-4 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 shadow-inner w-full {{ ($cartQty > 0 && $cartQty < $firstStock->qty) ? '' : 'hidden' }}" data-variant-id="{{ $firstStock->id }}">
+                        <button onclick="updateMultiQty(this, -1)" class="decrement-btn w-full h-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all active:scale-90">
+                            <span class="icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 minus-btn" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 12H4" /></svg>
+                                
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 trash-btn" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </span>
+                        </button>
+                        <input type="number" value="{{ $cartQty }}" readonly class="qty-input w-full h-full text-center bg-[#282B34] text-white font-medium focus:outline-none text-[15px] p-[10px] rounded-lg">
+                        <button onclick="updateMultiQty(this, 1)" class="w-full h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg transition-all active:scale-90">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </button>
+                    </div>
+                    <!--//counter-->
                     
-                    <button onclick="window.location.href='{{ route('cart') }}'" class="go-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Go to cart</button>
-                   
-                    <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
+                    <!-- Add to cart button -->
+                    <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer {{ ($cartQty == 0 && $cartQty < $firstStock->qty) ? '' : 'hidden' }}"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
+                        
+                    
+                    <!-- Buy now button -->
+                    <button onclick="buyNow(this)" class="buy-now w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer {{ ($cartQty < $firstStock->qty) ? '' : 'hidden' }}"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Buy Now</button>
 
-
-        
-
-                    <button data-product-id="{{ $product->id }}" data-page="product-details" data-stock-id="{{ $stockId }}" class="wishlist-toggle right-[20px] z-[10] mt-2 w-[35px] h-[35px] md:w-[40px] md:h-[40px] bg-black/20 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white bg-black/20 transition-all duration-300 hover:bg-transparent hover:text-red-500 cursor-pointer group/heart" id="wishlist-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-active/heart:scale-125" fill="none"  viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                    </button>
+                    <!-- Wishlist button -->
                     
                 </div>
-
-                
-
                 <!-- When item exist -->
 
                 <!--when the item is out of stock-->
-                <div class="button-group flex flex-col xl:grid xl:grid-cols-2 gap-[15px] h-fit w-full md:w-fit out-of-stock-block hide" style="display: none;">
+                <div class="button-group flex flex-col xl:grid xl:grid-cols-2 gap-[15px] h-fit w-full md:w-fit out-of-stock-block   {{ ($cartQty === $firstStock->qty && $firstStock->qty > 0) ? '' : '!hidden' }}">
                     <div class="flex justify-center items-center gap-2 px-4 py-2 bg-[#c0392b20] border border-[#c0392b50] rounded-[15px] w-full h-full mx-auto md:mx-0 align-center">
-                            <span class="relative flex h-2 w-2">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-2 w-2 bg-[#c0392b]"></span>
-                            </span>
-                            <span class="text-[#e74c3c] text-[12px] font-medium uppercase tracking-wider">Out of Stock</span>
-                        </div>
-                    <a href="#" class="w-full text-center bg-white md:bg-transparent text-black md:text-white uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] hover:bg-white hover:text-black">Add to Wishlist</a>
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#c0392b]"></span>
+                        </span>
+                        <span class="text-[#e74c3c] text-[12px] font-medium uppercase tracking-wider">Out of Stock</span>
+                    </div>
                 </div>
                 <!--//when the item is out of stock-->
             </div>
@@ -293,11 +321,20 @@
         })
         ->filter()
         ->values();
+
+        $productTabs = $product->tabs;
+
     @endphp
+
+
 
     <nav class="sticky top-[79px] md:top-[148px] z-50 w-full border-b border-gray-800 bg-[#0F151D] backdrop-blur-md">
         <div class="max-w-6xl mx-auto flex overflow-x-auto no-scrollbar whitespace-nowrap px-4 justify-start md:justify-center">
-            @if($product->description !="")    
+            @php
+                $overviewContent = $selectedStock->stock_description ?? $product->description;
+            @endphp
+
+            @if(!empty($overviewContent))
                 <a href="javascript:void(0)" @click="activeTab='overview'" :class="activeTab === 'overview' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Overview</a>
             @endif
             @if($productSpecifications->isNotEmpty())
@@ -309,23 +346,25 @@
             @if($productWarrantis->isNotEmpty())
                 <a href="javascript:void(0)" @click="activeTab='services'" :class="activeTab === 'services' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Services</a>
             @endif
+            @if($productTabs->isNotEmpty())
+                @foreach($productTabs as $tab)
+                    <a href="javascript:void(0)" @click="activeTab='tab-{{ $loop->index }}'" :class="activeTab === 'tab-{{ $loop->index }}' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">{{ $tab->heading }}</a>
+                @endforeach
+            @endif
         </div>
     </nav>
 
     <main class="max-w-6xl mx-auto px-4 py-10">
-
-        @if($product->description)
+        @if(!empty($overviewContent))
         <section x-show="activeTab === 'overview'" x-transition class="tab-panel" id="overview" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px] md:py-[100px]">
-            <h2 class="text-[18px] md:text-[20px] text-left uppercase font-bold text-white pb-[20px] border-b-2 border-[#2A7CFF]">Overview</h2>
             <div class="mt-[30px]">
-                <div class="text-[15px] md:text-[18px] text-justify leading-[30px] text-[#ffffff50]">{!! $product->description !!}</div>
+                <div class="text-[15px] md:text-[18px] text-justify leading-[30px] text-[#ffffff50]">{!! $overviewContent !!}</div>
             </div>
         </section>
         @endif
 
         @if($productSpecifications->isNotEmpty())
         <section x-show="activeTab === 'specs'" x-transition class="tab-panel" id="specs" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px]">
-            <h2 class="text-[18px] md:text-[20px] text-left uppercase font-bold text-white pb-[20px] border-b-2 border-[#2A7CFF]">Specifications</h2>
             <div class="mt-[30px]">
                 <div class="specifications">
                     
@@ -348,8 +387,6 @@
         @endif
         @if($productWarrantis->isNotEmpty())
          <section x-show="activeTab === 'services'" x-transition class="tab-panel" id="services" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px]">
-        
-            <h2 class="text-[18px] md:text-[20px] text-left uppercase font-bold text-white pb-[20px] border-b-2 border-[#2A7CFF]">Services</h2><p class="mt-4">
             <div class="mt-[50px]">
                 <ul class="flex flex-col gap-[5px]">
                     <li class="bg-[#282B3450] flex flex-col md:flex-row p-[30px] rounded-[5px] justify-between gap-[30px] md:gap-[0px]">
@@ -368,6 +405,15 @@
                 </ul>
             </div>
         </section>
+        @endif
+        @if($productTabs->isNotEmpty())
+            @foreach($productTabs as $tab)
+                <section x-show="activeTab === 'tab-{{ $loop->index }}'" x-transition class="tab-panel" id="tab-{{ $loop->index }}" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px]">
+                    <div class="mt-[30px]">
+                        <div class="text-[15px] md:text-[18px] text-justify leading-[30px] text-[#ffffff50]">{!! $tab->content !!}</div>
+                    </div>
+                </section>
+            @endforeach
         @endif
     </main>
 </div>

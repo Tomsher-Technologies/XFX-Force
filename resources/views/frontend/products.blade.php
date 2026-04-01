@@ -626,7 +626,11 @@ Log::info($_REQUEST);
                     </div>
                     @else
                     @include('frontend.partials.product-list', ['products' => $products])
+                    <div id="product-loader" class="text-center py-4 hidden">
+                      <span class="text-white">Loading more products...</span>
+                    </div>
                     @endif
+
                 </div>
             </div>
         </div>
@@ -1009,5 +1013,60 @@ Log::info($_REQUEST);
         });
     });
     // FILTER SCRIPT
+
+    // Load more products 
+let page = 1; // current page
+let lastPage = {{ $products->lastPage() }}; // from paginator
+let loading = false; // to prevent multiple calls
+
+// Function to observe the last product
+function observeLastProduct() {
+    const products = document.querySelectorAll('#product-list .product-item');
+    const lastProduct = products[products.length - 1];
+    if (!lastProduct) return;
+
+    const observer = new IntersectionObserver(async (entries) => {
+        if (entries[0].isIntersecting && page < lastPage && !loading) {
+            observer.unobserve(lastProduct); // stop observing this one
+            page++;
+            await loadMoreProducts(page);
+            observeLastProduct(); // observe the new last product
+        }
+    }, { threshold: 1 }); // fully visible
+
+    observer.observe(lastProduct);
+}
+
+async function loadMoreProducts(page) {
+    loading = true;
+
+    const loader = document.getElementById('product-loader');
+    if (loader) loader.classList.remove('hidden');
+
+    try {
+        const url = `{{ route('products') }}?page=${page}&scroll=1&sort={{ $sort }}&view={{ $view }}{{ request()->filled('categories') ? '&categories[]='.implode('&categories[]', request()->categories) : '' }}{{ request()->filled('brands') ? '&brands[]='.implode('&brands[]', request()->brands) : '' }}{{ request()->filled('min_price') ? '&min_price='.request()->min_price : '' }}{{ request()->filled('max_price') ? '&max_price='.request()->max_price : '' }}{{ request()->filled('search') ? '&search='.request()->search : '' }}`;
+
+        const res = await fetch(url, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        const html = await res.text();
+
+        if (html.trim() !== '') {
+            document.getElementById('product-list').insertAdjacentHTML('beforeend', html);
+        }
+    } catch (err) {
+        console.error(err);
+    } finally {
+        if (loader) loader.classList.add('hidden');
+        loading = false;
+    }
+}
+
+// Initialize observer after DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    observeLastProduct();
+});
+
 </script>
 @endsection

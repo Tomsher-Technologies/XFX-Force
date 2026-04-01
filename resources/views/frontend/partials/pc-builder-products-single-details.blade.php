@@ -14,15 +14,22 @@
     <div class="flex flex-col w-full">
 
             @php
-                $image = asset('assets/img/placeholder.jpg');
-                if($stock) {
-                    if ($stock->image) {
-                        $image = Storage::url($stock->image);
-                    }
+                $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
-                    if (!$stock->image && $stock->product->thumbnail_img) {
+                if ($stock) {
+                    // If stock has images
+                    if (!empty($stock->image)) {
+                        // Assume multiple images are comma-separated
+                        $images = explode(',', $stock->image);
+                        $firstImage = trim($images[0]);
+                        if ($firstImage) {
+                            $image = Storage::url($firstImage);
+                        }
+                    }
+                    // Fallback to product thumbnail if no stock image
+                    elseif (!empty($stock->product->thumbnail_img)) {
                         $image = Storage::url($stock->product->thumbnail_img);
-                    } 
+                    }
                 }
             @endphp
         <div class="bg-[#252B31] rounded-[20px] p-4 mb-6 flex justify-center items-center">
@@ -30,7 +37,12 @@
         </div>
 
         <h4 id="details-title" class="text-[25px] font-bold mb-[15px] leading-[35px] text-white"> {{ $stock->title ?? $stock->product->name ?? '' }}</h4>
-        <p id="details-desc" class="text-gray-300 text-base mb-8 text-[15px]">{{ $stock->product->description ?? '' }}</p>
+        <p id="details-desc" class="text-gray-300 text-base mb-8 text-[15px]">
+            @if($stock)
+                {!! $stock->stock_description ?? $stock->product->description ?? '' !!}
+            @endif
+            
+        </p>
 
         <div class="space-y-4 mb-10">
             <h5 class="text-[15px] text-white font-medium uppercase mb-5">Specifications</h5>
