@@ -20,14 +20,19 @@
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-[5px] md:gap-[15px]">
 
-                        @foreach ($products as $product)
+                        @foreach ($wishlist as $product)
                             @php
                                 $prodData = $product;
                             @endphp
                             @include('frontend.partials.product_card', ['prodData' => $prodData])
                         @endforeach
                        
+                        
                     </div>
+                    
+                </div>
+                <div class="mt-10">
+                    {{ $wishlist->links('pagination::tailwind') }}
                 </div>
             </main>
         </div>

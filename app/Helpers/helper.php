@@ -25,6 +25,61 @@ function is_active($route, $output = 'menu-active') {
     return Route::currentRouteName() === $route ? $output : '';
 }
 
+function getBannerUrl($banner)
+{
+     switch ($banner->link_type) {
+        case 'external':
+            $url = $banner->link;
+            break;
+
+        case 'product':
+            // Get product by ID to retrieve slug and default stock
+            $product = \App\Models\Product::with('stocks')->find($banner->link_ref_id);
+
+            if ($product && $product->stocks->count() > 0) {
+                $defaultStock = $product->stocks->first(); // first stock as default
+                $url = route('product.details', [
+                    'slug' => $product->slug,
+                    'sku'  => $defaultStock->sku
+                ]);
+            } else {
+                $url = '#';
+            }
+            break;
+
+        case 'category':
+            $category = \App\Models\Category::with('category_translations')
+                ->find($banner->link_ref_id);
+
+            if ($category && $category->category_translations->isNotEmpty()) {
+                $url = route(
+                    'shop.category',
+                    ['slug' => $category->category_translations->first()->slug ]
+                    
+                );
+            } else {
+                $url = '#';
+            }
+            break;
+
+        case 'brand':
+            $brand = \App\Models\Brand::find($banner->link_ref_id);
+
+            if ($brand && $brand->slug) {
+                $url = route('shop.brand', [
+                    'slug' => $brand->slug
+                ]);
+            } else {
+                $url = '#';
+            }
+            break;
+            
+        default:
+            $url = '#';
+    }
+
+    return $url;
+}
 function setGuestToken(){
     $guestToken = Cookie::get('guest_token', Str::uuid());
     Cookie::queue('guest_token', $guestToken, 60 * 24 * 7); // 7 days

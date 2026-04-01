@@ -407,13 +407,13 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 --   ADD CONSTRAINT `fk_menu_items_menu` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE,
 --   ADD CONSTRAINT `fk_menu_items_section` FOREIGN KEY (`menu_section_id`) REFERENCES `menu_sections` (`id`) ON DELETE CASCADE;
 
-INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'about-us', 'About Us', NULL, '', '1', NULL, '2026-03-07 14:06:06');
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'about-us', 'About Us', NULL, '', '1', NULL, '2026-03-07 14:06:06');
 
-INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'terms', 'Terms & Conditions', NULL, '', '1', NULL, '2026-03-07 14:06:06');
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'terms', 'Terms & Conditions', NULL, '', '1', NULL, '2026-03-07 14:06:06');
 
-INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'privacy_policy', 'Privacy Policy', NULL, '', '1', NULL, '2026-03-07 14:06:06');
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'privacy_policy', 'Privacy Policy', NULL, '', '1', NULL, '2026-03-07 14:06:06');
 
-INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'return_policy', 'Return Policy', NULL, '', '1', NULL, '2026-03-07 14:06:06');
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'return_policy', 'Return Policy', NULL, '', '1', NULL, '2026-03-07 14:06:06');
 
 -- ALTER TABLE pc_builder_setups 
 -- ADD COLUMN is_ordered TINYINT(1) NOT NULL DEFAULT 0 COMMENT '0=>false, 1=>true' AFTER build_data;
@@ -424,5 +424,7 @@ INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `create
 
 -- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'contact_us', 'Contact Us', NULL, NULL, '1', NULL, NULL);
 
-ALTER TABLE `brands` ADD `details` LONGTEXT NULL DEFAULT NULL AFTER `products`;
 ALTER TABLE `product_stocks` CHANGE `image` `image` VARCHAR(2000) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL DEFAULT NULL;
+-- ALTER TABLE `brands` ADD `details` LONGTEXT NULL DEFAULT NULL AFTER `products`;
+
+INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'product_listing', 'Product Listing Page', NULL, '', '1', NULL, '2026-03-30 16:05:25');
