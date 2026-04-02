@@ -520,7 +520,13 @@
             <div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 
                 <div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[0px] w-full">
-                    <span class="text-[#898989] text-[14px] w-full text-center xl:text-left"  id="product-count">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
+                    <span class="text-[#898989] text-[14px] w-full text-center xl:text-left"  id="product-count" data-per-page="{{ $products->perPage() }}" data-total="{{ $products->total() }}">
+                      @if($products->count() > 0)
+                          Items 1-{{ $products->count() }} of {{ $products->count() }}
+                      @else
+                          Items 0 of 0
+                      @endif
+                    </span>
                     <div class="flex flex-col xl:flex-row items-center gap-[15px] xl:gap-[20px] justify-end w-full">
                         <el-dropdown class="relative block text-left w-full xl:w-[230px]">
                             <button class="group flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white !w-full">
@@ -577,214 +583,15 @@
                     @include('frontend.partials.product-list', ['products' => $products])
                     @endif
                 </div>
+                <div id="product-loader" class="text-center py-4 hidden">
+                  <span class="text-white">Loading more products...</span>
+                </div>
             </div>
         </div>
 
     </main>
 </section>
 <!--//product listing-->
-
-<script>
-    // FILTER SCRIPT
-
-    // // Filtering products based on the price range
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const minInput = document.getElementById('range-min');
-    //     const maxInput = document.getElementById('range-max');
-    //     const minLabel = document.getElementById('min-price');
-    //     const maxLabel = document.getElementById('max-price');
-    //     const progress = document.getElementById('slider-progress');
-
-    //     // STOP if slider does not exist on this page
-    //     if (!minInput || !maxInput || !minLabel || !maxLabel || !progress) {
-    //         return;
-    //     }
-
-    //     const priceGap = 500; // Minimum gap between handles
-
-    //     function updateSlider() {
-    //         let minVal = parseInt(minInput.value);
-    //         let maxVal = parseInt(maxInput.value);
-
-    //         // Logic to prevent handles from crossing
-    //         if (maxVal - minVal < priceGap) {
-    //             if (this.id === 'range-min') {
-    //                 minInput.value = maxVal - priceGap;
-    //             } else {
-    //                 maxInput.value = minVal + priceGap;
-    //             }
-    //         } else {
-    //             minLabel.textContent = minInput.value;
-    //             maxLabel.textContent = maxInput.value;
-    //             filterProducts();
-
-    //             // Calculate percentage for the blue progress bar
-    //             const minPercent = (minInput.value / minInput.max) * 100;
-    //             const maxPercent = 100 - (maxInput.value / maxInput.max) * 100;
-
-    //             progress.style.left = minPercent + "%";
-    //             progress.style.right = maxPercent + "%";
-    //         }
-
-    //     }
-
-    //     [minInput, maxInput].forEach(input => {
-    //         input.addEventListener('input', updateSlider);
-    //     });
-
-    //     // Run once on load to set initial state
-    //     updateSlider();
-    // });
-
-    // // FIltering based on the brand selected
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const searchInput = document.getElementById('brand-search');
-    //     const brandItems = document.querySelectorAll('.brand-item');
-
-    //     // Stop if not on this page
-    //     if (!searchInput || brandItems.length === 0) {
-    //         return;
-    //     }
-    //     let selectedBrands = [];
-
-    //     if (searchInput) {
-    //         searchInput.addEventListener('input', (e) => {
-    //             const query = e.target.value.toLowerCase();
-    //             brandItems.forEach(item => {
-    //                 const brandName = item.getAttribute('data-name').toLowerCase();
-
-    //                 // Check if search query matches the brand name
-    //                 if (brandName.includes(query)) {
-    //                     item.style.display = 'flex'; // Show match
-    //                     item.classList.add('animate-fade-in'); // Optional: add a quick fade effect
-    //                 } else {
-    //                     item.style.display = 'none'; // Hide non-match
-    //                 }
-    //             });
-    //         });
-    //     }
-
-    //     // Handle selection (Active State)
-    //     brandItems.forEach(item => {
-    //         item.addEventListener('click', function() {
-    //             let brandId = item.getAttribute('data-id');
-    //             if (!brandId) return;
-
-    //             if (selectedBrands.includes(brandId)) {
-    //                 selectedBrands = selectedBrands.filter(id => id != brandId);
-    //             } else {
-    //                 selectedBrands.push(brandId);
-    //             }
-
-    //             this.classList.toggle('border-[#3E81FF]');
-    //             this.classList.toggle('bg-[#282B34]');
-    //             const img = this.querySelector('img');
-    //             img.classList.toggle('grayscale-0');
-    //             filterProducts(selectedBrands);
-    //         });
-    //     });
-    // });
-
-    // // Filtering based on the category selected
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const searchInput = document.getElementById('category-search');
-    //     const brandItems = document.querySelectorAll('.category-item');
-
-    //     // Stop if not on this page
-    //     if (!searchInput || brandItems.length === 0) {
-    //         return;
-    //     }
-
-    //     if (searchInput) {
-    //         searchInput.addEventListener('input', (e) => {
-    //             const query = e.target.value.toLowerCase();
-    //             brandItems.forEach(item => {
-    //                 const brandName = item.getAttribute('data-name').toLowerCase();
-
-    //                 // Check if search query matches the brand name
-    //                 if (brandName.includes(query)) {
-    //                     item.style.display = 'flex'; // Show match
-    //                     item.classList.add('animate-fade-in'); // Optional: add a quick fade effect
-    //                 } else {
-    //                     item.style.display = 'none'; // Hide non-match
-    //                 }
-    //             });
-    //         });
-    //     }
-    // });
-
-    // // Filtering based on the sort order selected
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const sortButton = document.querySelector('el-dropdown button');
-    //     const sortOptions = document.querySelectorAll('.sort-option');
-
-    //     sortOptions.forEach(option => {
-    //         option.addEventListener('click', (e) => {
-    //             e.preventDefault(); // prevent default link behavior
-
-    //             const sortValue = option.dataset.sort; // get the sort key
-    //             const sortText = option.textContent; // get display text
-
-    //             // Update button text
-    //             sortButton.querySelector('span').textContent = `Sort by: ${sortText}`;
-
-    //             // Call your filterProducts function with the selected sort
-    //             filterProducts([], sortValue, 'gridview'); // Pass default view or keep current view
-    //         });
-    //     });
-    // });
-
-    // // Filtering function
-    // function filterProducts(selectedBrands = [], sort = "newest", view = "gridview") {
-    //     const categories = Array.from(document.querySelectorAll('input[name="categories[]"]:checked'))
-    //         .map(el => el.value);
-
-    //     const min_price = parseInt(document.getElementById('min-price')?.textContent) || 0;
-    //     const max_price = parseInt(document.getElementById('max-price')?.textContent) || 300000;
-    //     const categoryId = document.getElementById('current-category-id')?.value;
-
-    //     // Get URL from Blade data attribute
-    //     let url = categoryId
-    //         ? `/shop/category/${categoryId}`
-    //         : `/products`;
-
-    //     // Build query string
-    //     const params = new URLSearchParams({
-    //         min_price,
-    //         max_price,
-    //         sort,
-    //         view
-    //     });
-
-    //     // Add categories and brands
-    //     categories.forEach(cat => params.append('categories[]', cat));
-    //     selectedBrands.forEach(brand => params.append('brands[]', brand));
-
-    //     fetch(`${url}?${params.toString()}`, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'X-Requested-With': 'XMLHttpRequest'
-    //             }
-    //         })
-    //         .then(res => res.text()) // assuming Laravel returns HTML
-    //         .then(html => {
-    //             document.getElementById('product-list-wrapper').innerHTML = html;
-    //         })
-    //         .catch(err => console.error('Filter products error:', err));
-    // }
-
-    // // Call filterProducts() on category,brand change 
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     document.querySelectorAll('input[name="categories[]"], input[name="brands[]"]').forEach(input => {
-    //         input.addEventListener('change', () => filterProducts());
-    //     });
-
-    //     // Initial load
-    //     // filterProducts();
-    // });
-
-    // FILTER SCRIPT
-</script>
 
 <script>
     // FILTER SCRIPT
@@ -1044,8 +851,7 @@
 
                 // Scroll to top of product list
                 const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100; // adjust 100px if header exists
-                window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                // wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                 // Update product count dynamically
                 const countSpan = document.getElementById('product-count');
                 if (countSpan) {
@@ -1146,47 +952,72 @@
     checkbox.addEventListener('change', function(e) {
         
     });
-
-    // Load more products on scroll for category page
-    let page = parseInt(document.getElementById('category-current-page').value) || 1;
-    const lastPage = parseInt(document.getElementById('category-last-page').value) || 1;
-    let loading = false;
-
-    function observeLastProductCategory() {
-        const products = document.querySelectorAll('#product-list .product-item');
-        const lastProduct = products[products.length - 1];
-        if (!lastProduct) return;
-
-        const observer = new IntersectionObserver(async (entries) => {
-            if (entries[0].isIntersecting && page < lastPage && !loading) {
-                observer.unobserve(lastProduct);
-                page++;
-                await loadMoreCategoryProducts(page);
-                observeLastProductCategory();
-            }
-        }, { threshold: 1 });
-
-        observer.observe(lastProduct);
-    }
-
-    async function loadMoreCategoryProducts(pageNumber) {
-        loading = true;
-
-        const url = `{{ url()->current() }}?page=${pageNumber}&sort={{ request()->get('sort', 'newest') }}&view={{ $view }}`;
-        const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
-        const html = await res.text();
-
-        if (html.trim() !== '') {
-            document.querySelector('#product-list').insertAdjacentHTML('beforeend', html);
-        }
-
-        loading = false;
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        observeLastProductCategory();
-    });
 });
     // FILTER SCRIPT
+
+	// LOAD MORE SCRIPT
+	let page = 1; // current page
+	let lastPage = {{ $products->lastPage() }}; // from paginator
+	let loading = false;
+
+	window.addEventListener('scroll', async () => {
+
+		if (loading) return;
+
+		const productList = document.getElementById('product-list');
+		const rect = productList.getBoundingClientRect();
+
+		// Trigger when bottom of product list is near viewport
+		if (rect.bottom <= window.innerHeight + 200) {
+
+			if (page < lastPage) {
+				loading = true;
+				page++;
+				await loadMoreProducts(page);
+				loading = false;
+			}
+
+		}
+
+	});
+
+	async function loadMoreProducts(page) {
+		const loader = document.getElementById('product-loader');
+		loader.classList.remove('hidden');
+
+		try {
+			const res = await fetch(`{{ route('products') }}?page=${page}&scroll=1&sort={{ $sort }}&view={{ $view }}{{ request()->filled('categories') ? '&categories[]='.implode('&categories[]', request()->categories) : '' }}{{ request()->filled('brands') ? '&brands[]='.implode('&brands[]', request()->brands) : '' }}{{ request()->filled('min_price') ? '&min_price='.request()->min_price : '' }}{{ request()->filled('max_price') ? '&max_price='.request()->max_price : '' }}{{ request()->filled('search') ? '&search='.request()->search : '' }}`, {
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest'
+				}
+			});
+
+			const html = await res.text();
+			document.getElementById('product-list').insertAdjacentHTML('beforeend', html);
+			updateProductCount();
+		} catch (err) {
+			console.error(err);
+		} finally {
+			loader.classList.add('hidden');
+		}
+	}
+
+	function updateProductCount() {
+
+		const countEl = document.getElementById('product-count');
+		const total = parseInt(countEl.dataset.total);
+
+		let visible = 0;
+
+		// Check active view
+		if (document.querySelector('[x-show="activeTab === \'gridview\'"]').offsetParent !== null) {
+			visible = document.querySelectorAll('#product-list .product-card').length;
+		} else {
+			visible = document.querySelectorAll('#product-list .product-card-list').length;
+		}
+
+		countEl.innerText = `Items 1-${visible} of ${visible}`;
+    document.getElementById('total-product-count').innerText = `${visible}`;
+	}
 </script>
 @endsection

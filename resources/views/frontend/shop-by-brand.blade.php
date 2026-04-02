@@ -521,7 +521,7 @@
             <div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 
                 <div class="flex flex-col md:flex-row items-center justify-between gap-[15px] md:gap-[0px] w-full">
-                    <span class="text-[#898989] text-[14px] w-full text-center md:text-left"  id="product-count">
+                    <span class="text-[#898989] text-[14px] w-full text-center md:text-left"  id="product-count"  data-per-page="{{ $products->perPage() }}" data-total="{{ $products->total() }}">
                         @if($products->count() > 0)
                             Items 1-{{ $products->count() }} of {{ $products->count() }}
                         @else
@@ -791,8 +791,8 @@ function filterProducts() {
             wrapper.innerHTML = html;
 
             // Scroll to product list
-            const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
-            window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+            // const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
+            // window.scrollTo({ top: offsetTop, behavior: 'smooth' });
 
             // Update product count dynamically
             const countSpan = document.getElementById('product-count');
@@ -808,5 +808,71 @@ function filterProducts() {
         })
         .catch(err => console.error('Filter products error:', err));
 }
+
+	let page = 1;
+    let lastPage = {{ $products->lastPage() }};
+    let loading = false;
+    let userScrolled = false;
+
+    window.addEventListener('scroll', async () => {
+
+        userScrolled = true;
+
+        if (loading || !userScrolled) return;
+
+        const productList = document.getElementById('product-list');
+        const rect = productList.getBoundingClientRect();
+
+        if (rect.bottom <= window.innerHeight + 200) {
+
+            if (page < lastPage) {
+                loading = true;
+                page++;
+                await loadMoreProducts(page);
+                loading = false;
+            }
+
+        }
+
+    });
+
+	async function loadMoreProducts(page) {
+		const loader = document.getElementById('product-loader');
+		loader.classList.remove('hidden');
+
+		try {
+			const res = await fetch(`{{ route('products') }}?page=${page}&scroll=1&sort={{ $sort }}&view={{ $view }}{{ request()->filled('categories') ? '&categories[]='.implode('&categories[]', request()->categories) : '' }}{{ request()->filled('brands') ? '&brands[]='.implode('&brands[]', request()->brands) : '' }}{{ request()->filled('min_price') ? '&min_price='.request()->min_price : '' }}{{ request()->filled('max_price') ? '&max_price='.request()->max_price : '' }}{{ request()->filled('search') ? '&search='.request()->search : '' }}`, {
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest'
+				}
+			});
+
+			const html = await res.text();
+			document.getElementById('product-list').insertAdjacentHTML('beforeend', html);
+			updateProductCount();
+		} catch (err) {
+			console.error(err);
+		} finally {
+			loader.classList.add('hidden');
+		}
+	}
+
+	function updateProductCount() {
+
+		const countEl = document.getElementById('product-count');
+		const total = parseInt(countEl.dataset.total);
+
+		let visible = 0;
+
+		// Check active view
+		if (document.querySelector('[x-show="activeTab === \'gridview\'"]').offsetParent !== null) {
+			visible = document.querySelectorAll('#product-list .product-card').length;
+		} else {
+			visible = document.querySelectorAll('#product-list .product-card-list').length;
+		}
+
+		countEl.innerText = `Items 1-${visible} of ${visible}`;
+    document.getElementById('total-product-count').innerText = `${visible}`;
+	}
 </script>
 @endsection
