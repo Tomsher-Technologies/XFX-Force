@@ -1246,9 +1246,9 @@ window.handleSortClick = function (selectedBtn) {
         const outStockBlocks = document.querySelectorAll('.out-of-stock-block');
         const addCartBlocks = document.querySelectorAll('.add-to-cart-block');
         
-        
+        alert(cartId);  
         let currentVal = parseInt(input.value);
-        
+
         // DELETE LOGIC: If qty is 1 and user clicks minus
         if (currentVal === 1 && change === -1) {
             Swal.fire({
@@ -1753,4 +1753,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+});
+
+// Mobile filter code
+document.addEventListener('DOMContentLoaded', () => {
+    const mobileButton = document.querySelector('.mobile-filter-btn'); // mobile button
+    const desktopForm = document.querySelector('form.hidden.xl\\:block'); // desktop form
+    const mobileDialog = document.querySelector('#mobile-filters div.form-section'); // mobile dialog form container
+
+    if (mobileButton && desktopForm && mobileDialog) {
+        mobileButton.addEventListener('click', (e) => {
+
+            const dialog = document.getElementById('mobile-filters');
+            if (dialog && typeof dialog.showModal === 'function') {
+                dialog.showModal(); // opens as modal
+                // dialog.show(); // opens non-modal (optional)
+            }
+
+            e.preventDefault(); // prevent default or framework behavior
+            console.log('Mobile button clicked!');
+
+            // Clear existing content in mobile form
+            mobileDialog.innerHTML = '';
+
+            // Clone desktop form
+            const clone = desktopForm.cloneNode(true);
+
+            // Remove the desktop-only hidden class
+            clone.classList.remove('hidden', 'xl:block');
+
+            // Append clone to mobile form
+            mobileDialog.appendChild(clone);
+            // initialize mobile sliders
+            clone.querySelectorAll('.price-filter').forEach(initPriceFilter);
+
+            // Show the mobile dialog
+            const dialogElement = mobileDialog.closest('dialog');
+            if (dialogElement && typeof dialogElement.showModal === 'function') {
+                dialogElement.showModal();
+            }
+        });
+    }
 });

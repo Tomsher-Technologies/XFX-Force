@@ -222,7 +222,7 @@
                 <!-- When item exist-->
                 <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block  {{ ($cartQty < $firstStock->qty) ? '' : 'hidden' }}">
                     <!--counter-->
-                    <div class="counter-wrapper product-item flex items-center gap-4 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 shadow-inner w-full {{ ($cartQty > 0 && $cartQty < $firstStock->qty) ? '' : 'hidden' }}" data-variant-id="{{ $firstStock->id }}">
+                    <div class="counter-wrapper product-item flex items-center gap-4 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 shadow-inner w-full {{ ($cartQty > 0 && $cartQty < $firstStock->qty) ? '' : 'hidden' }}" data-variant-id="{{ $firstStock->id }}" data-cart-id="{{ $cartId }}">
                         <button onclick="updateMultiQty(this, -1)" class="decrement-btn w-full h-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all active:scale-90">
                             <span class="icon-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 minus-btn" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 12H4" /></svg>

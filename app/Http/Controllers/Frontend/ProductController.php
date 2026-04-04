@@ -302,6 +302,7 @@ class ProductController extends Controller
 
         // Get cart quantity
         $cartQty = 0;
+        $cartId = null;
         if ($selectedStock) {
             $cartQuery = Cart::where('product_id', $product->id)
                 ->where('product_stock_id', $selectedStock->id)
@@ -316,6 +317,7 @@ class ProductController extends Controller
                     }
                 });
             $cartQty = $cartQuery->value('quantity') ?? 0;
+            $cartId = $cartQuery->value('id') ?? null;
         }
 
        $stockId = $selectedStock ? $selectedStock->id : null;
@@ -431,7 +433,8 @@ class ProductController extends Controller
             'stockId',
             'variantsById',
             'selectedLevelValues',
-            'selectedVariant'
+            'selectedVariant',
+            'cartId'
         ));
     }
 
@@ -493,10 +496,19 @@ class ProductController extends Controller
         }
 
         $products = $products->with('stocks')->distinct()->paginate(12);
-        $categories = Category::withCount('products')->where('is_active', 1)->get();
+        $categories = Category::withCount('products')->where('is_active', 1)->orderBy('name', 'asc')->get();
+
+        // Sort children alphabetically
+        $categories->each(function ($category) {
+            if ($category->childs->count()) {
+                $category->childs = $category->childs->sortBy(function($child) {
+                    return $child->category_translations->first()?->name ?? $child->name;
+                })->values();
+            }
+        });
         $groupedCategories = $categories->groupBy('parent_id');
-        
-        $brands = Brand::withCount('products')->where('is_active', 1)->get();
+
+        $brands = Brand::withCount('products')->where('is_active', 1)->orderBy('name', 'asc')->get();
 
 
         if ($request->ajax()) {
@@ -717,14 +729,24 @@ class ProductController extends Controller
 
         // Get category using slug
         $category = Category::whereHas('category_translations', function ($q) use ($slug) {
-            $q->where('slug', $slug);
+        $q->where('slug', $slug);
         })
-        ->with('category_translations')
+        ->with([
+            'category_translations',
+            'childs.category_translations', // eager load child categories with translations
+        ])
         ->where('is_active', 1)
         ->first();
 
         if (!$category) {
             abort(404);
+        }
+
+        // Sort children alphabetically by translation name
+        if ($category->childs->count()) {
+            $category->childs = $category->childs->sortBy(function ($child) {
+                return $child->category_translations->first()?->name ?? $child->name;
+            })->values();
         }
 
         $categoryIds = $this->getCategoryAndChildrenIds($category->id);
@@ -772,10 +794,20 @@ class ProductController extends Controller
 
         $products = $products->with('stocks')->distinct()->paginate(12);
 
-        $brands = Brand::whereIn('id', $products->pluck('brand_id')->filter()->unique())->get();
+        $brands = Brand::whereIn('id', $products->pluck('brand_id')->filter()->unique())->orderBy('name', 'asc')->get();
 
-        $categories = Category::withCount('products')->get();
+        $categories = Category::withCount('products')->orderBy('name', 'asc')->get();
+
+        // Sort children alphabetically
+        $categories->each(function ($category) {
+            if ($category->childs->count()) {
+                $category->childs = $category->childs->sortBy(function($child) {
+                    return $child->category_translations->first()?->name ?? $child->name;
+                })->values();
+            }
+        });
         $groupedCategories = $categories->groupBy('parent_id');
+
 
         $productCount = $products->count();
 
@@ -804,6 +836,7 @@ class ProductController extends Controller
         // Get brand using slug directly from brand table
         $brand = Brand::where('slug', $slug)
             ->where('is_active', 1)
+            ->orderBy('name', 'asc')
             ->first();
 
         if (!$brand) {
@@ -873,8 +906,17 @@ class ProductController extends Controller
 
         $categories = Category::whereIn('id', $allCategoryIds)
             ->where('is_active', 1)
+            ->orderBy('name', 'asc')
             ->get();
         
+        // Sort children alphabetically
+        $categories->each(function ($category) {
+            if ($category->childs->count()) {
+                $category->childs = $category->childs->sortBy(function($child) {
+                    return $child->category_translations->first()?->name ?? $child->name;
+                })->values();
+            }
+        });
 
         // Grouped categories by parent_id for tree structure
         $groupedCategories = $categories->groupBy('parent_id');
