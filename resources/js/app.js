@@ -1197,10 +1197,15 @@ window.handleSortClick = function (selectedBtn) {
      document.querySelectorAll('.product-item').forEach(container => {
         const input = container.querySelector('.qty-input');
         const iconWrapper = container.querySelector('.icon-wrapper');
+
+        let minusBtn = null;
+        let trashBtn = null;
+
         if(iconWrapper) {
-            const minusBtn = iconWrapper.querySelector('.minus-btn');
-            const trashBtn = iconWrapper.querySelector('.trash-btn');
+            minusBtn = iconWrapper.querySelector('.minus-btn');
+            trashBtn = iconWrapper.querySelector('.trash-btn');
         }
+
         const decrementBtn = container.querySelector('.decrement-btn');
 
         if(input){

@@ -30,7 +30,7 @@
                             <a onclick="toggleWarrantyModal()" class="text-center md:text-left w-full py-[5px] text-[12px] text-white flex flex-row items-center justify-center md:justify-start gap-[10px] leading-[0px] cursor-pointer"><i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i>Choose Your Warranty Plan</a> -->
 
                             @php
-                                $productSpecifications = $item->product->specifications;
+                                $productSpecifications = $item->product_stock->specifications;
                             @endphp
                             @if($productSpecifications->isNotEmpty())
                                 <a onclick="toggleSpecModal(this)" class="text-[#2A7CFF] text-[14px] cursor-pointer text-center md:text-left">Specifications</a>
@@ -91,8 +91,8 @@
                 </div>
                 @php
                     $productSpecifications = \App\Models\ProductSpecification::where(
-                    'product_id',
-                    $item->product->id
+                    'product_stock_id',
+                    $item->product_stock->id
                     )->with(['specification','specificationItem'])
                     ->orderBy('sort_order')
                     ->get();
