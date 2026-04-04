@@ -881,6 +881,21 @@ ol.lh18 li{
 .nav-toggle.show .hamburger::before { transform: translateY(7px) rotate(45deg); }
 .nav-toggle.show .hamburger::after { transform: translateY(-7px) rotate(-45deg); }
 
+.loader {
+    border: 3px solid #333;
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Mobile behavior */
 @media (max-width: 991px) {
   .navbar-grid { grid-template-columns: auto auto auto; }

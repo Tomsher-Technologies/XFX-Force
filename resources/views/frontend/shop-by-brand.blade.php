@@ -584,6 +584,14 @@
                     @include('frontend.partials.product-list', ['products' => $products])
                     @endif
                 </div>
+                <div id="product-loader" class="text-center my-3 text-white hidden">
+                    <div class="loader"></div>
+                </div>
+                <div class="text-center mt-4 text-white" id="load-more-wrapper">
+                    <button id="load-more-btn" class="btn btn-primary">
+                    Load More...
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -809,59 +817,47 @@ function filterProducts() {
         .catch(err => console.error('Filter products error:', err));
 }
 
-	let page = 1;
-    let lastPage = {{ $products->lastPage() }};
+	// Load script
+    let page = 1;
     let loading = false;
-    let userScrolled = false;
 
-    window.addEventListener('scroll', async () => {
+    document.getElementById('load-more-btn')?.addEventListener('click', async function () {
 
-        userScrolled = true;
+        if (loading) return;
 
-        if (loading || !userScrolled) return;
+        loading = true;
+        page++;
 
-        const productList = document.getElementById('product-list');
-        const rect = productList.getBoundingClientRect();
+        document.getElementById('product-loader').classList.remove('hidden');
 
-        if (rect.bottom <= window.innerHeight + 200) {
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            url.searchParams.set('scroll', 1);
 
-            if (page < lastPage) {
-                loading = true;
-                page++;
-                await loadMoreProducts(page);
-                loading = false;
-            }
+            const res = await fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
 
+            const html = await res.text();
+
+            document
+              .getElementById('product-list-wrapper')
+              .insertAdjacentHTML('beforeend', html);
+            updateProductCount(); 
+        } catch (e) {
+            console.error(e);
         }
 
+        document.getElementById('product-loader').classList.add('hidden');
+        loading = false;
     });
 
-	async function loadMoreProducts(page) {
-		const loader = document.getElementById('product-loader');
-		loader.classList.remove('hidden');
-
-		try {
-			const res = await fetch(`{{ route('products') }}?page=${page}&scroll=1&sort={{ $sort }}&view={{ $view }}{{ request()->filled('categories') ? '&categories[]='.implode('&categories[]', request()->categories) : '' }}{{ request()->filled('brands') ? '&brands[]='.implode('&brands[]', request()->brands) : '' }}{{ request()->filled('min_price') ? '&min_price='.request()->min_price : '' }}{{ request()->filled('max_price') ? '&max_price='.request()->max_price : '' }}{{ request()->filled('search') ? '&search='.request()->search : '' }}`, {
-				headers: {
-					'X-Requested-With': 'XMLHttpRequest'
-				}
-			});
-
-			const html = await res.text();
-			document.getElementById('product-list').insertAdjacentHTML('beforeend', html);
-			updateProductCount();
-		} catch (err) {
-			console.error(err);
-		} finally {
-			loader.classList.add('hidden');
-		}
-	}
-
 	function updateProductCount() {
-
 		const countEl = document.getElementById('product-count');
 		const total = parseInt(countEl.dataset.total);
-
 		let visible = 0;
 
 		// Check active view
@@ -870,9 +866,9 @@ function filterProducts() {
 		} else {
 			visible = document.querySelectorAll('#product-list .product-card-list').length;
 		}
-
 		countEl.innerText = `Items 1-${visible} of ${visible}`;
     document.getElementById('total-product-count').innerText = `${visible}`;
+    // document.getElementById('category-count').innerText = `${visible}`;
 	}
 </script>
 @endsection

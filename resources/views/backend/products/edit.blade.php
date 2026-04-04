@@ -94,7 +94,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-md-3"  id="brand">
+                                        <div class="col-md-3" id="brand">
                                             <label class="col-from-label">{{ trans('messages.brand') }}</label>
                                             @php
                                             $brands = \App\Models\Brand::where('is_active',1)->orderBy('name','asc')->get();
@@ -147,7 +147,7 @@
                                     </div>
 
                                     <!-- specification block start -->
-                                    <hr>
+                                    <!-- <hr>
                                     <div class="shadow p-2 bg-light">
                                         <div class="specification_block">
                                             {{-- existing rows --}}
@@ -270,9 +270,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <hr>
+                                    <hr> -->
                                     <!-- specification block ends -->
-                                        
+
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="col-from-label">{{ trans('messages.tags') }}</label>
@@ -351,7 +351,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="col-form-label" for="signinSrEmail">{{ trans('messages.thumbnail_image') }}
-                                        <small>({{ trans('messages.1000*1000') }})</small></label>
+                                            <small>({{ trans('messages.1000*1000') }})</small></label>
                                         <input type="file" name="thumbnail_image" class="form-control form-control-sm" accept="image/*">
 
                                         @if ($product->thumbnail_img)
@@ -396,7 +396,7 @@
                                         name="date_range" placeholder="{{ trans('messages.select').' '.trans('messages.date') }}" data-time-picker="true"
                                         data-format="DD-MM-Y HH:mm:ss" data-separator=" to " autocomplete="off">
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="col-from-label">{{ trans('messages.discount') }}</label>
                                         <input type="number" lang="en" min="0" step="0.01"
@@ -444,7 +444,7 @@
                                         </select>
                                         <input type="hidden" name="product_type" value="{{ $product->product_type }}" id="product_type_hidden">
                                     </div>
-                                    <div class="col-md-6 variant-selector"  style="display:none">
+                                    <div class="col-md-6 variant-selector" style="display:none">
                                         @php
                                         $attributes = \App\Models\Attribute::with('values')->where('is_active',1)->get();
                                         $selectedAttributes = $product->productAttributes
@@ -471,7 +471,7 @@
                                 </div>
                                 <!-- Single type product block starts -->
                                 <div id="single-fields" class="shadow p-3" @if(isset($product) && $product->product_type == 1) style="display:none;" @endif>
-                                    <div class="d-flex justify-content-between">    
+                                    <div class="d-flex justify-content-between">
                                         <strong>Single Product</strong>
                                         <label class="aiz-switch aiz-switch-success mb-0">
                                             <input type="hidden" name="status" value="0">
@@ -512,33 +512,121 @@
                                             <input type="file" name="variant_images[]" multiple class="form-control form-control-sm" accept="image/*">
 
                                             @if ($product->stocks->first()?->image)
-                                                <div class="file-preview box sm">
-                                                    @php
-                                                    $photos = explode(',', $product->stocks->first()?->image);
-                                                    @endphp
-                                                    @foreach ($photos as $photo)
+                                            <div class="file-preview box sm">
+                                                @php
+                                                $photos = explode(',', $product->stocks->first()?->image);
+                                                @endphp
+                                                @foreach ($photos as $photo)
+                                                <div
+                                                    class="d-flex justify-content-between align-items-center mt-2 file-preview-item">
                                                     <div
-                                                        class="d-flex justify-content-between align-items-center mt-2 file-preview-item">
-                                                        <div
-                                                            class="align-items-center align-self-stretch d-flex justify-content-center thumb">
-                                                            <img src="{{ Storage::url($photo) }}" class="img-fit">
-                                                        </div>
-                                                        <div class="remove">
-                                                            <button class="btn btn-link remove-stock-galley"
-                                                                data-url="{{ $photo }}" data-id="{{ $product->stocks->first()?->id }}" type="button">
-                                                                <i class="la la-close"></i></button>
-                                                        </div>
+                                                        class="align-items-center align-self-stretch d-flex justify-content-center thumb">
+                                                        <img src="{{ Storage::url($photo) }}" class="img-fit">
                                                     </div>
-                                                    @endforeach
+                                                    <div class="remove">
+                                                        <button class="btn btn-link remove-stock-galley"
+                                                            data-url="{{ $photo }}" data-id="{{ $product->stocks->first()?->id }}" type="button">
+                                                            <i class="la la-close"></i></button>
+                                                    </div>
                                                 </div>
+                                                @endforeach
+                                            </div>
                                             @endif
                                         </div>
                                     </div>
+
+                                    <!-- SPECIFICATION BLOCK STARTS -->
+                                    @if($product->product_type == 0)
+
+                                    <hr>
+                                    <div class="shadow p-2 bg-light">
+                                        <div class="specifications-wrapper">
+
+                                            @php
+                                            $singleSpecs = $productSpecifications->where('product_stock_id', $product->stocks->first()?->id);
+                                            @endphp
+
+                                            @foreach($singleSpecs as $ps)
+
+                                            <div class="specification-block row mb-2">
+                                                <input type="hidden" name="variant[0][product_spec_id][]" value="{{ $ps->id }}">
+                                                <!-- <input type="hidden" name="product_spec_id[]" value="{{ $ps->id }}"> -->
+
+                                                <div class="col-md-4">
+                                                    <label>Specification</label>
+                                                    <select class="form-control form-control-sm aiz-selectpicker specification-select"
+                                                        name="variant[0][specifications][]"
+                                                        data-live-search="true">
+
+                                                        <option value="">Select Specification</option>
+
+                                                        @foreach ($specifications as $spec)
+                                                        <option value="{{ $spec->id }}"
+                                                            {{ $spec->id == $ps->specification_id ? 'selected' : '' }}>
+                                                            {{ $spec->main_title }}
+                                                        </option>
+                                                        @endforeach
+
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label>Items</label>
+                                                    <select class="form-control form-control-sm aiz-selectpicker specification-item"
+                                                        name="variant[0][specification_items][]"
+                                                        data-live-search="true">
+
+                                                        <option value="">Select Items</option>
+
+                                                        @php
+                                                        $renderItemTree(
+                                                        $specificationItems->where('main_specification_id', $ps->specification_id),
+                                                        null,
+                                                        0,
+                                                        $ps->specification_item_id
+                                                        );
+                                                        @endphp
+
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <label>Sort Order</label>
+                                                    <input type="number"
+                                                        name="variant[0][sort_orders][]"
+                                                        class="form-control form-control-sm"
+                                                        value="{{ $ps->sort_order ?? 0 }}">
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <label>&nbsp;</label>
+                                                    <button type="button" class="remove-spec border-0 bg-transparent">
+                                                        <i class="las la-trash text-danger"></i>
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                            @endforeach
+                                            @include('backend.products.partials.product-specification',['namePrefix' => 'variant[0]'])
+
+                                            <!-- <div class="text-right mt-2">
+                                                <button type="button"
+                                                        class="btn btn-success btn-xs add-spec"
+                                                        data-name-prefix="variant[0]">
+                                                    Add More
+                                                </button>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    @endif
+                                    <!-- SPECIFICATION BLOCK ENDS -->
+
                                     <div class="form-group row">
                                         <label class="col-md-12 col-from-label">{{trans('messages.description') }}</label>
                                         <div class="col-md-12">
                                             <textarea class="aiz-text-editor" data-min-height="300" name="stock_description">
-                                                {{ $product->stocks->first()?->stock_description }}
+                                            {{ $product->stocks->first()?->stock_description }}
                                             </textarea>
                                         </div>
                                     </div>
@@ -562,7 +650,7 @@
                                             {{-- attribute labels --}}
                                             <div class="variant-attributes">
                                                 <div class="form-group row">
-                                                @foreach($stock->attributes->sortBy('attribute_id') as $attrRow)
+                                                    @foreach($stock->attributes->sortBy('attribute_id') as $attrRow)
                                                     <div class="col-md-3 mb-1">
                                                         <label>
                                                             {{ $attrRow->attribute->name }}
@@ -582,7 +670,7 @@
 
                                                         </select>
                                                     </div>
-                                                @endforeach
+                                                    @endforeach
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -616,30 +704,111 @@
                                             <div class="form-group row">
                                                 <div class="col-md-6">
                                                     <label>Variant Image</label>
-                                                    <input type="file" name="variants[{{ $index }}][variant_images][]" multiple   class="form-control form-control-sm" accept="image/*">
+                                                    <input type="file" name="variants[{{ $index }}][variant_images][]" multiple class="form-control form-control-sm" accept="image/*">
                                                     @if ($stock->image)
-                                                        <div class="file-preview box sm">
-                                                            @php
-                                                            $photos = explode(',', $stock->image);
-                                                            @endphp
-                                                            @foreach ($photos as $photo)
+                                                    <div class="file-preview box sm">
+                                                        @php
+                                                        $photos = explode(',', $stock->image);
+                                                        @endphp
+                                                        @foreach ($photos as $photo)
+                                                        <div
+                                                            class="d-flex justify-content-between align-items-center mt-2 file-preview-item">
                                                             <div
-                                                                class="d-flex justify-content-between align-items-center mt-2 file-preview-item">
-                                                                <div
-                                                                    class="align-items-center align-self-stretch d-flex justify-content-center thumb">
-                                                                    <img src="{{ Storage::url($photo) }}" class="img-fit">
-                                                                </div>
-                                                                <div class="remove">
-                                                                    <button class="btn btn-link remove-stock-galley"
-                                                                        data-url="{{ $photo }}" data-id="{{ $stock->id }}" type="button">
-                                                                        <i class="la la-close"></i></button>
-                                                                </div>
+                                                                class="align-items-center align-self-stretch d-flex justify-content-center thumb">
+                                                                <img src="{{ Storage::url($photo) }}" class="img-fit">
                                                             </div>
-                                                            @endforeach
+                                                            <div class="remove">
+                                                                <button class="btn btn-link remove-stock-galley"
+                                                                    data-url="{{ $photo }}" data-id="{{ $stock->id }}" type="button">
+                                                                    <i class="la la-close"></i></button>
+                                                            </div>
                                                         </div>
+                                                        @endforeach
+                                                    </div>
                                                     @endif
                                                 </div>
                                             </div>
+                                            <!-- SPECIFICATION BLOCK FOR VARIANT STARTS -->
+                                            <hr>
+                                            <div class="shadow p-2 bg-light">
+                                            <div class="specifications-wrapper">
+
+                                            @php
+                                            $variantSpecs = $productSpecifications->where('product_stock_id',$stock->id);
+                                            @endphp
+
+                                            @foreach($variantSpecs as $ps)
+
+                                                <div class="specification-block row mb-2">
+                                                    <input type="hidden" name="variants[{{$index}}][product_spec_id][]" value="{{ $ps->id }}">
+                                                    <div class="col-md-4">
+                                                        <label>Specification</label>
+
+                                                        <select class="form-control form-control-sm aiz-selectpicker specification-select"
+                                                                name="variants[{{$index}}][specifications][]"
+                                                                data-live-search="true">
+
+                                                        <option value="">Select Specification</option>
+
+                                                        @foreach ($specifications as $spec)
+
+                                                        <option value="{{ $spec->id }}"
+                                                        {{ $spec->id == $ps->specification_id ? 'selected' : '' }}>
+                                                        {{ $spec->main_title }}
+                                                        </option>
+
+                                                        @endforeach
+
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <label>Items</label>
+
+                                                        <select class="form-control form-control-sm aiz-selectpicker specification-item"
+                                                                name="variants[{{$index}}][specification_items][]"
+                                                                data-live-search="true">
+
+                                                        <option value="">Select Items</option>
+
+                                                        @php
+                                                        $renderItemTree(
+                                                        $specificationItems->where('main_specification_id', $ps->specification_id),
+                                                        null,
+                                                        0,
+                                                        $ps->specification_item_id
+                                                        );
+                                                        @endphp
+
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <label>Sort Order</label>
+                                                        <input type="number"
+                                                        name="variants[{{$index}}][sort_orders][]"
+                                                        class="form-control form-control-sm"
+                                                        value="{{ $ps->sort_order ?? 0 }}">
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <label>&nbsp;</label>
+                                                        <button type="button"
+                                                        class="remove-spec border-0 bg-transparent">
+                                                        <i class="las la-trash text-danger"></i>
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+
+                                            @endforeach
+                                            @include('backend.products.partials.product-specification',['namePrefix' => "variants[$index]"])
+
+                                            </div>
+                                            </div>
+                                            <hr>
+
+                                            <!-- SPECIFICATION BLOCK FOR VARIANT ENDS -->
                                             <div class="form-group row">
                                                 <label class="col-md-12 col-from-label">{{trans('messages.description') }}</label>
                                                 <div class="col-md-12">
@@ -1050,7 +1219,7 @@ $tabs[$key]['tab_description'] = $tab->content;
 
     // Initialize **existing items** separately **after DOM load**, but avoid cloning problems
 $(function() {
-    $(".specification_block").children().first().find('.remove-spec').hide();
+    $(".specification-block").first().find('.remove-spec').hide();
     var textarea = $(this).find('.text-area');
 
     if (!textarea.hasClass('summernote-initialized')) {
@@ -1260,43 +1429,6 @@ $(function() {
     }); 
 
     // specification
-    $(document).on('change', "select[name='specification_id[]']", function () {
-        var specId = $(this).val();
-        var $block = $(this).closest('.form-group');   // current block
-        var $itemSelect = $block.find("select[name='specification_item_id[]']");
-
-        if (specId) {
-            $.ajax({
-                url: "{{ route('specifications.items') }}",
-                type: 'GET',
-                data: { specification_id: specId },
-                success: function (data) {
-
-                    $itemSelect.empty();
-                    $itemSelect.append(
-                        "<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>"
-                    );
-
-                    data.forEach(function (item) {
-                        $itemSelect.append(
-                            '<option value="' + item.id + '">' + item.title + '</option>'
-                        );
-
-                        if (item.sub_items && item.sub_items.length) {
-                            addSubItems(item.sub_items, $itemSelect, 1);
-                        }
-                    });
-
-                    $itemSelect.selectpicker('refresh');
-                }
-            });
-        } else {
-            $itemSelect
-                .empty()
-                .append("<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>")
-                .selectpicker('refresh');
-        }
-    });
 
     function addSubItems(items, $select, level) {
         items.forEach(function(subItem) {
@@ -1309,42 +1441,8 @@ $(function() {
         });
     }
 
-    $(document).on("click", ".add-more-specification", function () {
-        var $block = $(this)
-            .parents(".row")
-            .siblings(".specification_block")
-            .children()
-            .first();
-
-        var $clone = $block.clone();
-
-        $clone.find('.remove-spec').show();
-        // remove bootstrap-select wrappers from the clone
-        $clone.find('.bootstrap-select').each(function () {
-            var $wrapper = $(this);
-            var $select  = $wrapper.find('select.aiz-selectpicker');
-
-            // move select out and remove wrapper
-            $wrapper.replaceWith($select);
-        });
-
-        // reset values in the clone
-        $clone.find("select[name='specification_id[]']").val('');
-        $clone.find("select[name='specification_item_id[]']").empty()
-            .append("<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>");
-
-        // append clone
-        $(".specification_block").append($clone);
-
-        // initialize selectpicker only in the new clone
-        $clone.find('.aiz-selectpicker').selectpicker('render');
-    });
 
     let pendingDeleteElement = null;
-    $(document).on('click', '.remove-spec', function() {
-        pendingDeleteElement = $(this).parents('.form-group');
-        $('#delete-modal').modal('show');
-    });
 
     $(document).on('click', '#delete-link', function(e) {
         e.preventDefault();
@@ -1357,6 +1455,72 @@ $(function() {
     })
 
 
+    // Add more specification
+    $(document).on('click', '.add-spec', function() {
+        let $wrapper = $(this).closest('.specifications-wrapper');
+        let $firstBlock = $wrapper.find('.specification-block:first');
+        let $clone = $firstBlock.clone();
+
+        // Reset values
+        $clone.find('select').val('');
+        $clone.find('input').val('0');
+        $clone.find('.remove-spec').show();
+
+        // Append
+        $wrapper.find('.specification-block:last').after($clone);
+        $clone.find('.aiz-selectpicker').selectpicker('refresh');
+    });
+
+    // Remove specification
+    $(document).on('click', '.remove-spec', function() {
+        let $wrapper = $(this).closest('.specifications-wrapper');
+        if ($wrapper.find('.specification-block').length > 1) {
+            $(this).closest('.specification-block').remove();
+        }
+    });
+
+    // Populate items via AJAX
+    $(document).on('change', ".specification-select", function() {
+
+        var $select = $(this);
+        var specId = $select.val();
+        if (!specId) return;
+        // target only the specification-block that contains this select
+        var $block = $select.closest('.specification-block');
+        var $itemSelect = $block.find('select.specification-item');
+
+        if (specId) {
+            $.ajax({
+                url: "{{ route('specifications.items') }}",
+                type: 'GET',
+                data: {
+                    specification_id: specId
+                },
+                success: function(data) {
+                    $itemSelect.empty();
+                    $itemSelect.append(
+                        "<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>"
+                    );
+                    data.forEach(function(item) {
+                        $itemSelect.append(
+                            '<option value="' + item.id + '">' + item.title + '</option>'
+                        );
+                        if (item.sub_items && item.sub_items.length) {
+                            addSubItems(item.sub_items, $itemSelect, 1);
+                        }
+                    });
+
+                    // Refresh Bootstrap select
+                    $itemSelect.selectpicker('refresh');
+                }
+            });
+        } else {
+            $itemSelect
+                .empty()
+                .append("<option value=''>{{ trans('messages.select') }} {{ trans('messages.items') }}</option>")
+                .selectpicker('refresh');
+        }
+    });
 </script>
 @endsection
 

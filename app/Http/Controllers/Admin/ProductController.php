@@ -229,27 +229,6 @@ class ProductController extends Controller
 
         $product->save();
 
-        //save product specification
-        $specIds = $request->input('specification_id', []);
-        $itemIds = $request->input('specification_item_id', []);
-        $sortOrders = $request->input('specification_sort_order', []);
-
-        foreach ($specIds as $i => $specId) {
-            $itemId = $itemIds[$i] ?? null;
-            $sortOrder  = $sortOrders[$i] ?? 0;
-
-            if (!$specId || !$itemId) {
-                continue;
-            }
-
-            $specModel = new ProductSpecification();
-            $specModel->product_id            = $product->id;
-            $specModel->specification_id      = $specId;
-            $specModel->specification_item_id = $itemId;
-            $specModel->sort_order            = $sortOrder;
-            $specModel->save();
-        }
-
         // SEO
         $seo = ProductSeo::firstOrNew(['lang' => env('DEFAULT_LANGUAGE', 'en'), 'product_id' => $product->id]);
         $seo->meta_title        = $request->meta_title ?? $product->name;
@@ -350,6 +329,23 @@ class ProductController extends Controller
             $product_stock->offer_tag = $offertag;
             $product_stock->save();
 
+            //  Saving specification for single product.
+            if ($request->has('variant.0.specifications')) {
+                $specifications = $request->variant[0]['specifications'] ?? [];
+                $items = $request->variant[0]['specification_items'] ?? [];
+                $sortOrders = $request->variant[0]['sort_orders'] ?? [];
+                foreach ($specifications as $key => $specId) {
+                    if (!$specId) continue;
+                    ProductSpecification::create([
+                        'product_id' => $product->id,
+                        'product_stock_id' => $product_stock->id,
+                        'specification_id' => $specId,
+                        'specification_item_id' => $items[$key] ?? null,
+                        'sort_order' => $sortOrders[$key] ?? 0
+                    ]);
+                }
+            }
+
             // Save the product SKU as the stock SKU
             $product->sku = cleanSKU($request->sku ?? generateUniqueSKU());
             $product->save();
@@ -413,6 +409,23 @@ class ProductController extends Controller
                 $stock->offer_tag = $offertag;
                 
                 $stock->save();
+
+                // Save Specifications for this Variant
+                if (!empty($variantData['specifications'])) {
+
+                    foreach ($variantData['specifications'] as $key => $specId) {
+
+                        if (!$specId) continue;
+
+                        ProductSpecification::create([
+                            'product_id' => $product->id,
+                            'product_stock_id' => $stock->id,
+                            'specification_id' => $specId,
+                            'specification_item_id' => $variantData['specification_items'][$key] ?? null,
+                            'sort_order' => $variantData['sort_orders'][$key] ?? 0
+                        ]);
+                    }
+                }
                 
                 // Set product SKU as the first variant stock SKU
                 if ($index === 0) {
@@ -569,28 +582,6 @@ class ProductController extends Controller
         }
         $product->save();
 
-        //save product specification
-        $specIds = $request->input('specification_id', []);
-        $itemIds = $request->input('specification_item_id', []);
-        $sortOrders = $request->input('specification_sort_order', []);
-
-        foreach ($specIds as $i => $specId) {
-            $productSpecificationId = $request->input('product_spec_id', [])[$i] ?? null;
-            $itemId = $itemIds[$i] ?? null;
-            $sortOrder  = $sortOrders[$i] ?? 0;
-
-            if (!$specId || !$itemId) {
-                continue;
-            }
-
-            $specModel = ProductSpecification::findOrNew($productSpecificationId);
-            $specModel->product_id            = $product->id;
-            $specModel->specification_id      = $specId;
-            $specModel->specification_item_id = $itemId;
-            $specModel->sort_order            = $sortOrder;
-            $specModel->save();
-        }
-
         //save product seo
         $seo                        = ProductSeo::firstOrNew(['lang' => $request->lang, 'product_id' => $product->id]);
         $seo->meta_title            = $request->meta_title ?? $product->name;
@@ -708,6 +699,29 @@ class ProductController extends Controller
             $product_stock->offer_tag = $offertag;
             $product_stock->save();
 
+            //  Saving specification for single product.
+            ProductSpecification::where('product_stock_id', $product_stock->id)->delete();
+            if ($request->has('variant.0.specifications')) {
+                $specifications = $request->variant[0]['specifications'] ?? [];
+                $items = $request->variant[0]['specification_items'] ?? [];
+                $sortOrders = $request->variant[0]['sort_orders'] ?? [];
+                $specModelIds = $request->variant[0]['product_spec_id'] ?? [];
+                foreach ($specifications as $key => $specId) {
+                    
+                    if (!$specId) continue;
+                    $productSpecificationId = $specModelIds[$key] ?? null;
+
+                    $specModel = ProductSpecification::findOrNew($productSpecificationId);
+                    
+                    $specModel->product_id = $product->id;
+                    $specModel->product_stock_id = $product_stock->id;
+                    $specModel->specification_id = $specId;
+                    $specModel->specification_item_id = $items[$key] ?? null;
+                    $specModel->sort_order = $sortOrders[$key] ?? 0;
+                    $specModel->save();
+                }
+            }
+
             // Save the product SKU as the stock SKU
             $product->sku = $product_stock->sku;
             $product->save();
@@ -780,6 +794,32 @@ class ProductController extends Controller
                 $stock->offer_tag = $offertag;
                 
                 $stock->save();
+
+                
+                // Save Specifications for this Variant
+                ProductSpecification::where('product_stock_id', $stock->id)->delete();
+                if (!empty($variantData['specifications'])) {
+                    // Get the corresponding arrays for this variant
+                    $specIds       = $variantData['specifications'];
+                    $itemIds       = $variantData['specification_items'] ?? [];
+                    $sortOrders    = $variantData['sort_orders'] ?? [];
+                    $specModelIds  = $variantData['product_spec_id'] ?? [];
+
+                    foreach ($specIds as $i => $specId) {
+                        if (!$specId) continue;
+
+                        $productSpecificationId = $specModelIds[$i] ?? null;
+
+                        $specModel = ProductSpecification::findOrNew($productSpecificationId);
+                        $specModel->product_id = $product->id;
+                        $specModel->product_stock_id = $stock->id;
+                        $specModel->specification_id = $specId;
+                        $specModel->specification_item_id = $itemIds[$i] ?? null;
+                        $specModel->sort_order = $sortOrders[$i] ?? 0;
+                        $specModel->save();
+                    }
+                }
+
 
                 // Set product SKU as the first variant stock SKU
                 if ($index === 0) {

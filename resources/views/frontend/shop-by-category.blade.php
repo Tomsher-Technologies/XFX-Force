@@ -400,7 +400,7 @@
                                             </div>
                                             <label for="filter-category-{{ $category->id }}" class="relative top-[5px] text-[15px] text-white">
                                                 {{ $category->category_translations->first()->name ?? $category->name }}
-                                                <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $productCount }}</span>
+                                                <span class="text-[15px] text-[#50525C] ml-[10px]" id="category-count">{{ $productCount }}</span>
                                             </label>
                                         </div>
                                     @endif
@@ -583,8 +583,13 @@
                     @include('frontend.partials.product-list', ['products' => $products])
                     @endif
                 </div>
-                <div id="product-loader" class="text-center py-4 hidden">
-                  <span class="text-white">Loading more products...</span>
+                <div id="product-loader" class="text-center my-3 text-white hidden">
+                  <div class="loader"></div>
+                </div>
+                <div class="text-center mt-4 text-white" id="load-more-wrapper">
+                  <button id="load-more-btn" class="btn btn-primary">
+                    Load More...
+                  </button>
                 </div>
             </div>
         </div>
@@ -798,6 +803,9 @@
 
     function filterProducts() {
 
+    page = 1;
+		document.getElementById('load-more-wrapper').style.display = 'block';
+
         const categories = Array.from(
             document.querySelectorAll('input[name="categories[]"]:checked')
         ).map(el => el.value);
@@ -955,58 +963,48 @@
 });
     // FILTER SCRIPT
 
-	// LOAD MORE SCRIPT
-	let page = 1; // current page
-	let lastPage = {{ $products->lastPage() }}; // from paginator
-	let loading = false;
+  // LOAD MORE SCRIPT
+	let page = 1;
+  let loading = false;
 
-	window.addEventListener('scroll', async () => {
+  document.getElementById('load-more-btn')?.addEventListener('click', async function () {
 
-		if (loading) return;
+      if (loading) return;
 
-		const productList = document.getElementById('product-list');
-		const rect = productList.getBoundingClientRect();
+      loading = true;
+      page++;
 
-		// Trigger when bottom of product list is near viewport
-		if (rect.bottom <= window.innerHeight + 200) {
+      document.getElementById('product-loader').classList.remove('hidden');
 
-			if (page < lastPage) {
-				loading = true;
-				page++;
-				await loadMoreProducts(page);
-				loading = false;
-			}
+      try {
 
-		}
+          const url = new URL(window.location.href);
+          url.searchParams.set('page', page);
+          url.searchParams.set('scroll', 1);
 
-	});
+          const res = await fetch(url, {
+              headers: {
+                  'X-Requested-With': 'XMLHttpRequest'
+              }
+          });
 
-	async function loadMoreProducts(page) {
-		const loader = document.getElementById('product-loader');
-		loader.classList.remove('hidden');
+          const html = await res.text();
 
-		try {
-			const res = await fetch(`{{ route('products') }}?page=${page}&scroll=1&sort={{ $sort }}&view={{ $view }}{{ request()->filled('categories') ? '&categories[]='.implode('&categories[]', request()->categories) : '' }}{{ request()->filled('brands') ? '&brands[]='.implode('&brands[]', request()->brands) : '' }}{{ request()->filled('min_price') ? '&min_price='.request()->min_price : '' }}{{ request()->filled('max_price') ? '&max_price='.request()->max_price : '' }}{{ request()->filled('search') ? '&search='.request()->search : '' }}`, {
-				headers: {
-					'X-Requested-With': 'XMLHttpRequest'
-				}
-			});
+          document
+              .getElementById('product-list-wrapper')
+              .insertAdjacentHTML('beforeend', html);
+updateProductCount(); 
+      } catch (e) {
+          console.error(e);
+      }
 
-			const html = await res.text();
-			document.getElementById('product-list').insertAdjacentHTML('beforeend', html);
-			updateProductCount();
-		} catch (err) {
-			console.error(err);
-		} finally {
-			loader.classList.add('hidden');
-		}
-	}
+      document.getElementById('product-loader').classList.add('hidden');
+      loading = false;
+  });
 
 	function updateProductCount() {
-
 		const countEl = document.getElementById('product-count');
 		const total = parseInt(countEl.dataset.total);
-
 		let visible = 0;
 
 		// Check active view
@@ -1015,9 +1013,9 @@
 		} else {
 			visible = document.querySelectorAll('#product-list .product-card-list').length;
 		}
-
 		countEl.innerText = `Items 1-${visible} of ${visible}`;
     document.getElementById('total-product-count').innerText = `${visible}`;
+    document.getElementById('category-count').innerText = `${visible}`;
 	}
 </script>
 @endsection

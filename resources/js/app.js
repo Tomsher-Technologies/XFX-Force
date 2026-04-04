@@ -1197,24 +1197,28 @@ window.handleSortClick = function (selectedBtn) {
      document.querySelectorAll('.product-item').forEach(container => {
         const input = container.querySelector('.qty-input');
         const iconWrapper = container.querySelector('.icon-wrapper');
-        const minusBtn = iconWrapper.querySelector('.minus-btn');
-        const trashBtn = iconWrapper.querySelector('.trash-btn');
+        if(iconWrapper) {
+            const minusBtn = iconWrapper.querySelector('.minus-btn');
+            const trashBtn = iconWrapper.querySelector('.trash-btn');
+        }
         const decrementBtn = container.querySelector('.decrement-btn');
 
-        let currentVal = parseInt(input.value);
+        if(input){
+            let currentVal = parseInt(input.value);
 
-        if (currentVal === 1) {
-            if(minusBtn) minusBtn.classList.add('hidden');
-            if(trashBtn) trashBtn.classList.remove('hidden');
-            decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
-            decrementBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+            if (currentVal === 1) {
+                if(minusBtn) minusBtn.classList.add('hidden');
+                if(trashBtn) trashBtn.classList.remove('hidden');
+                decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
+                decrementBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
 
-        } else if (currentVal > 1) {
-            trashBtn.classList.add('hidden');
-            minusBtn.classList.remove('hidden');
+            } else if (currentVal > 1) {
+                trashBtn.classList.add('hidden');
+                minusBtn.classList.remove('hidden');
 
-            decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
-            decrementBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+                decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
+                decrementBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+            }
         }
     });
 
