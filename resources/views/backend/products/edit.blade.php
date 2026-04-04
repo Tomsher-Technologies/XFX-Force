@@ -1459,6 +1459,7 @@ $(function() {
     $(document).on('click', '.add-spec', function() {
         let $wrapper = $(this).closest('.specifications-wrapper');
         let $firstBlock = $wrapper.find('.specification-block:first');
+        $firstBlock.find('.aiz-selectpicker').selectpicker('destroy');
         let $clone = $firstBlock.clone();
 
         // Reset values
@@ -1467,6 +1468,7 @@ $(function() {
         $clone.find('.remove-spec').show();
 
         // Append
+        $('.aiz-selectpicker').selectpicker();
         $wrapper.find('.specification-block:last').after($clone);
         $clone.find('.aiz-selectpicker').selectpicker('refresh');
     });
