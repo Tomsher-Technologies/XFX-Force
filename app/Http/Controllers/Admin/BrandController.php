@@ -211,7 +211,9 @@ class BrandController extends Controller
         $brand->products = $request->products
             ? json_encode($request->products)
             : null;
-
+        if(!empty($request->input('details'))){
+            $brand->details = json_encode($request->input('details'));
+        }
         $brand->save();
 
         // saving seo details

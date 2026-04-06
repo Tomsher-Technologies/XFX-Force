@@ -61,10 +61,15 @@
 
                                     @foreach($pcBuilderItems as $item)
                                         @php
-                                        $image = asset('assets/img/placeholder.jpg');
+                                        $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
                                         if (!empty($item->product_stock?->image)) {
-                                            $image = Storage::url($item->product_stock->image);
+                                            // Handle multiple images, pick the first
+                                            $stockImages = explode(',', $item->product_stock->image);
+                                            $firstStockImage = trim($stockImages[0]);
+                                            if ($firstStockImage) {
+                                                $image = Storage::url($firstStockImage);
+                                            }
                                         } elseif (!empty($item->product?->thumbnail_img)) {
                                             $image = Storage::url($item->product->thumbnail_img);
                                         }
@@ -105,10 +110,15 @@
                                 <div class="space-y-6">
                                     @foreach($normalItems as $item)
                                         @php
-                                            $image = asset('assets/img/placeholder.jpg');
+                                            $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
                                             if (!empty($item->product_stock?->image)) {
-                                                $image = Storage::url($item->product_stock->image);
+                                                // If multiple images, take the first
+                                                $stockImages = explode(',', $item->product_stock->image);
+                                                $firstStockImage = trim($stockImages[0]);
+                                                if ($firstStockImage) {
+                                                    $image = Storage::url($firstStockImage);
+                                                }
                                             } elseif (!empty($item->product?->thumbnail_img)) {
                                                 $image = Storage::url($item->product->thumbnail_img);
                                             }
@@ -171,7 +181,7 @@
                         </div>
 
                         <p class="text-center mt-12 text-gray-600 text-xs uppercase">
-                            Need Help? <a href="contact.html" class="text-[#2A7CFF] hover:underline px-1">Contact Support</a> or call <a href="tel:+971585083085" class="text-[#2A7CFF] hover:underline px-1">+971 58 508 3085</a>
+                            Need Help? <a href="contact.html" class="text-[#2A7CFF] hover:underline px-1">Contact Support</a> or call <a href="tel:{{ get_setting('header_phone') }}" class="text-[#2A7CFF] hover:underline px-1">{{ get_setting('header_phone') }}</a>
                         </p>
                     </div>
                 </main>

@@ -23,7 +23,7 @@ class BrandController extends Controller
         $brand = Brand::where('slug', $slug)->firstOrFail();
 
         // Get details JSON as array
-        $details = $brand->details ?? [];
+        $details = json_decode($brand->details ?? '[]', true);
 
         // Pass to Blade
         return view('frontend.brands.show', compact('brand', 'details'));

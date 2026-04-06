@@ -1,5 +1,5 @@
 
-<div class="product-card w-full relative border-hidden rounded-[10px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-[600ms]">
+<div class="product-card product-item w-full relative border-hidden rounded-[10px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-[600ms]">
         
         @php
             // Get product object

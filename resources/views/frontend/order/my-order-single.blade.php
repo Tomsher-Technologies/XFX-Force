@@ -28,12 +28,22 @@
                             </div>
 
                             <div class="flex flex-col xl:flex-row xl:flex-wrap items-start gap-3 w-full">
-                                @if($order->delivery_status == 'pending') 
-                                <button
-                                    class="cancel-order-btn w-full xl:w-fit cursor-pointer flex-1 bg-red-500/5 border border-red-500/20 text-red-500 px-6 py-4 rounded-xl hover:bg-red-500 hover:text-white transition-all text-[13px] font-medium uppercase tracking-wider" data-id="{{ $order->id }}">
-                                    Cancel Order
-                                </button>
-                                @endif         
+                                @if($order->delivery_status == 'pending')
+                                    <button
+                                        class="cancel-order-btn w-full xl:w-fit flex-1 bg-red-500/5 border border-red-500/20 text-red-500 px-6 py-4 rounded-xl hover:bg-red-500 hover:text-white transition-all text-[13px] font-medium uppercase tracking-wider 
+                                            {{ ($order->cancel_request == 1 && $order->cancel_approval == 0) || $order->cancel_approval == 2 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}}"
+                                        data-id="{{ $order->id }}"
+                                        {{ ($order->cancel_request == 1 && $order->cancel_approval == 0) || $order->cancel_approval == 2 ? 'disabled' : '' }}
+                                    >
+                                        @if($order->cancel_request == 0)
+                                            Cancel Order
+                                        @elseif($order->cancel_request == 1 && $order->cancel_approval == 0)
+                                            Cancellation Requested
+                                        @elseif($order->cancel_approval == 2)
+                                            Cancellation Rejected
+                                        @endif
+                                    </button>
+                                @endif
                                 @php
                                     // Default return period from settings (in days)
                                     $returnDays = get_setting('default_return_time') ?? 0;
@@ -59,9 +69,20 @@
                                         @endforeach
                                         @if(!$allFullyReturned)
                                             <div class="w-full xl:w-fit flex flex-col gap-2 flex-1">
-                                                <button id="openReturnBtn" class="bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all text-[13px] font-medium uppercase tracking-wider  @if($allReturned) cursor-not-allowed @else cursor-pointer @endif" @if($allReturned) disabled @endif>
-                                                        {{ $allReturned ? 'Returned' : 'Return Order' }}
-                                                    </button>
+                                                <button 
+                                                    id="openReturnBtn"
+                                                    class="bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all text-[13px] font-medium uppercase tracking-wider 
+                                                    {{ ($allReturned || $allRequested) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }}"
+                                                    
+                                                    {{ ($allReturned || $allRequested) ? 'disabled' : '' }} >
+                                                    @if($allReturned)
+                                                        Returned
+                                                    @elseif($allRequested)
+                                                        Return Requested
+                                                    @else
+                                                        Return Order
+                                                    @endif
+                                                </button>
                                                 
                                                 <p class="text-[10px] text-gray-500 italic text-center lg:text-left">
                                                     * Return possible within {{ $remainingDays }} day{{ $remainingDays > 1 ? 's' : '' }}
@@ -107,10 +128,17 @@
                                     </div>
 
                                     <div class="hidden md:block text-right">
+                                        @if($order->delivery_status == 'delivered')
+                                        <p class="text-gray-500 text-sm mb-[5px]">Delivered On</p>
+                                        <p class="text-white font-medium">
+                                            {{ \Carbon\Carbon::parse($order->delivery_completed_date)->format('F d, Y') }}
+                                        </p>
+                                        @else
                                         <p class="text-gray-500 text-sm mb-[5px]">Estimated Delivery</p>
                                         <p class="text-white font-medium">
                                             {{ \Carbon\Carbon::parse($order->estimated_delivery)->format('F d, Y') }}
                                         </p>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -269,12 +297,17 @@
                                         <h3 class="text-white text-lg font-semibold p-6">PC Builder Items</h3>
                                         @foreach($pcBuilderItems as $item)
                                             @php
-                                                $image = asset('assets/img/placeholder.jpg');
+                                                $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
                                                 if (!empty($item->product_stock?->image)) {
-                                                $image = Storage::url($item->product_stock->image);
+                                                    // Split multiple images and take the first
+                                                    $stockImages = explode(',', $item->product_stock->image);
+                                                    $firstStockImage = trim($stockImages[0]);
+                                                    if ($firstStockImage) {
+                                                        $image = Storage::url($firstStockImage);
+                                                    }
                                                 } elseif (!empty($item->product?->thumbnail_img)) {
-                                                $image = Storage::url($item->product->thumbnail_img);
+                                                    $image = Storage::url($item->product->thumbnail_img);
                                                 }
                                                 
 
@@ -365,12 +398,17 @@
                                         @endif
                                     @foreach($normalItems as $item)
                                         @php
-                                            $image = asset('assets/img/placeholder.jpg');
+                                            $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
                                             if (!empty($item->product_stock?->image)) {
-                                            $image = Storage::url($item->product_stock->image);
+                                                // If there are multiple images, take the first one
+                                                $stockImages = explode(',', $item->product_stock->image);
+                                                $firstStockImage = trim($stockImages[0]);
+                                                if ($firstStockImage) {
+                                                    $image = Storage::url($firstStockImage);
+                                                }
                                             } elseif (!empty($item->product?->thumbnail_img)) {
-                                            $image = Storage::url($item->product->thumbnail_img);
+                                                $image = Storage::url($item->product->thumbnail_img);
                                             }
                                             
 
@@ -385,20 +423,20 @@
                                         @endphp
 
                                     
-                                        <a href="{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}" class="p-6 flex items-center gap-6 group">
+                                        <a href="javascript:void(0)" class="p-6 flex items-center gap-6 group">
 
                                             <!-- Image -->
-                                            <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
+                                            <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                 <img src="{{ $image }}" class="w-full h-full object-cover" alt="{{ $item->product_stock->stock_title  ?? '' }}" title="{{ $item->product_stock->stock_title  ?? '' }}">
                                             </div>
 
                                             <!-- Details -->
                                             <div class="flex-grow w-full">
-                                                <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1">
+                                                <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                     {{ $item->product->name ?? 'Product Name' }}
                                                 </h4>
 
-                                                <p class="text-gray-500 text-xs mt-1">
+                                                <p class="text-gray-500 text-xs mt-1" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                     {{ $item->product_stock->stock_title  ?? '' }}
                                                 </p>
                                                 <div>
@@ -413,13 +451,13 @@
                                                     @endif
 
                                                     @if($totalReturnedQty > 0)
-                                                        <button class="px-2 py-1 text-green-500 bg-green-500/10 rounded-full text-[10px] font-bold uppercase">
+                                                        <button onclick="openStatusModal()" class="px-2 py-1 text-green-500 bg-green-500/10 rounded-full text-[10px] font-bold uppercase">
                                                             Returned {{ $totalReturnedQty }}@if($totalReturnedQty <  $item->quantity) out of {{ $item->quantity }} @endif
                                                         </button>
                                                     @endif
 
                                                     @if($totalRejectedQty > 0)
-                                                        <button class="mt-[10px] cursor-pointer flex items-center gap-2 px-3 py-1 bg-red-500/5 border border-red-500/20 rounded-full hover:bg-red-500 transition-all duration-[600ms] group/btn">
+                                                        <button class="mt-[10px] cursor-pointer flex items-center gap-2 px-3 py-1 bg-red-500/5 border border-red-500/20 rounded-full hover:bg-red-500 transition-all duration-[600ms] group/btn" onclick="openStatusModal()">
                                                         <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
                                                         <span class="text-red-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">Return Rejected  {{ $totalRejectedQty }}@if($totalRejectedQty <  $item->quantity) out of {{ $item->quantity }} @endif
                                                         </button>
@@ -627,9 +665,15 @@
                         if($remainingQty <= 0) continue;
                     @endphp
                     @php
-                        $image = asset('assets/img/placeholder.jpg');
+                        $image = asset('assets/img/placeholder.jpg'); // default placeholder
+
                         if (!empty($detail->product_stock?->image)) {
-                            $image = Storage::url($detail->product_stock->image);
+                            // If multiple images exist, take the first one
+                            $stockImages = explode(',', $detail->product_stock->image);
+                            $firstStockImage = trim($stockImages[0]);
+                            if ($firstStockImage) {
+                                $image = Storage::url($firstStockImage);
+                            }
                         } elseif (!empty($detail->product?->thumbnail_img)) {
                             $image = Storage::url($detail->product->thumbnail_img);
                         }
@@ -677,7 +721,7 @@
 
                 <div class="pt-4 return-reason-container">
                     <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 px-1">Reason for return</p>
-                    <textarea rows="3" class="w-full bg-[#0f161b] border border-[#282B34] rounded-2xl p-4 text-white text-sm focus:border-[#2A7CFF] outline-none transition-all placeholder:text-gray-700 resize-none" placeholder="Write your reason here..."></textarea>
+                    <textarea rows="3" class="w-full bg-[#0f161b] border border-[#282B34] rounded-2xl p-4 text-white text-sm focus:border-[#2A7CFF] outline-none transition-all placeholder:text-gray-700 resize-none" placeholder="Write your reason here..." name="return_reason"></textarea>
                 </div>
             </div>
         
@@ -696,7 +740,7 @@
 <!--//return order modal-->
 
 <!--return status modal-->
-<!-- <div id="statusModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4" onclick="closeStatusModal()">
+<div id="statusModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4" onclick="closeStatusModal()">
         <div id="statusContent" class="bg-[#1C2228] border border-[#282B34] w-full max-w-2xl rounded-[20px] shadow-2xl overflow-hidden transform transition-all" onclick="event.stopPropagation()">
             
             <div class="p-6 border-b border-[#282B34] flex justify-between items-center bg-[#1C2228]">
@@ -739,7 +783,7 @@
                 </p>
             </div>
         </div>
-    </div> -->
+    </div>
 <!--//return status modal-->
 
 
@@ -974,43 +1018,6 @@
 </script>
 <!--//script-->
 
-
-<!--return order modal script-->
-<script>
-    // const modal = document.getElementById('returnModal');
-    // const openBtn = document.getElementById('openReturnBtn');
-    // const closeX = document.getElementById('closeModalX');
-    // const cancelBtn = document.getElementById('cancelModalBtn');
-
-    // // Smooth Open
-    // if (openBtn) {
-    //     openBtn.addEventListener('click', () => {
-    //         modal.classList.add('active');
-    //         document.body.style.overflow = 'hidden'; // Stop background scroll
-    //     });
-    // }
-
-    // // Smooth Close
-    // const closeModal = () => {
-    //     modal.classList.remove('active');
-    //     document.body.style.overflow = '';
-    // };
-
-    // closeX.onclick = closeModal;
-    // cancelBtn.onclick = closeModal;
-
-    // // Click outside to close (Smoothly)
-    // modal.addEventListener('click', (e) => {
-    //     if (e.target === modal) closeModal();
-    // });
-
-    // // Escape Key to close
-    // window.addEventListener('keydown', (e) => {
-    //     if (e.key === "Escape") closeModal();
-    // });
-</script>
-<!--//return order modal script-->
-
 <!--return modal status modal script-->
 <script>
     /* Simple JS triggers */
@@ -1033,285 +1040,173 @@
 
 
 <script>
-    document.addEventListener('click', function(e) {
 
-        if (e.target.classList.contains('cancel-order-btn')) {
+    // Cancel Request
+    document.addEventListener('click', function (e) {
+        const button = e.target.closest('.cancel-order-btn');
+        if (!button) return;
+        let order_id = button.getAttribute('data-id');
 
-            let button = e.target;
-            let orderId = button.getAttribute('data-id');
-
-            // if (!confirm('Are you sure you want to cancel this order?')) {
-            //     return;
-            // }
-            
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'Are you sure you want to cancel this order?',
-                icon: 'warning',
-                width: '320px', 
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (!result.isConfirmed) {
-                    return;
+        // Step 1: Ask for cancel reason
+        Swal.fire({
+            title: 'Cancel Order',
+            input: 'textarea',
+            inputLabel: 'Reason for cancellation',
+            inputPlaceholder: 'Enter reason...',
+            inputAttributes: {
+                'aria-label': 'Enter reason'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            preConfirm: (reason) => {
+                if (!reason || reason.trim() === '') {
+                    Swal.showValidationMessage('Please enter a reason for cancellation');
                 }
-            fetch('/my-orders/' + orderId + '/cancel', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({})
+                return reason;
+            }
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+            const cancelReason = result.value.trim();
+
+            // Disable button to prevent multiple clicks
+            button.disabled = true;
+            button.innerText = 'Cancelling...';
+            button.classList.add('opacity-50','cursor-not-allowed');
+
+            // Step 2: Send AJAX request
+            fetch('/my-orders/' + order_id + '/cancel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    cancel_reason: cancelReason
                 })
-                .then(response => response.json())
-                .then(res => {
+            })
+            .then(response => response.json())
+            .then(res => {
+                if (res.status === true) {
+                    toastr.success(res.message);
+                    button.innerText = 'Cancellation Requested';
+                    button.classList.remove('hover:bg-red-500');
+                    button.classList.add('opacity-50','cursor-not-allowed');
 
-                    if (res.status === 'success') {
-                        toastr.success(res.message);
+                    let statusText = document.querySelector('.order-status-text');
+                    if (statusText) statusText.innerText = 'Cancellation Requested';
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    toastr.error(res.message);
+                    // Re-enable button if failed
+                    button.disabled = false;
+                    button.innerText = 'Cancel Order';
+                    button.classList.remove('opacity-50','cursor-not-allowed');
+                }
 
-                        // Disable button
-                        button.innerText = 'Cancelled';
-                        button.disabled = true;
-                        button.classList.remove('hover:bg-red-500');
-                        button.classList.add('opacity-50', 'cursor-not-allowed');
+            })
+            .catch(() => {
+                toastr.error('Something went wrong!');
+                button.disabled = false;
+                button.innerText = 'Cancel Order';
+                button.classList.remove('opacity-50','cursor-not-allowed');
+            });
+        });
+    });
 
-                        // Update status text (if exists)
-                        let statusText = document.querySelector('.order-status-text');
-                        if (statusText) {
-                            statusText.innerText = 'Cancelled';
-                        }
-                        location.reload(); // Refresh to update all details and hide return/cancel options
+    // Return Modal Script
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('returnModal');
+        const openBtn = document.getElementById('openReturnBtn');
+        const closeX = document.getElementById('closeModalX');
+        const cancelBtn = document.getElementById('cancelModalBtn');
+        const returnOrderForm = document.getElementById('returnOrderForm');
+        const submitBtn = returnOrderForm.querySelector('button[type="submit"]');
 
-                    } else {
-                        toastr.error(res.message);
-                    }
+        // Remaining quantity tracker
+        const remainingQty = {};
+        document.querySelectorAll('.return-checkbox').forEach(cb => {
+            remainingQty[cb.dataset.detailId] = parseInt(cb.dataset.maxQty);
+        });
 
-                })
-                .catch(() => {
-                    toastr.error('Something went wrong!');
-                });
+        // --- Modal Open / Close ---
+        if (openBtn) {
+            openBtn.addEventListener('click', () => {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
             });
         }
+        const closeModal = () => {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+        closeX.onclick = closeModal;
+        cancelBtn.onclick = closeModal;
+        modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+        window.addEventListener('keydown', e => { if (e.key === "Escape") closeModal(); });
 
-    });
+        // --- Checkbox Logic ---
+        document.querySelectorAll('.return-checkbox').forEach(cb => {
+            const detailId = cb.dataset.detailId;
+            const qtyContainer = cb.closest('label.group').querySelector('.return-qty-container');
+            const select = qtyContainer.querySelector('select');
 
+            // Initially disable
+            select.disabled = true;
 
-    /*document.addEventListener('click', function(e) {
-        if (e.target.closest('.return-order-btn')) {
+            // Show/hide dropdown on check
+            cb.addEventListener('change', () => {
+                if (cb.checked) {
+                    qtyContainer.classList.remove('hidden');
+                    select.disabled = false;   // enable only when checked
+                } else {
+                    qtyContainer.classList.add('hidden');
+                    select.disabled = true;
+                }
+            });
+        });
 
-            const button = e.target.closest('.return-order-btn');
-            const orderId = button.getAttribute('data-id');
-
-            if (!confirm('Are you sure you want to return this order?')) {
-                return;
-            }
-
-            fetch(`/my-orders/${orderId}/return`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(res => res.json())
-                .then(res => {
-
-                    if (res.status === 'success') {
-                        toastr.success(res.message);
-
-                        button.innerText = 'Returned';
-                        button.disabled = true;
-                        button.classList.add('opacity-50', 'cursor-not-allowed');
-                        button.classList.remove('hover:bg-[#2A7CFF]');
-
-                        const statusText = document.querySelector('.order-status-text');
-                        if (statusText) statusText.innerText = 'Returned';
-
-                    } else {
-                        toastr.error(res.message);
-                    }
-
-                })
-                .catch(() => toastr.error('Something went wrong!'));
+        // --- Update Submit Button Visibility ---
+        function updateSubmitVisibility() {
+            const hasRemaining = Object.values(remainingQty).some(qty => qty > 0);
+            submitBtn.disabled = !hasRemaining;
+            submitBtn.style.display = hasRemaining ? 'flex' : 'none';
         }
-    });*/
+        updateSubmitVisibility();
 
-    // document.addEventListener('click', function (e) {
-    //     // Open return modal
-    //     if (e.target.closest('#openReturnBtn')) {
-    //         document.getElementById('returnOrderModal').classList.remove('hidden');
-    //     }
+        // --- Form Submission ---
+        returnOrderForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Disable submit immediately to prevent double clicks
+            submitBtn.disabled = true;
 
-    //     // Close modal
-    //     if (e.target.closest('#closeReturnModal') || e.target.closest('#cancelReturn')) {
-    //         document.getElementById('returnOrderModal').classList.add('hidden');
-    //     }
-    // });
+            const formData = new FormData(this);
 
-//     document.addEventListener('DOMContentLoaded', () => {
-//     const returnCheckboxes = document.querySelectorAll('.return-checkbox');
-//     const returnOrderForm = document.getElementById('returnOrderForm');
-//     const submitButton = returnOrderForm.querySelector('button[type="submit"]');
+            fetch(`/my-orders/${formData.get('order_id')}/return`, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === 'success'){
+                    alert("hhhhhhhhhhhhhhhhhhh");
+                    toastr.success(res.message);
+                    location.reload();
+                    closeModal;
 
-//     // Store remaining quantities (initialize from Blade)
-//     const remainingQty = {};
-//     returnCheckboxes.forEach(checkbox => {
-//         remainingQty[checkbox.dataset.detailId] = parseInt(checkbox.dataset.maxQty);
-//     });
-
-    // function updateSubmitVisibility() {
-    //     const hasRemaining = Object.values(remainingQty).some(qty => qty > 0);
-    //     submitButton.disabled = !hasRemaining;
-    //     submitButton.style.display = hasRemaining ? 'flex' : 'none';
-    // }
-
-//     returnCheckboxes.forEach(checkbox => {
-//         const detailId = checkbox.dataset.detailId;
-//         const qtyContainer = checkbox.closest('label').querySelector('.return-qty-container');
-//         const select = qtyContainer.querySelector('select');
-
-//         // Show/hide dropdown on check
-//         checkbox.addEventListener('change', () => {
-//             if (checkbox.checked) {
-//                 qtyContainer.classList.remove('hidden');
-
-//                 // Populate dropdown with remaining quantity
-//                 select.innerHTML = '';
-//                 const maxQty = remainingQty[detailId];
-//                 for (let i = 1; i <= maxQty; i++) {
-//                     const opt = document.createElement('option');
-//                     opt.value = i;
-//                     opt.text = `Qty: ${String(i).padStart(2,'0')}`;
-//                     select.appendChild(opt);
-//                 }
-//             } else {
-//                 qtyContainer.classList.add('hidden');
-//             }
-//         });
-
-//         // Update remainingQty on form submit
-//         returnOrderForm.addEventListener('submit', (e) => {
-//             e.preventDefault();
-
-//             if (!checkbox.checked) return;
-
-//             const selectedQty = parseInt(select.value);
-//             remainingQty[detailId] -= selectedQty;
-
-//             // Reset checkbox & dropdown
-//             checkbox.checked = false;
-//             qtyContainer.classList.add('hidden');
-
-//             // Update displayed total qty
-//             const itemQtySpan = checkbox.closest('label').querySelector('.item-total-qty');
-//             itemQtySpan.innerText = remainingQty[detailId];
-
-//             updateSubmitVisibility();
-
-//             // TODO: AJAX call to save return (optional)
-//         });
-//     });
-
-//     updateSubmitVisibility();
-// });
-
-
-// Return Modal Script
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('returnModal');
-    const openBtn = document.getElementById('openReturnBtn');
-    const closeX = document.getElementById('closeModalX');
-    const cancelBtn = document.getElementById('cancelModalBtn');
-    const returnOrderForm = document.getElementById('returnOrderForm');
-    const submitBtn = returnOrderForm.querySelector('button[type="submit"]');
-
-    // Remaining quantity tracker
-    const remainingQty = {};
-    document.querySelectorAll('.return-checkbox').forEach(cb => {
-        remainingQty[cb.dataset.detailId] = parseInt(cb.dataset.maxQty);
-    });
-
-    // --- Modal Open / Close ---
-    if (openBtn) {
-        openBtn.addEventListener('click', () => {
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
-    }
-    const closeModal = () => {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-    };
-    closeX.onclick = closeModal;
-    cancelBtn.onclick = closeModal;
-    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-    window.addEventListener('keydown', e => { if (e.key === "Escape") closeModal(); });
-
-    // --- Checkbox Logic ---
-    document.querySelectorAll('.return-checkbox').forEach(cb => {
-        const detailId = cb.dataset.detailId;
-        const qtyContainer = cb.closest('label.group').querySelector('.return-qty-container');
-        const select = qtyContainer.querySelector('select');
-
-        // Initially disable
-        select.disabled = true;
-
-
-        // Show/hide dropdown on check
-        cb.addEventListener('change', () => {
-            if (cb.checked) {
-                qtyContainer.classList.remove('hidden');
-                select.disabled = false;   // enable only when checked
-            } else {
-                qtyContainer.classList.add('hidden');
-                select.disabled = true;
-            }
+                } else {
+                    toastr.error(res.message);
+                }
+            })
+            .catch(() => toastr.error('Something went wrong!'))
+            .finally(() => {
+                // Re-enable button only if needed
+                submitBtn.disabled = false;
+            });
         });
     });
-
-    // --- Update Submit Button Visibility ---
-    function updateSubmitVisibility() {
-        const hasRemaining = Object.values(remainingQty).some(qty => qty > 0);
-        submitBtn.disabled = !hasRemaining;
-        submitBtn.style.display = hasRemaining ? 'flex' : 'none';
-    }
-    updateSubmitVisibility();
-
-    // --- Form Submission ---
-    returnOrderForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        // Disable submit immediately to prevent double clicks
-        submitBtn.disabled = true;
-
-        const formData = new FormData(this);
-
-        fetch(`/my-orders/${formData.get('order_id')}/return`, {
-            method: 'POST',
-            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-            body: formData
-        })
-        .then(res => res.json())
-        .then(res => {
-            if(res.status === 'success'){
-                toastr.success(res.message);
-                location.reload(); // Refresh to update all details and hide return/cancel options
-                closeModal;
-
-            } else {
-                toastr.error(res.message);
-            }
-        })
-        .catch(() => toastr.error('Something went wrong!'))
-        .finally(() => {
-            // Re-enable button only if needed
-            submitBtn.disabled = false;
-        });
-    });
-});
 
 </script>
 

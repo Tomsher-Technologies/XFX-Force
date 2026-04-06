@@ -5,14 +5,22 @@
     <article onclick="viewProductDetails({{ $stock->id }})" class="group product-card w-full relative border border-transparent rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-variant-id = "{{ $stock->id }}" data-category-id="{{ $product->category_id }}">
         <div class="product-img h-[130px] md:h-[150px] w-full relative z-[1] bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]" >
             @php
-                $image = asset('assets/img/placeholder.jpg');
-                if ($stock->image) {
-                    $image = Storage::url($stock->image);
-                }
+                $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
-                if (!$stock->image && $product->thumbnail_img) {
+                // If stock has images
+                if (!empty($stock->image)) {
+                    // Split by comma in case of multiple images and take the first one
+                    $stockImages = explode(',', $stock->image);
+                    $firstStockImage = trim($stockImages[0]);
+                    if ($firstStockImage) {
+                        $image = Storage::url($firstStockImage);
+                    }
+                }
+                
+                // If stock has no image, fallback to product thumbnail
+                if (empty($stock->image) && !empty($product->thumbnail_img)) {
                     $image = Storage::url($product->thumbnail_img);
-                } 
+                }
             @endphp
             <img src="{{ $image }}" class="absolute object-cover object-center w-full h-full" alt="{{ $stock->stock_title ?? $product->name }}" title="{{ $stock->stock_title ?? $product->name }}">
             @if(filled($stock->offer_tag))

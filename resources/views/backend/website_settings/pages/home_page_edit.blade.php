@@ -15,7 +15,7 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <label class="col-form-label">Home Sliders</label>
                             <select name="home_slider[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Sliders" data-selected="{{ json_encode($homeSettings['home_slider'] ?? []) }}">
                                 @foreach ($sliders as $key => $slider)
@@ -23,15 +23,61 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6">
-                            <label class="col-form-label">Banners <small>(select at least 3 options)</small></label>
-                            <select name="home_banners[]" class="form-control form-control-sm aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Banners" data-selected="{{ json_encode($homeSettings['home_banners'] ?? []) }}" data-max-options="3">
-                                @foreach ($banners as $key => $banner)
-                                <option value="{{ $banner->id }}">{{ $banner->name }}</option>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label class="col-form-label">Banner 1</label>
+                            <select name="home_banners[]" 
+                                class="form-control aiz-selectpicker"
+                                data-live-search="true"
+                                title="Select Banner">
+
+                                @foreach ($banners as $banner)
+                                    <option value="{{ $banner->id }}"
+                                        {{ in_array($banner->id, $homeSettings['home_banners'] ?? []) && ($homeSettings['home_banners'][0] ?? null) == $banner->id ? 'selected' : '' }}>
+                                        {{ $banner->name }}
+                                    </option>
                                 @endforeach
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="col-form-label">Banner 2</label>
+                            <select name="home_banners[]" 
+                                class="form-control aiz-selectpicker"
+                                data-live-search="true"
+                                title="Select Banner">
+
+                                @foreach ($banners as $banner)
+                                    <option value="{{ $banner->id }}"
+                                        {{ in_array($banner->id, $homeSettings['home_banners'] ?? []) && ($homeSettings['home_banners'][1] ?? null) == $banner->id ? 'selected' : '' }}>
+                                        {{ $banner->name }}
+                                    </option>
+                                @endforeach
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="col-form-label">Banner 3</label>
+                            <select name="home_banners[]" 
+                                class="form-control aiz-selectpicker"
+                                data-live-search="true"
+                                title="Select Banner">
+
+                                @foreach ($banners as $banner)
+                                    <option value="{{ $banner->id }}"
+                                        {{ in_array($banner->id, $homeSettings['home_banners'] ?? []) && ($homeSettings['home_banners'][2] ?? null) == $banner->id ? 'selected' : '' }}>
+                                        {{ $banner->name }}
+                                    </option>
+                                @endforeach
+
                             </select>
                         </div>
                     </div>
+
                 </div>
             </div>
             <!-- Shop By categories section starts -->
@@ -767,6 +813,20 @@
         initAizRepeater('.new-arrival-repeater');
         initAizRepeater('.popular-products-repeater');
         initAizRepeater('.footer-section-repeater');
+    });
+
+    $(document).on('change', '.aiz-selectpicker[multiple]', function () {
+        var selected = $(this).val();
+        var options = $(this).find('option');
+
+        options.each(function () {
+            if (selected.includes($(this).val())) {
+                $(this).detach();
+                $(this).appendTo($(this).parent());
+            }
+        });
+
+        $(this).selectpicker('refresh');
     });
 </script>
 @endsection

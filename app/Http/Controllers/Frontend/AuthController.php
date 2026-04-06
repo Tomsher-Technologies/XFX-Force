@@ -86,10 +86,15 @@ class AuthController extends Controller
     }
 
     // Show the login form
-    public function showLoginForm()
+    public function showLoginForm(Request $request)
     {
         $lang = getActiveLanguage();
-        return view('auth.login',['lang' => $lang ]);
+        $checkout = $request->checkout;
+
+        return view('auth.login',[
+            'lang' => $lang,
+            'checkout' => $checkout
+        ]);
     }
 
     // Handle the login logic
@@ -105,6 +110,12 @@ class AuthController extends Controller
         // Attempt to log the user in
         if (Auth::guard('frontend')->attempt($credentials, $remember)) {
             if (Auth::guard('frontend')->user()->user_type === 'customer') {
+                // Redirect to checkout if coming from checkout
+                if ($request->checkout) {
+                    return redirect()->route('checkout')
+                        ->with('success', 'Login successful! Continue checkout.');
+                }
+                
                 return redirect()->route('home')->with('success', 'Login successful! Welcome back.'); // Redirect to home for customers
             } else {
                 Auth::guard('frontend')->logout(); // Log out non-customers
