@@ -89,10 +89,10 @@ Route::get('/order-fail', [OrderController::class, 'fail'])->name('order.fail');
 // Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('order.my-orders');
 Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.index');
 Route::get('/my-orders/{id}', [OrderController::class, 'myOrderSingle'])->name('orders.show');
-Route::post('/my-orders/{id}/cancel', [OrderController::class, 'cancelOrder'])
+Route::post('/my-orders/{order_id}/cancel', [CheckoutController::class, 'cancelOrderRequest'])
     ->name('orders.cancel');
 
-Route::post('/my-orders/{id}/return', [OrderController::class, 'returnOrder'])
+Route::post('/my-orders/{id}/return', [CheckoutController::class, 'returnOrderRequest'])
     ->name('orders.return');
 Route::get('/search-products', [ProductController::class, 'searchProducts']);
 Route::get('/brands', [BrandController::class, 'index'])->name('brands.list');

@@ -181,7 +181,7 @@
                         </div>
 
                         <p class="text-center mt-12 text-gray-600 text-xs uppercase">
-                            Need Help? <a href="contact.html" class="text-[#2A7CFF] hover:underline px-1">Contact Support</a> or call <a href="tel:+971585083085" class="text-[#2A7CFF] hover:underline px-1">+971 58 508 3085</a>
+                            Need Help? <a href="contact.html" class="text-[#2A7CFF] hover:underline px-1">Contact Support</a> or call <a href="tel:{{ get_setting('header_phone') }}" class="text-[#2A7CFF] hover:underline px-1">{{ get_setting('header_phone') }}</a>
                         </p>
                     </div>
                 </main>

@@ -429,3 +429,5 @@ ALTER TABLE `product_stocks` CHANGE `image` `image` VARCHAR(2000) CHARACTER SET 
 
 INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'product_listing', 'Product Listing Page', NULL, '', '1', NULL, '2026-03-30 16:05:25');
 ALTER TABLE `product_specification` ADD `product_stock_id` INT NOT NULL AFTER `product_id`;
+
+ALTER TABLE `orders` CHANGE `cancel_approval` `cancel_approval` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0 - Pending, 1 - Approved, 2 - Rejected';

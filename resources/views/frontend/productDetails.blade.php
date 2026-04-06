@@ -203,9 +203,8 @@
                 @endforeach
             </div>
             <!--//varients-->
-            <div class="flex flex-col md:flex-row gap-[30px] border-y border-[#ffffff30] py-[30px] w-full justify-between flex-end items-center md:items-end">
+            <div id="price-btn-block" class="flex flex-col md:flex-row gap-[30px] border-y border-[#ffffff30] py-[30px] w-full justify-between flex-end items-center md:items-end">
                 <div>
-                    
                     <label class="text-[15px] text-white mb-[15px] block text-center md:text-left">Price</label>
                     <div class="price w-full flex flex-row items-end gap-[15px]">
                         <h5 class="price flex flex-row text-[#2A7CFF] text-left text-[25px] m-[0] font-bold align-center items-center gap-[10px] leading-[35px]">
@@ -218,7 +217,6 @@
                     </div>
                 </div>
 
-                
                 <!-- When item exist-->
                 <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block  {{ ($cartQty < $firstStock->qty) ? '' : 'hidden' }}">
                     <!--counter-->
@@ -252,7 +250,7 @@
                 <!-- When item exist -->
 
                 <!--when the item is out of stock-->
-                <div class="button-group flex flex-col xl:grid xl:grid-cols-2 gap-[15px] h-fit w-full md:w-fit out-of-stock-block   {{ ($cartQty === $firstStock->qty && $firstStock->qty > 0) ? '' : '!hidden' }}">
+                <div class="button-group flex flex-col xl:grid xl:grid-cols-2 gap-[15px] h-fit w-full md:w-fit out-of-stock-block   {{ ($cartQty === $firstStock->qty && $firstStock->qty == 0) ? '' : '!hidden' }}">
                     <div class="flex justify-center items-center gap-2 px-4 py-2 bg-[#c0392b20] border border-[#c0392b50] rounded-[15px] w-full h-full mx-auto md:mx-0 align-center">
                         <span class="relative flex h-2 w-2">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>

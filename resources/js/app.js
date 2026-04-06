@@ -1166,6 +1166,9 @@ window.handleSortClick = function (selectedBtn) {
 
                 const addToCartBtn = document.querySelector(".add-to-cart");
                 const counterWrapper = document.querySelector(".counter-wrapper");
+                if(!counterWrapper){
+                    location.reload();
+                }
 
                 if(response.cartQty > 0){
                     if (addToCartBtn) addToCartBtn.classList.add('hidden');
@@ -1242,11 +1245,10 @@ window.handleSortClick = function (selectedBtn) {
         const cartItemBox = btn.closest('.product-cart-item');
         const cartPrice = cartItemBox ? cartItemBox.querySelector('.cart_price') : null;
         const cartOfferPrice = cartItemBox ? cartItemBox.querySelector('.cart_offer_price') : null;
-
+        const addCartBtn = document.querySelector(".add-to-cart");
         const outStockBlocks = document.querySelectorAll('.out-of-stock-block');
         const addCartBlocks = document.querySelectorAll('.add-to-cart-block');
         
-        alert(cartId);  
         let currentVal = parseInt(input.value);
 
         // DELETE LOGIC: If qty is 1 and user clicks minus
@@ -1274,9 +1276,10 @@ window.handleSortClick = function (selectedBtn) {
                             cartItemBox.remove();
                         }
                         container.remove();
+                        if(addCartBtn) addCartBtn.classList.remove("hidden");
                         toastr.success(response.message, 'Success');
                         updateCartSummary();
-                        // $("#main-cart-section").load(location.href + " #main-cart-section>*", "");
+                        // $("#price-btn-block").load(location.href + " #price-btn-block>*", "");
                         $("#main-cart-section").load(location.href + " #main-cart-section>*", "", function () {
                             document.querySelectorAll('.product-item').forEach(container => {
                                 const input = container.querySelector('.qty-input');
@@ -1793,5 +1796,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 dialogElement.showModal();
             }
         });
+    }
+
+    window.continueGuest = function(){
+        document.getElementById('checkout-login-box').style.display = 'none';
     }
 });
