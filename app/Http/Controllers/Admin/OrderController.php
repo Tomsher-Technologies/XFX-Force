@@ -422,41 +422,46 @@ class OrderController extends Controller
             }
         }
 
-        // Send mail to customer when order delivered or cancelled
-        if (in_array($request->status, ['delivered', 'cancelled'])) {
-            $customerName  = $order->user->name;
-            $customerEmail = $order->user->email;
-            $orderCode     = $order->code ?? $order->id; // adjust if you have a code field
+        $customer = $order->user;
+        if ($customer) {
+            // Send notification to customer when order status changed
+            $customer->notify(new \App\Notifications\NewOrderNotification($order));
+            // Send mail to customer when order delivered or cancelled
+            if (in_array($request->status, ['delivered', 'cancelled'])) {
+                $customerName  = $order->user->name;
+                $customerEmail = $order->user->email;
+                $orderCode     = $order->code ?? $order->id; // adjust if you have a code field
 
-            if ($request->status == 'delivered') {
-                $statusText = 'delivered';
-                $messageContent = "
-                    <p>Hi {$customerName},</p>
-                    <p>Your order has been <b>delivered</b>.</p>
-                    <p><b>Order Code:</b> {$orderCode}</p>
-                    <p>We hope you enjoy your purchase.</p>
-                    <p>Thank you for shopping with us.</p>
-                    <p>Best regards,</p>
-                    <p>Team ".env('APP_NAME')."</p>";
-                $subject = "Your Order #{$orderCode} is Delivered";
-            } elseif ($request->status == 'cancelled') {
-                $statusText = 'cancelled';
-                $messageContent = "
-                    <p>Hi {$customerName},</p>
-                    <p>Your order has been <b>cancelled</b>.</p>
-                    <p><b>Order Code:</b> {$orderCode}</p>
-                    <p>Thank you for shopping with us.</p>
-                    <p>Best regards,</p>
-                    <p>Team ".env('APP_NAME')."</p>";
-                $subject = "Your Order #{$orderCode} is Cancelled";
+                if ($request->status == 'delivered') {
+                    $statusText = 'delivered';
+                    $messageContent = "
+                        <p>Hi {$customerName},</p>
+                        <p>Your order has been <b>delivered</b>.</p>
+                        <p><b>Order Code:</b> {$orderCode}</p>
+                        <p>We hope you enjoy your purchase.</p>
+                        <p>Thank you for shopping with us.</p>
+                        <p>Best regards,</p>
+                        <p>Team ".env('APP_NAME')."</p>";
+                    $subject = "Your Order #{$orderCode} is Delivered";
+                } elseif ($request->status == 'cancelled') {
+                    $statusText = 'cancelled';
+                    $messageContent = "
+                        <p>Hi {$customerName},</p>
+                        <p>Your order has been <b>cancelled</b>.</p>
+                        <p><b>Order Code:</b> {$orderCode}</p>
+                        <p>Thank you for shopping with us.</p>
+                        <p>Best regards,</p>
+                        <p>Team ".env('APP_NAME')."</p>";
+                    $subject = "Your Order #{$orderCode} is Cancelled";
+                }
+
+                $array['view']    = 'emails.commonmail';
+                $array['subject'] = $subject;
+                $array['from']    = env('MAIL_FROM_ADDRESS');
+                $array['content'] = $messageContent;
+
+                Mail::to($customerEmail)->queue(new EmailManager($array));
             }
-
-            $array['view']    = 'emails.commonmail';
-            $array['subject'] = $subject;
-            $array['from']    = env('MAIL_FROM_ADDRESS');
-            $array['content'] = $messageContent;
-
-            Mail::to($customerEmail)->queue(new EmailManager($array));
         }
 
 

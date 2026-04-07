@@ -184,6 +184,9 @@
         </style>
     </head>
 
+     @php
+        $logo = get_setting('header_logo');
+    @endphp
 <body style="background-color: #b7e3f978;">
     <!-- ----------------- Header Start Here ------------------------- -->
     <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="full">
@@ -209,7 +212,7 @@
                                             <tr>
                                                 <td align="center" valign="middle">
                                                     <a href="{{ env('APP_URL') }}">
-                                                        <img src="{{ asset('assets/images/PC-Garage-Logo-white.svg') }}" height="100" alt="{{ env('APP_NAME') }}">
+                                                        <img src="{{ uploaded_asset($logo) }}" height="100" alt="{{ env('APP_NAME') }}">
                                                     </a>
                                                 </td>
                                                 {{-- {{ asset('assets/images/PC-Garage-Logo-white.svg') }} --}}

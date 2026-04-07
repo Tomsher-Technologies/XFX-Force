@@ -30,7 +30,7 @@ use Mail;
 
 class CheckoutController
 {
-    public function index()
+    /*public function index()
     {
         $cartController = new CartController();
         $cartData = $cartController->getCartSummary();
@@ -61,6 +61,68 @@ class CheckoutController
             ->where('status', 'pending')
             ->get();
 
+
+        return view('frontend.checkout', array_merge($cartData, [
+            'addresses' => $addresses,
+            'user' => $user,
+            'cartItems' => $cartItems,
+        ]));
+    }*/
+
+    public function index()
+    {
+        $cartController = new CartController();
+        $cartData = $cartController->getCartSummary();
+
+        $user = auth('frontend')->user();
+        $auth_user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $userId = $auth_user_id ? $auth_user_id : null;
+        $guestToken = request()->cookie('guest_token');
+
+        // Merge guest cart into user cart if logged in
+        if ($userId && $guestToken) {
+            $guestCartItems = Cart::where('temp_user_id', $guestToken)
+                ->where('status', 'pending')
+                ->get();
+
+            foreach ($guestCartItems as $item) {
+                $existingItem = Cart::where('user_id', $userId)
+                    ->where('product_stock_id', $item->product_stock_id)
+                    ->where('status', 'pending')
+                    ->first();
+
+                if ($existingItem) {
+                    $existingItem->quantity += $item->quantity;
+                    $existingItem->save();
+                    $item->delete();
+                } else {
+                    $item->user_id = $userId;
+                    $item->temp_user_id = null;
+                    $item->save();
+                }
+            }
+
+            // Optional: delete guest token cookie after merge
+            cookie()->queue(cookie()->forget('guest_token'));
+        }
+
+        // Fetch addresses if logged in
+        $addresses = [];
+        if ($userId) {
+            $addresses = Address::where('user_id', $userId)
+                ->orderBy('id','desc')
+                ->get();
+        }
+
+        // Fetch cart items
+        $cartItems = Cart::with(['product', 'product_stock'])
+            ->when($userId, function($query) use ($userId) {
+                $query->where('user_id', $userId);
+            }, function($query) use ($guestToken) {
+                $query->where('temp_user_id', $guestToken);
+            })
+            ->where('status', 'pending')
+            ->get();
 
         return view('frontend.checkout', array_merge($cartData, [
             'addresses' => $addresses,
@@ -356,8 +418,15 @@ class CheckoutController
 
         NotificationUtility::sendOrderPlacedNotification($order);
 
+        // Notify admin
         User::where('user_type', 'admin')->get()
             ->each(fn($admin) => $admin->notify(new NewOrderNotification($order)));
+
+        // Notify the customer
+        $user = User::find($user_id);
+        if($user) {
+            $user->notify(new NewOrderNotification($order));
+            }
 
         return response()->json([
             'status' => true,

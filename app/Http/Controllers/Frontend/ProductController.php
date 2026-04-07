@@ -794,7 +794,7 @@ class ProductController extends Controller
 
         $products = $products->with('stocks')->distinct()->paginate(12);
 
-        $brands = Brand::whereIn('id', $products->pluck('brand_id')->filter()->unique())->orderBy('name', 'asc')->get();
+        $brands = Brand::withCount('products')->whereIn('id', $products->pluck('brand_id')->filter()->unique())->orderBy('name', 'asc')->get();
 
         $categories = Category::withCount('products')->orderBy('name', 'asc')->get();
 
@@ -822,7 +822,7 @@ class ProductController extends Controller
             'brands',
             'sort',
             'view',
-            // 'categoryId',
+            'categoryIds',
             'category',
             'productCount'
         ));

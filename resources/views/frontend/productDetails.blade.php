@@ -321,12 +321,26 @@
 
     $productTabs = $product->tabs;
 
+    $productWarrantis = $product->warranties;
 @endphp
 
+@php
+$defaultTab = null;
 
-<div class="bg-[#0F161B] text-gray-300" x-data="{ activeTab: 'overview' }">
+if(!empty($overviewContent)) {
+    $defaultTab = 'overview';
+} elseif($productSpecifications->isNotEmpty()) {
+    $defaultTab = 'specs';
+} elseif($productWarrantis->isNotEmpty()) {
+    $defaultTab = 'services';
+} elseif($productTabs->isNotEmpty()) {
+    $defaultTab = 'tab-0';
+}
+@endphp
+
+<div class="bg-[#0F161B] text-gray-300" x-data="{ activeTab: '{{ $defaultTab }}' }">
     <nav class="sticky top-[79px] md:top-[148px] z-50 w-full border-b border-gray-800 bg-[#0F151D] backdrop-blur-md">
-        <div class="max-w-6xl mx-auto flex overflow-x-auto no-scrollbar whitespace-nowrap px-4 justify-start md:justify-center">
+        <div class="max-w-6xl mx-auto flex overflow-x-auto no-scrollbar whitespace-nowrap px-4 justify-start md:justify-center" id="tabs-section">
             @php
                 $overviewContent = $selectedStock->stock_description ?? $product->description;
             @endphp
@@ -337,9 +351,6 @@
             @if($productSpecifications->isNotEmpty())
                 <a href="javascript:void(0)" @click="activeTab='specs'" :class="activeTab === 'specs' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Specifications</a>
             @endif
-            @php
-                $productWarrantis = $product->warranties;
-            @endphp
             @if($productWarrantis->isNotEmpty())
                 <a href="javascript:void(0)" @click="activeTab='services'" :class="activeTab === 'services' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Services</a>
             @endif
