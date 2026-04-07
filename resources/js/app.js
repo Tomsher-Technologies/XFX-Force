@@ -1758,45 +1758,84 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+/* MOBILE FILTER SCRIPT STARTS */
+
+const filter = document.getElementById('filter-wrapper');
+const desktop = document.getElementById('desktop-filter');
+const mobile = document.getElementById('mobile-filter');
+
+function moveFilter() {
+    if (window.innerWidth < 1024) {
+        mobile.appendChild(filter);
+        // filter.querySelector('form').classList.remove('hidden');
+    } else {
+        desktop.appendChild(filter);
+    }
+}
+
+moveFilter();
+window.addEventListener('resize', moveFilter);
+
 // Mobile filter code
 document.addEventListener('DOMContentLoaded', () => {
     const mobileButton = document.querySelector('.mobile-filter-btn'); // mobile button
-    const desktopForm = document.querySelector('form.hidden.xl\\:block'); // desktop form
-    const mobileDialog = document.querySelector('#mobile-filters div.form-section'); // mobile dialog form container
+    const filterForm = document.querySelector('form.hidden.xl\\:block'); // desktop form
 
-    if (mobileButton && desktopForm && mobileDialog) {
+    if (mobileButton && filterForm) {
         mobileButton.addEventListener('click', (e) => {
-
             const dialog = document.getElementById('mobile-filters');
             if (dialog && typeof dialog.showModal === 'function') {
-                dialog.showModal(); // opens as modal
-                // dialog.show(); // opens non-modal (optional)
+                dialog.showModal();
             }
-
-            e.preventDefault(); // prevent default or framework behavior
-            console.log('Mobile button clicked!');
-
-            // Clear existing content in mobile form
-            mobileDialog.innerHTML = '';
-
-            // Clone desktop form
-            const clone = desktopForm.cloneNode(true);
 
             // Remove the desktop-only hidden class
-            clone.classList.remove('hidden', 'xl:block');
+            filterForm.classList.remove('hidden', 'xl:block');
 
-            // Append clone to mobile form
-            mobileDialog.appendChild(clone);
-            // initialize mobile sliders
-            clone.querySelectorAll('.price-filter').forEach(initPriceFilter);
+            // Add styles for elemets in mobile filter
+            filterForm.querySelectorAll('.category-box, .price-box, .brand-box').forEach(box => {
+                // Remove classes from the box itself
+                box.classList.remove('bg-black/30', 'backdrop-blur-[60px]', 'px-[30px]', 'py-[15px]', 'rounded-[20px]', 'mb-[10px]');
+                box.classList.add('border-t', 'border-gray-200', 'px-4', 'py-6');
 
-            // Show the mobile dialog
-            const dialogElement = mobileDialog.closest('dialog');
-            if (dialogElement && typeof dialogElement.showModal === 'function') {
-                dialogElement.showModal();
-            }
+                // Remove classes from the button inside the box
+                const button = box.querySelector('button');
+                if (button) {
+                    button.classList.remove('py-3'); 
+                    const span = button.querySelector('span');
+                    if (span) {
+                        span.classList.remove('text-white', 'font-bold'); // add the classes you want to remove
+                        span.classList.add('text-gray-900');
+                    }
+                }
+
+                box.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.className = '';
+                    checkbox.classList.add('col-start-1', 'row-start-1', 'appearance-none', 'rounded', 'border', 'border-gray-300', 'bg-white', 'checked:border-indigo-600', 'checked:bg-indigo-600', 'indeterminate:border-indigo-600', 'indeterminate:bg-indigo-600', 'focus-visible:outline', 'focus-visible:outline-2', 'focus-visible:outline-offset-2', 'focus-visible:outline-indigo-600', 'disabled:border-gray-300', 'disabled:bg-gray-100', 'disabled:checked:bg-gray-100', 'forced-colors:appearance-auto');
+                });
+
+                box.querySelectorAll('input[type="text"]').forEach(text => {
+                    text.classList.remove('bg-[#282B34]', 'text-white');
+                });
+
+                box.querySelectorAll('label').forEach(label => {
+                    label.className = '';
+                    label.classList.add('min-w-0', 'flex-1', 'text-gray-500');
+                });
+
+                if (box.classList.contains('price-box')) {
+                    box.querySelectorAll('div.price-input-box').forEach(priceInput => {
+                        if (priceInput.querySelector('input[type="number"]')) {
+                            priceInput.classList.remove('bg-[#282B34]', 'border-white/5');
+                            priceInput.classList.add('border-grey/5');
+                            priceInput.querySelector('input[type="number"]').classList.remove('text-white');
+                        }
+                    });
+                    box.querySelector(".slider-progress").classList.remove("bg-white");
+                }
+            });
         });
     }
+    /* MOBILE FILTER SCRIPT ENDS */
 
     window.continueGuest = function(){
         document.getElementById('checkout-login-box').style.display = 'none';

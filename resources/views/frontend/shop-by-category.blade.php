@@ -36,7 +36,7 @@
               </svg>
             </button>
           </div>
-            <div class="form-section"></div>
+            <div id="mobile-filter"></div>
         </el-dialog-panel>
       </div>
     </dialog>
@@ -45,180 +45,217 @@
 
     <main class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] xl:py-[80px]">
         <div class="flex flex-col xl:grid xl:grid-cols-4 xl:gap-[50px]">
-          <!-- Desktop Filters -->
-			<div class="desktop-filter">
-                <form class="hidden xl:block">
-                    <button id="clear-filters" 
-                            class="inline-block w-full text-[#898989] text-[13px] md:text-[14px] font-medium 
-                                px-3 py-1.5 mt-2 rounded-[6px] transition-all duration-200 
-                                hover:bg-white/10 hover:text-white cursor-pointer flex items-center gap-2 mb-[10px]">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        Clear All
-                    </button>
-                    <!--categories filter-->
-                    <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px]">
-                        <button type="button" command="--toggle" commandfor="filter-section-categories" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
-                            <span class="font-medium uppercase text-white">Categories</span>
-                            <span class="ml-6 flex items-center">
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
-                                    <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                                </svg>
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
-                                    <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
-                                </svg>
-                            </span>
+            <div>
+                <div id="filter-wrapper">
+                    <form class="hidden xl:block">
+                        <button id="clear-filters" 
+                                class="inline-block w-full text-[#898989] text-[13px] md:text-[14px] font-medium 
+                                    px-3 py-1.5 mt-2 rounded-[6px] transition-all duration-200 
+                                    hover:bg-white/10 hover:text-white cursor-pointer flex items-center gap-2 mb-[10px]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Clear All
                         </button>
-                        <el-disclosure id="filter-section-categories" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[20px]">
+                        <!--categories filter-->
+                        <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px] category-box">
+                            <button type="button" command="--toggle" commandfor="filter-section-categories" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
+                                <span class="font-medium uppercase text-white">Categories</span>
+                                <span class="ml-6 flex items-center">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
+                                        <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                                    </svg>
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
+                                        <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <el-disclosure id="filter-section-categories" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[20px]">
 
-                            <div class="w-full">
-                                <div class="space-y-4">
-                                    @if($category->childs->count())
-                                    <div class="relative mb-6">
-                                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                            </svg>
-                                        </span>
-                                        
-                                        <input type="text" id="category-search" placeholder="Search Category" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
-                                    </div>
-                                    @endif
+                                <div class="w-full">
+                                    <div class="space-y-4">
+                                        @if($category->childs->count())
+                                        <div class="relative mb-6">
+                                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                </svg>
+                                            </span>
+                                            
+                                            <input type="text" id="category-search" placeholder="Search Category" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
+                                        </div>
+                                        @endif
 
-                                    @if($category->childs->count())
-                                        @php
-                                            $padding = 20;
-                                        @endphp
-                                        @foreach($category->childs as $child)
-                                            @php
-                                                $productCount = \App\Models\Product::where('category_id', $child->id)->count();
-                                            @endphp
-                                            <div class="flex gap-[15px] items-center category-item" data-name="{{ $child->category_translations->first()->name ?? $child->name }}" style="padding-left: {{ $padding }}px;">
+                                        @if($category)
+                                            {{-- Parent Category --}}
+                                            <div class="flex gap-[15px] items-center category-item" 
+                                                data-name="{{ $category->category_translations->first()->name ?? $category->name }}">
+                                                
                                                 <div class="flex h-5 shrink-0 items-center">
                                                     <div class="group grid size-4 grid-cols-1 w-full">
-                                                        <input type="checkbox" name="categories[]" value="{{ $child->id }}" class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-category-{{ $child->id }}" checked>
+                                                        <input 
+                                                            type="checkbox" 
+                                                            name="categories[]" 
+                                                            value="{{ $category->id }}" 
+                                                            class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" 
+                                                            id="filter-category-{{ $category->id }}"
+                                                            checked
+                                                            data-child-ids="{{ $category->childs->pluck('id')->implode(',') }}"
+                                                        >
                                                     </div>
                                                 </div>
-                                                <label for="filter-category-{{ $child->id }}" class="relative top-[5px] text-[15px] text-white">
-                                                    {{ $child->category_translations->first()->name ?? $child->name }}
-                                                    <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $productCount }}</span>
+
+                                                <label for="filter-category-{{ $category->id }}" 
+                                                    class="relative top-[5px] text-[15px] text-white">
+                                                    
+                                                    {{ $category->category_translations->first()->name ?? $category->name }}
+
+                                                    <span class="text-[15px] text-[#50525C] ml-[10px]">
+                                                        {{ \App\Models\Product::whereIn('category_id', $categoryIds)->count() }}
+                                                    </span>
                                                 </label>
                                             </div>
-                                            
-                                        @endforeach
-                                    @else
-                                        <div class="flex gap-[15px] items-center category-item" data-name="{{ $category->name }}">
+                                        @endif
+                                        
+                                        @if($category->childs->count())
+                                            @php
+                                                $padding = 20;
+                                            @endphp
+                                            @foreach($category->childs as $child)
+                                                @php
+                                                    $productCount = \App\Models\Product::where('category_id', $child->id)->count();
+                                                @endphp
+                                                <div class="flex gap-[10px] items-center category-item" data-name="{{ $child->category_translations->first()->name ?? $child->name }}" style="padding-left: {{ $padding }}px;">
+                                                    <div class="flex h-5 shrink-0 items-center">
+                                                        <div class="group grid size-4 grid-cols-1 w-full">
+                                                            <input type="checkbox" name="categories[]" value="{{ $child->id }}" class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-category-{{ $child->id }}" checked>
+                                                        </div>
+                                                    </div>
+                                                    <label for="filter-category-{{ $child->id }}" class="relative top-[5px] text-[15px] text-white">
+                                                        {{ $child->category_translations->first()->name ?? $child->name }}
+                                                        <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $productCount }}</span>
+                                                    </label>
+                                                </div>
+                                                
+                                            @endforeach
+                                        @else
+                                            <div class="flex gap-[15px] items-center category-item" data-name="{{ $category->name }}">
+                                                <div class="flex h-5 shrink-0 items-center">
+                                                    <div class="group grid size-4 grid-cols-1 w-full">
+                                                        <input type="checkbox" name="categories[]" value="{{ $category->id }}" class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-category-{{ $category->id }}" checked style="pointer-events: none;">
+                                                    </div>
+                                                </div>
+                                                <label for="filter-category-{{ $category->id }}" class="relative top-[5px] text-[15px] text-white">
+                                                    {{ $category->category_translations->first()->name ?? $category->name }}
+                                                    <span class="text-[15px] text-[#50525C] ml-[10px]" id="category-count">{{ $productCount }}</span>
+                                                </label>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                            </el-disclosure>
+                        </div>
+                        <!--//categories filter-->
+
+                        <!--price range-->
+                        <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px] price-box">
+                            <button type="button" command="--toggle" commandfor="filter-section-price" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
+                                <span class="font-medium uppercase text-white">Shop by Price</span>
+                                <span class="ml-6 flex items-center">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
+                                        <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                                    </svg>
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
+                                        <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <el-disclosure id="filter-section-price" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[30px]">
+                                <div class="w-full price-filter">
+                                    <div class="flex justify-between items-center mb-8 gap-[20px] align-center">
+                                        <div class="w-full">
+                                            <span class="text-gray-400 text-xs block mb-2">Min</span>
+                                            <div class="bg-[#282B34] rounded-[10px] border border-white/5 w-full price-input-box">
+                                                <input type="number" class="min-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none border-0" value="0" min="0" max="300000" step="100">
+                                            </div>
+                                        </div>
+                                        <div class="h-[1px] w-4 bg-gray-600"></div>
+                                        <div class="w-full">
+                                            <span class="text-gray-400 text-xs block mb-2 text-right">Max</span>
+                                            <div class="bg-[#282B34] rounded-[10px] border border-white/5 text-right w-full price-input-box">
+                                                <input type="number" class="max-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none text-right border-0" value="300000" min="0" max="300000" step="100">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="relative h-1 w-full bg-[#282B34] rounded-lg">
+                                        <div class="slider-progress absolute h-full bg-white rounded-lg left-0 right-0"></div>
+                                        <input type="range" min="0" max="300000" value="0" step="100" class="range-min absolute w-full h-1 appearance-none bg-transparent pointer-events-none z-20">
+                                        <input type="range" min="0" max="300000" value="300000" step="100" class="range-max absolute w-full h-1 appearance-none bg-transparent pointer-events-none z-20">
+                                    </div>
+                                </div>
+
+                            </el-disclosure>
+                        </div>
+                        <!--//price range-->
+
+                        <!--brand filter-->
+                        <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px] brand-box">
+                            <button type="button" command="--toggle" commandfor="filter-section-brand" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
+                                <span class="font-medium uppercase text-white">Brands</span>
+                                <span class="ml-6 flex items-center">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
+                                        <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                                    </svg>
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
+                                        <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <el-disclosure id="filter-section-brand" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[20px]">
+
+                                <div class="w-full">
+                                    <div id="brand-grid" class="space-y-4">
+                                        <div class="relative mb-6">
+                                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                </svg>
+                                            </span>
+                                            <input type="text" id="brand-search" placeholder="Search brands (e.g. Nvidia)" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
+                                        </div>
+                                    
+                                        @if(!empty($brands))
+                                        @foreach ($brands as $brand)
+                                        <div class="flex gap-[15px] align-center items-center brand-item" data-name="{{$brand->name}}">
                                             <div class="flex h-5 shrink-0 items-center">
                                                 <div class="group grid size-4 grid-cols-1 w-full">
-                                                    <input type="checkbox" name="categories[]" value="{{ $category->id }}" class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-category-{{ $category->id }}" checked style="pointer-events: none;">
+                                                    <input id="filter-brand-0" type="checkbox" name="brands[]" value="{{$brand->id}}" class="h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7] indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
+                                                    <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
+                                                        <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
+                                                        <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
+                                                    </svg>
                                                 </div>
                                             </div>
-                                            <label for="filter-category-{{ $category->id }}" class="relative top-[5px] text-[15px] text-white">
-                                                {{ $category->category_translations->first()->name ?? $category->name }}
-                                                <span class="text-[15px] text-[#50525C] ml-[10px]" id="category-count">{{ $productCount }}</span>
-                                            </label>
+                                            <label for="filter-brand-0" class="relative top-[5px] text-[15px] text-white">{{$brand->name}} <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $brand->products_count }}</span></label>
                                         </div>
-                                    @endif
+                                        @endforeach
+                                        @endif
+                                    
+                                    <a href="{{ route('brands.list') }}" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-white hover:text-black">view all brands</a>
                                 </div>
-                            </div>
-
-                        </el-disclosure>
-                    </div>
-                    <!--//categories filter-->
-
-                    <!--price range-->
-                    <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px]">
-                        <button type="button" command="--toggle" commandfor="filter-section-price" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
-                            <span class="font-medium uppercase text-white">Shop by Price</span>
-                            <span class="ml-6 flex items-center">
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
-                                    <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                                </svg>
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
-                                    <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
-                                </svg>
-                            </span>
-                        </button>
-                        <el-disclosure id="filter-section-price" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[30px]">
-                            <div class="w-full price-filter">
-                                <div class="flex justify-between items-center mb-8 gap-[20px] align-center">
-                                    <div class="w-full">
-                                        <span class="text-gray-400 text-xs block mb-2">Min</span>
-                                        <div class="bg-[#282B34] rounded-[10px] border border-white/5 w-full">
-                                            <input type="number" class="min-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none border-0" value="0" min="0" max="300000" step="100">
-                                        </div>
-                                    </div>
-                                    <div class="h-[1px] w-4 bg-gray-600"></div>
-                                    <div class="w-full">
-                                        <span class="text-gray-400 text-xs block mb-2 text-right">Max</span>
-                                        <div class="bg-[#282B34] rounded-[10px] border border-white/5 text-right w-full">
-                                            <input type="number" class="max-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none text-right border-0" value="300000" min="0" max="300000" step="100">
-                                        </div>
-                                    </div>
                                 </div>
-                                <div class="relative h-1 w-full bg-[#282B34] rounded-lg">
-                                    <div class="slider-progress absolute h-full bg-white rounded-lg left-0 right-0"></div>
-                                    <input type="range" min="0" max="300000" value="0" step="100" class="range-min absolute w-full h-1 appearance-none bg-transparent pointer-events-none z-20">
-                                    <input type="range" min="0" max="300000" value="300000" step="100" class="range-max absolute w-full h-1 appearance-none bg-transparent pointer-events-none z-20">
-                                </div>
-                            </div>
 
-                        </el-disclosure>
-                    </div>
-                    <!--//price range-->
+                            </el-disclosure>
+                        </div>
+                        <!--//brand filter-->
+                    </form>
+                </div>
 
-                    <!--brand filter-->
-                    <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px]">
-                        <button type="button" command="--toggle" commandfor="filter-section-brand" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
-                            <span class="font-medium uppercase text-white">Brands</span>
-                            <span class="ml-6 flex items-center">
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
-                                    <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                                </svg>
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
-                                    <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
-                                </svg>
-                            </span>
-                        </button>
-                        <el-disclosure id="filter-section-brand" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[20px]">
+                <!-- Desktop Filters -->
+                <div id="desktop-filter"></div>
+                <!-- Desktop Filters -->
 
-                            <div class="w-full">
-                                <div id="brand-grid" class="space-y-4">
-                                    <div class="relative mb-6">
-                                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                            </svg>
-                                        </span>
-                                        <input type="text" id="brand-search" placeholder="Search brands (e.g. Nvidia)" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
-                                    </div>
-                                
-                                    @if(!empty($brands))
-                                    @foreach ($brands as $brand)
-                                    <div class="flex gap-[15px] align-center items-center brand-item" data-name="{{$brand->name}}">
-                                        <div class="flex h-5 shrink-0 items-center">
-                                            <div class="group grid size-4 grid-cols-1 w-full">
-                                                <input id="filter-brand-0" type="checkbox" name="brands[]" value="{{$brand->id}}" class="h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7] indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                                                    <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <label for="filter-brand-0" class="relative top-[5px] text-[15px] text-white">{{$brand->name}} <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $brand->products_count }}</span></label>
-                                    </div>
-                                    @endforeach
-                                    @endif
-                                
-                                <a href="{{ route('brands.list') }}" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-white hover:text-black">view all brands</a>
-                            </div>
-                            </div>
-
-                        </el-disclosure>
-                    </div>
-                    <!--//brand filter-->
-                </form>
                 <!--promotion banners-->
                 <div class="swiper promobnrswiper relative overflow-hidden rounded-[20px]">
                     <div class="swiper-wrapper">
@@ -229,7 +266,6 @@
                 </div>
                 <!--//promotion banners-->
             </div>
-            <!-- Desktop Filters -->
 
             <div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 

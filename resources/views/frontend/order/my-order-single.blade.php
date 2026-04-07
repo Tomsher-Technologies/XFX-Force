@@ -439,6 +439,7 @@
                                                 <p class="text-gray-500 text-xs mt-1" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                     {{ $item->product_stock->stock_title  ?? '' }}
                                                 </p>
+
                                                 <div>
                                                     @if($totalPendingQty > 0)
                                                         
@@ -448,6 +449,60 @@
                                                             Return Requested {{ $totalPendingQty }}@if($totalPendingQty <  $item->quantity) out of {{ $item->quantity }} @endif
                                                         </span>
                                                     </button>
+                                                    @php
+                                                        $returnDetails = \App\Models\OrderReturn::where('order_detail_id', $item->id)->get();
+                                                    @endphp
+                                                    <!--return status modal-->
+                                                    <div id="statusModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4" onclick="closeStatusModal()">
+                                                        <div id="statusContent" class="bg-[#1C2228] border border-[#282B34] w-full max-w-2xl rounded-[20px] shadow-2xl overflow-hidden transform transition-all" onclick="event.stopPropagation()">
+                                                            <div class="p-6 border-b border-[#282B34] flex justify-between items-center bg-[#1C2228]">
+                                                                <h4 class="text-white font-medium uppercase tracking-wider text-sm">Return Details</h4>
+                                                                <button onclick="closeStatusModal()" class="text-gray-500 hover:text-white transition-colors cursor-pointer p-1">
+                                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                            
+                                                            @foreach ($returnDetails as $returnDetail)
+                                                            
+                                                            <div class="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-6">
+                                                                <div class="flex items-center gap-6 group">
+                                                                    <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
+                                                                        <img src="src/images/product-single-01.webp" class="w-full h-full object-cover rounded-lg" alt="Product">
+                                                                    </div>
+                                                                    <div class="flex-grow">
+                                                                        <h4 class="text-white font-medium line-clamp-1 text-sm md:text-base">
+                                                                            {{ $returnDetail->orderDetail->product->name }}
+                                                                        </h4>
+                                                                        <p class="text-gray-500 text-xs mt-1">{{ $returnDetail->orderDetail->product_stock->stock_title }}</p>
+                                                                        <p class="text-[#2A7CFF] text-[11px] mt-2 font-bold uppercase tracking-tight">
+                                                                            {{ \Carbon\Carbon::parse($order->created_at)->format('F d, Y • H:i') }}
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="hidden md:flex flex-col text-right items-end">
+                                                                        <p class="text-gray-400 text-[10px] uppercase font-bold mb-2">Quantity</p>
+                                                                        <p class="text-white text-lg font-bold leading-none">{{ $returnDetail->return_qty }}</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="pt-4 border-t border-white/5">
+                                                                    <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-3 px-1">Reason for return</p>
+                                                                    <div class="w-full bg-[#0f161b] border border-[#282B34] rounded-2xl p-5 text-gray-300 text-sm leading-relaxed italic relative">
+                                                                        {{ $returnDetail->return_reason }}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            @endforeach
+
+                                                            <div class="p-6 bg-[#171c21] border-t border-[#282B34]">
+                                                                <p class="text-center text-gray-400 text-[13px] italic">
+                                                                    Our team is currently reviewing your request. You will receive an email once approved.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--//return status modal-->
                                                     @endif
 
                                                     @if($totalReturnedQty > 0)
@@ -575,6 +630,7 @@
                                                 </span>
                                             </div>
                                         </li>
+                                        @if($order->warranty_amount > 0)
                                         <li class="py-[10px]">
                                             <div class="flex flex-row justify-between">
                                                 <span class="text-[#99a1af] text-[15px] justify-start text-left">Warranty (Premium Care+)</span>
@@ -586,6 +642,7 @@
                                                 </span>
                                             </div>
                                         </li>
+                                        @endif
                                         <li class="py-[10px]">
                                             <div class="flex flex-row justify-between">
                                                 <span class="text-[#99a1af] text-[15px] justify-start text-left">Shipping &amp; Handling</span>
@@ -652,7 +709,7 @@
             </button>
         </div>
 
-        <form id="returnOrderForm">
+        <form id="returnOrderForm" method="POST">
             @csrf
             <input type="hidden" name="order_id" value="{{ $order->id }}">
             <div class="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-2">
@@ -739,52 +796,7 @@
 </div>
 <!--//return order modal-->
 
-<!--return status modal-->
-<div id="statusModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4" onclick="closeStatusModal()">
-        <div id="statusContent" class="bg-[#1C2228] border border-[#282B34] w-full max-w-2xl rounded-[20px] shadow-2xl overflow-hidden transform transition-all" onclick="event.stopPropagation()">
-            
-            <div class="p-6 border-b border-[#282B34] flex justify-between items-center bg-[#1C2228]">
-                <h4 class="text-white font-medium uppercase tracking-wider text-sm">Return Details</h4>
-                <button onclick="closeStatusModal()" class="text-gray-500 hover:text-white transition-colors cursor-pointer p-1">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
 
-            <div class="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-6">
-                
-                <div class="flex items-center gap-6 group">
-                    <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
-                        <img src="src/images/product-single-01.webp" class="w-full h-full object-cover rounded-lg" alt="Product">
-                    </div>
-                    <div class="flex-grow">
-                        <h4 class="text-white font-medium line-clamp-1 text-sm md:text-base">VENGEANCE a7500 Gaming PC...</h4>
-                        <p class="text-gray-500 text-xs mt-1">AMD Ryzen 7 9800X3D • RTX 5080 • 32GB DDR5</p>
-                        <p class="text-[#2A7CFF] text-[11px] mt-2 font-bold uppercase tracking-tight">March 04, 2026 • 15:56</p>
-                    </div>
-                    <div class="hidden md:flex flex-col text-right items-end">
-                        <p class="text-gray-400 text-[10px] uppercase font-bold mb-2">Quantity</p>
-                            <p class="text-white text-lg font-bold leading-none">01</p>
-                    </div>
-                </div>
-
-                <div class="pt-4 border-t border-white/5">
-                    <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-3 px-1">Reason for return</p>
-                    <div class="w-full bg-[#0f161b] border border-[#282B34] rounded-2xl p-5 text-gray-300 text-sm leading-relaxed italic relative">
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s...
-                    </div>
-                </div>
-            </div>
-
-            <div class="p-6 bg-[#171c21] border-t border-[#282B34]">
-                <p class="text-center text-gray-400 text-[13px] italic">
-                    Our team is currently reviewing your request. You will receive an email once approved.
-                </p>
-            </div>
-        </div>
-    </div>
-<!--//return status modal-->
 
 
 <script>

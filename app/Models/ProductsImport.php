@@ -8,15 +8,19 @@ use App\Models\Category;
 use App\Models\CategoryTranslation;
 use App\Models\Product;
 use App\Models\ProductSeo;
+use App\Models\ProductSpecification;
 use App\Models\ProductStock;
+use App\Models\Specification;
+use App\Models\SpecificationItem;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductsImport implements ToCollection, WithHeadingRow
 {
@@ -61,6 +65,7 @@ class ProductsImport implements ToCollection, WithHeadingRow
         $validRows = $rows->filter(function ($row, $index) use (&$seenSkus) {
             $sku = $row['sku'] ?? null; 
             $productName = $row['product_name'] ?? null;
+            $category = $row['category'] ?? null;
 
             if (empty($sku)) {
                 $this->errorsList[] = [
@@ -109,6 +114,46 @@ class ProductsImport implements ToCollection, WithHeadingRow
                 $firstRow = $products->first();
                 $skuToUse = $firstRow['parent_sku'] ?: $firstRow['sku'];
 
+                $categoryName = trim($this->pickLatestValue($products, 'category'));
+                $brandName = trim($this->pickLatestValue($products, 'brand'));
+
+                
+                // Get or Create Category
+                $category = Category::whereHas('category_translations', function ($q) use ($categoryName) {
+                    $q->whereRaw('LOWER(name) = ?', [strtolower($categoryName)]);
+                })->first();
+
+                if (!$category) {
+
+                    $category = Category::create([
+                        'name' => $categoryName,
+                        'status' => 1,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+
+                    CategoryTranslation::create([
+                        'category_id' => $category->id,
+                        'name' => $categoryName,
+                        'slug' => Str::slug($categoryName),
+                        'lang' => 'en'
+                    ]);
+                }
+
+                $categoryId = $category->id;
+
+
+                // Brand (case-insensitive)
+                $brand = Brand::firstOrCreate(
+                    ['name' => $brandName],
+                    [
+                        'slug' => Str::slug($brandName),
+                        'status' => 1
+                    ]
+                );
+
+                $brandId = $brand->id;
+
                 // Product save or update
                 $product = Product::updateOrCreate(
                     ['sku' => $skuToUse],
@@ -116,8 +161,8 @@ class ProductsImport implements ToCollection, WithHeadingRow
                         'name' =>  trim($this->pickLatestValue($products, 'product_name') ?? ''),
                         'video_provider' => trim($this->pickLatestValue($products, 'video_provider') ?? ''),
                         'video_link' => trim($this->pickLatestValue($products, 'video_link') ?? ''),
-                        'category_id' => Category::where('name', $this->pickLatestValue($products, 'category'))->value('id'),
-                        'brand_id' => Brand::where('name', $this->pickLatestValue($products, 'brand'))->value('id'),
+                        'category_id' => $categoryId,
+                        'brand_id' => $brandId,
                         'condition' => $conditionMap[trim($this->pickLatestValue($products, 'condition'))] ?? 0,
                         'product_length' => $this->pickLatestValue($products, 'length'),
                         'product_width' => $this->pickLatestValue($products, 'width'),
@@ -145,30 +190,6 @@ class ProductsImport implements ToCollection, WithHeadingRow
                         'updated_by' => Auth::user()->id,
                     ]
                 );
-
-                // Specifications save or update
-                $specificationValue = $this->pickLatestValue($products, 'specification');
-                if (!empty($specificationValue)) {
-
-                    ProductSpecification::where('product_id', $product->id)->delete();
-
-                    $specs = explode(',', $specificationValue);
-                    $lastSortOrder = 0;
-                    foreach ($specs as $index => $spec) {
-                        [$key, $value] = explode(':', $spec);
-                        $specificationId = Specification::where('main_title', trim($key))->value('id');
-                        $itemId = SpecificationItem::where('title', trim($value))->value('id');
-
-                        if (!$specificationId || !$itemId) continue;
-
-                        ProductSpecification::create([
-                            'product_id' => $product->id,
-                            'specification_id' => $specificationId,
-                            'specification_item_id' => $itemId,
-                            'sort_order' => $lastSortOrder + $index + 1,
-                        ]);
-                    }
-                }
 
                 // Save or update product SEO
                 $keywords = [];
@@ -280,6 +301,7 @@ class ProductsImport implements ToCollection, WithHeadingRow
 
                 // save stock
                 foreach ($products as $row) {
+                    
                     $offertag = '';
                     $productOrgPrice = $row['price'];
                     $discountPrice = $productOrgPrice;
@@ -296,21 +318,76 @@ class ProductsImport implements ToCollection, WithHeadingRow
                         }
                     }
 
+                     // Collect all images for this stock
+                    $stockImages = [];
+
+                    // Stock image first
+                    if (!empty($row['stock_image'])) {
+                        $stockImages[] = ImageHelper::downloadAndResizeImage(
+                            'sub_product',
+                            $row['stock_image'],
+                            $product->sku,
+                            true
+                        );
+                    }
+
+                    // Include product thumbnail
+                    if (!empty($product->thumbnail_img)) {
+                        $stockImages[] = $product->thumbnail_img;
+                    }
+
+                    // Include product gallery photos
+                    if (!empty($product->photos)) {
+                        $productGallery = explode(',', $product->photos);
+                        $stockImages = array_merge($stockImages, $productGallery);
+                    }
+
                     $stock = ProductStock::updateOrCreate(
                         ['product_id' => $product->id, 'sku' => $row['sku']], // Match by product + SKU
                         [
-                            'qty' => $row['quantity'],
+                            'qty' => $row['quantity'] ?? 0,
                             'stock_title' => $row['title'],
                             'model' => $row['model'],
                             'stock_description' => $row['stock_description'],
                             'status' => strtolower(trim($row['stock_status'] ?? '')) === 'inactive' ? 0 : 1,
                             'type' => $row['parent_sku'] ? 'variant' : 'single',
-                            'image' => ImageHelper::downloadAndResizeImage('sub_product', $row['stock_image'], $product->sku, true),
-                            'price' => $productOrgPrice,
-                            'offer_price' => $discountPrice,
-                            'offer_tag' => $offertag,
+                            'image' =>  implode(',', $stockImages),
+                            'price' => $productOrgPrice ?? 0,
+                            'offer_price' => $discountPrice ?? 0,
+                            'offer_tag' => $offertag ?? '',
                         ]
                     );
+
+                    // save specification for the stock
+                    if (!empty($row['specification'])) {
+                        $specs = explode(',', $row['specification']);
+                        foreach ($specs as $index => $spec) {
+                            if (strpos($spec, ':') !== false) {
+                                [$key, $value] = explode(':', $spec);
+
+                                $specification = Specification::firstOrCreate([
+                                    'main_title' => trim($key)
+                                ]);
+
+                                $specificationItem = SpecificationItem::firstOrCreate([
+                                    'title' => trim($value),
+                                    'main_specification_id' => $specification->id
+                                ]);
+
+                                ProductSpecification::updateOrCreate(
+                                    [
+                                        'product_stock_id' => $stock->id,
+                                        'specification_id' => $specification->id,
+                                    ],
+                                    [
+                                        'product_id' => $product->id,
+                                        'specification_item_id' => $specificationItem->id,
+                                        'sort_order' => $index + 1,
+                                    ]
+                                );
+                            }
+                        }
+                    }
 
                     // Save attributes for this stock
                     if (!empty($row['attribute'])) {
@@ -318,24 +395,29 @@ class ProductsImport implements ToCollection, WithHeadingRow
                         foreach ($attributes as $attr) {
                             if (strpos($attr, ':') !== false) {
                                 [$key, $value] = explode(':', $attr);
-                                $attributeId = Attribute::where('name', trim($key))->value('id');
-                                $attributeValueId = AttributeValue::where('value', trim($value))
-                                    ->where('attribute_id', $attributeId)
-                                    ->value('id');
+                                // Create / Get Attribute
+                                $attribute = Attribute::firstOrCreate([
+                                    'name' => trim($key)
+                                ]);
 
-                                if ($attributeId && $attributeValueId) {
-                                    ProductAttributes::updateOrCreate(
-                                        [
-                                            'product_id' => $product->id,
-                                            'product_varient_id' => $stock->id,
-                                            'attribute_id' => $attributeId,
-                                            'attribute_value_id' => $attributeValueId,
-                                        ],
-                                        [
-                                            'updated_at' => now()
-                                        ]
-                                    );
-                                }
+                                // Create / Get Attribute Value
+                                $attributeValue = AttributeValue::firstOrCreate([
+                                    'value' => trim($value),
+                                    'attribute_id' => $attribute->id
+                                ]);
+
+                                // Save Product Attribute
+                                ProductAttributes::updateOrCreate(
+                                    [
+                                        'product_id' => $product->id,
+                                        'product_varient_id' => $stock->id,
+                                        'attribute_id' => $attribute->id,
+                                    ],
+                                    [
+                                        'attribute_value_id' => $attributeValue->id,
+                                        'updated_at' => now()
+                                    ]
+                                );
                             }
                         }
                     }
@@ -344,6 +426,12 @@ class ProductsImport implements ToCollection, WithHeadingRow
             DB::commit();
 
             } catch (\Exception $e) {
+                Log::error('Product Import Error', [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString()
+                ]);
                 DB::rollBack();
                 flash('Products imported Failed.')->error();
                 continue;
