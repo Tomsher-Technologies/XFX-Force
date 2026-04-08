@@ -41,10 +41,6 @@ class PcBuilderCategorySettingController extends Controller
 
     public function store(Request $request)
     {
-        // echo '<pre>';
-        // print_r($request->all());
-        // echo '</pre>';
-        // die;
         DB::beginTransaction();
 
         try {

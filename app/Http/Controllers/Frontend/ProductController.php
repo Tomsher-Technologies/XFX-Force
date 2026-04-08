@@ -131,8 +131,7 @@ class ProductController extends Controller
                     $childIds = array_merge(...$childIds);
                     $childIds = array_unique($childIds);
                 }
-                // print_r($childIds);
-                // die;
+                
                 $product_query->whereIn('category_id', $childIds);
             }
 

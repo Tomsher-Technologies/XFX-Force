@@ -135,9 +135,6 @@ class OrderController extends Controller
         }
 
         $orders = $orders->paginate(15);
-        // echo '<pre>';
-        // print_r($orders);
-        // die;
         return view("backend.sales.cancel_requests", compact('orders', 'search', 'ca_search', 'date', 'refund_search'));
     }
 
@@ -165,9 +162,6 @@ class OrderController extends Controller
         }
 
         $orders = $orders->paginate(15);
-        // echo '<pre>';
-        // print_r($orders);
-        // die;
         return view("backend.sales.return_requests", compact('orders', 'search', 'ca_search', 'date', 'refund_search'));
     }
 
@@ -195,23 +189,31 @@ class OrderController extends Controller
         $return = OrderReturn::findOrFail($request->return_id);
         $return->status = $request->status;
         $return->save();
-        echo "<pre>";
-        print_r($return);
-        exit;
 
         $order = Order::findOrFail($return->order_id);
         if($order){
             if ($order->return_request == 1) {
                 $order->return_approval = ($request->status == 'approved') ? 1 : 2;
                 $order->return_approval_date = date('Y-m-d H:i:s');
+                $order->save();
             }
 
-            $customerEmail = $order->user->email;
-            $customerName  = $order->user->name;
+            $customer = $order->user;
+            $customerEmail = $customer->email;
+            $customerName  = $customer->name;
             $orderCode     = $order->code;
 
             if ($request->status == "approved") { // Approved
         
+                /* ---------- Customer Notification ---------- */
+                $message = "Your return request for Order #{$orderCode} has been approved";
+                sendNotification(
+                    $customer,
+                    $message,
+                    $order,
+                    'return_approved'
+                );
+
                 /* -------- Customer Email -------- */
                 $array['view'] = 'emails.commonmail';
                 $array['subject'] = "Your Order Return Request Approved - {$orderCode}";
@@ -229,6 +231,15 @@ class OrderController extends Controller
                 Mail::to($customerEmail)->queue(new EmailManager($array));
 
             } else { // Rejected
+
+                /* ---------- Customer Notification ---------- */
+                $message = "Your return request for Order #{$orderCode} has been rejected";
+                sendNotification(
+                    $customer,
+                    $message,
+                    $order,
+                    'return_rejected'
+                );
 
                 /* -------- Customer Email -------- */
                 $array['view'] = 'emails.commonmail';
@@ -272,8 +283,9 @@ class OrderController extends Controller
         if ($cancel_request->cancel_request == 1) {
             $cancel_request->cancel_approval = $status;
             
-            $customerEmail = $cancel_request->user->email;
-            $customerName  = $cancel_request->user->name;
+            $customer      = $cancel_request->user;
+            $customerEmail = $customer->email;
+            $customerName  = $customer->name;
             $orderCode     = $cancel_request->code;
             
             if ($status == 1) { //approved
@@ -298,6 +310,15 @@ class OrderController extends Controller
                 $track->status_date = date('Y-m-d H:i:s');
                 $track->save();
 
+                /* ---------- Customer Notification ---------- */
+                $message = "Your cancel request for Order #{$orderCode} has been approved";
+                sendNotification(
+                    $customer,
+                    $message,
+                    $cancel_request,
+                    'cancel_approved'
+                );
+
                 /* -------- Customer Email -------- */
                 $array['view'] = 'emails.commonmail';
                 $array['subject'] = "Your Order Cancel Request Approved - {$orderCode}";
@@ -312,6 +333,16 @@ class OrderController extends Controller
                     <p>Team ".env('APP_NAME')."</p>";
                 Mail::to($customerEmail)->queue(new EmailManager($array));
             } else { // Rejected
+
+                /* ---------- Customer Notification ---------- */
+                $message = "Your cancel request for Order #{$orderCode} has been rejected";
+                sendNotification(
+                    $customer,
+                    $message,
+                    $cancel_request,
+                    'cancel_rejected'
+                );
+
                 /* -------- Customer Email -------- */
                 $array['view'] = 'emails.commonmail';
                 $array['subject'] = "Your Order Cancel Request Rejected - {$orderCode}";
@@ -424,8 +455,20 @@ class OrderController extends Controller
 
         $customer = $order->user;
         if ($customer) {
-            // Send notification to customer when order status changed
-            $customer->notify(new \App\Notifications\NewOrderNotification($order));
+            // Notify customer when order delivery status changed
+            $statusMessages = [
+                'pending'     => "Your order #{$order->code} has been received and is now pending confirmation.",
+                'confirmed'   => "Your order #{$order->code} has been confirmed and is being processed.",
+                'picked_up'   => "Your order #{$order->code} has been picked up from our warehouse and is on its way.",
+                'on_the_way'  => "Your order #{$order->code} is out for delivery and will reach you soon.",
+                'delivered'   => "Your order #{$order->code} has been delivered. We hope you enjoy your purchase!",
+                'cancelled'   => "Your order #{$order->code} has been cancelled.",
+            ];
+
+            $message = $statusMessages[$request->status] ?? "Order #{$order->code} status updated to {$request->status}";
+            $message = "Order #{$order->code} status updated to {$order->delivery_status}";
+            sendNotification($customer, $message, $order, 'status_update');
+
             // Send mail to customer when order delivered or cancelled
             if (in_array($request->status, ['delivered', 'cancelled'])) {
                 $customerName  = $order->user->name;
