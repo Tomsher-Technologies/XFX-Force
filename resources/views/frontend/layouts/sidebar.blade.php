@@ -3,9 +3,9 @@
         
         <div class="hidden xl:flex items-center gap-4 mb-5 pb-6 border-b border-[#282B34]">
             <div id="userAvatarSidebar" class="flex items-center justify-center w-12 h-12 rounded-full bg-[#282B34] border border-white/5 text-white font-bold text-xl">?</div>
-            <div class="flex flex-col gap-[2px]">
+            <div class="flex flex-col gap-[2px] line-clamp-2">
                 <span id="userNameSidebar" class="font-medium text-[18px] text-white">{{ auth('frontend')->user()->name ?? '' }}</span>
-                <p class="text-gray-500 text-[11px] uppercase tracking-wider">{{ auth('frontend')->user()->email ?? '' }}</p>
+                <p class="text-gray-500 text-[11px] tracking-wider">{{ auth('frontend')->user()->email ?? '' }}</p>
             </div>
         </div>
 
@@ -34,6 +34,13 @@
             <a href="{{ route('update-password') }}" class="w-full flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px]  transition-all group  {{ request()->routeIs('update-password*') ? 'bg-[#2A7CFF] text-white font-medium' : 'hover:bg-[#252C33] text-[#898989] text-gray-400 hover:text-white' }} ">
                 <svg class="w-5 h-5 group-hover:text-white {{ request()->routeIs('update-password*') ? 'text-[#ffffff]' : 'text-[#898989]' }}" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24"><path fill="{{ request()->routeIs('update-password*') ? '#fff' : '#898989'}} " class="group-hover:fill-white" d="M19,8.424V7A7,7,0,0,0,5,7V8.424A5,5,0,0,0,2,13v6a5.006,5.006,0,0,0,5,5H17a5.006,5.006,0,0,0,5-5V13A5,5,0,0,0,19,8.424ZM7,7A5,5,0,0,1,17,7V8H7ZM20,19a3,3,0,0,1-3,3H7a3,3,0,0,1-3-3V13a3,3,0,0,1,3-3H17a3,3,0,0,1,3,3Z"/><path fill="{{ request()->routeIs('update-password*') ? '#fff' : '#898989' }}" class="group-hover:fill-white" d="M12,14a1,1,0,0,0-1,1v2a1,1,0,0,0,2,0V15A1,1,0,0,0,12,14Z"/></svg>
                 <span class="text-[10px] lg:text-[15px] ">Password</span>
+            </a>
+            <a href="{{ route('customer.notifications') }}" class="w-full text-gray-400 flex flex-row items-start gap-4 p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
+                <svg class="w-5 h-5 group-hover:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#9F9FA9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path class="group-hover:stroke-white" d="M18 8a6 6 0 0 0-12 0v5a4 4 0 0 1-1 2.664V17h14v-1.336A4 4 0 0 1 18 13V8z"/>
+                <path class="group-hover:stroke-white" d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span class="text-[15px]">Notifications</span>
             </a>
 
             <div class="w-full xl:border-t xl:border-[#282B34] xl:mt-4 hidden lg:flex">

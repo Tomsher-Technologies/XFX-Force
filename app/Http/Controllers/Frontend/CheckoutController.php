@@ -30,45 +30,6 @@ use Mail;
 
 class CheckoutController
 {
-    /*public function index()
-    {
-        $cartController = new CartController();
-        $cartData = $cartController->getCartSummary();
-
-        $addresses = [];
-        $user = Auth::user();
-
-        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        if($user_id){
-            $addresses = Address::where('user_id', auth('frontend')->user()->id)->orderBy('id','desc')->get();
-        }
-
-        $userId = $user_id ? $user_id : null;
-        $guestToken = request()->cookie('guest_token');
-
-        if (!$guestToken && !$userId) {
-            $guestToken = uniqid('guest_', true);
-            cookie()->queue('guest_token', $guestToken, 60 * 24 * 14); // 14 days
-        }
-
-
-        $cartItems = Cart::with(['product', 'product_stock'])
-            ->when($userId, function($query) use ($userId) {
-                $query->where('user_id', $userId);
-            }, function($query) use ($guestToken) {
-                $query->where('temp_user_id', $guestToken);
-            })
-            ->where('status', 'pending')
-            ->get();
-
-
-        return view('frontend.checkout', array_merge($cartData, [
-            'addresses' => $addresses,
-            'user' => $user,
-            'cartItems' => $cartItems,
-        ]));
-    }*/
-
     public function index()
     {
         $cartController = new CartController();
@@ -413,20 +374,23 @@ class CheckoutController
         }
 
         /* ---------------- Clear Cart ---------------- */
-
         Cart::where('user_id', $user_id)->delete();
 
+        // Send mail to customer and admin when order placed.
         NotificationUtility::sendOrderPlacedNotification($order);
 
         // Notify admin
         User::where('user_type', 'admin')->get()
             ->each(fn($admin) => $admin->notify(new NewOrderNotification($order)));
 
-        // Notify the customer
-        $user = User::find($user_id);
-        if($user) {
-            $user->notify(new NewOrderNotification($order));
-            }
+        // Notify Customer
+        $message = "Your order #{$order->code} has been placed successfully";
+        sendNotification(
+            $order->user,
+            $message,
+            $order,
+            'order_placed'
+        );
 
         return response()->json([
             'status' => true,

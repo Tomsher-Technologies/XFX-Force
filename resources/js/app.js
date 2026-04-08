@@ -1766,10 +1766,10 @@ const mobile = document.getElementById('mobile-filter');
 
 function moveFilter() {
     if (window.innerWidth < 1024) {
-        mobile.appendChild(filter);
+        if(mobile) mobile.appendChild(filter);
         // filter.querySelector('form').classList.remove('hidden');
     } else {
-        desktop.appendChild(filter);
+        if(desktop) desktop.appendChild(filter);
     }
 }
 
