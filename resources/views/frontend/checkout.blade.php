@@ -619,8 +619,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const billingToggle = document.getElementById('billing-toggle');
     const addressListContainer = document.getElementById('address-list-container');
     const mapModal = document.getElementById('map-modal-overlay');
+    const cartShipping = document.getElementById('cart-shipping');
 
-    let originalShipping = parseFloat(document.getElementById('cart-shipping').textContent.replace(/,/g,''));
+    let originalShipping = cartShipping 
+    ? parseFloat(cartShipping.textContent.replace(/,/g, '')) 
+    : 0;
     let originalTotal = parseFloat(document.getElementById('final-total').textContent.replace(/,/g,''));
 
 
@@ -639,7 +642,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Update shipping on page
-        document.getElementById('cart-shipping').innerText = shipping.toFixed(2);
+        if(cartShipping) cartShipping.innerText = shipping.toFixed(2);
 
     // Recalculate total
     const newTotal = subTotal + shipping;
