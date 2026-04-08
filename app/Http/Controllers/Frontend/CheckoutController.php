@@ -485,6 +485,11 @@ class CheckoutController
 
             Mail::to(env('MAIL_ADMIN'))->queue(new EmailManager($array));
 
+            // Notify admin
+            $admins = User::where('user_type','admin')->get();
+            $message = "Customer {$order->user->name} has requested to cancel Order #{$order->code}. Please review the request.";
+            sendNotification($admins, $message, $order, 'cancel_request');
+
             return response()->json([
                 'status' => true,
                 'message' => trans('messages.request_success')
@@ -559,6 +564,12 @@ class CheckoutController
             ";
 
             Mail::to(env('MAIL_ADMIN'))->queue(new EmailManager($array));
+
+            // Notify admin
+            $admins = User::where('user_type','admin')->get();
+            $message = "Customer {$order->user->name} has requested a return for Order #{$order->code}. Please review the request.";
+            sendNotification($admins, $message, $order, 'return_request');
+
         }
 
         return response()->json(['success' => true, 'message' => 'Return request submitted successfully.']);
