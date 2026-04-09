@@ -37,12 +37,11 @@
         </div>
 
         <h4 id="details-title" class="text-[25px] font-bold mb-[15px] leading-[35px] text-white"> {{ $stock->title ?? $stock->product->name ?? '' }}</h4>
-        <p id="details-desc" class="text-gray-300 text-base mb-8 text-[15px]">
+        <div id="details-desc" class="text-gray-300 text-base mb-8 text-[15px]">
             @if($stock)
                 {!! $stock->stock_description ?? $stock->product->description ?? '' !!}
             @endif
-            
-        </p>
+        </div>
 
         <div class="space-y-4 mb-10">
             <h5 class="text-[15px] text-white font-medium uppercase mb-5">Specifications</h5>

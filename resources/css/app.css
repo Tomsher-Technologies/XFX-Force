@@ -521,7 +521,7 @@ strong {
     }
 
     .nav-item:not(.selected) .check-icon{
-        @apply hidden;
+        /* @apply hidden; */
     }
 }
 

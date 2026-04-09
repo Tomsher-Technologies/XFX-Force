@@ -466,8 +466,7 @@ class OrderController extends Controller
             ];
 
             $message = $statusMessages[$request->status] ?? "Order #{$order->code} status updated to {$request->status}";
-            $message = "Order #{$order->code} status updated to {$order->delivery_status}";
-            sendNotification($customer, $message, $order, 'status_update');
+            sendNotification($customer, $message, $order, $request->status);
 
             // Send mail to customer when order delivered or cancelled
             if (in_array($request->status, ['delivered', 'cancelled'])) {

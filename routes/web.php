@@ -116,4 +116,7 @@ Route::group(['middleware' => ['auth:frontend']], function () {
 
     Route::post('/my-orders/{id}/return', [CheckoutController::class, 'returnOrderRequest'])
         ->name('orders.return');
+
+        Route::post('/notification/read/{id}', [NotificationController::class, 'markRead'])
+    ->name('notification.read');
 });
