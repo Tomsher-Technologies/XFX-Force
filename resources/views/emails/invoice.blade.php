@@ -76,12 +76,12 @@
         @php
             $logo = get_setting('header_logo');
         @endphp
-        <div style="background: #b7e3f978;padding: 1.5rem;">
+        <div style="background: #dce4e978;padding: 1.5rem;">
             <table>
                 <tr>
                     <td>
                         <a href="{{ env('APP_URL') }}">
-                            <img loading="lazy" src="{{ asset('assets/img/logo.png') }}" height="75" style="display:inline-block;"/>
+                            <img src="{{ uploaded_asset($logo) }}" height="75" alt="{{ env('APP_NAME') }}" style="display:inline-block;">
                         </a>
                     </td>
                 </tr>

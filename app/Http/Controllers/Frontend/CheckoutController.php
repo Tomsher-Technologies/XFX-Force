@@ -238,15 +238,11 @@ class CheckoutController
 
         $carts->load(['product', 'product_stock']);
 
-       
-
         /* ---------------- Estimated Delivery ---------------- */
-
         $maxDeliveryDays = get_setting('default_delivery_days') ?? 0;
         $estimated_delivery = now()->addDays($maxDeliveryDays);
 
         /* ---------------- Create Order ---------------- */
-
         $order = Order::create([
             'user_id' => $user_id,
             'guest_token' => $temp_user_id,
@@ -270,7 +266,6 @@ class CheckoutController
         ]);
 
         /* ---------------- Tracking ---------------- */
-
         OrderTracking::create([
             'order_id' => $order->id,
             'status' => 'pending',
@@ -279,7 +274,6 @@ class CheckoutController
         ]);
 
         /* ---------------- Calculations ---------------- */
-
         $sub_total = $total_tax = $total_shipping = $discount = $total_coupon_discount = 0;
         $coupon_code = null;
 
