@@ -25,4 +25,18 @@ class NotificationController extends Controller
 
         return view('frontend.notification.index', compact('notifications'));
     }
+
+    public function markRead($id)
+    {
+        $notification = auth('frontend')->user()
+            ->notifications()
+            ->where('id', $id)
+            ->first();
+
+        if($notification){
+            $notification->markAsRead();
+        }
+
+        return response()->json(['success' => true]);
+    }
 }

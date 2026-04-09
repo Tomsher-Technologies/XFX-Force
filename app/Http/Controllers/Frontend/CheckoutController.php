@@ -122,9 +122,7 @@ class CheckoutController
 
 
         $name = $request->first_name . ' ' . $request->last_name;
-
         $billing_shipping_same = $request->same_as_billing ?? null;
-
         $shipping_address = [];
         $billing_address = [];
 
@@ -132,7 +130,6 @@ class CheckoutController
         $user_id = $auth_user_id ? $auth_user_id : null;
 
         /* ---------------- Guest Token ---------------- */
-
         $guest_token = request()->cookie('guest_token');
 
         if (!$guest_token) {
@@ -208,8 +205,8 @@ class CheckoutController
                 $user = User::create([
                     'name' => $name,
                     'email' => $request->billing_email,
-                    'password' => bcrypt(\Illuminate\Support\Str::random(12)),
-                    'user_type' => 'customer'
+                    'password' => null,
+                    'user_type' => 'guest',
                 ]);
 
                 $user_id = $user->id;
@@ -217,7 +214,6 @@ class CheckoutController
         }
 
         /* ---------------- Convert Guest Cart ---------------- */
-
         Cart::where('temp_user_id', $temp_user_id)
             ->update([
                 'user_id' => $user_id,

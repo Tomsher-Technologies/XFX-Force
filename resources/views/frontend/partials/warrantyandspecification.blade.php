@@ -80,7 +80,7 @@ return [
                                 }} cursor-pointer transition-all duration-200" data-cartid="{{$item->id}}" data-warrantyid="{{$warranty->id}}" data-warrantyname="{{$warranty->title}}">
                                 <div class="flex flex-col gap-1">
                                     <span class="text-white font-bold text-[16px]">{{$warranty->title}}</span>
-                                    <p class="text-[13px] text-[#636671]">{{$warranty->description}}</p>
+                                    <div class="text-[13px] text-[#636671]">{!! $warranty->description !!}</div>
                                 </div>
                                 <div class="flex items-center gap-4">
                                     <span class="text-white font-bold text-[18px]">{{$warranty->price > 0 ? format_price($warranty->price): 'FREE' }}</span>
