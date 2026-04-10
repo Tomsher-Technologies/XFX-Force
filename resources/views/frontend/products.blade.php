@@ -10,11 +10,17 @@ Log::info($_REQUEST);
 <!--inner banner-->
 <section class="bg-[#000000] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[100px] xl:pt-[200px] pb-[50px] xl:pb-[100px] relative rounded-br-[30px] xl:rounded-br-[100px] rounded-bl-[30px] xl:rounded-bl-[100px] before:content-[''] before:absolute before:top-[-200%] xl:before:top-[-130%] before:left-[50%] before:translate-x-[-50%] before:w-[900px] before:h-[900px] before:bg-[#2161C7] before:rounded-full before:filter before:blur-[200px] before:z-[0] before:opacity-[0.7]">
 	<div class="section-title mb-[30px] relative">
-		<h3 class="w-full text-[30px] md:text-[50px] text-white font-bold uppercase text-center leading-[40px] md:leading-[50px] m-[0] md:mb-[0px]">Shop by Categories</h3>
+		<h3 class="w-full text-[30px] md:text-[50px] text-white font-bold uppercase text-center leading-[40px] md:leading-[50px] m-[0] md:mb-[0px]">
+			{{ $page_content['title'] ?? 'Shop by Categories' }}
+		</h3>
 	</div>
 	<div class="swiper cateswiper relative">
 		<div class="swiper-wrapper">
-			@foreach ($categories as $category)
+			@php
+				$categoryList = !empty($categorySlider) && count($categorySlider) ? $categorySlider : $categories;
+			@endphp
+
+			@foreach ($categoryList as $category)
 			<div class="swiper-slide" data-swiper-autoplay="8000">
 				<a href="{{ route('shop.category',$category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
 					<div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] xl:p-[35px] rounded-full h-[100px] lg:h-[80px] xl:h-[150px] w-[100px] lg:w-[80px] xl:w-[150px] overflow-hidden">
@@ -271,20 +277,29 @@ Log::info($_REQUEST);
 				<!--// Desktop Filters -->
 
 				<!--promotion banners-->
-				<div class="swiper promobnrswiper relative overflow-hidden rounded-[20px]">
-					<div class="swiper-wrapper">
+				@if(!empty($banners))
+				<div class="swiper promobnrswiper relative">
+                    <div class="swiper-wrapper">
+						@foreach($banners as $banner)
 						<div class="swiper-slide" data-swiper-autoplay="8000">
-							<a href="#"><img src="src/images/sidebar-ad-banner-01.webp" alt="" title=""></a>
-						</div>
+                            <a href="{{ getBannerUrl($banner) }}">
+								<img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" title="{{ $banner->title }}">
+							</a>
+                        </div>
+						@endforeach
 					</div>
+					<span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
 				</div>
+				@endif
 				<!--//promotion banners-->
 			</div>
 
 			<div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 
 				<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[0px] w-full">
-					<h1 class="text-[30px] md:text-[50px] text-[white] font-bold text-center xl:text-left uppercase w-full">All Products</h1>
+					<h1 class="text-[30px] md:text-[50px] text-[white] font-bold text-center xl:text-left uppercase w-full">
+						{{ $page_content['listing_title'] ?? 'All Products' }} 
+					</h1>
 					<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[15px] w-full">
 						<span class="text-[#898989] text-[14px] w-full text-center xl:text-right" id="product-count" data-per-page="{{ $products->perPage() }}" data-total="{{ $products->total() }}">
 							@if($products->count() > 0)

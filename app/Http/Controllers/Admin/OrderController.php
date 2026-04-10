@@ -491,7 +491,7 @@ class OrderController extends Controller
                         <p>Hi {$customerName},</p>
                         <p>Your order has been <b>cancelled</b>.</p>
                         <p><b>Order Code:</b> {$orderCode}</p>
-                        <p>Thank you for shopping with us.</p>
+                        <p>Thank you for shopping with us. We hope to serve you again soon!</p>
                         <p>Best regards,</p>
                         <p>Team ".env('APP_NAME')."</p>";
                     $subject = "Your Order #{$orderCode} is Cancelled";

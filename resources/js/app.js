@@ -707,8 +707,11 @@ var swiper = new Swiper(".productswiper", {
         el: ".swiper-pagination",
         dynamicBullets: true,
     },
+    dots: true,
     loop: true,
     speed: 5000,
+    freeMode: false,
+    parallax: true,
     navigation: {
         prevEl: ".swiper-button-prev",
         nextEl: ".swiper-button-next",
@@ -716,14 +719,10 @@ var swiper = new Swiper(".productswiper", {
     autoplay: { delay: 3000, disableOnInteraction: false },
     allowTouchMove: true,
     breakpoints: {
-        320: { slidesPerView: 2, spaceBetween: 5 },
-        640: { slidesPerView: 2, spaceBetween: 15 },
+        640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
         768: { slidesPerView: 2, spaceBetween: 15 },
         1024: { slidesPerView: 3, spaceBetween: 15 },
-        1280: { slidesPerView: 3, spaceBetween: 15 },
-        1300: { slidesPerView: 3, spaceBetween: 15 },
-        1366: { slidesPerView: 3, spaceBetween: 15 },
-        1400: { slidesPerView: 5, spaceBetween: 15 },
+        1280: { slidesPerView: 4, spaceBetween: 15 },
     },
 });
 
@@ -807,17 +806,7 @@ var swiper = new Swiper(".promobnrswiper", {
     allowTouchMove: true,
 });
 
-// const buttons = document.querySelectorAll('.tab-btn');
 
-// buttons.forEach(btn => {
-//   btn.addEventListener('click', (e) => {
-//     // Remove active styles from all
-//     buttons.forEach(b => b.className = 'tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[14px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black] focus:bg-[white] focus:text-[black] active:bg-[white] active:text-[black]');
-
-//     // Add active styles to clicked
-//     e.target.className = 'tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[14px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black] focus:bg-[white] focus:text-[black] active:bg-[white] active:text-[black]';
-//   });
-// });
 
 // Select all buttons with the class 'tab-btn'
 const tabButtons = document.querySelectorAll(".tab-btn");

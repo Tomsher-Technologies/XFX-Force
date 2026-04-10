@@ -1,6 +1,7 @@
 @foreach($products as $product)
 @if($product->stocks->isNotEmpty())
 @foreach($product->stocks as $stock)
+@if($stock->qty > 0)
 <div>
     <article onclick="viewProductDetails({{ $stock->id }})" class="group product-card w-full relative border border-transparent rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-variant-id = "{{ $stock->id }}" data-category-id="{{ $product->category_id }}">
         <div class="product-img h-[130px] md:h-[150px] w-full relative z-[1] bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]" >
@@ -31,7 +32,7 @@
         </div>
         <div class="product-content p-[15px] md:p-[20px] flex flex-col gap-[10px] md:gap-[15px] z-[1] w-full">
             <h4 class="text-white text-[13px] md:text-[15px] leading-[20px] md:leading-[25px] font-medium line-clamp-2">
-               {{ $stock->stock_title ?? $product->name }}
+               {{ $stock->stock_title ?? $product->name }} - {{ $stock->model }} - {{ $product->brand->name }}
             </h4>
             <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[15px] leading-[20px] m-[0] font-bold align-center items-center gap-[10px]">
                 <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]" alt="AED" title="Symbol of AED">{{ number_format($stock->offer_price, 2) }} 
@@ -65,6 +66,7 @@
         </div>
     </article>
 </div>
+@endif
 @endforeach
 @endif
 @endforeach

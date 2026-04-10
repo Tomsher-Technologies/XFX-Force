@@ -72,7 +72,7 @@ Route::get('/shop/brand/{slug}', [ProductController::class, 'shopByBrand'])->nam
 
 Route::get('/buildyourpc', [BuildPcController::class, 'index'])->name('buildyourpc');
 Route::get('/buildyourpc/products/details/{stockId}', [BuildPcController::class, 'getProductDetails']);
-Route::get('/buildyourpc/products/{category_id}/{brand_id?}', [BuildPcController::class, 'getProductsByCategory']);
+Route::get('/buildyourpc/products/{category_id}/{brand_id?}/{model?}', [BuildPcController::class, 'getProductsByCategory']);
 
 Route::get('/buildyourpc/savePcBuilder', [BuildPcController::class, 'savePcBuilder']);
 Route::get('/buildyourpc/getBuildData', [BuildPcController::class, 'getBuildData']);
@@ -88,6 +88,8 @@ Route::get('/order-fail', [OrderController::class, 'fail'])->name('order.fail');
 Route::get('/search-products', [ProductController::class, 'searchProducts']);
 Route::get('/brands', [BrandController::class, 'index'])->name('brands.list');
 Route::get('/brands/{slug}', [BrandController::class, 'show'])->name('brands.show');
+Route::get('/builder/models', [BuildPcController::class, 'getModels']);
+
 
 Route::group(['middleware' => ['auth:frontend']], function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');

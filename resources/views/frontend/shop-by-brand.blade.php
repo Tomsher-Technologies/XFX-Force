@@ -237,14 +237,21 @@
                 <!-- Desktop Filters -->
 
                 <!--promotion banners-->
-                <div class="swiper promobnrswiper relative overflow-hidden rounded-[20px]">
+				@if(!empty($banners))
+				<div class="swiper promobnrswiper relative">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide" data-swiper-autoplay="8000">
-                            <a href="#"><img src="src/images/sidebar-ad-banner-01.webp" alt="" title=""></a>
+						@foreach($banners as $banner)
+						<div class="swiper-slide" data-swiper-autoplay="8000">
+                            <a href="{{ getBannerUrl($banner) }}">
+								<img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" title="{{ $banner->title }}">
+							</a>
                         </div>
-                    </div>
-                </div>
-                <!--//promotion banners-->
+						@endforeach
+					</div>
+					<span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+				</div>
+				@endif
+				<!--//promotion banners-->
             </div>
 
             <div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
