@@ -662,7 +662,7 @@ $hideFooter = true;
                 // Validate before switching
                 if (selectedCount < minSelect) {
                     toastr.warning(`Please select at least ${minSelect} product(s) in ${categoryName}`);
-                    return;
+                    // return;
                 }
             }
 
@@ -775,60 +775,66 @@ $hideFooter = true;
         const minusBtn = container.querySelector('.minus-btn');
         const iconWrapper = minusBtn.querySelector('.icon-wrapper');
         const counterWrapper = container.querySelector('.counter-wrapper');
-        let currentVal = parseInt(input.value);
+        let currentVal = parseInt(input.value) || 0;
         let newVal = currentVal + change;
 
         const productId = container.dataset.productId;
         const variantId = container.dataset.stockId;
         const categoryId = container.dataset.categoryId;
 
-        
+        const stockQty = parseInt(container.dataset.stockQty) || 0;
+        const cartQty = parseInt(container.dataset.cartQty) || 0;
+
+        // Available qty user can select
+        const availableQty = stockQty - cartQty;
+
+        // Stop if exceeding stock
+        if (newVal > availableQty) {
+            toastr.warning(`Only ${availableQty} item(s) available`);
+            return;
+        }
+
         if (!checkCategoryLimit(categoryId)) {
             return;
         }
 
         if (newVal >= 0) {
-            if(source == 'list'){
+            if (source == 'list') {
                 const selectBtn = container.querySelector('.action-btn');
                 selectProduct(selectBtn, newVal);
-            }else{
+            } else {
                 const builderId = document.getElementById('pcBuilderId').value;
-                if(newVal == 0){
+                if (newVal == 0) {
                     const categoryElement = document.querySelector(`.nav-item[data-category-id="${categoryId}"]`);
-                    if(categoryElement){
+                    if (categoryElement) {
                         const minLimit = categoryElement.dataset.minSelect;
                         const categoryName = categoryElement.dataset.categoryName;
                         const selectedCount = document.querySelectorAll(
                             `#products-review-page #review_block .review-product-item[data-category-id="${categoryId}"]`
                         ).length;
-                        
-                        if(selectedCount <= minLimit) {
+                        if (selectedCount <= minLimit) {
                             toastr.warning(`Please select at least ${minLimit} product(s) in ${categoryName}`);
                             return;
                         }
                     }
                 }
-                
                 savePcBuilder(productId, variantId, categoryId, builderId, newVal);
                 proceedToOrder();
                 iconWrapper.innerHTML = (newVal > 1) ? minusIcon : trashIcon;
             }
-            
         }
+
         if (newVal > 0) {
             input.value = newVal;
             iconWrapper.innerHTML = (newVal > 1) ? minusIcon : trashIcon;
         } else {
-            if(source == 'list'){
+            if (source == 'list') {
                 counterWrapper.classList.add('hidden');
                 counterWrapper.classList.remove('flex');
                 container.querySelector('.action-btn').classList.remove('hidden');
-                // Reset for next time
                 input.value = 0;
                 iconWrapper.innerHTML = trashIcon;
             }
-
-            
         }
     }
 
@@ -1238,9 +1244,9 @@ $hideFooter = true;
         if (minSelect && maxSelect && maxSelect !== "null") {
             message = `Select ${minSelect} - ${maxSelect} product(s) in ${categoryName}`;
         } 
-        else if (minSelect) {
-            message = `Select at least ${minSelect} product(s) in ${categoryName}`;
-        } 
+        // else if (minSelect) {
+        //     message = `Select at least ${minSelect} product(s) in ${categoryName}`;
+        // } 
         else if (maxSelect && maxSelect !== "null") {
             message = `You can select up to ${maxSelect} product(s) in ${categoryName}`;
         }

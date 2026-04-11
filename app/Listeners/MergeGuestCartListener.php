@@ -10,7 +10,7 @@ class MergeGuestCartListener
 {
     public function handle(Login $event)
     {
-        $user = $event->user;
+        $user_id = auth('frontend')->check() ? auth('frontend')->user()->id : null;
         $guestToken = request()->cookie('guest_token');
 
         if (!$guestToken) {
@@ -24,7 +24,7 @@ class MergeGuestCartListener
 
         foreach ($guestCarts as $cart) {
 
-            $existing = Cart::where('user_id', $user->id)
+            $existing = Cart::where('user_id', $user_id)
                 ->where('product_id', $cart->product_id)
                 ->where('product_stock_id', $cart->product_stock_id)
                 ->where('status', 'pending')
@@ -39,7 +39,7 @@ class MergeGuestCartListener
             } else {
                 // move cart to user
                 $cart->update([
-                    'user_id' => $user->id,
+                    'user_id' => $user_id,
                     'temp_user_id' => null
                 ]);
             }
@@ -52,7 +52,7 @@ class MergeGuestCartListener
 
         if ($builder) {
 
-            $existingBuilder = PcBuilderSetup::where('user_id', $user->id)
+            $existingBuilder = PcBuilderSetup::where('user_id', $user_id)
                 ->where('is_ordered', false)
                 ->first();
 
@@ -71,7 +71,7 @@ class MergeGuestCartListener
             } else {
 
                 $builder->update([
-                    'user_id' => $user->id,
+                    'user_id' => $user_id,
                     'temp_user_id' => null
                 ]);
             }

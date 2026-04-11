@@ -4,7 +4,7 @@
 @if($stock->qty > 0)
 <div>
     <article onclick="viewProductDetails({{ $stock->id }})" class="group product-card w-full relative border border-transparent rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-variant-id = "{{ $stock->id }}" data-category-id="{{ $product->category_id }}">
-        <div class="product-img h-[130px] md:h-[150px] w-full relative z-[1] bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]" >
+        <div class="product-img h-[130px] md:h-[150px] w-full relative z-[1] bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]">
             @php
                 $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
@@ -40,7 +40,7 @@
                 <span class="text-[#898989] font-medium line-through">{{ number_format($stock->price, 2) }}</span>
                 @endif
             </h5>
-            <div class="counter-container w-full hidden xl:block">
+            <div class="counter-container w-full hidden xl:block"  data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id = "{{ $product->category_id }}" data-stock-qty="{{ $stock->qty }}" data-cart-qty="{{ checkCartQuantityPerVariant($stock->id) }}">
                 <button onclick="selectProduct(this)" class="action-btn w-full text-center text-white uppercase text-[13px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] bg-transparent hover:bg-[#2A7CFF] hover:border-[#2A7CFF] transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id = "{{ $product->category_id }}">
                     Select
                 </button>
