@@ -50,7 +50,7 @@
 <!--product single intro-->
 <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] md:pt-[0px] xl:mb-[100px]">
     <div class="flex flex-col xl:grid xl:grid-cols-11 gap-[30px] xl:gap-[100px]">
-        <div class="col-span-5 overflow-hidden h-[50vh] xl:h-[70vh] w-full relative">
+        <div class="col-span-5 overflow-hidden h-[50vh] xl:h-[70vh] w-full relative bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]">
             @php
                 $firstStock = $selectedStock; // This should be the stock user has selected
                 $slides = [];
@@ -95,7 +95,7 @@
                                 <img src="{{ Storage::url($img) }}" 
                                     alt="{{ $product->name }}" 
                                     title="{{ $product->name }}" 
-                                    class="w-full h-full object-cover object-center">
+                                    class="w-full h-full object-contain object-center">
                             </a>
                         </div>
                     @endforeach
@@ -137,8 +137,31 @@
                 @if($firstStock->model) {{ $firstStock->model }} @endif
                 @if($firstStock->sku) | {{ $firstStock->sku }} @endif
             </p>
+
+
+            <!--rating-->
+            <a href="#" class="flex items-center gap-[8px] my-2 justify-center xl:justify-start">
+                <div class="flex items-center gap-[2px]">
+                    @for ($i = 0; $i < 4; $i++)
+                        <svg class="w-3 h-3 md:w-4 md:h-4 text-[#FFB800] fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                    @endfor
+
+                    <div class="relative">
+                        <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-600 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                        <div class="absolute top-0 left-0 overflow-hidden w-[50%]">
+                            <svg class="w-3 h-3 md:w-4 md:h-4 text-[#FFB800] fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                        </div>
+                    </div>
+                </div>
+                <span class="text-white text-[12px] md:text-[14px] font-medium">4.5</span>
+                <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">(120 reviews)</span>
+            </a>
+            <!--//rating-->
+
             </div>
             <input type="hidden" value="{{ $firstStock->id}}" id="stock_id">
+
+            
 
             <!--varients-->
             <div class="flex flex-col gap-[30px] md:gap-6 text-center md:text-left border-t md:border-t-0 border-[#ffffff30] mt-[30px] md:mt-[0px] py-[30px] md:py-[0px]">
@@ -362,7 +385,195 @@ if(!empty($overviewContent)) {
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-4 py-10">
+    <main class="max-w-6xl mx-auto px-[16px] md:px-[30px] lg:px-[50px] py-10">
+
+
+        <!-- <div class="w-full" x-data="{ activeReview: null }">
+            <svg width="0" height="0" class="absolute">
+                <defs>
+                    <linearGradient id="half-star-grad">
+                        <stop offset="50%" stop-color="#FBBF24" />
+                        <stop offset="50%" stop-color="#374151" />
+                    </linearGradient>
+                </defs>
+            </svg>
+
+            <div class="border-b border-gray-800 pb-4 mb-6">
+                <h3 class="text-white text-2xl font-medium font-sans">User Reviews</h3>
+                <p class="text-gray-400 text-sm mt-1">What our customers are saying about this product.</p>
+            </div>
+
+            <div class="grid grid-cols-1">
+                
+                <div class="border-b border-gray-800 overflow-hidden transition-all duration-300">
+                    <div class="py-5 cursor-pointer flex items-start justify-between" @click="activeReview === 1 ? activeReview = null : activeReview = 1">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-blue-500 font-medium shrink-0">AS</div>
+                            <div>
+                                <h4 class="text-white font-medium">Ahmed Salem</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <div class="flex text-[#FBBF24]">
+                                        <template x-for="i in 4"><svg class="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg></template>
+                                        <svg class="w-3 h-3" viewBox="0 0 20 20"><path fill="url(#half-star-grad)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                    </div>
+                                    4.5 <span class="text-gray-500 text-xs block">| 2 Reviews | 3 days ago</span>
+                                </div>
+                                <p class="text-gray-400 text-sm mt-3 transition-all" :class="activeReview === 1 ? 'hidden' : 'line-clamp-1'">
+                                    The performance is beyond expectations, especially for 4K video editing and heavy gaming. The cooling is silent even under load. The build quality feels premium and fits perfectly in my setup.
+                                </p>
+                            </div>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-500 transition-transform" :class="activeReview === 1 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+
+                    <div x-show="activeReview === 1" x-collapse x-cloak class="bg-white/5 rounded-xl mb-4">
+                        <div class="p-6">
+                            <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                                The performance is beyond expectations, especially for 4K video editing and heavy gaming. The cooling is silent even under load. The build quality feels premium and fits perfectly in my setup.
+                            </p>
+                            
+                            <div class="ml-6 border-l-2 border-gray-800 pl-6 space-y-6">
+                                <div class="group">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-blue-500 text-[11px] font-medium uppercase">Staff Response</span>
+                                        <span class="text-gray-500 text-[10px]">2 days ago</span>
+                                    </div>
+                                    <p class="text-gray-400 text-sm italic">"Thank you Ahmed! We're glad the cooling system is meeting your needs for 4K work."</p>
+                                    
+                                    <div x-data="{ openReply: false }" class="mt-2">
+                                        <button @click="openReply = !openReply" class="text-[10px] font-medium text-gray-200 hover:text-blue-500 uppercase transition-colors">Reply to this</button>
+                                        <div x-show="openReply" x-transition class="mt-3">
+                                            <textarea class="w-full bg-[#111518] border border-gray-800 rounded-lg p-3 text-white text-xs focus:border-blue-500 outline-none" rows="2" placeholder="Write a response..."></textarea>
+                                            <button class="mt-2 bg-blue-600 text-white text-[10px] font-medium px-3 py-1 rounded-[5px] uppercase">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div x-data="{ openReply: false }" class="mt-6 pt-4 border-t border-gray-800/50">
+                                <button @click="openReply = !openReply" class="text-xs font-medium uppercase text-blue-500 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+                                    Reply to Review
+                                </button>
+                                <div x-show="openReply" x-transition class="mt-4">
+                                    <textarea class="w-full bg-[#111518] border border-gray-800 rounded-xl p-4 text-white text-sm focus:border-blue-500 outline-none" rows="3" placeholder="Write a response..."></textarea>
+                                    <button class="mt-2 bg-blue-600 text-white text-[11px] font-medium px-5 py-2 rounded-[5px] uppercase">Submit Reply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-b border-gray-800 overflow-hidden transition-all duration-300">
+                    <div class="py-5 cursor-pointer flex items-start justify-between" @click="activeReview === 2 ? activeReview = null : activeReview = 2">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-blue-500 font-medium shrink-0">JD</div>
+                            <div>
+                                <h4 class="text-white font-medium">Jason D.</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <div class="flex text-[#FBBF24]">
+                                        <template x-for="i in 4"><svg class="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg></template>
+                                        <svg class="w-3 h-3 text-gray-700 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                    </div>
+                                    4 <span class="text-gray-500 text-xs">| 2 Reviews | 3 days ago</span>
+                                </div>
+                                <p class="text-gray-400 text-sm mt-3 transition-all" :class="activeReview === 2 ? 'hidden' : 'line-clamp-1'">
+                                    Solid components, but the shipping box was a bit damaged on arrival...
+                                </p>
+                            </div>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-500 transition-transform" :class="activeReview === 2 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div x-show="activeReview === 2" x-collapse x-cloak class="bg-white/5 rounded-xl mb-4">
+                        <div class="p-6">
+                            <p class="text-gray-300 text-sm leading-relaxed mb-4">The internals are amazing. My only complaint is the external packaging. Everything inside was safe, but the box looked like it had a rough trip.</p>
+                            <div x-data="{ openReply: false }">
+                                <button @click="openReply = !openReply" class="text-xs font-medium uppercase text-blue-500 flex items-center gap-2">Reply</button>
+                                <div x-show="openReply" x-transition class="mt-4">
+                                    <textarea class="w-full bg-[#111518] border border-gray-800 rounded-xl p-4 text-white text-sm focus:border-blue-500 outline-none" rows="3" placeholder="Write a response..."></textarea>
+                                    <button class="mt-2 bg-blue-600 text-white text-[11px] font-medium px-5 py-2 rounded-[5px] uppercase">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-b border-gray-800 overflow-hidden transition-all duration-300">
+                    <div class="py-5 cursor-pointer flex items-start justify-between" @click="activeReview === 3 ? activeReview = null : activeReview = 3">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-blue-500 font-medium shrink-0">MK</div>
+                            <div>
+                                <h4 class="text-white font-medium">Mariam Khan</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <div class="flex text-[#FBBF24]">
+                                        <template x-for="i in 4"><svg class="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg></template>
+                                        <svg class="w-3 h-3 text-gray-700 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                    </div>
+                                    4 <span class="text-gray-500 text-xs">| 2 Reviews | 3 days ago</span>
+                                </div>
+                                <p class="text-gray-400 text-sm mt-3 transition-all" :class="activeReview === 3 ? 'hidden' : 'line-clamp-1'">
+                                    Super fast shipping to Dubai. Received the card in less than 24 hours!
+                                </p>
+                            </div>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-500 transition-transform" :class="activeReview === 3 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div x-show="activeReview === 3" x-collapse x-cloak class="bg-white/5 rounded-xl mb-4">
+                        <div class="p-6">
+                            <p class="text-gray-300 text-sm leading-relaxed mb-4">Extremely happy with the service. The delivery was lightning fast and the product is working flawlessly.</p>
+                            <div x-data="{ openReply: false }">
+                                <button @click="openReply = !openReply" class="text-xs font-medium uppercase  text-blue-500 flex items-center gap-2">Reply</button>
+                                <div x-show="openReply" x-transition class="mt-4">
+                                    <textarea class="w-full bg-[#111518] border border-gray-800 rounded-xl p-4 text-white text-sm focus:border-blue-500 outline-none" rows="3" placeholder="Write a response..."></textarea>
+                                    <button class="mt-2 bg-blue-600 text-white text-[11px] font-medium px-5 py-2 rounded-[5px] uppercase">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#1C2228] border border-gray-800 rounded-[20px] p-8 mt-12">
+                <h4 class="text-white text-xl font-medium mb-6">Write a Review</h4>
+                <form class="space-y-6" x-data="{ 
+                    rating: 0,
+                    updateRating(i) {
+                        // If already at i-0.5, set to full i. Else set to half i-0.5.
+                        this.rating = (this.rating === i - 0.5) ? i : i - 0.5;
+                    }
+                }">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-gray-400 text-xs uppercase font-medium tracking-wider">Product Rating: <span class="text-[#FBBF24]" x-text="rating"></span></label>
+                        <div class="flex gap-1">
+                            <template x-for="i in 5">
+                                <button type="button" @click="updateRating(i)" class="focus:outline-none transition-transform active:scale-90">
+                                    <svg class="w-8 h-8" viewBox="0 0 20 20">
+                                        <path x-show="rating >= i" class="text-[#FBBF24] fill-current" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        
+                                        <path x-show="rating === i - 0.5" fill="url(#half-star-grad)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        
+                                        <path x-show="rating < i - 0.5" class="text-gray-700 fill-current" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                    <textarea rows="4" placeholder="Share your experience..." class="w-full bg-white/5 border border-white/10 rounded-[10px] p-4 text-white text-sm focus:border-blue-500 outline-none resize-none"></textarea>
+                    <button type="submit" class="w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer">
+                        Submit Review
+                    </button>
+                </form>
+            </div>
+        </div> -->
+
+        <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+
+
+
+
+
         @if(!empty($overviewContent))
         <section x-show="activeTab === 'overview'" x-transition class="tab-panel" id="overview" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px] md:py-[100px]">
             <div class="mt-[30px]">

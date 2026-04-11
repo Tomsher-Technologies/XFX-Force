@@ -659,13 +659,13 @@ var swiper = new Swiper(".cateswiper", {
     autoplay: { delay: 3000, disableOnInteraction: false },
     allowTouchMove: true,
     breakpoints: {
-        320: { slidesPerView: 3, spaceBetween: 15 },
-        640: { slidesPerView: 3, spaceBetween: 15 },
-        768: { slidesPerView: 5, spaceBetween: 15 },
+        320: { slidesPerView: 4, spaceBetween: 15 },
+        640: { slidesPerView: 4, spaceBetween: 15 },
+        768: { slidesPerView: 6, spaceBetween: 15 },
         1024: { slidesPerView: 7, spaceBetween: 15 },
         1280: { slidesPerView: 5, spaceBetween: 15 },
-        1300: { slidesPerView: 6, spaceBetween: 15 },
-        1366: { slidesPerView: 7, spaceBetween: 15 },
+        1300: { slidesPerView: 8, spaceBetween: 15 },
+        1366: { slidesPerView: 8, spaceBetween: 10 },
     },
 });
 
