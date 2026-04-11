@@ -37,6 +37,7 @@ $hideFooter = true;
             <input type="hidden" id="pcBuilderId" value="{{ $builder->id ?? '' }}">
             <div>
                 <div class="space-y-[5px]">
+                    @if($builderCategories->isNotEmpty())
                     @foreach ($builderCategories as $builderCategory)
                     <a href="#" class="relative nav-item text-[15px] flex items-center gap-4 px-4 py-3 rounded-xl text-gray-400 hover:bg-[#252C33] hover:text-white transition-all duration-[600ms] group" data-category-id="{{ $builderCategory->category_id }}" data-min-select="{{ $builderCategory->min_select }}" data-max-select="{{ $builderCategory->max_select }}" data-category-name="{{ $builderCategory->category->name }}">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -48,6 +49,7 @@ $hideFooter = true;
                         </svg>
                     </a>
                     @endforeach
+                    @endif
                 </div>
             </div>
 
@@ -662,7 +664,7 @@ $hideFooter = true;
                 // Validate before switching
                 if (selectedCount < minSelect) {
                     toastr.warning(`Please select at least ${minSelect} product(s) in ${categoryName}`);
-                    // return;
+                    return;
                 }
             }
 

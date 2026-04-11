@@ -32,7 +32,7 @@
         </div>
         <div class="product-content p-[15px] md:p-[20px] flex flex-col gap-[10px] md:gap-[15px] z-[1] w-full">
             <h4 class="text-white text-[13px] md:text-[15px] leading-[20px] md:leading-[25px] font-medium line-clamp-2">
-               {{ $stock->stock_title ?? $product->name }} - {{ $stock->model }} - {{ $product->brand->name }}
+               {{ $stock->stock_title ?? $product->name }} 
             </h4>
             <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[15px] leading-[20px] m-[0] font-bold align-center items-center gap-[10px]">
                 <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]" alt="AED" title="Symbol of AED">{{ number_format($stock->offer_price, 2) }} 
