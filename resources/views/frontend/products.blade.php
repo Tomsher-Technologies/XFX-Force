@@ -539,6 +539,7 @@ Log::info($_REQUEST);
 	/* FILTER FUNCTION */
 
 	function filterProducts() {
+
 		page = 1;
 		document.getElementById('load-more-wrapper').style.display = 'block';
 
@@ -562,46 +563,52 @@ Log::info($_REQUEST);
 		) || 300000;
 
 		const url = `/products`;
-		const params = new URLSearchParams({
+
+		// Store filters globally
+		currentFilters = new URLSearchParams({
 			min_price,
 			max_price,
 			sort: currentSort,
 			view: currentView
 		});
 
-		categories.forEach(cat => params.append('categories[]', cat));
-		selectedBrands.forEach(brand => params.append('brands[]', brand));
+		categories.forEach(cat => currentFilters.append('categories[]', cat));
+		selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
 
-		return fetch(`${url}?${params.toString()}`, {
+		return fetch(`${url}?${currentFilters.toString()}`, {
 				method: 'GET',
 				headers: {
 					'X-Requested-With': 'XMLHttpRequest'
 				}
 			})
-			.then(res => res.text())
-			.then(html => {
+			.then(res => res.json())
+			.then(data => {
+
 				const wrapper = document.getElementById('product-list-wrapper');
-				wrapper.innerHTML = html;
+				wrapper.innerHTML = data.html;
+				updateProductCount();
 
-				// Scroll to top of product list
-				const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100; // adjust 100px if header exists
-				window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+				// Show / Hide load more
+				const loadMore = document.getElementById('load-more-wrapper');
 
-				// Update product count dynamically
-				const countSpan = document.getElementById('product-count');
-				if (countSpan) {
-					const productCount = wrapper.querySelectorAll('.product-card').length;
-					if (productCount === 0) {
-						countSpan.textContent = `Items 0 of 0`;
-					} else {
-						countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
-					}
+				if (data.hasMore) {
+					loadMore.style.display = 'block';
+				} else {
+					loadMore.style.display = 'none';
+					document.getElementById('product-list-wrapper').innerHTML = `
+						<div class="text-white text-center py-10">
+							No Products Found!
+						</div>
+					`;
 				}
 
+				// Scroll
+				const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
+				window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+
+				
 			})
-
 			.catch(err => console.error('Filter products error:', err));
-
 	}
 
 	/* CLEAR FILTER */
@@ -713,22 +720,38 @@ Log::info($_REQUEST);
 		loader.classList.remove('hidden');
 
 		try {
-			const res = await fetch(`{{ route('products') }}?page=${page}`, {
+
+			currentFilters.set('page', page);
+
+			const res = await fetch(`/products?${currentFilters.toString()}`, {
 				headers: {
 					'X-Requested-With': 'XMLHttpRequest'
 				}
 			});
 
-			const html = await res.text();
-			document.getElementById('product-list')
-				.insertAdjacentHTML('beforeend', html);
+			const data = await res.json();
+
+			if (!data.html.trim()) {
+				document.getElementById('load-more-wrapper').style.display = 'none';
+				return;
+			}
+
+			document.getElementById('product-list-wrapper')
+				.insertAdjacentHTML('beforeend', data.html);
+
+			if (!data.hasMore) {
+				document.getElementById('load-more-wrapper').style.display = 'none';
+			}
+
 			updateProductCount();
+
 		} catch (err) {
 			console.error(err);
 		} finally {
 			loader.classList.add('hidden');
 		}
 	}
+	
 
 	function updateProductCount() {
 		const countEl = document.getElementById('product-count');
@@ -740,6 +763,11 @@ Log::info($_REQUEST);
 			visible = document.querySelectorAll('#product-list .product-card').length;
 		} else {
 			visible = document.querySelectorAll('#product-list .product-card-list').length;
+		}
+
+		if (visible === 0) {
+			countEl.innerText = `Items 0 of 0`;
+			return;
 		}
 		countEl.innerText = `Items 1-${visible} of ${visible}`;
 	}

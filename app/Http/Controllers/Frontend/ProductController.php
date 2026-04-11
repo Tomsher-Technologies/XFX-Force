@@ -494,7 +494,11 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $products->with('stocks')->distinct()->paginate(12);
+        // $products = $products->with('stocks')->distinct()->paginate(12);
+        $products = $products
+            ->groupBy('products.id')
+            ->with('stocks')
+            ->paginate(12);
         $categories = Category::withCount('products')->where('is_active', 1)->orderBy('name', 'asc')->get();
 
         // Sort children alphabetically
@@ -511,11 +515,12 @@ class ProductController extends Controller
 
 
         if ($request->ajax()) {
-            if ($products->isEmpty() && !$request->scroll) {
-                return '<div class="text-white text-center py-10">No Products Found!</div>';
-            }
-            return view('frontend.partials.product-list', compact('products', 'view'))->render();
+            return response()->json([
+                'html' => view('frontend.partials.product-list', compact('products', 'view'))->render(),
+                'hasMore' => $products->hasMorePages()
+            ]);
         }
+        
 
 
         $page = Page::where('type', 'product_listing')->first();
@@ -791,7 +796,11 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $products->with('stocks')->distinct()->paginate(12);
+        // $products = $products->with('stocks')->distinct()->paginate(12);
+        $products = $products
+            ->groupBy('products.id')
+            ->with('stocks')
+            ->paginate(12);
 
         $brands = Brand::withCount('products')->whereIn('id', $products->pluck('brand_id')->filter()->unique())->orderBy('name', 'asc')->get();
 
@@ -913,7 +922,11 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $productsQuery->with('stocks')->distinct()->paginate(12);
+        // $products = $productsQuery->with('stocks')->distinct()->paginate(12);
+        $products = $productsQuery
+            ->groupBy('products.id')
+            ->with('stocks')
+            ->paginate(12);
 
         // Product count
         $productCount = $products->count();
