@@ -144,10 +144,10 @@
                 @foreach ($categories as $category)
                     <div class="swiper-slide" data-swiper-autoplay="8000">
                         <a href="{{ route('shop.category', $category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
-                            <div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] xl:p-[35px] rounded-full h-[100px] lg:h-[80px] xl:h-[150px] w-[100px] lg:w-[80px] xl:w-[150px] overflow-hidden">
+                            <div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[100px] lg:h-[80px] xl:h-[95px] w-[100px] lg:w-[80px] xl:w-[95px] overflow-hidden">
                                 <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
                             </div>
-                            <h4 class="text-white text-center font-medium text-[15px] xl:text-[20px] capitalize">{{ $category->name }}</h4>
+                            <h4 class="text-white text-center font-medium text-[15px] xl:text-[16px] capitalize">{{ $category->name }}</h4>
                         </a>
                     </div>
                 @endforeach
