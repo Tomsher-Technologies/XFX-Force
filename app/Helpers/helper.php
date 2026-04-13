@@ -453,7 +453,7 @@ if (!function_exists('get_product_image')) {
     {
         if ($path) {
             if ($size == 'full') {
-                return app('url')->asset($path);
+                return app('url')->asset('storage/'.$path);
             } else {
                 $fileName = pathinfo($path)['filename'];
                 $ext   = pathinfo($path)['extension'];
