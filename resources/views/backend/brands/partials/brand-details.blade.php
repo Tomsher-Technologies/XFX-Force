@@ -1,3 +1,16 @@
+@php
+$details = [];
+
+// If $brand is an object
+if (isset($brand) && is_object($brand) && isset($brand->details)) {
+    $details = json_decode($brand->details, true) ?? [];
+}
+// If $brand is an array
+elseif (isset($brand) && is_array($brand) && isset($brand['details'])) {
+    $details = json_decode($brand['details'], true) ?? [];
+}
+@endphp
+
 <div class="row">
     <div class="col-xl-12 mx-auto">
         <div class="card">
@@ -9,7 +22,7 @@
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Title</label>
-                        <input type="text" name="details[title]" value="{{ $details['title'] ?? '' }}" class="form-control form-control-sm">
+                        <input type="text" name="details[title]" value="{{ old('details.title', $details['title'] ?? '') }}" class="form-control form-control-sm">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -32,7 +45,7 @@
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Description</label>
-                        <textarea name="details[description]" class="form-control" rows="5">{{ $details['description'] ?? '' }}</textarea>
+                        <textarea name="details[description]" class="form-control" rows="5">{{ old('details.description', $details['description'] ?? '') }}</textarea>
                     </div>
                 </div>
 
@@ -41,14 +54,14 @@
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Main Heading</label>
-                        <input type="text" name="details[mid_title]" value="{{ $details['mid_title'] ?? '' }}" class="form-control form-control-sm">
+                        <input type="text" name="details[mid_title]" value="{{ old('details.mid_title', $details['mid_title'] ?? '') }}" class="form-control form-control-sm">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Sub Heading</label>
-                        <input type="text" name="details[mid_sub_title]" value="{{ $details['mid_sub_title'] ?? '' }}" class="form-control form-control-sm">
+                        <input type="text" name="details[mid_sub_title]" value="{{ old('details.mid_sub_title', $details['mid_sub_title'] ?? '') }}" class="form-control form-control-sm">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -71,7 +84,7 @@
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Description</label>
-                        <textarea name="details[mid_description]" class="form-control" rows="5">{{ $details['mid_description'] ?? '' }}</textarea>
+                        <textarea name="details[mid_description]" class="form-control" rows="5">{{ old('details.mid_description', $details['mid_description'] ?? '') }}</textarea>
                     </div>
                 </div>
 
@@ -81,14 +94,14 @@
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Heading</label>
-                        <input type="text" name="details[last_title]" value="{{ $details['last_title'] ?? '' }}" class="form-control form-control-sm">
+                        <input type="text" name="details[last_title]" value="{{ old('details.last_title', $details['last_title'] ?? '') }}" class="form-control form-control-sm">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Description</label>
-                        <textarea name="details[last_description]" class="form-control" rows="5">{{ $details['last_description'] ?? '' }}</textarea>
+                        <textarea name="details[last_description]" class="form-control" rows="5">{{ old('details.last_description', $details['last_description'] ?? '') }}</textarea>
                     </div>
                 </div>
 
@@ -115,42 +128,42 @@
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Section 1 Heading</label>
-                        <input type="text" name="details[section1_title]" value="{{ $details['section1_title'] ?? '' }}" class="form-control form-control-sm">
+                        <input type="text" name="details[section1_title]" value="{{ old('details.section1_title', $details['section1_title'] ?? '') }}" class="form-control form-control-sm">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Section 1 Description</label>
-                        <textarea name="details[section1_description]" class="form-control" rows="3">{{ $details['section1_description'] ?? '' }}</textarea>
+                        <textarea name="details[section1_description]" class="form-control" rows="3">{{ old('details.section1_description', $details['section1_description'] ?? '') }}</textarea>
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Section 2 Heading</label>
-                        <input type="text" name="details[section2_title]" value="{{ $details['section2_title'] ?? '' }}" class="form-control form-control-sm">
+                        <input type="text" name="details[section2_title]" value="{{ old('details.section2_title', $details['section2_title'] ?? '') }}" class="form-control form-control-sm">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Section 2 Description</label>
-                        <textarea name="details[section2_description]" class="form-control" rows="3">{{ $details['section2_description'] ?? '' }}</textarea>
+                        <textarea name="details[section2_description]" class="form-control" rows="3">{{ old('details.section2_description', $details['section2_description'] ?? '') }}</textarea>
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Section 3 Heading</label>
-                        <input type="text" name="details[section3_title]" value="{{ $details['section3_title'] ?? '' }}" class="form-control form-control-sm">
+                        <input type="text" name="details[section3_title]" value="{{ old('details.section3_title', $details['section3_title'] ?? '') }}" class="form-control form-control-sm">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="col-md-12">
                         <label class="col-form-label">Section 3 Description</label>
-                        <textarea name="details[section3_description]" class="form-control" rows="3">{{ $details['section3_description'] ?? '' }}</textarea>
+                        <textarea name="details[section3_description]" class="form-control" rows="3">{{ old('details.section3_description', $details['section3_description'] ?? '') }}</textarea>
                     </div>
                 </div>
             </div>

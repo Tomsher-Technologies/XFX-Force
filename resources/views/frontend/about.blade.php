@@ -2,6 +2,7 @@
 
 @section('title', 'About Us')
 @section('content')
+
     <!--about banner intro-->
     <section
         class="min-h-screen relative justify-between w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px] border-b-1 border-gray-800 xl:border-none">

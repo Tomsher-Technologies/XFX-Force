@@ -27,12 +27,17 @@
                 @if(!empty($directCartItems))
                 @foreach ($directCartItems as $item)
                     @php
-                    $image = asset('assets/img/placeholder.jpg');
+                    $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
                     if (!empty($item->product_stock?->image)) {
-                    $image = Storage::url($item->product_stock->image);
+                        // Split by comma and take the first image
+                        $stockImages = explode(',', $item->product_stock->image);
+                        $firstStockImage = trim($stockImages[0]);
+                        if ($firstStockImage) {
+                            $image = Storage::url($firstStockImage);
+                        }
                     } elseif (!empty($item->product?->thumbnail_img)) {
-                    $image = Storage::url($item->product->thumbnail_img);
+                        $image = Storage::url($item->product->thumbnail_img);
                     }
                     @endphp
                     <div class="cart-box">
@@ -47,7 +52,7 @@
                                     <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 md:line-clamp-1 xl:line-clamp-2 text-center md:text-left cursor-pointer" onclick="window.location='{{ route('product.details' ,[$item->product->slug, $item->product_stock->sku]) }}'">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>
                                     <!-- specification popup link -->
                                     @php
-                                        $productSpecifications = $item->product->specifications;
+                                        $productSpecifications = $item->product_stock->specifications;
                                     @endphp
                                     @if($productSpecifications->isNotEmpty())
                                     <a onclick="toggleSpecModal(this)" class="text-[#2A7CFF] text-[14px] cursor-pointer text-center md:text-left">Specifications</a>

@@ -30,4 +30,9 @@ class ProductStock extends Model
     {
         return $this->hasMany(ProductAttributes::class, 'product_varient_id');
     }
+
+    public function specifications()
+    {
+        return $this->hasMany(ProductSpecification::class, 'product_id');
+    }
 }

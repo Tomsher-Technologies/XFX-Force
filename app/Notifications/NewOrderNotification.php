@@ -12,32 +12,33 @@ class NewOrderNotification extends Notification
     use Queueable;
 
     protected $order;
+    protected $type; // 'admin' or 'customer'
 
-    public function __construct($order)
+    public function __construct($order, $type = 'admin')
     {
         $this->order = $order;
+        $this->type = $type;
     }
 
     public function via($notifiable)
     {
-        return ['database'];  // Save notification to the database
+        return ['database'];
     }
 
     public function toArray($notifiable)
     {
-        $name = '';
-        if ($this->order->user_id !== null) {
-            $name = $this->order->user->name;
+        $name = $this->order->user_id ? $this->order->user->name : json_decode($this->order->billing_address)->name ?? 'Guest';
+        
+        if($this->type === 'admin') {
+            $message = 'New order placed by ' . $name;
         } else {
-            $address = json_decode($this->order->billing_address);
-            if (isset($address->name)) {
-                $name = $address->name;
-            }
+            $message = 'Your order #' . $this->order->id . ' has been placed successfully';
         }
+
         return [
             'order_id' => $this->order->id,
-            'user_name' => $name ?? 'Guest',
-            'message' => 'New order placed by ' . $name ?? 'Guest',
+            'user_name' => $name,
+            'message' => $message,
         ];
     }
 }

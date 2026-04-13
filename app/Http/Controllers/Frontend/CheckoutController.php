@@ -35,23 +35,47 @@ class CheckoutController
         $cartController = new CartController();
         $cartData = $cartController->getCartSummary();
 
-        $addresses = [];
-        $user = Auth::user();
-
-        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        if($user_id){
-            $addresses = Address::where('user_id', auth('frontend')->user()->id)->orderBy('id','desc')->get();
-        }
-
-        $userId = $user_id ? $user_id : null;
+        $user = auth('frontend')->user();
+        $auth_user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $userId = $auth_user_id ? $auth_user_id : null;
         $guestToken = request()->cookie('guest_token');
 
-        if (!$guestToken && !$userId) {
-            $guestToken = uniqid('guest_', true);
-            cookie()->queue('guest_token', $guestToken, 60 * 24 * 14); // 14 days
+        // Merge guest cart into user cart if logged in
+        if ($userId && $guestToken) {
+            $guestCartItems = Cart::where('temp_user_id', $guestToken)
+                ->where('status', 'pending')
+                ->get();
+
+            foreach ($guestCartItems as $item) {
+                $existingItem = Cart::where('user_id', $userId)
+                    ->where('product_stock_id', $item->product_stock_id)
+                    ->where('status', 'pending')
+                    ->first();
+
+                if ($existingItem) {
+                    $existingItem->quantity += $item->quantity;
+                    $existingItem->save();
+                    $item->delete();
+                } else {
+                    $item->user_id = $userId;
+                    $item->temp_user_id = null;
+                    $item->save();
+                }
+            }
+
+            // Optional: delete guest token cookie after merge
+            cookie()->queue(cookie()->forget('guest_token'));
         }
 
+        // Fetch addresses if logged in
+        $addresses = [];
+        if ($userId) {
+            $addresses = Address::where('user_id', $userId)
+                ->orderBy('id','desc')
+                ->get();
+        }
 
+        // Fetch cart items
         $cartItems = Cart::with(['product', 'product_stock'])
             ->when($userId, function($query) use ($userId) {
                 $query->where('user_id', $userId);
@@ -61,7 +85,6 @@ class CheckoutController
             ->where('status', 'pending')
             ->get();
 
-
         return view('frontend.checkout', array_merge($cartData, [
             'addresses' => $addresses,
             'user' => $user,
@@ -69,11 +92,14 @@ class CheckoutController
         ]));
     }
 
-
+    /**
+     * Function to place order
+     * 
+     * @param Request $request
+     */
     public function placeOrder(Request $request)
     {
-
-     $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'first_name' => 'required|regex:/^[a-zA-Z\s]+$/u|max:100',
             'billing_email' => 'required|email|max:255',
             'billing_city' => 'required|string|max:100',
@@ -96,9 +122,7 @@ class CheckoutController
 
 
         $name = $request->first_name . ' ' . $request->last_name;
-
         $billing_shipping_same = $request->same_as_billing ?? null;
-
         $shipping_address = [];
         $billing_address = [];
 
@@ -106,7 +130,6 @@ class CheckoutController
         $user_id = $auth_user_id ? $auth_user_id : null;
 
         /* ---------------- Guest Token ---------------- */
-
         $guest_token = request()->cookie('guest_token');
 
         if (!$guest_token) {
@@ -161,7 +184,6 @@ class CheckoutController
             $shipping_address = $billing_address;
         }
 
-
         $billing_address_json  = json_encode($billing_address);
         $shipping_address_json = json_encode($shipping_address);
 
@@ -170,35 +192,28 @@ class CheckoutController
         $authUser = auth('frontend')->user();
 
         if ($authUser) {
-
             // Logged in user always use auth user id
             $user_id = $authUser->id;
 
         } else {
-
             // Guest user
             $existingUser = User::where('email', $request->billing_email)->first();
 
             if ($existingUser) {
-
                 $user_id = $existingUser->id;
-
             } else {
-
                 $user = User::create([
                     'name' => $name,
                     'email' => $request->billing_email,
-                    'password' => bcrypt(\Illuminate\Support\Str::random(12)),
-                    'user_type' => 'customer'
+                    'password' => null,
+                    'user_type' => 'guest',
                 ]);
 
                 $user_id = $user->id;
             }
         }
 
-
         /* ---------------- Convert Guest Cart ---------------- */
-
         Cart::where('temp_user_id', $temp_user_id)
             ->update([
                 'user_id' => $user_id,
@@ -212,7 +227,6 @@ class CheckoutController
             })
             ->orderBy('id')
             ->get();
-        
 
         if ($carts->isEmpty()) {
             return response()->json([
@@ -224,15 +238,11 @@ class CheckoutController
 
         $carts->load(['product', 'product_stock']);
 
-       
-
         /* ---------------- Estimated Delivery ---------------- */
-
         $maxDeliveryDays = get_setting('default_delivery_days') ?? 0;
         $estimated_delivery = now()->addDays($maxDeliveryDays);
 
         /* ---------------- Create Order ---------------- */
-
         $order = Order::create([
             'user_id' => $user_id,
             'guest_token' => $temp_user_id,
@@ -256,7 +266,6 @@ class CheckoutController
         ]);
 
         /* ---------------- Tracking ---------------- */
-
         OrderTracking::create([
             'order_id' => $order->id,
             'status' => 'pending',
@@ -265,7 +274,6 @@ class CheckoutController
         ]);
 
         /* ---------------- Calculations ---------------- */
-
         $sub_total = $total_tax = $total_shipping = $discount = $total_coupon_discount = 0;
         $coupon_code = null;
 
@@ -356,13 +364,23 @@ class CheckoutController
         }
 
         /* ---------------- Clear Cart ---------------- */
-
         Cart::where('user_id', $user_id)->delete();
 
+        // Send mail to customer and admin when order placed.
         NotificationUtility::sendOrderPlacedNotification($order);
 
+        // Notify admin
         User::where('user_type', 'admin')->get()
             ->each(fn($admin) => $admin->notify(new NewOrderNotification($order)));
+
+        // Notify Customer
+        $message = "Your order #{$order->code} has been placed successfully";
+        sendNotification(
+            $order->user,
+            $message,
+            $order,
+            'order_placed'
+        );
 
         return response()->json([
             'status' => true,
@@ -371,76 +389,97 @@ class CheckoutController
         ]);
     }
    
-    public function cancelOrderRequest(Request $request){
-
+    /**
+     * Function to send order cancel request
+     * 
+     * @param Request $request
+     * @param int $order_id
+     */
+    public function cancelOrderRequest(Request $request, $order_id)
+    {
         $request->validate([
-            'order_id' => 'required|exists:orders,id',
             'cancel_reason' => 'required|string|max:255'
         ]);
 
-        $order_id = $request->order_id ?? '';
-        $reason   = $request->cancel_reason ?? '';
-        
-        if($order_id != ''){
-            $order = Order::find($order_id);
-            if($order){
-                if($order->cancel_request == 0 && $order->delivery_status == "pending"){
-                    $order->cancel_request = 1;
-                    $order->cancel_request_date = date('Y-m-d H:i:s');
-                    $order->cancel_reason = $reason;
-                    $order->save();
+        $user_id = auth('frontend')->id();
 
-                    $array['view'] = 'emails.commonmail';
-                    $array['subject'] = "New Order Cancel Request - ".$order->code;
-                    $array['from'] = env('MAIL_FROM_ADDRESS');
-                    $array['content'] = "<p>Hi,</p>
-                                    <p style='line-height: 25px;'>We have received a new order cancel request. Below are the details of the order:</p>
-                                    <p><b>Order Code : </b>".$order->code."</p>
-                                    <p><b>Customer Name : </b>".$order->user->name ."</p>
-                                    <p style='line-height: 25px;'><b>Reason for cancel: </b>".$reason ."</p>
-                                    <p><b>Cancel Request Date: </b>".date('d-M-Y H:i a')."</p><br>
-                                    <p>Thank you for your cooperation.</p>
-                                    <p>Best regards,</p>
-                                    <p>Team ".env('APP_NAME')."</p>";
-                    Mail::to(env('MAIL_ADMIN'))->queue(new EmailManager($array));
-                    
-                    return response()->json([
-                        'status' => true,
-                        'message' => trans('messages.request_success')
-                    ], 200);
-                }else{
-                    return response()->json([
-                        'status' => false,
-                        'message' => trans('messages.request_already_send')
-                    ], 200);
-                }
-            }else{
-                return response()->json([
-                    'status' => false,
-                    'message' => trans('messages.not_found')
-                ], 200);
-            }
-        }else{
+        $order = Order::where('id', $order_id)
+            ->where('user_id', $user_id)
+            ->first();
+
+        if (!$order) {
             return response()->json([
                 'status' => false,
                 'message' => trans('messages.not_found')
             ], 200);
         }
+
+        if ($order->cancel_request == 0 && $order->delivery_status == "pending") {
+
+            $reason = $request->cancel_reason;
+            $order->cancel_request = 1;
+            $order->cancel_request_date = now();
+            $order->cancel_reason = $reason;
+            $order->save();
+
+            /* ---------- Admin Mail ---------- */
+
+            $array['view'] = 'emails.commonmail';
+            $array['subject'] = "New Order Cancel Request - " . $order->code;
+            $array['from'] = env('MAIL_FROM_ADDRESS');
+
+            $array['content'] = "
+                <p>Hi,</p>
+                <p>We have received a new order cancel request.</p>
+                <p><b>Order Code:</b> {$order->code}</p>
+                <p><b>Customer Name:</b> {$order->user->name}</p>
+                <p><b>Reason:</b> {$reason}</p>
+                <p><b>Date:</b> " . now()->format('d M Y h:i A') . "</p>
+            ";
+
+            Mail::to(env('MAIL_ADMIN'))->queue(new EmailManager($array));
+
+            // Notify admin
+            $admins = User::where('user_type','admin')->get();
+            $message = "Customer {$order->user->name} has requested to cancel Order #{$order->code}. Please review the request.";
+            sendNotification($admins, $message, $order, 'cancel_request');
+
+            return response()->json([
+                'status' => true,
+                'message' => trans('messages.request_success')
+            ], 200);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => trans('messages.request_already_send')
+        ], 200);
     }
 
-    public function returnOrderRequest(Request $request)
+    public function returnOrderRequest(Request $request, $id)
     {
+        
         // Validate the input
-        $request->validate([
+         $validator = Validator::make($request->all(), [
             'order_id' => 'required|exists:orders,id',
             'return_reason' => 'required|string|max:255',
             'return_qty' => 'required|array',
             'return_qty.*' => 'integer|min:1',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         // Get the order
         $order = Order::findOrFail($request->order_id);
+        $reason = $request->return_reason;
         if($order && $order->delivery_status == "delivered"){
+
+
             // Loop through selected products and save return details
             foreach ($request->return_qty as $orderDetailId => $qty) {
                 $orderDetail = OrderDetail::find($orderDetailId);
@@ -459,10 +498,39 @@ class CheckoutController
                     ]);
                 }
             }
+
+            /* ---------- Admin Mail ---------- */
+
+            $array['view'] = 'emails.commonmail';
+            $array['subject'] = "New Order Return Request - " . $order->code;
+            $array['from'] = env('MAIL_FROM_ADDRESS');
+
+            $array['content'] = "
+                <p>Hi,</p>
+                <p>A new order return request has been received.</p>
+                <p><b>Order Code:</b> {$order->code}</p>
+                <p><b>Customer Name:</b> {$order->user->name}</p>
+                <p><b>Return Reason:</b> {$reason}</p>
+                <p><b>Date:</b> " . now()->format('d M Y h:i A') . "</p>
+                <p>Please review and take the necessary action.</p>
+                
+                <p>Best regards,</p>
+                <p>Team ".env('APP_NAME')."</p>
+            ";
+
+            Mail::to(env('MAIL_ADMIN'))->queue(new EmailManager($array));
+
+            // Notify admin
+            $admins = User::where('user_type','admin')->get();
+            $message = "Customer {$order->user->name} has requested a return for Order #{$order->code}. Please review the request.";
+            sendNotification($admins, $message, $order, 'return_request');
+
         }
 
-        return response()->json(['success' => true, 'message' => 'Return request submitted successfully.']);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Return request submitted successfully.'
+        ]);
     }
 
-    // create a function where, each time  load cart page ,  want toupdate the product/stock related columns with products current details. like price offer price shipping cost (split and save) copun 
 }

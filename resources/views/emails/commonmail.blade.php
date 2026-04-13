@@ -184,7 +184,10 @@
         </style>
     </head>
 
-<body style="background-color: #b7e3f978;">
+     @php
+        $logo = get_setting('header_logo');
+    @endphp
+<body style="background-color: #dce4e978;">
     <!-- ----------------- Header Start Here ------------------------- -->
     <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="full">
         <tr>
@@ -195,9 +198,9 @@
                 <table width="600" border="0" cellspacing="0" cellpadding="0" align="center" class="devicewidth">
                     <tr>
                         <td>
-                            <table width="100%" bgcolor="#ffffff" border="0" cellspacing="0" cellpadding="0"
+                            <table width="100%" bgcolor="#0F161B" border="0" cellspacing="0" cellpadding="0"
                                 align="center" class="full"
-                                style="background-color: #ffffff; border-radius: 5px 5px 0 0">
+                                style="background-color: #0F161B; border-radius: 5px 5px 0 0">
                                 <tr>
                                     <td>
                                         <table align="center" border="0" cellspacing="0" cellpadding="0"
@@ -209,11 +212,9 @@
                                             <tr>
                                                 <td align="center" valign="middle">
                                                     <a href="{{ env('APP_URL') }}">
-                                                        <img src="{{ asset('assets/images/PC-Garage-Logo-white.svg') }}" height="100" alt="{{ env('APP_NAME') }}">
+                                                        <img src="{{ uploaded_asset($logo) }}" height="100" alt="{{ env('APP_NAME') }}">
                                                     </a>
                                                 </td>
-                                                {{-- {{ asset('assets/images/PC-Garage-Logo-white.svg') }} --}}
-                                                {{-- https://pcgarage.me/imgs/PC-Garage-Logo-white.png --}}
                                             </tr>
                                             <tr></tr>
                                         </table>
@@ -237,13 +238,6 @@
                             <table width="100%" bgcolor="#ffffff" border="0" cellspacing="0" cellpadding="0"
                                 align="center" class="full"
                                 style="text-align: center; border-bottom: 1px solid #e5e5e5;padding:0 30px">
-                                
-                                {{-- <tr>
-                                    <td style="font: 700 30px 'Montserrat', Helvetica, Arial, sans-serif;color: #64a644;text-transform: uppercase;">
-                                        Password Reset Request
-                                    </td>
-                                </tr> --}}
-
                                 <tr>
                                     <td height="21">&nbsp;</td>
                                 </tr>
@@ -276,7 +270,7 @@
                     class="devicewidth">
                     <tr>
                         <td>
-                            <table width="100%" bgcolor="#64a644" border="0" cellspacing="0" cellpadding="0"
+                            <table width="100%" bgcolor="#0F161B" border="0" cellspacing="0" cellpadding="0"
                                 align="center" class="full" style="border-radius:0 0 5px 5px;">
                                 <tr>
                                     <td height="18">&nbsp;</td>

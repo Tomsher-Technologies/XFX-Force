@@ -15,7 +15,7 @@ class NotificationUtility
 {
     public static function sendOrderPlacedNotification($order, $request = null)
     {
-        //sends email to customer with the invoice pdf attached
+        //sends email to customer and admin with the invoice pdf attached
 
         $array['view'] = 'emails.invoice';
         $array['subject'] = 'Thank you for your order - ' . $order->code;

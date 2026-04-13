@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\Frontend\BrandController;
 use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Frontend\BuildPcController;
 use App\Http\Controllers\Frontend\AuthController;
+use App\Http\Controllers\Frontend\BrandController;
+use App\Http\Controllers\Frontend\BuildPcController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\ForgotPasswordController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Frontend\WishlistController;
 use Illuminate\Support\Facades\Route;
+
 
 
 /*
@@ -44,15 +46,12 @@ Route::get('contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact-submit', [HomeController::class, 'submitContactForm'])->name('contact.submit');
 Route::get('about', [HomeController::class, 'about'])->name('about');
 
-
 Route::get('forgot-password/', [ForgotPasswordController::class, 'showForgotForm'])->name('forgot-password');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.sendResetLink');
 Route::get('/password/reset/{email}/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
 Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
 
-
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-// Route::get('/product/{id}/{stockId?}', [ProductController::class, 'productDetails'])->name('product.details');
 Route::get('/product/{slug}/{sku?}', [ProductController::class, 'productDetails'])
     ->name('product.details');
 Route::get('/products', [ProductController::class, 'index'])->name('products');
@@ -69,12 +68,11 @@ Route::post('/apply_coupon_code', [CartController::class, 'apply_coupon_code']);
 Route::post('/remove_coupon_code', [CartController::class, 'remove_coupon_code']);
 
 Route::get('/shop/category/{slug}', [ProductController::class, 'shopByCategory'])->name('shop.category');
-
 Route::get('/shop/brand/{slug}', [ProductController::class, 'shopByBrand'])->name('shop.brand');
 
 Route::get('/buildyourpc', [BuildPcController::class, 'index'])->name('buildyourpc');
 Route::get('/buildyourpc/products/details/{stockId}', [BuildPcController::class, 'getProductDetails']);
-Route::get('/buildyourpc/products/{category_id}/{brand_id?}', [BuildPcController::class, 'getProductsByCategory']);
+Route::get('/buildyourpc/products/{category_id}/{brand_id?}/{model?}', [BuildPcController::class, 'getProductsByCategory']);
 
 Route::get('/buildyourpc/savePcBuilder', [BuildPcController::class, 'savePcBuilder']);
 Route::get('/buildyourpc/getBuildData', [BuildPcController::class, 'getBuildData']);
@@ -86,19 +84,12 @@ Route::post('/checkout/placeOrder', [CheckoutController::class, 'placeOrder']);
 
 Route::get('/order-success/{id}', [OrderController::class, 'success'])->name('order.success');
 Route::get('/order-fail', [OrderController::class, 'fail'])->name('order.fail');
-// Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('order.my-orders');
-Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.index');
-Route::get('/my-orders/{id}', [OrderController::class, 'myOrderSingle'])->name('orders.show');
-Route::post('/my-orders/{id}/cancel', [OrderController::class, 'cancelOrder'])
-    ->name('orders.cancel');
 
-Route::post('/my-orders/{id}/return', [OrderController::class, 'returnOrder'])
-    ->name('orders.return');
 Route::get('/search-products', [ProductController::class, 'searchProducts']);
 Route::get('/brands', [BrandController::class, 'index'])->name('brands.list');
-
 Route::get('/brands/{slug}', [BrandController::class, 'show'])->name('brands.show');
-    
+Route::get('/builder/models', [BuildPcController::class, 'getModels']);
+
 
 Route::group(['middleware' => ['auth:frontend']], function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
@@ -116,4 +107,18 @@ Route::group(['middleware' => ['auth:frontend']], function () {
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
     Route::get('/wishlist/check', [WishlistController::class, 'check'])->name('wishlist.check');
+
+    Route::get('/notifications', [NotificationController::class, 'customerNotifications'])
+        ->name('customer.notifications');
+    
+    Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.index');
+    Route::get('/my-orders/{id}', [OrderController::class, 'myOrderSingle'])->name('orders.show');
+    Route::post('/my-orders/{order_id}/cancel', [CheckoutController::class, 'cancelOrderRequest'])
+        ->name('orders.cancel');
+
+    Route::post('/my-orders/{id}/return', [CheckoutController::class, 'returnOrderRequest'])
+        ->name('orders.return');
+
+        Route::post('/notification/read/{id}', [NotificationController::class, 'markRead'])
+    ->name('notification.read');
 });

@@ -16,6 +16,7 @@ use App\Models\RecentlyViewedProduct;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
+use App\Notifications\CommonNotification;
 // use DB;
 
 function is_active($route, $output = 'menu-active') {
@@ -892,6 +893,53 @@ if (!function_exists('product_image_url')) {
         $fullPath = $dir . '/' . $filename . '.' . $ext;
 
         return Storage::url($fullPath); // returns /storage/products/11111/main/11111_300px.png
+    }
+}
+
+if (!function_exists('sendNotification')) {
+    function sendNotification($users, $message, $order = null, $type = null, $extra = [])
+    {
+        if (!$users) return;
+
+        if (is_iterable($users)) {
+            foreach ($users as $user) {
+                $user->notify(new CommonNotification($message, $order, $type, $extra));
+            }
+        } else {
+            $users->notify(new CommonNotification($message, $order, $type, $extra));
+        }
+    }
+}
+
+/**
+ * Function to check stock quantity per variant of product
+ */
+
+if (!function_exists('checkCartQuantityPerVariant')) {
+    function checkCartQuantityPerVariant(int $stockId)
+    {
+        $userId = (!empty(auth('frontend')->user())) 
+            ? auth('frontend')->user()->id 
+            : null;
+
+        $guestToken = request()->cookie('guest_token');
+
+        $cartItem = \App\Models\Cart::where('product_stock_id', $stockId)
+            ->where(function ($query) use ($guestToken, $userId) {
+
+                if ($userId) {
+                    // Logged-in user
+                    $query->where('user_id', $userId);
+                } else {
+                    // Guest user
+                    $query->where('temp_user_id', $guestToken);
+                }
+
+            })
+            ->where('status', 'pending')
+            ->first();
+
+        return $cartItem ? $cartItem->quantity : 0;
     }
 }
 

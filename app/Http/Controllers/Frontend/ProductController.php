@@ -131,8 +131,7 @@ class ProductController extends Controller
                     $childIds = array_merge(...$childIds);
                     $childIds = array_unique($childIds);
                 }
-                // print_r($childIds);
-                // die;
+                
                 $product_query->whereIn('category_id', $childIds);
             }
 
@@ -302,6 +301,7 @@ class ProductController extends Controller
 
         // Get cart quantity
         $cartQty = 0;
+        $cartId = null;
         if ($selectedStock) {
             $cartQuery = Cart::where('product_id', $product->id)
                 ->where('product_stock_id', $selectedStock->id)
@@ -316,6 +316,7 @@ class ProductController extends Controller
                     }
                 });
             $cartQty = $cartQuery->value('quantity') ?? 0;
+            $cartId = $cartQuery->value('id') ?? null;
         }
 
        $stockId = $selectedStock ? $selectedStock->id : null;
@@ -431,7 +432,8 @@ class ProductController extends Controller
             'stockId',
             'variantsById',
             'selectedLevelValues',
-            'selectedVariant'
+            'selectedVariant',
+            'cartId'
         ));
     }
 
@@ -492,23 +494,37 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $products->with('stocks')->distinct()->get();
-        $categories = Category::withCount('products')->where('is_active', 1)->get();
-        $groupedCategories = $categories->groupBy('parent_id');
-        
-        $brands = Brand::withCount('products')->where('is_active', 1)->get();
+        // $products = $products->with('stocks')->distinct()->paginate(12);
+        $products = $products
+            ->groupBy('products.id')
+            ->with('stocks')
+            ->paginate(12);
+        $categories = Category::withCount('products')->where('is_active', 1)->orderBy('name', 'asc')->get();
 
-        if ($products->isEmpty() && $request->ajax()) {
-            return '<div class="text-white text-center py-10">No Products Found!</div>';
-        }
-        // If AJAX request, return only product list partial
+        // Sort children alphabetically
+        $categories->each(function ($category) {
+            if ($category->childs->count()) {
+                $category->childs = $category->childs->sortBy(function($child) {
+                    return $child->category_translations->first()?->name ?? $child->name;
+                })->values();
+            }
+        });
+        $groupedCategories = $categories->groupBy('parent_id');
+
+        $brands = Brand::withCount('products')->where('is_active', 1)->orderBy('name', 'asc')->get();
+
+
         if ($request->ajax()) {
-            return view('frontend.partials.product-list', compact('products', 'view'))->render();
+            return response()->json([
+                'html' => view('frontend.partials.product-list', compact('products', 'view'))->render(),
+                'hasMore' => $products->hasMorePages()
+            ]);
         }
+        
 
 
         $page = Page::where('type', 'product_listing')->first();
-
+        
         $page_content = $page ? json_decode($page->data, true) : [];
 
         $seoContents = [
@@ -717,14 +733,24 @@ class ProductController extends Controller
 
         // Get category using slug
         $category = Category::whereHas('category_translations', function ($q) use ($slug) {
-            $q->where('slug', $slug);
+        $q->where('slug', $slug);
         })
-        ->with('category_translations')
+        ->with([
+            'category_translations',
+            'childs.category_translations', // eager load child categories with translations
+        ])
         ->where('is_active', 1)
         ->first();
 
         if (!$category) {
             abort(404);
+        }
+
+        // Sort children alphabetically by translation name
+        if ($category->childs->count()) {
+            $category->childs = $category->childs->sortBy(function ($child) {
+                return $child->category_translations->first()?->name ?? $child->name;
+            })->values();
         }
 
         $categoryIds = $this->getCategoryAndChildrenIds($category->id);
@@ -770,12 +796,26 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $products->with('stocks')->distinct()->get();
+        // $products = $products->with('stocks')->distinct()->paginate(12);
+        $products = $products
+            ->groupBy('products.id')
+            ->with('stocks')
+            ->paginate(12);
 
-        $brands = Brand::whereIn('id', $products->pluck('brand_id')->filter()->unique())->get();
+        $brands = Brand::withCount('products')->whereIn('id', $products->pluck('brand_id')->filter()->unique())->orderBy('name', 'asc')->get();
 
-        $categories = Category::withCount('products')->get();
+        $categories = Category::withCount('products')->orderBy('name', 'asc')->get();
+
+        // Sort children alphabetically
+        $categories->each(function ($category) {
+            if ($category->childs->count()) {
+                $category->childs = $category->childs->sortBy(function($child) {
+                    return $child->category_translations->first()?->name ?? $child->name;
+                })->values();
+            }
+        });
         $groupedCategories = $categories->groupBy('parent_id');
+
 
         $productCount = $products->count();
 
@@ -784,15 +824,43 @@ class ProductController extends Controller
             return view('frontend.partials.product-list', compact('products', 'view'))->render();
         }
 
+        // Load seo 
+        $seoContents = [
+            'title' => $category->category_translations[0]['meta_title'] ?? '',
+            'meta_description' => $category->category_translations[0]['meta_description'] ?? '',
+            'keywords' => $category->category_translations[0]['keywords'] ?? '',
+            'og_title' => $category->category_translations[0]['og_title'] ?? '',
+            'og_description' => $category->category_translations[0]['og_description'] ?? '',
+            'twitter_title' => $category->category_translations[0]['twitter_title'] ?? '',
+            'twitter_description' => $category->category_translations[0]['twitter_description'] ?? '',
+        ];
+
+        $this->loadSEO($seoContents);
+
+        // Ad slider
+        $page = Page::where('type', 'product_listing')->first();
+        $page_content = $page ? json_decode($page->data, true) : [];
+
+        $banner_ids = $page_content['banners'] ?? [];
+        $banners = collect();
+        if (!empty($banner_ids)) {
+            $banners = Banner::with(['mainImage', 'mobileImage'])
+                ->whereIn('id', $banner_ids)
+                ->where('status', 1)
+                ->orderByRaw("FIELD(id," . implode(',', $banner_ids) . ")")
+                ->get();
+        }
+
         return view('frontend.shop-by-category', compact(
             'products',
             'categories',
             'brands',
             'sort',
             'view',
-            // 'categoryId',
+            'categoryIds',
             'category',
-            'productCount'
+            'productCount',
+            'banners'
         ));
     }
 
@@ -804,6 +872,7 @@ class ProductController extends Controller
         // Get brand using slug directly from brand table
         $brand = Brand::where('slug', $slug)
             ->where('is_active', 1)
+            ->orderBy('name', 'asc')
             ->first();
 
         if (!$brand) {
@@ -853,7 +922,11 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $productsQuery->with('stocks')->distinct()->get();
+        // $products = $productsQuery->with('stocks')->distinct()->paginate(12);
+        $products = $productsQuery
+            ->groupBy('products.id')
+            ->with('stocks')
+            ->paginate(12);
 
         // Product count
         $productCount = $products->count();
@@ -873,8 +946,17 @@ class ProductController extends Controller
 
         $categories = Category::whereIn('id', $allCategoryIds)
             ->where('is_active', 1)
+            ->orderBy('name', 'asc')
             ->get();
         
+        // Sort children alphabetically
+        $categories->each(function ($category) {
+            if ($category->childs->count()) {
+                $category->childs = $category->childs->sortBy(function($child) {
+                    return $child->category_translations->first()?->name ?? $child->name;
+                })->values();
+            }
+        });
 
         // Grouped categories by parent_id for tree structure
         $groupedCategories = $categories->groupBy('parent_id');
@@ -887,6 +969,33 @@ class ProductController extends Controller
             return view('frontend.partials.product-list', compact('products', 'view'))->render();
         }
 
+        // Load seo 
+        $seoContents = [
+            'title' => $brand->brand_translations[0]['meta_title'] ?? '',
+            'meta_description' => $brand->brand_translations[0]['meta_description'] ?? '',
+            'keywords' => $brand->brand_translations[0]['keywords'] ?? '',
+            'og_title' => $brand->brand_translations[0]['og_title'] ?? '',
+            'og_description' => $brand->brand_translations[0]['og_description'] ?? '',
+            'twitter_title' => $brand->brand_translations[0]['twitter_title'] ?? '',
+            'twitter_description' => $brand->brand_translations[0]['twitter_description'] ?? '',
+        ];
+
+        $this->loadSEO($seoContents);
+
+        // Ad slider
+        $page = Page::where('type', 'product_listing')->first();
+        $page_content = $page ? json_decode($page->data, true) : [];
+
+        $banner_ids = $page_content['banners'] ?? [];
+        $banners = collect();
+        if (!empty($banner_ids)) {
+            $banners = Banner::with(['mainImage', 'mobileImage'])
+                ->whereIn('id', $banner_ids)
+                ->where('status', 1)
+                ->orderByRaw("FIELD(id," . implode(',', $banner_ids) . ")")
+                ->get();
+        }
+
         return view('frontend.shop-by-brand', compact(
             'products',
             'categories',
@@ -895,7 +1004,8 @@ class ProductController extends Controller
             'sort',
             'view',
             'brand',
-            'productCount'
+            'productCount',
+            'banners'
         ));
     }
 

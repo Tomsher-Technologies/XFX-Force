@@ -3,7 +3,8 @@
 @section('title', 'Shop - Category')
 @section('content')
 
-
+<input type="hidden" id="category-last-page" value="{{ $products->lastPage() }}">
+<input type="hidden" id="category-current-page" value="{{ $products->currentPage() }}">
     <!--inner banner-->
     <section class="px-[16px] md:px-[140px] pt-[80px] md:pt-[150px] pb-[0px] relative">
         <div class="section-title mb-[0px] relative border-t-1 border-[#ffffff30] pt-[30px] md:pt-0 xl:pt-[50px]">
@@ -35,290 +36,7 @@
               </svg>
             </button>
           </div>
-
-          <!-- Filters -->
-          <form class="mt-4 border-t border-gray-200">
-            <h3 class="sr-only">Categories</h3>
-            <ul role="list" class="px-2 py-3 font-medium text-gray-900">
-              <li>
-                <a href="#" class="block px-2 py-3">Totes</a>
-              </li>
-              <li>
-                <a href="#" class="block px-2 py-3">Backpacks</a>
-              </li>
-              <li>
-                <a href="#" class="block px-2 py-3">Travel Bags</a>
-              </li>
-              <li>
-                <a href="#" class="block px-2 py-3">Hip Bags</a>
-              </li>
-              <li>
-                <a href="#" class="block px-2 py-3">Laptop Sleeves</a>
-              </li>
-            </ul>
-
-            <div class="border-t border-gray-200 px-4 py-6">
-              <h3 class="-mx-2 -my-3 flow-root">
-                <button type="button" command="--toggle" commandfor="filter-section-mobile-color" class="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                  <span class="font-medium text-gray-900">Color</span>
-                  <span class="ml-6 flex items-center">
-                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
-                      <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                    </svg>
-                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
-                      <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
-                    </svg>
-                  </span>
-                </button>
-              </h3>
-              <el-disclosure id="filter-section-mobile-color" hidden class="pt-6 [&:not([hidden])]:block">
-                <div class="space-y-6">
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-color-0" type="checkbox" name="color[]" value="white" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-color-0" class="min-w-0 flex-1 text-gray-500">White</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-color-1" type="checkbox" name="color[]" value="beige" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-color-1" class="min-w-0 flex-1 text-gray-500">Beige</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-color-2" type="checkbox" name="color[]" value="blue" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-color-2" class="min-w-0 flex-1 text-gray-500">Blue</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-color-3" type="checkbox" name="color[]" value="brown" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-color-3" class="min-w-0 flex-1 text-gray-500">Brown</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-color-4" type="checkbox" name="color[]" value="green" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-color-4" class="min-w-0 flex-1 text-gray-500">Green</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-color-5" type="checkbox" name="color[]" value="purple" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-color-5" class="min-w-0 flex-1 text-gray-500">Purple</label>
-                  </div>
-                </div>
-              </el-disclosure>
-            </div>
-            <div class="border-t border-gray-200 px-4 py-6">
-              <h3 class="-mx-2 -my-3 flow-root">
-                <button type="button" command="--toggle" commandfor="filter-section-mobile-category" class="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                  <span class="font-medium text-gray-900">Category</span>
-                  <span class="ml-6 flex items-center">
-                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
-                      <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                    </svg>
-                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
-                      <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
-                    </svg>
-                  </span>
-                </button>
-              </h3>
-              <el-disclosure id="filter-section-mobile-category" hidden class="pt-6 [&:not([hidden])]:block">
-                <div class="space-y-6">
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-category-0" type="checkbox" name="category[]" value="new-arrivals" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-category-0" class="min-w-0 flex-1 text-gray-500">New Arrivals</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-category-1" type="checkbox" name="category[]" value="sale" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-category-1" class="min-w-0 flex-1 text-gray-500">Sale</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-category-2" type="checkbox" name="category[]" value="travel" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-category-2" class="min-w-0 flex-1 text-gray-500">Travel</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-category-3" type="checkbox" name="category[]" value="organization" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-category-3" class="min-w-0 flex-1 text-gray-500">Organization</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-category-4" type="checkbox" name="category[]" value="accessories" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-category-4" class="min-w-0 flex-1 text-gray-500">Accessories</label>
-                  </div>
-                </div>
-              </el-disclosure>
-            </div>
-            <div class="border-t border-gray-200 px-4 py-6">
-              <h3 class="-mx-2 -my-3 flow-root">
-                <button type="button" command="--toggle" commandfor="filter-section-mobile-size" class="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                  <span class="font-medium text-gray-900">Size</span>
-                  <span class="ml-6 flex items-center">
-                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
-                      <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                    </svg>
-                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
-                      <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
-                    </svg>
-                  </span>
-                </button>
-              </h3>
-              <el-disclosure id="filter-section-mobile-size" hidden class="pt-6 [&:not([hidden])]:block">
-                <div class="space-y-6">
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-size-0" type="checkbox" name="size[]" value="2l" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-size-0" class="min-w-0 flex-1 text-gray-500">2L</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-size-1" type="checkbox" name="size[]" value="6l" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-size-1" class="min-w-0 flex-1 text-gray-500">6L</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-size-2" type="checkbox" name="size[]" value="12l" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-size-2" class="min-w-0 flex-1 text-gray-500">12L</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-size-3" type="checkbox" name="size[]" value="18l" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-size-3" class="min-w-0 flex-1 text-gray-500">18L</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-size-4" type="checkbox" name="size[]" value="20l" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-size-4" class="min-w-0 flex-1 text-gray-500">20L</label>
-                  </div>
-                  <div class="flex gap-3">
-                    <div class="flex h-5 shrink-0 items-center">
-                      <div class="group grid size-4 grid-cols-1">
-                        <input id="filter-mobile-size-5" type="checkbox" name="size[]" value="40l" class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                        <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                          <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                          <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                        </svg>
-                      </div>
-                    </div>
-                    <label for="filter-mobile-size-5" class="min-w-0 flex-1 text-gray-500">40L</label>
-                  </div>
-                </div>
-              </el-disclosure>
-            </div>
-          </form>
+            <div id="mobile-filter"></div>
         </el-dialog-panel>
       </div>
     </dialog>
@@ -328,198 +46,244 @@
     <main class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] xl:py-[80px]">
         <div class="flex flex-col xl:grid xl:grid-cols-4 xl:gap-[50px]">
             <div>
-
-                <!-- Filters -->
-                <form class="hidden xl:block">
-                    <button id="clear-filters" 
-                            class="inline-block w-full text-[#898989] text-[13px] md:text-[14px] font-medium 
-                                px-3 py-1.5 mt-2 rounded-[6px] transition-all duration-200 
-                                hover:bg-white/10 hover:text-white cursor-pointer flex items-center gap-2 mb-[10px]">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        Clear All
-                    </button>
-                    <!--categories filter-->
-                    <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px]">
-                        <button type="button" command="--toggle" commandfor="filter-section-categories" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
-                            <span class="font-medium uppercase text-white">Categories</span>
-                            <span class="ml-6 flex items-center">
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
-                                    <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                                </svg>
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
-                                    <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
-                                </svg>
-                            </span>
+                <div id="filter-wrapper">
+                    <form class="hidden xl:block">
+                        <button id="clear-filters" 
+                                class="inline-block w-full text-[#898989] text-[13px] md:text-[14px] font-medium 
+                                    px-3 py-1.5 mt-2 rounded-[6px] transition-all duration-200 
+                                    hover:bg-white/10 hover:text-white cursor-pointer flex items-center gap-2 mb-[10px]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Clear All
                         </button>
-                        <el-disclosure id="filter-section-categories" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[20px]">
+                        <!--categories filter-->
+                        <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px] category-box">
+                            <button type="button" command="--toggle" commandfor="filter-section-categories" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
+                                <span class="font-medium uppercase text-white">Categories</span>
+                                <span class="ml-6 flex items-center">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
+                                        <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                                    </svg>
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
+                                        <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <el-disclosure id="filter-section-categories" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[20px]">
 
-                            <div class="w-full">
-                                <div class="space-y-4">
-                                    @if($category->childs->count())
-                                    <div class="relative mb-6">
-                                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                            </svg>
-                                        </span>
-                                        
-                                        <input type="text" id="category-search" placeholder="Search Category" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
-                                    </div>
-                                    @endif
+                                <div class="w-full">
+                                    <div class="space-y-4">
+                                        @if($category->childs->count())
+                                        <div class="relative mb-6">
+                                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                </svg>
+                                            </span>
+                                            
+                                            <input type="text" id="category-search" placeholder="Search Category" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
+                                        </div>
+                                        @endif
 
-                                    @if($category->childs->count())
-                                        @php
-                                            $padding = 20;
-                                        @endphp
-                                        @foreach($category->childs as $child)
-                                            @php
-                                                $productCount = \App\Models\Product::where('category_id', $child->id)->count();
-                                            @endphp
-                                            <div class="flex gap-[15px] items-center category-item" data-name="{{ $child->category_translations->first()->name ?? $child->name }}" style="padding-left: {{ $padding }}px;">
+                                        @if($category)
+                                            {{-- Parent Category --}}
+                                            <div class="flex gap-[15px] items-center category-item" 
+                                                data-name="{{ $category->category_translations->first()->name ?? $category->name }}">
+                                                
                                                 <div class="flex h-5 shrink-0 items-center">
                                                     <div class="group grid size-4 grid-cols-1 w-full">
-                                                        <input type="checkbox" name="categories[]" value="{{ $child->id }}" class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-category-{{ $child->id }}" checked>
+                                                        <input 
+                                                            type="checkbox" 
+                                                            name="categories[]" 
+                                                            value="{{ $category->id }}" 
+                                                            class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" 
+                                                            id="filter-category-{{ $category->id }}"
+                                                            checked
+                                                            data-child-ids="{{ $category->childs->pluck('id')->implode(',') }}"
+                                                        >
                                                     </div>
                                                 </div>
-                                                <label for="filter-category-{{ $child->id }}" class="relative top-[5px] text-[15px] text-white">
-                                                    {{ $child->category_translations->first()->name ?? $child->name }}
-                                                    <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $productCount }}</span>
+
+                                                <label for="filter-category-{{ $category->id }}" 
+                                                    class="relative top-[5px] text-[15px] text-white">
+                                                    
+                                                    {{ $category->category_translations->first()->name ?? $category->name }}
+
+                                                    <span class="text-[15px] text-[#50525C] ml-[10px]">
+                                                        {{ \App\Models\Product::whereIn('category_id', $categoryIds)->count() }}
+                                                    </span>
                                                 </label>
                                             </div>
-                                            
-                                        @endforeach
-                                    @else
-                                        <div class="flex gap-[15px] items-center category-item" data-name="{{ $category->name }}">
+                                        @endif
+                                        
+                                        @if($category->childs->count())
+                                            @php
+                                                $padding = 20;
+                                            @endphp
+                                            @foreach($category->childs as $child)
+                                                @php
+                                                    $productCount = \App\Models\Product::where('category_id', $child->id)->count();
+                                                @endphp
+                                                <div class="flex gap-[10px] items-center category-item" data-name="{{ $child->category_translations->first()->name ?? $child->name }}" style="padding-left: {{ $padding }}px;">
+                                                    <div class="flex h-5 shrink-0 items-center">
+                                                        <div class="group grid size-4 grid-cols-1 w-full">
+                                                            <input type="checkbox" name="categories[]" value="{{ $child->id }}" class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-category-{{ $child->id }}" checked>
+                                                        </div>
+                                                    </div>
+                                                    <label for="filter-category-{{ $child->id }}" class="relative top-[5px] text-[15px] text-white">
+                                                        {{ $child->category_translations->first()->name ?? $child->name }}
+                                                        <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $productCount }}</span>
+                                                    </label>
+                                                </div>
+                                                
+                                            @endforeach
+                                        @else
+                                            <div class="flex gap-[15px] items-center category-item" data-name="{{ $category->name }}">
+                                                <div class="flex h-5 shrink-0 items-center">
+                                                    <div class="group grid size-4 grid-cols-1 w-full">
+                                                        <input type="checkbox" name="categories[]" value="{{ $category->id }}" class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-category-{{ $category->id }}" checked style="pointer-events: none;">
+                                                    </div>
+                                                </div>
+                                                <label for="filter-category-{{ $category->id }}" class="relative top-[5px] text-[15px] text-white">
+                                                    {{ $category->category_translations->first()->name ?? $category->name }}
+                                                    <span class="text-[15px] text-[#50525C] ml-[10px]" id="category-count">{{ $productCount }}</span>
+                                                </label>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                            </el-disclosure>
+                        </div>
+                        <!--//categories filter-->
+
+                        <!--price range-->
+                        <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px] price-box">
+                            <button type="button" command="--toggle" commandfor="filter-section-price" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
+                                <span class="font-medium uppercase text-white">Shop by Price</span>
+                                <span class="ml-6 flex items-center">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
+                                        <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                                    </svg>
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
+                                        <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <el-disclosure id="filter-section-price" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[30px]">
+                                <div class="w-full price-filter">
+                                    <div class="flex justify-between items-center mb-8 gap-[20px] align-center">
+                                        <div class="w-full">
+                                            <span class="text-gray-400 text-xs block mb-2">Min</span>
+                                            <div class="bg-[#282B34] rounded-[10px] border border-white/5 w-full price-input-box">
+                                                <input type="number" class="min-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none border-0" value="0" min="0" max="300000" step="100">
+                                            </div>
+                                        </div>
+                                        <div class="h-[1px] w-4 bg-gray-600"></div>
+                                        <div class="w-full">
+                                            <span class="text-gray-400 text-xs block mb-2 text-right">Max</span>
+                                            <div class="bg-[#282B34] rounded-[10px] border border-white/5 text-right w-full price-input-box">
+                                                <input type="number" class="max-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none text-right border-0" value="300000" min="0" max="300000" step="100">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="relative h-1 w-full bg-[#282B34] rounded-lg">
+                                        <div class="slider-progress absolute h-full bg-white rounded-lg left-0 right-0"></div>
+                                        <input type="range" min="0" max="300000" value="0" step="100" class="range-min absolute w-full h-1 appearance-none bg-transparent pointer-events-none z-20">
+                                        <input type="range" min="0" max="300000" value="300000" step="100" class="range-max absolute w-full h-1 appearance-none bg-transparent pointer-events-none z-20">
+                                    </div>
+                                </div>
+
+                            </el-disclosure>
+                        </div>
+                        <!--//price range-->
+
+                        <!--brand filter-->
+                        <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px] brand-box">
+                            <button type="button" command="--toggle" commandfor="filter-section-brand" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
+                                <span class="font-medium uppercase text-white">Brands</span>
+                                <span class="ml-6 flex items-center">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
+                                        <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                                    </svg>
+                                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
+                                        <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <el-disclosure id="filter-section-brand" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[20px]">
+
+                                <div class="w-full">
+                                    <div id="brand-grid" class="space-y-4">
+                                        <div class="relative mb-6">
+                                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                </svg>
+                                            </span>
+                                            <input type="text" id="brand-search" placeholder="Search brands (e.g. Nvidia)" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
+                                        </div>
+                                    
+                                        @if(!empty($brands))
+                                        @foreach ($brands as $brand)
+                                        <div class="flex gap-[15px] align-center items-center brand-item" data-name="{{$brand->name}}">
                                             <div class="flex h-5 shrink-0 items-center">
                                                 <div class="group grid size-4 grid-cols-1 w-full">
-                                                    <input type="checkbox" name="categories[]" value="{{ $category->id }}" class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-category-{{ $category->id }}" checked style="pointer-events: none;">
+                                                    <input id="filter-brand-0" type="checkbox" name="brands[]" value="{{$brand->id}}" class="h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7] indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
+                                                    <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
+                                                        <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
+                                                        <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
+                                                    </svg>
                                                 </div>
                                             </div>
-                                            <label for="filter-category-{{ $category->id }}" class="relative top-[5px] text-[15px] text-white">
-                                                {{ $category->category_translations->first()->name ?? $category->name }}
-                                                <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $productCount }}</span>
-                                            </label>
+                                            <label for="filter-brand-0" class="relative top-[5px] text-[15px] text-white">{{$brand->name}} <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $brand->products_count }}</span></label>
                                         </div>
-                                    @endif
+                                        @endforeach
+                                        @endif
+                                    
+                                    <a href="{{ route('brands.list') }}" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-white hover:text-black">view all brands</a>
                                 </div>
-                            </div>
-
-                        </el-disclosure>
-                    </div>
-                    <!--//categories filter-->
-
-                    <!--price range-->
-                    <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px]">
-                        <button type="button" command="--toggle" commandfor="filter-section-price" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
-                            <span class="font-medium uppercase text-white">Shop by Price</span>
-                            <span class="ml-6 flex items-center">
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
-                                    <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                                </svg>
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
-                                    <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
-                                </svg>
-                            </span>
-                        </button>
-                        <el-disclosure id="filter-section-price" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[30px]">
-                            <div class="w-full">
-                                <div class="flex justify-between items-center mb-8 gap-[20px] align-center">
-                                    <div class="w-full">
-                                        <span class="text-gray-400 text-xs block mb-2">Min</span>
-                                        <div class="bg-[#282B34] rounded-[10px] border border-white/5 w-full">
-                                            <input type="number" id="min-price" class="w-full text-white bg-transparent font-medium text-[14px] focus:outline-none border-0" value="0" min="0" max="300000" step="100">
-                                        </div>
-                                    </div>
-                                    <div class="h-[1px] w-4 bg-gray-600"></div>
-                                    <div class="w-full">
-                                        <span class="text-gray-400 text-xs block mb-2 text-right">Max</span>
-                                        <div class="bg-[#282B34] rounded-[10px] border border-white/5 text-right w-full">
-                                            <input type="number" id="max-price" class="w-full text-white bg-transparent font-medium text-[14px] focus:outline-none text-right border-0" value="300000" min="0" max="300000" step="100">
-                                        </div>
-                                    </div>
                                 </div>
-                                <div class="relative h-1 w-full bg-[#282B34] rounded-lg">
-                                    <div id="slider-progress" class="absolute h-full bg-white rounded-lg left-0 right-0"></div>
-                                    <input type="range" id="range-min" min="0" max="300000" value="0" step="100" class="absolute w-full h-1 appearance-none bg-transparent pointer-events-none z-20">
-                                    <input type="range" id="range-max" min="0" max="300000" value="300000" step="100" class="absolute w-full h-1 appearance-none bg-transparent pointer-events-none z-20">
-                                </div>
-                            </div>
 
-                        </el-disclosure>
-                    </div>
-                    <!--//price range-->
+                            </el-disclosure>
+                        </div>
+                        <!--//brand filter-->
+                    </form>
+                </div>
 
-                    <!--brand filter-->
-                    <div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px]">
-                        <button type="button" command="--toggle" commandfor="filter-section-brand" class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
-                            <span class="font-medium uppercase text-white">Brands</span>
-                            <span class="ml-6 flex items-center">
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
-                                    <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                                </svg>
-                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
-                                    <path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
-                                </svg>
-                            </span>
-                        </button>
-                        <el-disclosure id="filter-section-brand" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[20px]">
-
-                            <div class="w-full">
-                                <div id="brand-grid" class="space-y-4">
-                                    <div class="relative mb-6">
-                                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                            </svg>
-                                        </span>
-                                        <input type="text" id="brand-search" placeholder="Search brands (e.g. Nvidia)" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
-                                    </div>
-                                
-                                    @if(!empty($brands))
-                                    @foreach ($brands as $brand)
-                                    <div class="flex gap-[15px] align-center items-center brand-item" data-name="{{$brand->name}}">
-                                        <div class="flex h-5 shrink-0 items-center">
-                                            <div class="group grid size-4 grid-cols-1 w-full">
-                                                <input id="filter-brand-0" type="checkbox" name="brands[]" value="{{$brand->id}}" class="h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7] indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
-                                                <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
-                                                    <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
-                                                    <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <label for="filter-brand-0" class="relative top-[5px] text-[15px] text-white">{{$brand->name}} <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $brand->products_count }}</span></label>
-                                    </div>
-                                    @endforeach
-                                    @endif
-                                
-                                <a href="#" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-white hover:text-black">view all brands</a>
-                            </div>
-                            </div>
-
-                        </el-disclosure>
-                    </div>
-                    <!--//brand filter-->
-                </form>
-                <!--// Filters -->
+                <!-- Desktop Filters -->
+                <div id="desktop-filter"></div>
+                <!-- Desktop Filters -->
 
                 <!--promotion banners-->
-                <div class="swiper promobnrswiper relative overflow-hidden rounded-[20px]">
+				@if(!empty($banners))
+				<div class="swiper promobnrswiper relative">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide" data-swiper-autoplay="8000">
-                            <a href="#"><img src="src/images/sidebar-ad-banner-01.webp" alt="" title=""></a>
+						@foreach($banners as $banner)
+						<div class="swiper-slide" data-swiper-autoplay="8000">
+                            <a href="{{ getBannerUrl($banner) }}">
+								<img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" title="{{ $banner->title }}">
+							</a>
                         </div>
-                    </div>
-                </div>
-                <!--//promotion banners-->
-
+						@endforeach
+					</div>
+					<span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+				</div>
+				@endif
+				<!--//promotion banners-->
             </div>
 
             <div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 
                 <div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[0px] w-full">
-                    <span class="text-[#898989] text-[14px] w-full text-center xl:text-left"  id="product-count">Items 1-{{ $products->count() }} of {{ $products->count() }}</span>
+                    <span class="text-[#898989] text-[14px] w-full text-center xl:text-left"  id="product-count" data-per-page="{{ $products->perPage() }}" data-total="{{ $products->total() }}">
+                      @if($products->count() > 0)
+                          Items 1-{{ $products->count() }} of {{ $products->count() }}
+                      @else
+                          Items 0 of 0
+                      @endif
+                    </span>
                     <div class="flex flex-col xl:flex-row items-center gap-[15px] xl:gap-[20px] justify-end w-full">
                         <el-dropdown class="relative block text-left w-full xl:w-[230px]">
                             <button class="group flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white !w-full">
@@ -559,7 +323,7 @@
                                     <path d="M15 12.5H0V13.75H15V12.5Z" fill="#898989" class="group-hover:fill-white transition-all duration-[600ms]" />
                                 </svg>
                             </button>
-                            <button type="button" command="show-modal" commandfor="mobile-filters" class="view-btn group p-[15px] hover:bg-[#282B34] rounded-[5px] active:bg-[#282B34] transition-all duration-[600ms] xl:hidden">
+                            <button type="button" class="mobile-filter-btn view-btn group p-[15px] hover:bg-[#282B34] rounded-[5px] active:bg-[#282B34] transition-all duration-[600ms] xl:hidden">
                                 <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5">
                                     <path d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 0 1 .628.74v2.288a2.25 2.25 0 0 1-.659 1.59l-4.682 4.683a2.25 2.25 0 0 0-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 0 1 8 18.25v-5.757a2.25 2.25 0 0 0-.659-1.591L2.659 6.22A2.25 2.25 0 0 1 2 4.629V2.34a.75.75 0 0 1 .628-.74Z" clip-rule="evenodd" fill-rule="evenodd" fill="#898989" class="group-hover:fill-white transition-all duration-[600ms]" />
                                 </svg>
@@ -574,8 +338,18 @@
                     </div>
                     @else
                     @include('frontend.partials.product-list', ['products' => $products])
+
+                    <div id="product-loader" class="text-center my-3 text-white hidden">
+                        <div class="loader"></div>
+                    </div>
+                    <div class="text-center mt-4 text-white" id="load-more-wrapper">
+                        <button id="load-more-btn" class="btn btn-primary">
+                            Load More...
+                        </button>
+                    </div>
                     @endif
                 </div>
+                
             </div>
         </div>
 
@@ -585,497 +359,228 @@
 
 <script>
     // FILTER SCRIPT
-
-    // // Filtering products based on the price range
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const minInput = document.getElementById('range-min');
-    //     const maxInput = document.getElementById('range-max');
-    //     const minLabel = document.getElementById('min-price');
-    //     const maxLabel = document.getElementById('max-price');
-    //     const progress = document.getElementById('slider-progress');
-
-    //     // STOP if slider does not exist on this page
-    //     if (!minInput || !maxInput || !minLabel || !maxLabel || !progress) {
-    //         return;
-    //     }
-
-    //     const priceGap = 500; // Minimum gap between handles
-
-    //     function updateSlider() {
-    //         let minVal = parseInt(minInput.value);
-    //         let maxVal = parseInt(maxInput.value);
-
-    //         // Logic to prevent handles from crossing
-    //         if (maxVal - minVal < priceGap) {
-    //             if (this.id === 'range-min') {
-    //                 minInput.value = maxVal - priceGap;
-    //             } else {
-    //                 maxInput.value = minVal + priceGap;
-    //             }
-    //         } else {
-    //             minLabel.textContent = minInput.value;
-    //             maxLabel.textContent = maxInput.value;
-    //             filterProducts();
-
-    //             // Calculate percentage for the blue progress bar
-    //             const minPercent = (minInput.value / minInput.max) * 100;
-    //             const maxPercent = 100 - (maxInput.value / maxInput.max) * 100;
-
-    //             progress.style.left = minPercent + "%";
-    //             progress.style.right = maxPercent + "%";
-    //         }
-
-    //     }
-
-    //     [minInput, maxInput].forEach(input => {
-    //         input.addEventListener('input', updateSlider);
-    //     });
-
-    //     // Run once on load to set initial state
-    //     updateSlider();
-    // });
-
-    // // FIltering based on the brand selected
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const searchInput = document.getElementById('brand-search');
-    //     const brandItems = document.querySelectorAll('.brand-item');
-
-    //     // Stop if not on this page
-    //     if (!searchInput || brandItems.length === 0) {
-    //         return;
-    //     }
-    //     let selectedBrands = [];
-
-    //     if (searchInput) {
-    //         searchInput.addEventListener('input', (e) => {
-    //             const query = e.target.value.toLowerCase();
-    //             brandItems.forEach(item => {
-    //                 const brandName = item.getAttribute('data-name').toLowerCase();
-
-    //                 // Check if search query matches the brand name
-    //                 if (brandName.includes(query)) {
-    //                     item.style.display = 'flex'; // Show match
-    //                     item.classList.add('animate-fade-in'); // Optional: add a quick fade effect
-    //                 } else {
-    //                     item.style.display = 'none'; // Hide non-match
-    //                 }
-    //             });
-    //         });
-    //     }
-
-    //     // Handle selection (Active State)
-    //     brandItems.forEach(item => {
-    //         item.addEventListener('click', function() {
-    //             let brandId = item.getAttribute('data-id');
-    //             if (!brandId) return;
-
-    //             if (selectedBrands.includes(brandId)) {
-    //                 selectedBrands = selectedBrands.filter(id => id != brandId);
-    //             } else {
-    //                 selectedBrands.push(brandId);
-    //             }
-
-    //             this.classList.toggle('border-[#3E81FF]');
-    //             this.classList.toggle('bg-[#282B34]');
-    //             const img = this.querySelector('img');
-    //             img.classList.toggle('grayscale-0');
-    //             filterProducts(selectedBrands);
-    //         });
-    //     });
-    // });
-
-    // // Filtering based on the category selected
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const searchInput = document.getElementById('category-search');
-    //     const brandItems = document.querySelectorAll('.category-item');
-
-    //     // Stop if not on this page
-    //     if (!searchInput || brandItems.length === 0) {
-    //         return;
-    //     }
-
-    //     if (searchInput) {
-    //         searchInput.addEventListener('input', (e) => {
-    //             const query = e.target.value.toLowerCase();
-    //             brandItems.forEach(item => {
-    //                 const brandName = item.getAttribute('data-name').toLowerCase();
-
-    //                 // Check if search query matches the brand name
-    //                 if (brandName.includes(query)) {
-    //                     item.style.display = 'flex'; // Show match
-    //                     item.classList.add('animate-fade-in'); // Optional: add a quick fade effect
-    //                 } else {
-    //                     item.style.display = 'none'; // Hide non-match
-    //                 }
-    //             });
-    //         });
-    //     }
-    // });
-
-    // // Filtering based on the sort order selected
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const sortButton = document.querySelector('el-dropdown button');
-    //     const sortOptions = document.querySelectorAll('.sort-option');
-
-    //     sortOptions.forEach(option => {
-    //         option.addEventListener('click', (e) => {
-    //             e.preventDefault(); // prevent default link behavior
-
-    //             const sortValue = option.dataset.sort; // get the sort key
-    //             const sortText = option.textContent; // get display text
-
-    //             // Update button text
-    //             sortButton.querySelector('span').textContent = `Sort by: ${sortText}`;
-
-    //             // Call your filterProducts function with the selected sort
-    //             filterProducts([], sortValue, 'gridview'); // Pass default view or keep current view
-    //         });
-    //     });
-    // });
-
-    // // Filtering function
-    // function filterProducts(selectedBrands = [], sort = "newest", view = "gridview") {
-    //     const categories = Array.from(document.querySelectorAll('input[name="categories[]"]:checked'))
-    //         .map(el => el.value);
-
-    //     const min_price = parseInt(document.getElementById('min-price')?.textContent) || 0;
-    //     const max_price = parseInt(document.getElementById('max-price')?.textContent) || 300000;
-    //     const categoryId = document.getElementById('current-category-id')?.value;
-
-    //     // Get URL from Blade data attribute
-    //     let url = categoryId
-    //         ? `/shop/category/${categoryId}`
-    //         : `/products`;
-
-    //     // Build query string
-    //     const params = new URLSearchParams({
-    //         min_price,
-    //         max_price,
-    //         sort,
-    //         view
-    //     });
-
-    //     // Add categories and brands
-    //     categories.forEach(cat => params.append('categories[]', cat));
-    //     selectedBrands.forEach(brand => params.append('brands[]', brand));
-
-    //     fetch(`${url}?${params.toString()}`, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'X-Requested-With': 'XMLHttpRequest'
-    //             }
-    //         })
-    //         .then(res => res.text()) // assuming Laravel returns HTML
-    //         .then(html => {
-    //             document.getElementById('product-list-wrapper').innerHTML = html;
-    //         })
-    //         .catch(err => console.error('Filter products error:', err));
-    // }
-
-    // // Call filterProducts() on category,brand change 
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     document.querySelectorAll('input[name="categories[]"], input[name="brands[]"]').forEach(input => {
-    //         input.addEventListener('change', () => filterProducts());
-    //     });
-
-    //     // Initial load
-    //     // filterProducts();
-    // });
-
-    // FILTER SCRIPT
-</script>
-
-<script>
-    // FILTER SCRIPT
-    /* ===============================
-    GLOBAL STATE VARIABLES
-    =============================== */
-
+    /* GLOBAL STATE VARIABLES */
     let selectedBrands = [];
     let currentSort = "newest";
     let currentView = "gridview";
 
 
-    /* ===============================
-    PRICE RANGE FILTER
-    =============================== */
+    function initPriceFilter(container) {
+		const minSlider = container.querySelector('.range-min');
+		const maxSlider = container.querySelector('.range-max');
+		const minInput = container.querySelector('.min-price');
+		const maxInput = container.querySelector('.max-price');
+		const progress = container.querySelector('.slider-progress');
 
+		if (!minSlider || !maxSlider || !minInput || !maxInput || !progress) return;
+
+		const maxPrice = parseInt(maxSlider.max);
+
+		function updateProgress(minVal, maxVal) {
+			const minPercent = (minVal / maxPrice) * 100;
+			const maxPercent = 100 - (maxVal / maxPrice) * 100;
+			progress.style.left = minPercent + "%";
+			progress.style.right = maxPercent + "%";
+		}
+
+		function inputChanged() {
+			let minVal = parseInt(minInput.value) || 0;
+			let maxVal = parseInt(maxInput.value) || maxPrice;
+
+			minVal = Math.max(0, Math.min(minVal, maxPrice));
+			maxVal = Math.max(0, Math.min(maxVal, maxPrice));
+
+			minInput.value = minVal;
+			maxInput.value = maxVal;
+
+			minSlider.value = minVal;
+			maxSlider.value = maxVal;
+
+			updateProgress(minVal, maxVal);
+			filterProducts();
+		}
+
+		function sliderChanged() {
+			let minVal = parseInt(minSlider.value);
+			let maxVal = parseInt(maxSlider.value);
+
+			minInput.value = minVal;
+			maxInput.value = maxVal;
+
+			updateProgress(minVal, maxVal);
+			filterProducts();
+		}
+
+		minSlider.addEventListener('input', sliderChanged);
+		maxSlider.addEventListener('input', sliderChanged);
+
+		minInput.addEventListener('input', inputChanged);
+		maxInput.addEventListener('input', inputChanged);
+
+		updateProgress(parseInt(minSlider.value), parseInt(maxSlider.value));
+	}
+
+	document.addEventListener('DOMContentLoaded', () => {
+		document.querySelectorAll('.price-filter').forEach(initPriceFilter);
+	});
+
+
+    /* BRAND FILTER */
     document.addEventListener('DOMContentLoaded', () => {
-
-        const minSlider = document.getElementById('range-min');
-        const maxSlider = document.getElementById('range-max');
-        const minInput = document.getElementById('min-price');
-        const maxInput = document.getElementById('max-price');
-        const progress = document.getElementById('slider-progress');
-
-        if (!minSlider || !maxSlider || !minInput || !maxInput || !progress) return;
-
-        const maxPrice = parseInt(maxSlider.max);
-
-        function updateProgress(minVal, maxVal) {
-            const minPercent = (minVal / maxPrice) * 100;
-            const maxPercent = 100 - (maxVal / maxPrice) * 100;
-            progress.style.left = minPercent + "%";
-            progress.style.right = maxPercent + "%";
-        }
-
-        // Update slider when input changes
-        function inputChanged() {
-        
-            let minVal = parseInt(minInput.value) || 0;
-            let maxVal = parseInt(maxInput.value) || maxPrice;
-
-            // Clamp values
-            minVal = Math.max(0, Math.min(minVal, maxPrice));
-            maxVal = Math.max(0, Math.min(maxVal, maxPrice));
-
-            minInput.value = minVal;
-            maxInput.value = maxVal;
-
-            minSlider.value = minVal;
-            maxSlider.value = maxVal;
-
-            updateProgress(minVal, maxVal);
-            filterProducts();
-        }
-
-        // Update input when slider changes
-        function sliderChanged() {
-            let minVal = parseInt(minSlider.value);
-            let maxVal = parseInt(maxSlider.value);
-
-            minInput.value = minVal;
-            maxInput.value = maxVal;
-
-            updateProgress(minVal, maxVal);
-            filterProducts();
-        }
-
-        minSlider.addEventListener('input', sliderChanged);
-        maxSlider.addEventListener('input', sliderChanged);
-
-        minInput.addEventListener('input', inputChanged);
-        maxInput.addEventListener('input', inputChanged);
-
-        // Initialize progress
-        updateProgress(parseInt(minSlider.value), parseInt(maxSlider.value));
-    });
-
-    /* ===============================
-    BRAND FILTER
-    =============================== */
-
-    document.addEventListener('DOMContentLoaded', () => {
-
         const searchInput = document.getElementById('brand-search');
         const brandItems = document.querySelectorAll('.brand-item');
-
         if (!searchInput || brandItems.length === 0) {
             return;
         }
-
         searchInput.addEventListener('input', (e) => {
-
             const query = e.target.value.toLowerCase();
-
             brandItems.forEach(item => {
-
                 const name = item.getAttribute('data-name').toLowerCase();
-
                 if (name.includes(query)) {
                     item.style.display = 'flex';
                 } else {
                     item.style.display = 'none';
                 }
-
             });
-
         });
-
     });
 
-
-    /* ===============================
-    CATEGORY FILTER SEARCH
-    =============================== */
-
+    /* CATEGORY FILTER SEARCH */
     document.addEventListener('DOMContentLoaded', () => {
-
         const searchInput = document.getElementById('category-search');
         const categoryItems = document.querySelectorAll('.category-item');
-
         if (!searchInput || categoryItems.length === 0) {
             return;
         }
 
         searchInput.addEventListener('input', (e) => {
-
             const query = e.target.value.toLowerCase();
-
             categoryItems.forEach(item => {
-
                 const name = item.getAttribute('data-name').toLowerCase();
-
                 if (name.includes(query)) {
                     item.style.display = 'flex';
                 } else {
                     item.style.display = 'none';
                 }
-
             });
-
         });
-
     });
 
-
-    /* ===============================
-    SORTING
-    =============================== */
-
+    /* SORTING */
     document.addEventListener('DOMContentLoaded', () => {
-
         const sortButton = document.querySelector('el-dropdown button');
         const sortOptions = document.querySelectorAll('.sort-option');
 
         if (!sortButton || sortOptions.length === 0) return;
 
         sortOptions.forEach(option => {
-
             option.addEventListener('click', (e) => {
-
                 e.preventDefault();
-
                 currentSort = option.dataset.sort;
-
                 const sortText = option.textContent;
-
                 sortButton.querySelector('span').textContent = `Sort by: ${sortText}`;
-
                 filterProducts();
-
             });
-
         });
-
     });
 
-
-    /* ===============================
-    VIEW SWITCH
-    =============================== */
-
+    /* VIEW SWITCH */
     document.addEventListener('DOMContentLoaded', () => {
-
         const viewButtons = document.querySelectorAll('.view-switch');
-
         viewButtons.forEach(btn => {
-
             btn.addEventListener('click', function() {
-
                 currentView = this.dataset.view;
-
                 filterProducts();
-
             });
-
         });
-
     });
 
-
-    /* ===============================
-    FILTER FUNCTION
-    =============================== */
-
+    /* FILTER FUNCTION */
     function filterProducts() {
+        page = 1;
+		document.getElementById('load-more-wrapper').style.display = 'block';
 
-        const categories = Array.from(
-            document.querySelectorAll('input[name="categories[]"]:checked')
-        ).map(el => el.value);
+		const categories = Array.from(
+			document.querySelectorAll('input[name="categories[]"]:checked')
+		).map(el => el.value);
 
-        const selectedBrands = Array.from(
-            document.querySelectorAll('input[name="brands[]"]:checked')
-        ).map(el => el.value);
+		const selectedBrands = Array.from(
+			document.querySelectorAll('input[name="brands[]"]:checked')
+		).map(el => el.value);
 
+		const visibleFilter = [...document.querySelectorAll('.price-filter')]
+			.find(el => el.offsetParent !== null);
 
-        const min_price = parseInt(
-            document.getElementById('min-price')?.value
-        ) || 0;
+		const min_price = parseInt(
+			visibleFilter?.querySelector('.min-price')?.value
+		) || 0;
 
-        const max_price = parseInt(
-            document.getElementById('max-price')?.value
-        ) || 300000;
+		const max_price = parseInt(
+			visibleFilter?.querySelector('.max-price')?.value
+		) || 300000;
 
+		const url = `/products`;
 
-        const url = `/products`;
+		// Store filters globally
+		currentFilters = new URLSearchParams({
+			min_price,
+			max_price,
+			sort: currentSort,
+			view: currentView
+		});
 
+		categories.forEach(cat => currentFilters.append('categories[]', cat));
+		selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
 
-        const params = new URLSearchParams({
+		return fetch(`${url}?${currentFilters.toString()}`, {
+				method: 'GET',
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest'
+				}
+			})
+			.then(res => res.json())
+			.then(data => {
 
-            min_price,
-            max_price,
-            sort: currentSort,
-            view: currentView
+				const wrapper = document.getElementById('product-list-wrapper');
 
-        });
+				// Show / Hide load more
+				const loadMore = document.getElementById('load-more-wrapper');
 
+				if (!data.html.trim()) {
+					loadMore.style.display = 'none';
 
-        categories.forEach(cat => params.append('categories[]', cat));
-        selectedBrands.forEach(brand => params.append('brands[]', brand));
+					wrapper.innerHTML = `
+						<div class="text-white text-center py-10">
+							No Products Found!
+						</div>
+					`;
+				} else {
+					wrapper.innerHTML = data.html;
+					loadMore.style.display = data.hasMore ? 'block' : 'none';
+				}
+				updateProductCount();
 
+				// Scroll
+				const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
+				window.scrollTo({ top: offsetTop, behavior: 'smooth' });
 
-        fetch(`${url}?${params.toString()}`, {
+				
+			})
+			.catch(err => console.error('Filter products error:', err));
+	}
 
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-
-            })
-
-            .then(res => res.text())
-
-            .then(html => {
-
-                const wrapper = document.getElementById('product-list-wrapper');
-                wrapper.innerHTML = html;
-
-                // Scroll to top of product list
-                const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100; // adjust 100px if header exists
-                window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                // wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                // Update product count dynamically
-                const countSpan = document.getElementById('product-count');
-                if (countSpan) {
-                    const productCount = wrapper.querySelectorAll('.product-card').length;
-                    if (productCount === 0) {
-                        countSpan.textContent = `Items 0 of 0`;
-                    } else {
-                        countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
-                    }
-                    document.getElementById('total-product-count').textContent = `${productCount}`;
-                }
-
-            })
-
-            .catch(err => console.error('Filter products error:', err));
-
-    }
-
-    /* ===============================
-    CLEAR FILTER
-    =============================== */
+    /* CLEAR FILTER */
     document.addEventListener('DOMContentLoaded', () => {
         const clearBtn = document.getElementById('clear-filters');
         if (!clearBtn) return;
 
         clearBtn.addEventListener('click', () => {
             // Reset sliders and inputs
-            const minSlider = document.getElementById('range-min');
-            const maxSlider = document.getElementById('range-max');
-            const minInput = document.getElementById('min-price');
-            const maxInput = document.getElementById('max-price');
+			const minSlider = document.querySelector('.range-min');
+			const maxSlider = document.querySelector('.range-max');
+			const minInput = document.querySelector('.min-price');
+			const maxInput = document.querySelector('.max-price');
+
             if (minSlider && maxSlider && minInput && maxInput) {
                 minSlider.value = 0;
                 maxSlider.value = maxSlider.max;
@@ -1095,57 +600,133 @@
         });
     });
 
-    /* ===============================
-    CATEGORY + BRAND CHECKBOX CHANGE
-    =============================== */
+    /* CATEGORY + BRAND CHECKBOX CHANGE */
+	document.addEventListener('change', function(e) {
+		if (e.target.matches('input[name="categories[]"]')) {
+			filterProducts();
+		}
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll(
-            'input[name="categories[]"], input[name="brands[]"]'
-        ).forEach(input => {
-            input.addEventListener('change', () => filterProducts());
-        });
-    });
+		if (e.target.matches('input[name="brands[]"]')) {
+			filterProducts();
+		}
+	});
 
-    /* ===============================
-    INITIAL LOAD
-    =============================== */
-
+    /* INITIAL LOAD */
     document.addEventListener('DOMContentLoaded', () => {
         filterProducts();
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.category-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
+	// CATEGORY + BRAND CHECKBOX CHANGE (desktop + mobile)
+	document.addEventListener('change', function(e) {
+		if (e.target.matches('.category-checkbox')) {
+			const checkbox = e.target;
 
-                const checkedCount = document.querySelectorAll('.category-checkbox:checked').length;
-            
-                if (checkedCount === 0) {
-                    this.checked = true;
-                    toastr.error("At least one category must be selected.");
-                } else {
-                    updateProductList(); 
-                }
-                
-                const childIds = this.dataset.childIds ? this.dataset.childIds.split(',') : [];
-                childIds.forEach(id => {
-                    const childCheckbox = document.getElementById(`filter-category-${id}`);
-                    if (childCheckbox) childCheckbox.checked = this.checked;
-                });
+			// Scope everything to the parent form (desktop or mobile)
+			const form = checkbox.closest('form') || document;
 
-                // Trigger your filter function after selection
-                filterProducts();
-            });
-        });
-    });
+			// Child checkboxes inside the same form
+			const childIds = checkbox.dataset.childIds ? checkbox.dataset.childIds.split(',') : [];
+			childIds.forEach(id => {
+				const childCheckbox = form.querySelector(`#filter-category-${id}`);
+				if (childCheckbox) childCheckbox.checked = checkbox.checked;
+			});
 
+			// Ensure at least one category is selected in this form
+			const checkedCount = form.querySelectorAll('.category-checkbox:checked').length;
+			if (checkedCount === 0) {
+				checkbox.checked = true;
+				toastr.error("At least one category must be selected.");
+			}
 
-    document.querySelectorAll('.category-checkbox').forEach(checkbox => {
-    checkbox.addEventListener('change', function(e) {
-        
-    });
-});
-    // FILTER SCRIPT
+			// Trigger filterProducts (fetch values from the active filter)
+			filterProducts();
+		}
+
+		// BRAND CHECKBOXES
+		if (e.target.matches('input[name="brands[]"]')) {
+			filterProducts();
+		}
+	});
+
+    // LOAD MORE SCRIPT
+	let page = 1;
+	let lastPage = {{ $products->lastPage() }};
+	let loading = false;
+
+	document.getElementById('load-more-btn').addEventListener('click', async function() {
+		if (loading || page >= lastPage) return;
+		loading = true;
+		page++;
+
+		await loadMoreProducts(page);
+		loading = false;
+
+		if (page >= lastPage) {
+			document.getElementById('load-more-wrapper').style.display = 'none';
+		}
+	});
+
+	async function loadMoreProducts(page) {
+		const loader = document.getElementById('product-loader');
+		loader.classList.remove('hidden');
+
+		try {
+
+			currentFilters.set('page', page);
+
+			const res = await fetch(`/products?${currentFilters.toString()}`, {
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest'
+				}
+			});
+
+			const data = await res.json();
+
+			if (!data.html.trim()) {
+				document.getElementById('load-more-wrapper').style.display = 'none';
+				return;
+			}
+
+			document.getElementById('product-list-wrapper')
+				.insertAdjacentHTML('beforeend', data.html);
+
+			if (!data.hasMore) {
+				document.getElementById('load-more-wrapper').style.display = 'none';
+			}
+
+			updateProductCount();
+
+		} catch (err) {
+			console.error(err);
+		} finally {
+			loader.classList.add('hidden');
+		}
+	}
+	
+
+	function updateProductCount() {
+		const countEl = document.getElementById('product-count');
+		const total = parseInt(countEl.dataset.total);
+		let visible = 0;
+
+		// Check active view
+		if (document.querySelector('[x-show="activeTab === \'gridview\'"]').offsetParent !== null) {
+			visible = document.querySelectorAll('#product-list .product-card').length;
+		} else {
+			visible = document.querySelectorAll('#product-list .product-card-list').length;
+		}
+
+		if (visible === 0) {
+			countEl.innerText = `Items 0 of 0`;
+            document.getElementById('product-list-wrapper').innerHTML = `
+						<div class="text-white text-center py-10">
+							No Products Found!
+						</div>`;
+			return;
+		}
+		countEl.innerText = `Items 1-${visible} of ${visible}`;
+        document.getElementById('total-product-count').innerText = `${visible}`;
+    	document.getElementById('category-count').innerText = `${visible}`;
+	}
 </script>
 @endsection

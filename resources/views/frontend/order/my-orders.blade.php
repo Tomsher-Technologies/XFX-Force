@@ -8,53 +8,7 @@
        <div class="text-white">
             <div class="w-full mx-auto flex flex-col xl:flex-row gap-[20px] md:gap-[50px] border-t border-[#252b31] pt-0 xl:pt-[80px]">
                 
-                <aside class="w-full xl:w-80 flex-shrink-0 fixed left-0 px-4 z-[100] xl:relative xl:bottom-0 xl:px-0 xl:z-0">
-                    <div class="bg-[#0f161b47] backdrop-blur-[60px] xl:bg-[#1C2228] border border-[#282B34] p-[5px] rounded-[15px] xl:rounded-[20px] xl:p-6 xl:sticky xl:top-[180px] shadow-2xl">
-                        
-                        <div class="hidden xl:flex items-center gap-4 mb-5 pb-6 border-b border-[#282B34]">
-                            <div id="userAvatar" class="flex items-center justify-center w-12 h-12 rounded-full bg-[#282B34] border border-white/5 text-white font-bold text-xl">?</div>
-                            <div class="flex flex-col gap-[2px]">
-                                <span id="userName" class="font-medium text-[18px] text-white">Tom Hiddleston</span>
-                                <p class="text-gray-500 text-[11px] uppercase tracking-wider">Registered Member</p>
-                            </div>
-                        </div>
-
-                        <nav class="flex flex-row xl:flex-col gap-[5px] xl:space-y-0">
-                            
-                            <a href="my-account.html" class="w-full text-gray-400 flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
-                                <svg class="w-5 h-5 text-[#898989" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                                <span class="text-[10px] lg:text-[15px]">Profile</span>
-                            </a>
-
-                            <a href="{{ route('orders.index') }}" class="w-full flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px] bg-[#2A7CFF] text-white font-medium transition-all group">
-                                <svg id="Layer_1" class="text-white w-5 h-5" fill="none" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path class="fill-[#ffffff] group-hover:fill-[#ffffff] transition-all duration-[600ms]" d="m19 0h-14a5.006 5.006 0 0 0 -5 5v14a5.006 5.006 0 0 0 5 5h14a5.006 5.006 0 0 0 5-5v-14a5.006 5.006 0 0 0 -5-5zm3 5h-7v-3h4a3 3 0 0 1 3 3zm-11-3h2v5a1 1 0 0 1 -2 0zm-6 0h4v3h-7a3 3 0 0 1 3-3zm14 20h-14a3 3 0 0 1 -3-3v-12h7a3 3 0 0 0 6 0h7v12a3 3 0 0 1 -3 3zm1-3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 0-2h3a1 1 0 0 1 1 1z"/></svg>
-                                <span class="text-[10px] lg:text-[15px] text-white">Orders</span>
-                            </a>
-
-                            <a href="{{ route('my-address') }}" class="w-full text-gray-400 flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
-                                <svg class="w-5 h-5 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                <span class="text-[10px] lg:text-[15px] text-gray-400">Address</span>
-                            </a>
-
-                            <a href="{{ route('wishlist') }}" class="w-full text-gray-400 flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
-                                <svg class="w-5 h-5 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-                                <span class="text-[10px] lg:text-[15px] text-gray-400">Wishlist</span>
-                            </a>
-
-                            <a href="accounts-change-password.html" class="w-full text-gray-400 flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px] hover:bg-[#252C33] text-[#898989] hover:text-white transition-all group">
-                                <svg class="w-5 h-5 group-hover:text-white" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24"><path fill="#9F9FA9" class="group-hover:fill-white" d="M19,8.424V7A7,7,0,0,0,5,7V8.424A5,5,0,0,0,2,13v6a5.006,5.006,0,0,0,5,5H17a5.006,5.006,0,0,0,5-5V13A5,5,0,0,0,19,8.424ZM7,7A5,5,0,0,1,17,7V8H7ZM20,19a3,3,0,0,1-3,3H7a3,3,0,0,1-3-3V13a3,3,0,0,1,3-3H17a3,3,0,0,1,3,3Z"/><path fill="#9F9FA9" class="group-hover:fill-white" d="M12,14a1,1,0,0,0-1,1v2a1,1,0,0,0,2,0V15A1,1,0,0,0,12,14Z"/></svg>
-                                <span class="text-[10px] lg:text-[15px] text-gray-400">Password</span>
-                            </a>
-
-                            <div class="w-full xl:border-t xl:border-[#282B34] xl:mt-4 hidden lg:flex">
-                                <a href="#" class="w-full text-gray-400  flex flex-col xl:flex-row items-center xl:items-start gap-1 xl:gap-4 p-[12px] xl:p-3 rounded-[10px] hover:bg-red-500/10 text-red-500/70 hover:text-red-500 transition-all group  xl:mt-4">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                                    <span class="text-[10px] lg:text-[15px]">Logout</span>
-                                </a>
-                            </div>
-                        </nav>
-                    </div>
-                </aside>
+                @include('frontend.layouts.sidebar')
 
                 <div class="h-20 xl:hidden"></div>
 
@@ -88,7 +42,24 @@
                         </div>
                         <div class="space-y-6">
                             @foreach ($orders as $order)
-                            <div class="order-item  bg-[#1C2228] border border-[#282B34] rounded-2xl overflow-hidden group hover:border-[#2A7CFF]/30 transition-all duration-300">
+                            
+                            @php
+                                $badgeColor = 'blue-500'; //pending
+                                $class = 'hover:border-[#2A7CFF]/30 transition-all duration-300'; //pending
+
+                                if($order->delivery_status == 'delivered' || $order->delivery_status == 'confirmed'){
+                                    $badgeColor = 'green-500';
+                                    $class = 'opacity-80 hover:opacity-100 transition-all duration-300';
+                                } elseif ($order->delivery_status == 'cancelled') {
+                                    $badgeColor = 'red-500';
+                                    $class = 'opacity-60 hover:opacity-100 transition-all duration-300';
+                                } elseif ($order->delivery_status == 'on_the_way' || $order->delivery_status == 'picked_up') {
+                                    $badgeColor = 'yellow-500';
+                                    $class = 'opacity-80 hover:opacity-100 transition-all duration-300';
+                                }
+
+                            @endphp
+                            <div class="order-item bg-[#1C2228] border border-[#282B34] rounded-2xl overflow-hidden group {{ $class }}">
                                 <div class="p-6 flex flex-col md:flex-row justify-between items-center gap-6">
                                     <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
                                         <div>
@@ -98,18 +69,7 @@
                                     </div>
 
                                     <div class="flex flex-col items-center md:items-start gap-2">
-                                        @php
-                                            $badgeColor = 'blue-500'; //pending
-
-                                            if($order->delivery_status == 'delivered' || $order->delivery_status == 'confirmed'){
-                                                $badgeColor = 'green-500';
-                                            } elseif ($order->delivery_status == 'cancelled') {
-                                                $badgeColor = 'red-500';
-                                            } elseif ($order->delivery_status == 'on_the_way' || $order->delivery_status == 'picked_up') {
-                                                $badgeColor = 'yellow-500';
-                                            }
-
-                                        @endphp
+                                        
                                         <div class="flex items-center gap-2 px-3 py-1 bg-{{ $badgeColor }}/10 border border-blue-500/20 rounded-full">
                                             <span class="w-2 h-2 bg-{{ $badgeColor }} rounded-full animate-pulse"></span>
                                             <span class="order-status text-{{ $badgeColor }} text-[11px] font-medium uppercase">{{ trans('messages.' . $order->delivery_status) }}</span>

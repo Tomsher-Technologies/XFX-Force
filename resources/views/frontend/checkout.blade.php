@@ -17,6 +17,21 @@
 </section>
 <!--//categories-->
 
+<!-- Confirm guest login -->
+ @if(empty(auth('frontend')->user()))
+ <div id="checkout-login-box" class="checkout-login-box px-[16px] md:px-[140px] pt-[50px] ">
+    <div class="flex gap-2 text-white">
+        <a href="{{ route('login', ['checkout' => 1]) }}" class="mt-[0px] flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">
+            Login
+        </a>
+
+        <button type="button" onclick="continueGuest()" class="mt-[0px] flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">
+            Continue as Guest
+        </button>
+    </div>
+</div>
+@endif
+
 <!--checkout-->
 <section class="bg-[#0F161B]">
 
@@ -32,16 +47,22 @@
                                 <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">1</span> Billing Information
                             </h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                @php
+                                    $fullName = auth('frontend')->user()->name ?? '';
+                                    $nameParts = explode(' ', $fullName, 2);
+                                    $firstName = $nameParts[0] ?? '';
+                                    $lastName = $nameParts[1] ?? '';
+                                @endphp     
                                 <div>
-                                    <input type="text" placeholder="First Name *" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="first_name">
+                                    <input type="text" placeholder="First Name *" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="first_name" value="{{ $firstName }}">
                                     <span class="text-red-400 text-xs mt-1 error-span error-first_name"></span>
                                 </div>
                                 <div>
-                                    <input type="text" placeholder="Last Name" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="last_name">
+                                    <input type="text" placeholder="Last Name" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="last_name" value="{{ $lastName }}">
                                     <span class="text-red-400 text-xs mt-1 error-span error-last_name"></span>
                                 </div>
                                 <div>
-                                    <input type="email" placeholder="Email Address *" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="billing_email">
+                                    <input type="email" placeholder="Email Address *" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="billing_email" value="{{ auth('frontend')->user()->email ?? '' }}">
                                     <span class="text-red-400 text-xs mt-1 error-span error-billing_email"></span>
                                 </div>
                                 <div>
@@ -50,7 +71,7 @@
                                             <div class="bg-[#1c2128] px-4 py-4 border-r border-gray-800 flex items-center gap-2 h-full">
                                                 <span class="text-[#6a7282] font-medium text-[15px] h-full">+971</span>
                                             </div>
-                                            <input type="number" id="uae-phone-input" placeholder="50 123 4567" class="w-full bg-transparent px-4 py-4 text-white placeholder-gray-700 outline-none font-medium text-[15px]" name="billing_phone">
+                                            <input type="number" id="uae-phone-input" placeholder="50 123 4567" class="w-full bg-transparent px-4 py-4 text-white placeholder-gray-700 outline-none font-medium text-[15px]" name="billing_phone" value="{{ auth('frontend')->user()->phone ?? '' }}">
                                         </div>
                                         <span class="text-red-400 text-xs mt-1 error-span error-billing_phone"></span>
                                     </div>
@@ -170,22 +191,23 @@
                             <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3">
                                 <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">4</span> Payment Methods
                             </h2>
-                            <div class="space-y-3">
-                                <label class="flex items-center justify-between p-4 bg-[#161B22] border border-[#2A7CFF] rounded-xl cursor-pointer">
+                            <div class="grid grid-cols-2 gap-4 mb-8">
+                                <label class="flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-600 transition-all">
                                     <div class="flex items-center gap-3">
                                         <input type="radio" name="pay" checked class="accent-[#2A7CFF]">
+                                        <span>Cash On Delivery</span>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-center justify-between p-4 bg-[#161B22] border border-[#2A7CFF] rounded-xl cursor-pointer">
+                                    <div class="flex items-center gap-3">
+                                        <input type="radio" name="pay" class="accent-[#2A7CFF]">
                                         <span>Credit / Debit Card</span>
                                     </div>
                                     <div class="hidden md:flex gap-2">
-                                        <img src="src/images/payment-methods.png" alt="Payment Methods" class="w-full md:w-[280px] h-auto object-contain object-center block ml-auto">
+                                        <img src="{{ asset('assets/images/payment-methods.png') }}" alt="Payment Methods" class="w-full md:w-[280px] h-auto object-contain object-center block ml-auto">
                                     </div>
                                 </label>
-                                <!-- <label class="flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-600 transition-all">
-                                        <div class="flex items-center gap-3">
-                                            <input type="radio" name="pay" class="accent-[#2A7CFF]">
-                                            <span>Cash On Delivery</span>
-                                        </div>
-                                    </label> -->
                             </div>
                         </section>
                     </div>
@@ -197,14 +219,18 @@
                 <div class="sticky top-[180px] w-full bg-black/30 backdrop-blur-[60px] p-[20px] md:p-[40px] rounded-[20px] mb-[10px]">
                     <h2 class="text-white text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34]">Order Summary</h2>
 
-
                     <div>
                     @foreach($cartItems as $item)
                         @php
-                            $image = asset('assets/img/placeholder.jpg');
+                            $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
                             if (!empty($item->product_stock?->image)) {
-                                $image = Storage::url($item->product_stock->image);
+                                // If multiple images, split by comma and take the first
+                                $stockImages = explode(',', $item->product_stock->image);
+                                $firstStockImage = trim($stockImages[0]);
+                                if ($firstStockImage) {
+                                    $image = Storage::url($firstStockImage);
+                                }
                             } elseif (!empty($item->product?->thumbnail_img)) {
                                 $image = Storage::url($item->product->thumbnail_img);
                             }
@@ -329,7 +355,7 @@
                             </div>
                         </li>
                     </ul>
-                    <a href="javascript:void(0)" onclick="completeYourOrder(event)" class="mt-[0px] w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">Place Your Order</a>
+                    <a href="javascript:void(0)" onclick="completeYourOrder(event, this)" class="mt-[0px] w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">Place Your Order</a>
                 </div>
                 <!--//categories filter-->
             </div>
@@ -509,7 +535,7 @@
 let timer;
 const checkoutForm = document.getElementById('checkout-form');
 
-function completeYourOrder(e) {
+function completeYourOrder(e, btn) {
     e.preventDefault(); // stop default submit immediately
     clearTimeout(timer);
 
@@ -562,6 +588,11 @@ function completeYourOrder(e) {
                 return;
             }
 
+            // Disable button immediately
+            btn.disabled = true;
+            btn.classList.add('opacity-50','cursor-not-allowed');
+            btn.innerHTML = 'Processing...';
+
             if (data.status) {
                 console.log('Order placed successfully!');
                 window.location.href = data.redirect;
@@ -588,8 +619,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const billingToggle = document.getElementById('billing-toggle');
     const addressListContainer = document.getElementById('address-list-container');
     const mapModal = document.getElementById('map-modal-overlay');
+    const cartShipping = document.getElementById('cart-shipping');
 
-    let originalShipping = parseFloat(document.getElementById('cart-shipping').textContent.replace(/,/g,''));
+    let originalShipping = cartShipping 
+    ? parseFloat(cartShipping.textContent.replace(/,/g, '')) 
+    : 0;
     let originalTotal = parseFloat(document.getElementById('final-total').textContent.replace(/,/g,''));
 
 
@@ -608,7 +642,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Update shipping on page
-        document.getElementById('cart-shipping').innerText = shipping.toFixed(2);
+        if(cartShipping) cartShipping.innerText = shipping.toFixed(2);
 
     // Recalculate total
     const newTotal = subTotal + shipping;

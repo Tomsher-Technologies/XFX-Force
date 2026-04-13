@@ -229,27 +229,6 @@ class ProductController extends Controller
 
         $product->save();
 
-        //save product specification
-        $specIds = $request->input('specification_id', []);
-        $itemIds = $request->input('specification_item_id', []);
-        $sortOrders = $request->input('specification_sort_order', []);
-
-        foreach ($specIds as $i => $specId) {
-            $itemId = $itemIds[$i] ?? null;
-            $sortOrder  = $sortOrders[$i] ?? 0;
-
-            if (!$specId || !$itemId) {
-                continue;
-            }
-
-            $specModel = new ProductSpecification();
-            $specModel->product_id            = $product->id;
-            $specModel->specification_id      = $specId;
-            $specModel->specification_item_id = $itemId;
-            $specModel->sort_order            = $sortOrder;
-            $specModel->save();
-        }
-
         // SEO
         $seo = ProductSeo::firstOrNew(['lang' => env('DEFAULT_LANGUAGE', 'en'), 'product_id' => $product->id]);
         $seo->meta_title        = $request->meta_title ?? $product->name;
@@ -307,8 +286,21 @@ class ProductController extends Controller
             $product_stock->model = $request->model;
             $product_stock->stock_title = $request->stock_title;
             $product_stock->image = '';
-            if ($request->hasFile('image')) {
-                $product_stock->image = ImageHelper::downloadAndResizeImage('sub_product', $request->file('image'), $product->sku, true);
+            
+            $stockgallery = [];
+            if ($request->hasfile('variant_images')) {
+                if ($product_stock->image == null) {
+                    $count = 1;
+                    $old_stock_gallery = [];
+                } else {
+                    $old_stock_gallery = explode(',', $product_stock->image);
+                    $count = count($old_stock_gallery) + 1;
+                }
+
+                foreach ($request->file('variant_images') as $key => $file) {
+                    $stockgallery[] = ImageHelper::downloadAndResizeImage('sub_product', $file, $product_stock->sku, false, $count + $key);
+                }
+                $product_stock->image = implode(',', array_merge($old_stock_gallery, $stockgallery));
             }
 
             $offertag = '';
@@ -337,6 +329,23 @@ class ProductController extends Controller
             $product_stock->offer_tag = $offertag;
             $product_stock->save();
 
+            //  Saving specification for single product.
+            if ($request->has('variant.0.specifications')) {
+                $specifications = $request->variant[0]['specifications'] ?? [];
+                $items = $request->variant[0]['specification_items'] ?? [];
+                $sortOrders = $request->variant[0]['sort_orders'] ?? [];
+                foreach ($specifications as $key => $specId) {
+                    if (!$specId) continue;
+                    ProductSpecification::create([
+                        'product_id' => $product->id,
+                        'product_stock_id' => $product_stock->id,
+                        'specification_id' => $specId,
+                        'specification_item_id' => $items[$key] ?? null,
+                        'sort_order' => $sortOrders[$key] ?? 0
+                    ]);
+                }
+            }
+
             // Save the product SKU as the stock SKU
             $product->sku = cleanSKU($request->sku ?? generateUniqueSKU());
             $product->save();
@@ -356,13 +365,22 @@ class ProductController extends Controller
                 $stock->model = $variantData['model'] ?? '';
                 $stock->stock_title = $variantData['stock_title'] ?? '';
 
-                if (isset($variantData['image']) && $request->hasFile("variants.$index.image")) {
-                    $stock->image = ImageHelper::downloadAndResizeImage(
-                        'sub_product', 
-                        $request->file("variants.$index.image"), 
-                        $product->sku, 
-                        true
-                    );
+
+                if(isset($variantData['variant_images']) && $request->hasFile("variants.$index.variant_images")){
+                    $stock_images_gallery = [];
+
+                    foreach($request->file("variants.$index.variant_images") as $key => $file){
+                        $stock_images_gallery[] = ImageHelper::downloadAndResizeImage(
+                            'sub_product', 
+                            $file, 
+                            $product->sku, 
+                            true,
+                            $key + 1
+                        );
+                    }
+
+                    // Option 1: Save as comma-separated string (quick)
+                    $stock->image = implode(',', $stock_images_gallery);
                 }
 
                 $offertag = '';
@@ -391,6 +409,23 @@ class ProductController extends Controller
                 $stock->offer_tag = $offertag;
                 
                 $stock->save();
+
+                // Save Specifications for this Variant
+                if (!empty($variantData['specifications'])) {
+
+                    foreach ($variantData['specifications'] as $key => $specId) {
+
+                        if (!$specId) continue;
+
+                        ProductSpecification::create([
+                            'product_id' => $product->id,
+                            'product_stock_id' => $stock->id,
+                            'specification_id' => $specId,
+                            'specification_item_id' => $variantData['specification_items'][$key] ?? null,
+                            'sort_order' => $variantData['sort_orders'][$key] ?? 0
+                        ]);
+                    }
+                }
                 
                 // Set product SKU as the first variant stock SKU
                 if ($index === 0) {
@@ -547,28 +582,6 @@ class ProductController extends Controller
         }
         $product->save();
 
-        //save product specification
-        $specIds = $request->input('specification_id', []);
-        $itemIds = $request->input('specification_item_id', []);
-        $sortOrders = $request->input('specification_sort_order', []);
-
-        foreach ($specIds as $i => $specId) {
-            $productSpecificationId = $request->input('product_spec_id', [])[$i] ?? null;
-            $itemId = $itemIds[$i] ?? null;
-            $sortOrder  = $sortOrders[$i] ?? 0;
-
-            if (!$specId || !$itemId) {
-                continue;
-            }
-
-            $specModel = ProductSpecification::findOrNew($productSpecificationId);
-            $specModel->product_id            = $product->id;
-            $specModel->specification_id      = $specId;
-            $specModel->specification_item_id = $itemId;
-            $specModel->sort_order            = $sortOrder;
-            $specModel->save();
-        }
-
         //save product seo
         $seo                        = ProductSeo::firstOrNew(['lang' => $request->lang, 'product_id' => $product->id]);
         $seo->meta_title            = $request->meta_title ?? $product->name;
@@ -588,7 +601,7 @@ class ProductController extends Controller
 
         //save product tabs
         if ($request->has('tabs')) {
-            ProductTabs::where('lang', $request->lang)->where('product_id', $product->id)->delete();
+            ProductTabs::where('product_id', $product->id)->delete();
             foreach ($request->tabs as $tab) {
                 if ($tab['tab_heading'] != '' && $tab['tab_description'] != '') {
                     $p_tab = $product->tabs()->create([
@@ -639,9 +652,27 @@ class ProductController extends Controller
             $product_stock->model = $request->model;
             $product_stock->stock_title = $request->stock_title; 
 
-            if ($request->hasFile('image')) {
-                $product_stock->image = ImageHelper::downloadAndResizeImage('sub_product', $request->file('image'), $product->sku, true);
+            // if ($request->hasFile('image')) {
+            //     $product_stock->image = ImageHelper::downloadAndResizeImage('sub_product', $request->file('image'), $product->sku, true);
+            // }
+
+            $stock_gallery = [];
+            if ($request->hasfile('variant_images')) {
+                if ($product_stock->image == null) {
+                    $count = 1;
+                    $old_stock_gallery = [];
+                } else {
+                    $old_stock_gallery = explode(',', $product_stock->image);
+                    $count = count($old_stock_gallery) + 1;
+                }
+
+                foreach ($request->file('variant_images') as $key => $file) {
+                    $stock_gallery[] = ImageHelper::downloadAndResizeImage('sub_product', $file, $product_stock->sku, false, $count + $key);
+                }
+
+                $product_stock->image = implode(',', array_merge($old_stock_gallery, $stock_gallery));
             }
+            
             $offertag = '';
             $productOrgPrice = $request->price;
             $discountPrice = $productOrgPrice;
@@ -667,6 +698,29 @@ class ProductController extends Controller
             $product_stock->offer_price = $discountPrice;
             $product_stock->offer_tag = $offertag;
             $product_stock->save();
+
+            //  Saving specification for single product.
+            ProductSpecification::where('product_stock_id', $product_stock->id)->delete();
+            if ($request->has('variant.0.specifications')) {
+                $specifications = $request->variant[0]['specifications'] ?? [];
+                $items = $request->variant[0]['specification_items'] ?? [];
+                $sortOrders = $request->variant[0]['sort_orders'] ?? [];
+                $specModelIds = $request->variant[0]['product_spec_id'] ?? [];
+                foreach ($specifications as $key => $specId) {
+                    
+                    if (!$specId) continue;
+                    $productSpecificationId = $specModelIds[$key] ?? null;
+
+                    $specModel = ProductSpecification::findOrNew($productSpecificationId);
+                    
+                    $specModel->product_id = $product->id;
+                    $specModel->product_stock_id = $product_stock->id;
+                    $specModel->specification_id = $specId;
+                    $specModel->specification_item_id = $items[$key] ?? null;
+                    $specModel->sort_order = $sortOrders[$key] ?? 0;
+                    $specModel->save();
+                }
+            }
 
             // Save the product SKU as the stock SKU
             $product->sku = $product_stock->sku;
@@ -696,15 +750,24 @@ class ProductController extends Controller
                 $stock->model = $variantData['model'] ?? '';
                 $stock->stock_title = $variantData['stock_title'] ?? '';
                 
-                if (isset($variantData['image']) && $request->hasFile("variants.$index.image")) {
-                    $stock->image = ImageHelper::downloadAndResizeImage(
-                        'sub_product', 
-                        $request->file("variants.$index.image"), 
-                        $product->sku, 
-                        true
-                    );
-                }
+                if($request->hasFile("variants.$index.variant_images")) {
+                    // Existing images
+                    $old_stock_gallery = $stock->image ? explode(',', $stock->image) : [];
 
+                    // New uploaded images
+                    $new_stock_gallery = [];
+                    foreach($request->file("variants.$index.variant_images") as $key => $file){
+                        $new_stock_gallery[] = ImageHelper::downloadAndResizeImage(
+                            'sub_product',
+                            $file,
+                            $product->sku,
+                            true
+                        );
+                    }
+
+                    // Only append new images to existing DB values
+                    $stock->image = implode(',', array_merge($old_stock_gallery, $new_stock_gallery));
+                }
                 $offertag = '';
                 $productOrgPrice = $variantData['price'];
                 $discountPrice = $productOrgPrice;
@@ -731,6 +794,32 @@ class ProductController extends Controller
                 $stock->offer_tag = $offertag;
                 
                 $stock->save();
+
+                
+                // Save Specifications for this Variant
+                ProductSpecification::where('product_stock_id', $stock->id)->delete();
+                if (!empty($variantData['specifications'])) {
+                    // Get the corresponding arrays for this variant
+                    $specIds       = $variantData['specifications'];
+                    $itemIds       = $variantData['specification_items'] ?? [];
+                    $sortOrders    = $variantData['sort_orders'] ?? [];
+                    $specModelIds  = $variantData['product_spec_id'] ?? [];
+
+                    foreach ($specIds as $i => $specId) {
+                        if (!$specId) continue;
+
+                        $productSpecificationId = $specModelIds[$i] ?? null;
+
+                        $specModel = ProductSpecification::findOrNew($productSpecificationId);
+                        $specModel->product_id = $product->id;
+                        $specModel->product_stock_id = $stock->id;
+                        $specModel->specification_id = $specId;
+                        $specModel->specification_item_id = $itemIds[$i] ?? null;
+                        $specModel->sort_order = $sortOrders[$i] ?? 0;
+                        $specModel->save();
+                    }
+                }
+
 
                 // Set product SKU as the first variant stock SKU
                 if ($index === 0) {
@@ -877,6 +966,41 @@ class ProductController extends Controller
             }
 
             $product->save();
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public function delete_stock_gallery(Request $request)
+    {
+        $stock = ProductStock::where('id', $request->id)->first();
+        
+        $fil_url = str_replace('/storage/', '', $request->url);
+        $fil_url = $path = Storage::disk('public')->path($fil_url);
+
+        if (File::exists($fil_url)) {
+            $info = pathinfo($fil_url);
+            $file_name = basename($fil_url, '.' . $info['extension']);
+            $ext = $info['extension'];
+
+            $sizes = config('app.img_sizes');
+            foreach ($sizes as $size) {
+                $path = $info['dirname'] . '/' . $file_name . '_' . $size . 'px.' . $ext;
+                unlink($path);
+            }
+
+            unlink($fil_url);
+
+            $stock_images = explode(',', $stock->image);
+            $stock_images =  array_diff($stock_images, [$request->url]);
+            if ($stock_images) {
+                $stock->image = implode(',', $stock_images);
+            } else {
+                $stock->image = null;
+            }
+
+            $stock->save();
             return 1;
         } else {
             return 0;

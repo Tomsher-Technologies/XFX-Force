@@ -26,9 +26,15 @@
 
         @foreach($reviewProducts as $item)
         @php
-        $image = asset('assets/img/placeholder.jpg');
+        $image = asset('assets/img/placeholder.jpg'); // default placeholder
+
         if (!empty($item['image'])) {
-        $image = Storage::url($item['image']);
+            // If multiple images, take the first one
+            $images = explode(',', $item['image']);
+            $firstImage = trim($images[0]);
+            if ($firstImage) {
+                $image = Storage::url($firstImage);
+            }
         }
         @endphp
         <div class="grid grid-cols-12 gap-[20px] md:gap-[30px] items-center border-t-1 border-[#2E363E] py-[20px]">
