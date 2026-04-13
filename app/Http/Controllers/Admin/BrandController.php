@@ -276,39 +276,41 @@ class BrandController extends Controller
         // saving Tabs
 
         $existingTabIds = [];
-        foreach ($request->tabs as $index => $tab) {
-            $tabId = $tab['id'] ?? null;
-            $imagePath = null;
-            if ($request->hasFile("tabs.$index.tab_image")) {
-                $imagePath = $request->file("tabs.$index.tab_image")
-                    ->store('brand_tabs/images', 'public');
-            }
+        if ($request->has('tabs')) {
+            foreach ($request->tabs as $index => $tab) {
+                $tabId = $tab['id'] ?? null;
+                $imagePath = null;
+                if ($request->hasFile("tabs.$index.tab_image")) {
+                    $imagePath = $request->file("tabs.$index.tab_image")
+                        ->store('brand_tabs/images', 'public');
+                }
 
-            if ($tabId) {
-                $existingTab = BrandTab::find($tabId);
-                if ($existingTab) {
-                    $existingTab->update([
+                if ($tabId) {
+                    $existingTab = BrandTab::find($tabId);
+                    if ($existingTab) {
+                        $existingTab->update([
+                            'name'        => $tab['tab_name'] ?? "",
+                            'title'       => $tab['tab_title'] ?? "",
+                            'description' => $tab['tab_description'] ?? "",
+                            'status'      => $tab['tab_status'] ?? 0,
+                            'image'       => $imagePath ?? $existingTab->image,
+                        ]);
+
+                        $existingTabIds[] = $existingTab->id;
+                    }
+
+                } else {
+
+                    $newTab = $brand->tabs()->create([
                         'name'        => $tab['tab_name'] ?? "",
                         'title'       => $tab['tab_title'] ?? "",
                         'description' => $tab['tab_description'] ?? "",
                         'status'      => $tab['tab_status'] ?? 0,
-                        'image'       => $imagePath ?? $existingTab->image,
+                        'image'       => $imagePath ?? "",
                     ]);
 
-                    $existingTabIds[] = $existingTab->id;
+                    $existingTabIds[] = $newTab->id;
                 }
-
-            } else {
-
-                $newTab = $brand->tabs()->create([
-                    'name'        => $tab['tab_name'] ?? "",
-                    'title'       => $tab['tab_title'] ?? "",
-                    'description' => $tab['tab_description'] ?? "",
-                    'status'      => $tab['tab_status'] ?? 0,
-                    'image'       => $imagePath ?? "",
-                ]);
-
-                $existingTabIds[] = $newTab->id;
             }
         }
 
