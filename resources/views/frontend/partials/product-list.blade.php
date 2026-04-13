@@ -48,7 +48,7 @@
 
                     @include('frontend.partials.wishlist-icon', [
                     'product' => $product->id,
-                    'stock' => $firstStock->id,
+                    'stock' => $firstStock ? $firstStock->id : null,
                     'page' => 'product-list' ?? null,
                     ])
                 </div>

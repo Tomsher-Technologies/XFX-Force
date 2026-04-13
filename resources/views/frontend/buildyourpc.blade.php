@@ -428,8 +428,133 @@ $hideFooter = true;
 
     const minusIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 12H4" /></svg>`;
 
-    function viewSelectedPcBuildProducts() {
-        
+    /***** Filter related scripts *******/
+    function toggleDropdown(menuId) {
+        const menus = ['brand-menu', 'model-menu', 'mega-menu'];
+        menus.forEach(id => {
+            const menu = document.getElementById(id);
+            if (id === menuId) {
+                menu.classList.toggle('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        });
+    }
+
+    function selectOption(type, value, brandId = 0) {
+        const label = document.getElementById(`${type}-label`);
+
+        if (label) {
+            label.innerText = value;
+
+            if (type === 'brand') {
+                label.dataset.id = brandId;
+            }
+        }
+
+        const activeCategory = document.querySelector('.nav-item.active');
+        if (!activeCategory) return;
+
+        const categoryId = activeCategory.dataset.categoryId;
+
+        const selectedBrandId = document.getElementById('brand-label').dataset.id || 0;
+
+        const model =
+            type === 'model' ? value :
+            document.getElementById('model-label').innerText === "All" ? "" :
+            document.getElementById('model-label').innerText;
+
+        const search = document.getElementById('brand-search').value || "";
+
+        loadProducts(categoryId, selectedBrandId, model, search, "");
+
+        if (type === 'brand') {
+            document.getElementById('model-label').innerText = "All";
+            loadModels(brandId, categoryId);
+        }
+
+        document.getElementById(`${type}-menu`).classList.add('hidden');
+    }
+
+    // Bran search text
+    document.getElementById('brand-search').addEventListener('keyup', function () {
+        const search = this.value;
+        const brandId = document.getElementById('brand-label').dataset.id || 0;
+        const activeCategory = document.querySelector('.nav-item.active');
+
+        if (!activeCategory) return;
+
+        const categoryId = activeCategory.dataset.categoryId;
+
+        const model = document.getElementById('model-label').innerText === "All"
+            ? ""
+            : document.getElementById('model-label').innerText;
+
+        loadProducts(categoryId, brandId, model, search, "");
+    });
+
+    function loadModels(brandId, categoryId) {
+        fetch(`/builder/models?brand_id=${brandId}&category_id=${categoryId}`)
+            .then(res => res.json())
+            .then(models => {
+
+                let html = `<a href="javascript:void(0)" 
+                    onclick="selectOption('model', 'All')"
+                    class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">
+                    All Models
+                </a>`;
+
+                models.forEach(model => {
+                    html += `
+                        <a href="javascript:void(0)" 
+                        onclick="selectOption('model', '${model}', '${brandId}')"
+                        class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">
+                            ${model}
+                        </a>`;
+                });
+
+                document.getElementById('model-menu').innerHTML = html;
+            });
+    }
+
+    document.querySelectorAll('.sort-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function(){
+
+            // Uncheck all others
+            document.querySelectorAll('.sort-checkbox').forEach(cb => {
+                if(cb !== this) cb.checked = false;
+            });
+
+            const sort = this.checked ? this.dataset.sort : ''; // '' if unchecked
+
+            const brandId = document.getElementById('brand-label').dataset.id || '';
+            const model = document.getElementById('model-label').innerText;
+            const activeCategory = document.querySelector('.nav-item.active');
+            const search = document.getElementById('brand-search').value || '';
+
+            if(activeCategory){
+                const categoryId = activeCategory.dataset.categoryId;
+                loadProducts(categoryId, brandId, "", search, sort);
+            }
+        });
+    });
+
+    // Close if clicked outside
+    window.onclick = function(event) {
+        if (!event.target.closest('.relative')) {
+            const menus = ['brand-menu', 'model-menu', 'mega-menu'];
+            menus.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+        }
+    }
+
+    /******end filter related functions****/
+
+
+    // initially show the selected products and add tick for its category
+    function viewSelectedPcBuildProducts() {        
         if (!buildData) return;
 
         // Remove all check-icon first.
@@ -468,48 +593,7 @@ $hideFooter = true;
                 }
 
             });
-
         });
-    }
-
-
-    function toggleDropdown(menuId) {
-        const menus = ['brand-menu', 'model-menu', 'mega-menu'];
-        menus.forEach(id => {
-            const menu = document.getElementById(id);
-            if (id === menuId) {
-                menu.classList.toggle('hidden');
-            } else {
-                menu.classList.add('hidden');
-            }
-        });
-    }
-
-    function selectOption(type, value, brandId=0) {
-        const label = document.getElementById(`${type}-label`);
-        if (label) {
-            label.innerText = value;
-            label.setAttribute('data-id', brandId);
-        }
-
-        const activeCategory = document.querySelector('.nav-item.active');
-
-        if(activeCategory){
-            const categoryId = activeCategory.dataset.categoryId;
-            loadProducts(categoryId, brandId);
-        }
-        document.getElementById(`${type}-menu`).classList.add('hidden');
-    }
-
-    // Close if clicked outside
-    window.onclick = function(event) {
-        if (!event.target.closest('.relative')) {
-            const menus = ['brand-menu', 'model-menu', 'mega-menu'];
-            menus.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
-            });
-        }
     }
 
     // Get all navigation items
@@ -523,14 +607,18 @@ $hideFooter = true;
         document.querySelector('.category-sub-heading').innerText = categoryName;
     }
 
-    function loadProducts(categoryId, brandId, search ="", sort = "") {
+    // load products on category click
+    function loadProducts(categoryId, brandId, model = "", search = "", sort = "") {
         const productsList = document.getElementById('products-list');
         const loader = document.getElementById('products-loader');
 
         productsList.innerHTML = '';
         loader.classList.remove('hidden');
 
-        fetch(`/buildyourpc/products/${categoryId}/${brandId}?search=${search}&sort=${sort}`)
+        const url = `/buildyourpc/products/${categoryId}/${brandId}/${model}`
+            + `?search=${encodeURIComponent(search)}&sort=${encodeURIComponent(sort)}`;
+
+        fetch(url)
             .then(res => res.json())
             .then(data => {
 
@@ -550,43 +638,59 @@ $hideFooter = true;
             });
     }
 
+    // click navitem(categories listed) 
     navItems.forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
 
-            // Remove active and hide all check icons
+            const activeIndex = getActiveCategoryIndex();
+            const categories = getCategories();
+            const currentCategory = categories[activeIndex];
+
+            const categoryId = currentCategory.dataset.categoryId;
+            const categoryName = currentCategory.dataset.categoryName;
+            const minSelect = parseInt(currentCategory.dataset.minSelect || 0);
+
+            const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0;
+
+            // Don't validate if clicking same category
+            if (!this.classList.contains('active')) {
+
+                // If last category
+                if (activeIndex === categories.length - 1) {
+                    showCategorySelectionMessage(currentCategory);
+                }
+
+                // Validate before switching
+                if (selectedCount < minSelect) {
+                    toastr.warning(`Please select at least ${minSelect} product(s) in ${categoryName}`);
+                    return;
+                }
+            }
+
+            // Remove active
             navItems.forEach(nav => {
                 nav.classList.remove('active');
             });
 
-            const categoryName = this.dataset.categoryName;
-            document.querySelector('.category-heading').innerText = categoryName;
-            document.querySelector('.category-sub-heading').innerText = categoryName;
+            const clickedCategoryName = this.dataset.categoryName;
+            document.querySelector('.category-heading').innerText = clickedCategoryName;
+            document.querySelector('.category-sub-heading').innerText = clickedCategoryName;
 
-            // Set clicked item as active and show its icon
             this.classList.add('active');
-            const categoryId = this.dataset.categoryId;
+
+            const newCategoryId = this.dataset.categoryId;
             const brandId = document.getElementById('brand-label').dataset.id;
-            
+
             document.getElementById('proceed-to-order-btn').classList.add('hidden');
 
             updateNavButtons();
             backToConfiguration();
 
-            loadProducts(categoryId, brandId);
+            loadProducts(newCategoryId, brandId, "", "", "");
+
+            checkAllCategoriesCompleted();
         });
-    });
-
-    document.getElementById('brand-search').addEventListener('keyup', function(){
-        const search = this.value;
-        const brandId = document.getElementById('brand-label').dataset.id || 0;
-        const activeCategory = document.querySelector('.nav-item.active');
-
-        if(activeCategory){
-            const categoryId = activeCategory.dataset.categoryId;
-            loadProducts(categoryId, brandId, search);
-        }
-
     });
 
     // pc builder save function
@@ -600,6 +704,7 @@ $hideFooter = true;
                         document.getElementById('pcBuilderId').value = data.builder_id;
                     }
                     viewSelectedPcBuildProducts();
+                    checkAllCategoriesCompleted();
                 } else {
                     console.error("Failed to save product");
                 }
@@ -609,6 +714,7 @@ $hideFooter = true;
             });
     }
 
+    // Function to check category limit
     function checkCategoryLimit(categoryId) {
         // check product selection allowed for category
         const categoryElement = document.querySelector(`.nav-item[data-category-id="${categoryId}"]`);
@@ -624,7 +730,6 @@ $hideFooter = true;
     }
 
     /**
-     * Universal Quantity Controller
      * Handles "Select" button toggle and +/- quantity logic
      */
     function selectProduct(buttonElement, qty = 1) {
@@ -648,7 +753,6 @@ $hideFooter = true;
 
         // save buid data
         savePcBuilder(productId, variantId, categoryId, builderId, qty);
-
         
         /** add selected product category to build data script **/
         if (!buildData[categoryId]) buildData[categoryId] = [];
@@ -664,8 +768,6 @@ $hideFooter = true;
             buildData[categoryId].push({ product_id: productId, variant_id: variantId });
             productCard.classList.add('product-selected');
         }
-
-
         /** add selected product category to build data script ends **/
     }
 
@@ -675,68 +777,70 @@ $hideFooter = true;
         const minusBtn = container.querySelector('.minus-btn');
         const iconWrapper = minusBtn.querySelector('.icon-wrapper');
         const counterWrapper = container.querySelector('.counter-wrapper');
-        let currentVal = parseInt(input.value);
+        let currentVal = parseInt(input.value) || 0;
         let newVal = currentVal + change;
 
         const productId = container.dataset.productId;
         const variantId = container.dataset.stockId;
         const categoryId = container.dataset.categoryId;
 
-        
+        const stockQty = parseInt(container.dataset.stockQty) || 0;
+        const cartQty = parseInt(container.dataset.cartQty) || 0;
+
+        // Available qty user can select
+        const availableQty = stockQty - cartQty;
+
+        // Stop if exceeding stock
+        if (newVal > availableQty) {
+            toastr.warning(`Only ${availableQty} item(s) available`);
+            return;
+        }
+
         if (!checkCategoryLimit(categoryId)) {
             return;
         }
 
         if (newVal >= 0) {
-            if(source == 'list'){
+            if (source == 'list') {
                 const selectBtn = container.querySelector('.action-btn');
                 selectProduct(selectBtn, newVal);
-            }else{
+            } else {
                 const builderId = document.getElementById('pcBuilderId').value;
-                if(newVal == 0){
+                if (newVal == 0) {
                     const categoryElement = document.querySelector(`.nav-item[data-category-id="${categoryId}"]`);
-                    if(categoryElement){
+                    if (categoryElement) {
                         const minLimit = categoryElement.dataset.minSelect;
                         const categoryName = categoryElement.dataset.categoryName;
                         const selectedCount = document.querySelectorAll(
                             `#products-review-page #review_block .review-product-item[data-category-id="${categoryId}"]`
                         ).length;
-                        
-                        if(selectedCount <= minLimit) {
+                        if (selectedCount <= minLimit) {
                             toastr.warning(`Please select at least ${minLimit} product(s) in ${categoryName}`);
                             return;
                         }
                     }
                 }
-                
                 savePcBuilder(productId, variantId, categoryId, builderId, newVal);
                 proceedToOrder();
                 iconWrapper.innerHTML = (newVal > 1) ? minusIcon : trashIcon;
             }
-            
         }
+
         if (newVal > 0) {
             input.value = newVal;
             iconWrapper.innerHTML = (newVal > 1) ? minusIcon : trashIcon;
         } else {
-            if(source == 'list'){
+            if (source == 'list') {
                 counterWrapper.classList.add('hidden');
                 counterWrapper.classList.remove('flex');
                 container.querySelector('.action-btn').classList.remove('hidden');
-                // Reset for next time
                 input.value = 0;
                 iconWrapper.innerHTML = trashIcon;
             }
-
-            
         }
     }
-</script>
 
-<script>
     function viewProductDetails(stockId) {
-        
-
         // 1. Logic to populate data (Same as your previous script)
         document.getElementById('default-view').classList.add('hidden');
         document.getElementById('details-view').classList.remove('hidden');
@@ -795,6 +899,7 @@ $hideFooter = true;
         }
         updateNavButtons();
         viewSelectedPcBuildProducts();
+        checkAllCategoriesCompleted();
 
     });
 
@@ -844,7 +949,6 @@ $hideFooter = true;
 
     // Validate min selected products for each category.
     function validateMinSelection() {
-
         let valid = true;
         document.querySelectorAll('.nav-item').forEach(category => {
             const categoryId = category.dataset.categoryId;
@@ -863,9 +967,7 @@ $hideFooter = true;
 
     //Navigation script
     function setActiveCategory(index) {
-
         const categories = getCategories();
-
         categories.forEach(c => c.classList.remove('active'));
 
         if (categories[index]) {
@@ -928,8 +1030,7 @@ $hideFooter = true;
         const currentCategory = categories[index];
         const categoryId = currentCategory.dataset.categoryId;
         const minSelect = currentCategory.dataset.minSelect;
-        document.querySelector(`.nav-item[data-category-id="${categories[index+1].dataset.categoryId}"]`).click();
-
+        
         // Store result
         const isValid = validateMinSelection();
 
@@ -939,6 +1040,8 @@ $hideFooter = true;
             toastr.warning(`Please select at least ${minSelect} product(s) in ${currentCategory.innerText}`);
             return; // stop proceeding to next step
         }
+
+        document.querySelector(`.nav-item[data-category-id="${categories[index+1].dataset.categoryId}"]`).click();
 
         if (index < categories.length - 1) {
             setActiveCategory(index + 1);
@@ -990,8 +1093,6 @@ $hideFooter = true;
                 });
 
             });
-
-
     }
 
     // Back to configuration function
@@ -1043,17 +1144,12 @@ $hideFooter = true;
     }
 
     function resetConfiguration() {
-
         let builderId = document.getElementById('pcBuilderId').value;
 
         if (!builderId) {
             toastr.error('Builder not found');
             return;
         }
-
-        // if (!confirm('Are you sure you want to reset this configuration?')) {
-        //     return;
-        // }
 
         Swal.fire({
             title: 'Are you sure?',
@@ -1092,48 +1188,75 @@ $hideFooter = true;
         });
     }
 
-    document.getElementById('reset-filters').addEventListener('click', function(){
-
-        // Reset brand label and ID
+    document.getElementById('reset-filters').addEventListener('click', function () {
+        // Reset Brand
         const brandLabel = document.getElementById('brand-label');
-        brandLabel.innerText = 'All';
+        brandLabel.innerText = 'All Brands';
         brandLabel.dataset.id = 0;
 
-        // Clear brand search input
+        // Reset Model
+        const modelLabel = document.getElementById('model-label');
+        modelLabel.innerText = 'All';
+
+        // Reset Search
         document.getElementById('brand-search').value = '';
 
-        // Optional: reset sort, model, etc. if needed
-        // document.getElementById('filter-sort').value = '';
-        // document.getElementById('filter-model').value = '';
+        // Reset Sort
+        document.querySelectorAll('.sort-checkbox').forEach(cb => {
+            cb.checked = false;
+        });
 
-        // Reload products for active category
+        // Reload models dropdown
         const activeCategory = document.querySelector('.nav-item.active');
-        if(activeCategory){
+
+        if (activeCategory) {
             const categoryId = activeCategory.dataset.categoryId;
-            loadProducts(categoryId, 0, ''); // brandId=0, search=''
+
+            // reload model dropdown
+            loadModels(0, categoryId);
+
+            // reload products
+            loadProducts(categoryId, 0, "", "", "");
         }
     });
 
-    document.querySelectorAll('.sort-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function(){
+    
 
-            // Uncheck all others
-            document.querySelectorAll('.sort-checkbox').forEach(cb => {
-                if(cb !== this) cb.checked = false;
-            });
+    function checkAllCategoriesCompleted() {
+        const isValid = validateMinSelection();
 
-            const sort = this.checked ? this.dataset.sort : ''; // '' if unchecked
+        if (isValid) {
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('prev-btn').classList.add('hidden');
+            document.getElementById('proceed-to-order-btn').classList.remove('hidden');
+        } else {
+            document.getElementById('next-btn').classList.remove('hidden');
+            document.getElementById('prev-btn').classList.remove('hidden');
+            document.getElementById('proceed-to-order-btn').classList.add('hidden');
+        }
+    }
 
-            const brandId = document.getElementById('brand-label').dataset.id || 0;
-            const activeCategory = document.querySelector('.nav-item.active');
-            const search = document.getElementById('brand-search').value || '';
+    function showCategorySelectionMessage(categoryElement) {
+        const minSelect = categoryElement.dataset.minSelect;
+        const maxSelect = categoryElement.dataset.maxSelect;
+        const categoryName = categoryElement.dataset.categoryName;
 
-            if(activeCategory){
-                const categoryId = activeCategory.dataset.categoryId;
-                loadProducts(categoryId, brandId, search, sort);
-            }
-        });
-    });
+        let message = '';
+
+        if (minSelect && maxSelect && maxSelect !== "null") {
+            message = `Select ${minSelect} - ${maxSelect} product(s) in ${categoryName}`;
+        } 
+        // else if (minSelect) {
+        //     message = `Select at least ${minSelect} product(s) in ${categoryName}`;
+        // } 
+        else if (maxSelect && maxSelect !== "null") {
+            message = `You can select up to ${maxSelect} product(s) in ${categoryName}`;
+        }
+
+        if (message) {
+            toastr.info(message);
+        }
+    }
 
 </script>
 @endsection

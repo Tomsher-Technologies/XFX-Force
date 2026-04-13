@@ -67,6 +67,29 @@
                 
                 
                 <div class="swiper-wrapper">
+                    <!-- Product video -->
+                    @if(!empty($product->video_link))
+                    <!-- <div class="swiper-slide" data-swiper-autoplay="8000">
+                        <a href="{{ $product->video_link }}" class="glightbox" data-gallery="product-gallery">
+                            <div class="w-full h-full flex items-center justify-center bg-black relative">
+                                
+                                {{-- Video Thumbnail (Optional placeholder image) --}}
+                                <img src="{{ $product->thumbnail_img ? Storage::url($product->thumbnail_img) : '' }}"
+                                    alt="{{ $product->name }}"
+                                    class="w-full h-full object-cover">
+
+                                {{-- Play Icon --}}
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <svg width="60" height="60" viewBox="0 0 24 24" fill="white">
+                                        <circle cx="12" cy="12" r="12" fill="rgba(0,0,0,0.6)"/>
+                                        <polygon points="10,8 16,12 10,16" fill="white"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </a>
+                    </div> -->
+                    @endif
+
                     {{-- Variant/stock images --}}
                     @if($firstStock && $firstStock->image)
                         @php 
