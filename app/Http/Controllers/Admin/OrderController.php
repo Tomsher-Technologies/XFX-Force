@@ -559,63 +559,24 @@ class OrderController extends Controller
 
         // Only non PC builder items
         $details = $order->orderDetails->where('is_pc_builder', 0);
-
-        $hasPending = false;
-        $hasAnyActiveReturn = false; // means can still send request
-        $allClosedApproved = true;
-        $allClosedRejected = true;
+        $hasReturnableItems = false;
 
         foreach ($details as $detail) {
-
             $approvedQty = $detail->returns->where('status', 'approved')->sum('return_qty');
             $pendingQty  = $detail->returns->where('status', 'pending')->sum('return_qty');
             $rejectedQty = $detail->returns->where('status', 'rejected')->sum('return_qty');
+            $processedQty = $approvedQty + $pendingQty + $rejectedQty;
 
-            $orderedQty = $detail->quantity;
-
-            // If ANY pending exists → active flow
-            if ($pendingQty > 0) {
-                $hasPending = true;
+            // if something still not processed → returnable
+            if ($processedQty < $detail->quantity) {
+                $hasReturnableItems = true;
+                break;
             }
-
-            // If item is NOT fully closed (approved or rejected), it is still active
-            $isFullyClosed = ($approvedQty + $rejectedQty) >= $orderedQty;
-
-            if (!$isFullyClosed) {
-                $hasAnyActiveReturn = true;
-            }
-
-            if ($approvedQty < $orderedQty) {
-                $allClosedApproved = false;
-            }
-
-            if ($rejectedQty < $orderedQty) {
-                $allClosedRejected = false;
-            }
-        }
-
-
-        // FINAL STATES
-
-        if ($allClosedApproved && !$hasAnyActiveReturn) {
-            $state = 'returned';
-        }
-        elseif ($allClosedRejected && !$hasAnyActiveReturn) {
-            $state = 'rejected';
-        }
-        elseif ($hasPending) {
-            $state = 'requested';
-        }
-        elseif ($hasAnyActiveReturn) {
-            $state = 'available';
-        }
-        else {
-            $state = 'requested'; // fallback safe
         }
 
         return view(
             'frontend.order.my-order-single',
-            compact('order', 'trackingHistory', 'state')
+            compact('order', 'trackingHistory', 'hasReturnableItems')
         );
     }
 }
