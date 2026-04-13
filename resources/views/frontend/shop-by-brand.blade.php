@@ -574,22 +574,23 @@ let page = 1;
 			.then(data => {
 
 				const wrapper = document.getElementById('product-list-wrapper');
-				wrapper.innerHTML = data.html;
-				updateProductCount();
 
 				// Show / Hide load more
 				const loadMore = document.getElementById('load-more-wrapper');
 
-				if (data.hasMore) {
-					loadMore.style.display = 'block';
-				} else {
+				if (!data.html.trim()) {
 					loadMore.style.display = 'none';
-					document.getElementById('product-list-wrapper').innerHTML = `
+
+					wrapper.innerHTML = `
 						<div class="text-white text-center py-10">
 							No Products Found!
 						</div>
 					`;
+				} else {
+					wrapper.innerHTML = data.html;
+					loadMore.style.display = data.hasMore ? 'block' : 'none';
 				}
+				updateProductCount();
 
 				// Scroll
 				const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
