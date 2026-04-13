@@ -23,10 +23,10 @@ Log::info($_REQUEST);
 			@foreach ($categoryList as $category)
 			<div class="swiper-slide" data-swiper-autoplay="8000">
 				<a href="{{ route('shop.category',$category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
-					<div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] xl:p-[35px] rounded-full h-[100px] lg:h-[80px] xl:h-[150px] w-[100px] lg:w-[80px] xl:w-[150px] overflow-hidden">
+					<div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[100px] lg:h-[80px] xl:h-[95px] w-[100px] lg:w-[80px] xl:w-[95px] overflow-hidden">
 						<img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{$category->name}}" class="w-full m-auto">
 					</div>
-					<h4 class="text-white text-center font-medium text-[15px] xl:text-[20px] capitalize">{{$category->name}}</h4>
+					<h4 class="text-white text-center font-medium text-[15px] xl:text-[16px] capitalize">{{$category->name}}</h4>
 				</a>
 			</div>
 			@endforeach
@@ -369,7 +369,7 @@ Log::info($_REQUEST);
 					<div class="loader"></div>
 				</div>
 				<div class="text-center mt-4 text-white" id="load-more-wrapper">
-					<button id="load-more-btn" class="btn btn-primary">
+					<button id="load-more-btn" class="mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hidden md:block hover:bg-white/5">
 						Load More...
 					</button>
 				</div>
