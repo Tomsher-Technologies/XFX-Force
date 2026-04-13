@@ -205,7 +205,7 @@
                                         <span>Credit / Debit Card</span>
                                     </div>
                                     <div class="hidden md:flex gap-2">
-                                        <img src="src/images/payment-methods.png" alt="Payment Methods" class="w-full md:w-[280px] h-auto object-contain object-center block ml-auto">
+                                        <img src="{{ asset('assets/images/payment-methods.png') }}" alt="Payment Methods" class="w-full md:w-[280px] h-auto object-contain object-center block ml-auto">
                                     </div>
                                 </label>
                             </div>

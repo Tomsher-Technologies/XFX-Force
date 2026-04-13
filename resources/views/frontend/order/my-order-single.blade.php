@@ -45,51 +45,49 @@
                                     </button>
                                 @endif
                                 @php
-                                    // Default return period from settings (in days)
                                     $returnDays = get_setting('default_return_time') ?? 0;
 
-                                    // Calculate remaining days
-                                    $orderDate = \Carbon\Carbon::parse($order->created_at);
-                                    $expiryDate = $orderDate->copy()->addDays($returnDays);
-                                    $remainingDays = \Carbon\Carbon::now()->diffInDays($expiryDate, false); // false to get negative if past
-                                @endphp
-                                @if($order->delivery_status == 'delivered')
-                                    @if($remainingDays > 0)
-                                        @php
-                                            $allFullyReturned = true; // flag to track if all items are fully returned
-                                        @endphp
+                                    $deliveryDate = \Carbon\Carbon::parse($order->delivery_completed_date)->startOfDay();
 
-                                        @foreach($order->orderDetails as $detail)
-                                            @php
-                                                $totalReturnedQty = $detail->returns->where('status','approved')->sum('return_qty');
-                                                if ($totalReturnedQty < $detail->quantity) {
-                                                    $allFullyReturned = false; // at least one item not fully returned
-                                                }
-                                            @endphp
-                                        @endforeach
-                                        @if(!$allFullyReturned)
-                                            <div class="w-full xl:w-fit flex flex-col gap-2 flex-1">
-                                                <button 
-                                                    id="openReturnBtn"
-                                                    class="bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all text-[13px] font-medium uppercase tracking-wider 
-                                                    {{ ($allReturned || $allRequested) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }}"
-                                                    
-                                                    {{ ($allReturned || $allRequested) ? 'disabled' : '' }} >
-                                                    @if($allReturned)
-                                                        Returned
-                                                    @elseif($allRequested)
-                                                        Return Requested
-                                                    @else
-                                                        Return Order
-                                                    @endif
-                                                </button>
-                                                
-                                                <p class="text-[10px] text-gray-500 italic text-center lg:text-left">
-                                                    * Return possible within {{ $remainingDays }} day{{ $remainingDays > 1 ? 's' : '' }}
-                                                </p>
-                                            </div>
+                                    $expiryDate = $deliveryDate->copy()->addDays($returnDays)->endOfDay();
+
+                                    $remainingDays = now()->diffInDays($expiryDate, false);
+                                @endphp
+
+
+                                @if($order->delivery_status == 'delivered' && $remainingDays > 0)
+
+                                <div class="w-full xl:w-fit flex flex-col gap-2 flex-1">
+                                    
+                                    <button 
+                                        id="openReturnBtn"
+                                        class="bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl 
+                                        hover:bg-[#2A7CFF] transition-all text-[13px] font-medium uppercase tracking-wider 
+                                        {{ in_array($state, ['returned','requested','rejected']) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }}"
+                                        
+                                        {{ in_array($state, ['returned','requested','rejected']) ? 'disabled' : '' }} >
+
+                                        @if($state == 'returned')
+                                            Returned
+
+                                        @elseif($state == 'rejected')
+                                            Return Rejected
+
+                                        @elseif($state == 'requested')
+                                            Return Requested
+
+                                        @else
+                                            Return Order
                                         @endif
-                                    @endif
+
+                                    </button>
+
+                                    <p class="text-[10px] text-gray-500 italic text-center lg:text-left">
+                                        * Return possible within {{ $remainingDays }} day{{ $remainingDays > 1 ? 's' : '' }} (till {{ $expiryDate->format('d M Y') }})
+                                    </p>
+
+                                </div>
+
                                 @endif
                                 <button class="w-full cursor-pointer flex-1 bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all text-[13px] font-medium flex items-center justify-center gap-2 uppercase tracking-wider"  onclick="window.location ='{{ route('invoice.download', $order->id) }}'">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -469,7 +467,7 @@
                                                             <div class="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-6">
                                                                 <div class="flex items-center gap-6 group">
                                                                     <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
-                                                                        <img src="src/images/product-single-01.webp" class="w-full h-full object-cover rounded-lg" alt="Product">
+                                                                        <img src="{{ $image }}" class="w-full h-full object-cover rounded-lg" alt="Product">
                                                                     </div>
                                                                     <div class="flex-grow">
                                                                         <h4 class="text-white font-medium line-clamp-1 text-sm md:text-base">
@@ -778,7 +776,7 @@
 
                 <div class="pt-4 return-reason-container">
                     <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 px-1">Reason for return</p>
-                    <textarea rows="3" class="w-full bg-[#0f161b] border border-[#282B34] rounded-2xl p-4 text-white text-sm focus:border-[#2A7CFF] outline-none transition-all placeholder:text-gray-700 resize-none" placeholder="Write your reason here..." name="return_reason"></textarea>
+                    <textarea rows="3" class="w-full bg-[#0f161b] border border-[#282B34] rounded-2xl p-4 text-white text-sm focus:border-[#2A7CFF] outline-none transition-all placeholder:text-gray-700 resize-none" placeholder="Write your reason here..." name="return_reason" required></textarea>
                 </div>
             </div>
         
@@ -1153,8 +1151,8 @@
             modal.classList.remove('active');
             document.body.style.overflow = '';
         };
-        closeX.onclick = closeModal;
-        cancelBtn.onclick = closeModal;
+        closeX.onclick = closeModal();
+        cancelBtn.onclick = closeModal();
         modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
         window.addEventListener('keydown', e => { if (e.key === "Escape") closeModal(); });
 
@@ -1190,31 +1188,75 @@
         // --- Form Submission ---
         returnOrderForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            // Disable submit immediately to prevent double clicks
+
             submitBtn.disabled = true;
 
             const formData = new FormData(this);
+            const checked = document.querySelectorAll('.return-checkbox:checked');
+
+            if(checked.length === 0){
+                toastr.warning('Please select at least one item');
+                submitBtn.disabled = false;
+                return;
+            }
 
             fetch(`/my-orders/${formData.get('order_id')}/return`, {
                 method: 'POST',
-                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
                 body: formData
             })
-            .then(res => res.json())
+            .then(async res => {
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw data;
+                }
+
+                return data;
+            })
             .then(res => {
                 if(res.status === 'success'){
-                    alert("hhhhhhhhhhhhhhhhhhh");
                     toastr.success(res.message);
-                    location.reload();
-                    closeModal;
+
+                    closeModal();   // FIXED
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 800);
+                }
+
+            })
+            .catch(err => {
+
+                if(err.errors){
+
+                    // Remove old errors
+                    document.querySelectorAll('.error-text').forEach(el => el.remove());
+
+                    Object.keys(err.errors).forEach(field => {
+
+                        const message = err.errors[field][0];
+
+                        if(field === 'return_reason'){
+                            
+                            const textarea = document.querySelector('[name="return_reason"]');
+
+                            textarea.insertAdjacentHTML(
+                                'afterend',
+                                `<p class="text-red-400 text-xs mt-1 error-text">${message}</p>`
+                            );
+                        }
+                    });
 
                 } else {
-                    toastr.error(res.message);
+                    toastr.error(err.message || 'Something went wrong');
                 }
             })
-            .catch(() => toastr.error('Something went wrong!'))
             .finally(() => {
-                // Re-enable button only if needed
                 submitBtn.disabled = false;
             });
         });

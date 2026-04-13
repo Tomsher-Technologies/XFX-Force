@@ -362,30 +362,37 @@ class ProductsImport implements ToCollection, WithHeadingRow
                     if (!empty($row['specification'])) {
                         $specs = explode(',', $row['specification']);
                         foreach ($specs as $index => $spec) {
-                            if (strpos($spec, ':') !== false) {
-                                [$key, $value] = explode(':', $spec);
-
-                                $specification = Specification::firstOrCreate([
-                                    'main_title' => trim($key)
-                                ]);
-
-                                $specificationItem = SpecificationItem::firstOrCreate([
-                                    'title' => trim($value),
-                                    'main_specification_id' => $specification->id
-                                ]);
-
-                                ProductSpecification::updateOrCreate(
-                                    [
-                                        'product_stock_id' => $stock->id,
-                                        'specification_id' => $specification->id,
-                                    ],
-                                    [
-                                        'product_id' => $product->id,
-                                        'specification_item_id' => $specificationItem->id,
-                                        'sort_order' => $index + 1,
-                                    ]
-                                );
+                            if (strpos($spec, ':') === false) {
+                                continue;
                             }
+
+                            [$key, $value] = array_map('trim', explode(':', $spec, 2));
+
+                            // skip if either key or value is empty
+                            if (empty($key) || empty($value)) {
+                                continue;
+                            }
+
+                            $specification = Specification::firstOrCreate([
+                                'main_title' => $key
+                            ]);
+
+                            $specificationItem = SpecificationItem::firstOrCreate([
+                                'title' => $value,
+                                'main_specification_id' => $specification->id
+                            ]);
+
+                            ProductSpecification::updateOrCreate(
+                                [
+                                    'product_stock_id' => $stock->id,
+                                    'specification_id' => $specification->id,
+                                ],
+                                [
+                                    'product_id' => $product->id,
+                                    'specification_item_id' => $specificationItem->id,
+                                    'sort_order' => $index + 1,
+                                ]
+                            );
                         }
                     }
 
