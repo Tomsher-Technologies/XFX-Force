@@ -338,16 +338,18 @@
                     </div>
                     @else
                     @include('frontend.partials.product-list', ['products' => $products])
+
+                    <div id="product-loader" class="text-center my-3 text-white hidden">
+                        <div class="loader"></div>
+                    </div>
+                    <div class="text-center mt-4 text-white" id="load-more-wrapper">
+                        <button id="load-more-btn" class="btn btn-primary">
+                            Load More...
+                        </button>
+                    </div>
                     @endif
                 </div>
-                <div id="product-loader" class="text-center my-3 text-white hidden">
-                  <div class="loader"></div>
-                </div>
-                <div class="text-center mt-4 text-white" id="load-more-wrapper">
-                  <button id="load-more-btn" class="btn btn-primary">
-                    Load More...
-                  </button>
-                </div>
+                
             </div>
         </div>
 
@@ -716,6 +718,10 @@
 
 		if (visible === 0) {
 			countEl.innerText = `Items 0 of 0`;
+            document.getElementById('product-list-wrapper').innerHTML = `
+						<div class="text-white text-center py-10">
+							No Products Found!
+						</div>`;
 			return;
 		}
 		countEl.innerText = `Items 1-${visible} of ${visible}`;
