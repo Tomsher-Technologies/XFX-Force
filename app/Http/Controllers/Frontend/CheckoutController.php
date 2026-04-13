@@ -460,24 +460,25 @@ class CheckoutController
     {
         
         // Validate the input
-        $request->validate([
+         $validator = Validator::make($request->all(), [
             'order_id' => 'required|exists:orders,id',
             'return_reason' => 'required|string|max:255',
             'return_qty' => 'required|array',
             'return_qty.*' => 'integer|min:1',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         // Get the order
         $order = Order::findOrFail($request->order_id);
+        $reason = $request->return_reason;
         if($order && $order->delivery_status == "delivered"){
 
-            if ($order->return_request == 0) {
-                $reason = $request->return_reason;
-                $order->return_request = 1;
-                $order->return_request_date = now();
-                $order->return_reason = $reason;
-                $order->save();
-            }
 
             // Loop through selected products and save return details
             foreach ($request->return_qty as $orderDetailId => $qty) {
@@ -526,7 +527,10 @@ class CheckoutController
 
         }
 
-        return response()->json(['success' => true, 'message' => 'Return request submitted successfully.']);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Return request submitted successfully.'
+        ]);
     }
 
 }

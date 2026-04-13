@@ -542,11 +542,14 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             abort(404);
         }
-        
-        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        $order = Order::with('orderDetails.product')
+        $user_id = auth('frontend')->user()->id ?? '';
+
+        $order = Order::with([
+                'orderDetails.product',
+                'orderDetails.returns'
+            ])
             ->where('id', $orderId)
-            ->where('user_id', $user_id) // security
+            ->where('user_id', $user_id)
             ->firstOrFail();
 
         $trackingHistory = OrderTracking::where('order_id', $orderId)
@@ -554,33 +557,65 @@ class OrderController extends Controller
             ->get()
             ->keyBy('status');
 
-        
-        // Only consider orderDetails where is_pc_builder = 0
+        // Only non PC builder items
         $details = $order->orderDetails->where('is_pc_builder', 0);
 
-        // Total quantity in order (non-PC-builder items)
-        $totalOrderedQty = $details->sum('quantity');
+        $hasPending = false;
+        $hasAnyActiveReturn = false; // means can still send request
+        $allClosedApproved = true;
+        $allClosedRejected = true;
 
-        // Total quantity returned (non-PC-builder items)
-        $totalReturnedQty = $details->sum(function($detail) {
-            return $detail->returns->where('status','approved')->sum('return_qty');
-        });
+        foreach ($details as $detail) {
 
-        // Total quantity returned (non-PC-builder items)
-        $totalRequestedForReturnQty = $details->sum(function($detail) {
-            return $detail->returns->sum('return_qty');
-        });
+            $approvedQty = $detail->returns->where('status', 'approved')->sum('return_qty');
+            $pendingQty  = $detail->returns->where('status', 'pending')->sum('return_qty');
+            $rejectedQty = $detail->returns->where('status', 'rejected')->sum('return_qty');
 
-        $allReturned = false;
-        $allRequested = false;
-        if ($totalReturnedQty == $totalOrderedQty) {
-            $allReturned = true;
+            $orderedQty = $detail->quantity;
+
+            // If ANY pending exists → active flow
+            if ($pendingQty > 0) {
+                $hasPending = true;
+            }
+
+            // If item is NOT fully closed (approved or rejected), it is still active
+            $isFullyClosed = ($approvedQty + $rejectedQty) >= $orderedQty;
+
+            if (!$isFullyClosed) {
+                $hasAnyActiveReturn = true;
+            }
+
+            if ($approvedQty < $orderedQty) {
+                $allClosedApproved = false;
+            }
+
+            if ($rejectedQty < $orderedQty) {
+                $allClosedRejected = false;
+            }
         }
 
-        if ($totalRequestedForReturnQty == $totalOrderedQty) {
-            $allRequested = true;
+
+        // FINAL STATES
+
+        if ($allClosedApproved && !$hasAnyActiveReturn) {
+            $state = 'returned';
         }
-        
-        return view('frontend.order.my-order-single', compact('order', 'trackingHistory', 'allReturned', 'allRequested'));
+        elseif ($allClosedRejected && !$hasAnyActiveReturn) {
+            $state = 'rejected';
+        }
+        elseif ($hasPending) {
+            $state = 'requested';
+        }
+        elseif ($hasAnyActiveReturn) {
+            $state = 'available';
+        }
+        else {
+            $state = 'requested'; // fallback safe
+        }
+
+        return view(
+            'frontend.order.my-order-single',
+            compact('order', 'trackingHistory', 'state')
+        );
     }
 }
