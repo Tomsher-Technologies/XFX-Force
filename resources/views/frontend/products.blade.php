@@ -10,11 +10,17 @@ Log::info($_REQUEST);
 <!--inner banner-->
 <section class="bg-[#000000] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[100px] xl:pt-[200px] pb-[50px] xl:pb-[100px] relative rounded-br-[30px] xl:rounded-br-[100px] rounded-bl-[30px] xl:rounded-bl-[100px] before:content-[''] before:absolute before:top-[-200%] xl:before:top-[-130%] before:left-[50%] before:translate-x-[-50%] before:w-[900px] before:h-[900px] before:bg-[#2161C7] before:rounded-full before:filter before:blur-[200px] before:z-[0] before:opacity-[0.7]">
 	<div class="section-title mb-[30px] relative">
-		<h3 class="w-full text-[30px] md:text-[50px] text-white font-bold uppercase text-center leading-[40px] md:leading-[50px] m-[0] md:mb-[0px]">Shop by Categories</h3>
+		<h3 class="w-full text-[30px] md:text-[50px] text-white font-bold uppercase text-center leading-[40px] md:leading-[50px] m-[0] md:mb-[0px]">
+			{{ $page_content['title'] ?? 'Shop by Categories' }}
+		</h3>
 	</div>
 	<div class="swiper cateswiper relative">
 		<div class="swiper-wrapper">
-			@foreach ($categories as $category)
+			@php
+				$categoryList = !empty($categorySlider) && count($categorySlider) ? $categorySlider : $categories;
+			@endphp
+
+			@foreach ($categoryList as $category)
 			<div class="swiper-slide" data-swiper-autoplay="8000">
 				<a href="{{ route('shop.category',$category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
 					<div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[100px] lg:h-[80px] xl:h-[95px] w-[100px] lg:w-[80px] xl:w-[95px] overflow-hidden">
@@ -271,20 +277,29 @@ Log::info($_REQUEST);
 				<!--// Desktop Filters -->
 
 				<!--promotion banners-->
-				<div class="swiper promobnrswiper relative overflow-hidden rounded-[20px]">
-					<div class="swiper-wrapper">
+				@if(!empty($banners))
+				<div class="swiper promobnrswiper relative">
+                    <div class="swiper-wrapper">
+						@foreach($banners as $banner)
 						<div class="swiper-slide" data-swiper-autoplay="8000">
-							<a href="#"><img src="src/images/sidebar-ad-banner-01.webp" alt="" title=""></a>
-						</div>
+                            <a href="{{ getBannerUrl($banner) }}">
+								<img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" title="{{ $banner->title }}">
+							</a>
+                        </div>
+						@endforeach
 					</div>
+					<span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
 				</div>
+				@endif
 				<!--//promotion banners-->
 			</div>
 
 			<div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 
 				<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[0px] w-full">
-					<h1 class="text-[30px] md:text-[50px] text-[white] font-bold text-center xl:text-left uppercase w-full">All Products</h1>
+					<h1 class="text-[30px] md:text-[50px] text-[white] font-bold text-center xl:text-left uppercase w-full">
+						{{ $page_content['listing_title'] ?? 'All Products' }} 
+					</h1>
 					<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[15px] w-full">
 						<span class="text-[#898989] text-[14px] w-full text-center xl:text-right" id="product-count" data-per-page="{{ $products->perPage() }}" data-total="{{ $products->total() }}">
 							@if($products->count() > 0)
@@ -348,16 +363,17 @@ Log::info($_REQUEST);
 					</div>
 					@else
 					@include('frontend.partials.product-list', ['products' => $products])
+					<div id="product-loader" class="text-center my-3 text-white hidden">
+						<div class="loader"></div>
+					</div>
+					<div class="text-center mt-4 text-white" id="load-more-wrapper">
+						<button id="load-more-btn" class="mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hidden md:block hover:bg-white/5">
+							Load More...
+						</button>
+					</div>
 					@endif
 				</div>
-				<div id="product-loader" class="text-center my-3 text-white hidden">
-					<div class="loader"></div>
-				</div>
-				<div class="text-center mt-4 text-white" id="load-more-wrapper">
-					<button id="load-more-btn" class="mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hidden md:block hover:bg-white/5">
-						Load More...
-					</button>
-				</div>
+				
 			</div>
 			
 		</div>
@@ -524,6 +540,7 @@ Log::info($_REQUEST);
 	/* FILTER FUNCTION */
 
 	function filterProducts() {
+
 		page = 1;
 		document.getElementById('load-more-wrapper').style.display = 'block';
 
@@ -547,46 +564,53 @@ Log::info($_REQUEST);
 		) || 300000;
 
 		const url = `/products`;
-		const params = new URLSearchParams({
+
+		// Store filters globally
+		currentFilters = new URLSearchParams({
 			min_price,
 			max_price,
 			sort: currentSort,
 			view: currentView
 		});
 
-		categories.forEach(cat => params.append('categories[]', cat));
-		selectedBrands.forEach(brand => params.append('brands[]', brand));
+		categories.forEach(cat => currentFilters.append('categories[]', cat));
+		selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
 
-		return fetch(`${url}?${params.toString()}`, {
+		return fetch(`${url}?${currentFilters.toString()}`, {
 				method: 'GET',
 				headers: {
 					'X-Requested-With': 'XMLHttpRequest'
 				}
 			})
-			.then(res => res.text())
-			.then(html => {
-				const wrapper = document.getElementById('product-list-wrapper');
-				wrapper.innerHTML = html;
+			.then(res => res.json())
+			.then(data => {
 
-				// Scroll to top of product list
-				const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100; // adjust 100px if header exists
+				const wrapper = document.getElementById('product-list-wrapper');
+				
+				// Show / Hide load more
+				const loadMore = document.getElementById('load-more-wrapper');
+
+				if (!data.html.trim()) {
+					loadMore.style.display = 'none';
+
+					wrapper.innerHTML = `
+						<div class="text-white text-center py-10">
+							No Products Found!
+						</div>
+					`;
+				} else {
+					wrapper.innerHTML = data.html;
+					loadMore.style.display = data.hasMore ? 'block' : 'none';
+				}
+				updateProductCount();
+
+				// Scroll
+				const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
 				window.scrollTo({ top: offsetTop, behavior: 'smooth' });
 
-				// Update product count dynamically
-				const countSpan = document.getElementById('product-count');
-				if (countSpan) {
-					const productCount = wrapper.querySelectorAll('.product-card').length;
-					if (productCount === 0) {
-						countSpan.textContent = `Items 0 of 0`;
-					} else {
-						countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
-					}
-				}
-
+				
 			})
-
 			.catch(err => console.error('Filter products error:', err));
-
 	}
 
 	/* CLEAR FILTER */
@@ -698,22 +722,38 @@ Log::info($_REQUEST);
 		loader.classList.remove('hidden');
 
 		try {
-			const res = await fetch(`{{ route('products') }}?page=${page}`, {
+
+			currentFilters.set('page', page);
+
+			const res = await fetch(`/products?${currentFilters.toString()}`, {
 				headers: {
 					'X-Requested-With': 'XMLHttpRequest'
 				}
 			});
 
-			const html = await res.text();
-			document.getElementById('product-list')
-				.insertAdjacentHTML('beforeend', html);
+			const data = await res.json();
+
+			if (!data.html.trim()) {
+				document.getElementById('load-more-wrapper').style.display = 'none';
+				return;
+			}
+
+			document.getElementById('product-list-wrapper')
+				.insertAdjacentHTML('beforeend', data.html);
+
+			if (!data.hasMore) {
+				document.getElementById('load-more-wrapper').style.display = 'none';
+			}
+
 			updateProductCount();
+
 		} catch (err) {
 			console.error(err);
 		} finally {
 			loader.classList.add('hidden');
 		}
 	}
+	
 
 	function updateProductCount() {
 		const countEl = document.getElementById('product-count');
@@ -725,6 +765,15 @@ Log::info($_REQUEST);
 			visible = document.querySelectorAll('#product-list .product-card').length;
 		} else {
 			visible = document.querySelectorAll('#product-list .product-card-list').length;
+		}
+
+		if (visible === 0) {
+			countEl.innerText = `Items 0 of 0`;
+			document.getElementById('product-list-wrapper').innerHTML = `
+						<div class="text-white text-center py-10">
+							No Products Found!
+						</div>`;
+			return;
 		}
 		countEl.innerText = `Items 1-${visible} of ${visible}`;
 	}

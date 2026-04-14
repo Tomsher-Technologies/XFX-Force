@@ -453,7 +453,7 @@ if (!function_exists('get_product_image')) {
     {
         if ($path) {
             if ($size == 'full') {
-                return app('url')->asset($path);
+                return app('url')->asset('storage/'.$path);
             } else {
                 $fileName = pathinfo($path)['filename'];
                 $ext   = pathinfo($path)['extension'];
@@ -897,7 +897,6 @@ if (!function_exists('product_image_url')) {
 }
 
 if (!function_exists('sendNotification')) {
-
     function sendNotification($users, $message, $order = null, $type = null, $extra = [])
     {
         if (!$users) return;
@@ -909,6 +908,38 @@ if (!function_exists('sendNotification')) {
         } else {
             $users->notify(new CommonNotification($message, $order, $type, $extra));
         }
+    }
+}
+
+/**
+ * Function to check stock quantity per variant of product
+ */
+
+if (!function_exists('checkCartQuantityPerVariant')) {
+    function checkCartQuantityPerVariant(int $stockId)
+    {
+        $userId = (!empty(auth('frontend')->user())) 
+            ? auth('frontend')->user()->id 
+            : null;
+
+        $guestToken = request()->cookie('guest_token');
+
+        $cartItem = \App\Models\Cart::where('product_stock_id', $stockId)
+            ->where(function ($query) use ($guestToken, $userId) {
+
+                if ($userId) {
+                    // Logged-in user
+                    $query->where('user_id', $userId);
+                } else {
+                    // Guest user
+                    $query->where('temp_user_id', $guestToken);
+                }
+
+            })
+            ->where('status', 'pending')
+            ->first();
+
+        return $cartItem ? $cartItem->quantity : 0;
     }
 }
 

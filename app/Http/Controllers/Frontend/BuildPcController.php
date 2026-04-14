@@ -11,6 +11,7 @@ use App\Models\PcBuilderSetup;
 use App\Models\Product;
 use App\Models\ProductStock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BuildPcController extends Controller
 {
@@ -34,10 +35,20 @@ class BuildPcController extends Controller
                 ->get();
         }
 
-        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        $builder = PcBuilderSetup::where('user_id', $user_id)
-            ->where('is_ordered', false)
+        $user_id = auth('frontend')->check() ? auth('frontend')->user()->id : null;
+        $guestToken = request()->cookie('guest_token');
+
+        $builder = PcBuilderSetup::where('is_ordered', false)
+            ->where(function ($query) use ($user_id, $guestToken) {
+                if ($user_id) {
+                    $query->where('user_id', $user_id);
+                } else {
+                    $query->where('temp_user_id', $guestToken);
+                }
+            })
             ->first();
+        
+            
         $buildData = $builder ? $builder->build_data : [];
 
         $reviewProducts = [];
@@ -63,42 +74,61 @@ class BuildPcController extends Controller
     public function getProductsByCategory(Request $request)
     {
         $categoryId = $request->category_id;
-        $brandId = $request->brand_id;
+        $brandId    = $request->brand_id;
+        $modelName  = $request->model;
+        $search     = $request->search;
+        $sort       = $request->sort;
 
-        $products = Product::where('category_id', $categoryId)
-        ->where('published', 1)
-        ->when(!empty($brandId) && $brandId != 0, function ($query) use ($brandId) {
-            $query->whereNotNull('brand_id') // skip null brands
-                  ->where('brand_id', $brandId);
-        })
-        ->when($request->search, function ($query) use ($request) {
-            $query->whereHas('brand', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%');
+        $stocks = ProductStock::select('product_stocks.*')
+            ->join('products', 'products.id', '=', 'product_stocks.product_id')
+            ->where('products.published', 1);
+
+        // category
+        if ($categoryId) {
+            $stocks->where('products.category_id', $categoryId);
+        }
+
+        // brand
+        if ($brandId && $brandId != 0) {
+            $stocks->where('products.brand_id', $brandId);
+        }
+
+        // model
+        if ($modelName && $modelName != 'All') {
+            $stocks->where('product_stocks.model', $modelName);
+        }
+
+        // search
+        if ($search) {
+            $stocks->leftJoin('brands', 'brands.id', '=', 'products.brand_id');
+            $stocks->where(function ($query) use ($search) {
+                $query->Where('brands.name', 'LIKE', "%{$search}%");
             });
-        })
-        // Join stocks only for sorting
-        ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
-        ->select('products.*') // Only select product columns
-        ->when($request->sort, function ($query) use ($request) {
-            if($request->sort == 'price_low_high'){
-                $query->orderBy('product_stocks.offer_price','asc');
-            }
-            elseif($request->sort == 'price_high_low'){
-                $query->orderBy('product_stocks.offer_price','desc');
-            }
-        })
-        ->distinct() // REMOVE duplicates caused by join
-        ->with('stocks') // load stocks for display
-        ->get();
+        }
 
-        // If no products found, return a message
-        if($products->isEmpty()){
+        // sort
+        if ($sort == 'price_low_high') {
+            $stocks->orderBy('product_stocks.offer_price', 'asc');
+        }
+
+        if ($sort == 'price_high_low') {
+            $stocks->orderBy('product_stocks.offer_price', 'desc');
+        }
+
+        $stocks = $stocks->with('product.brand')->get();
+
+        $products = $stocks->groupBy('product_id')->map(function ($items) {
+            $product = $items->first()->product;
+            $product->setRelation('stocks', $items);
+            return $product;
+        });
+
+        if ($products->isEmpty()) {
             return response()->json([
                 'html' => '<div class="text-center text-gray-400 py-10">No Products Found</div>'
             ]);
         }
 
-        // Return rendered HTML for middle section
         $html = view('frontend.partials.pc-builder-products-list', compact('products'))->render();
 
         return response()->json(['html' => $html]);
@@ -120,14 +150,35 @@ class BuildPcController extends Controller
 
     public function savePcBuilder(Request $request)
     {
-        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $user_id = auth('frontend')->check() ? auth('frontend')->user()->id : null;
+        $guestToken = request()->cookie('guest_token');
+
+        if (!$guestToken) {
+            $guestToken = uniqid('guest_', true);
+            cookie()->queue('guest_token', $guestToken, 60 * 24 * 14); // 14 days
+        }
+
         if ($request->builder_id) {
             $builder = PcBuilderSetup::find($request->builder_id);
         } else {
-            $builder = PcBuilderSetup::firstOrCreate(
-                ['user_id' => $user_id],
-                ['build_data' => []]
-            );
+
+            if ($user_id) {
+                $builder = PcBuilderSetup::firstOrCreate(
+                    ['user_id' => $user_id],
+                    [
+                        'temp_user_id' => null,
+                        'build_data' => []
+                    ]
+                );
+            } else {
+                $builder = PcBuilderSetup::firstOrCreate(
+                    ['temp_user_id' => $guestToken],
+                    [
+                        'user_id' => null,
+                        'build_data' => []
+                    ]
+                );
+            }
         }
 
         $data = $builder->build_data ?? [];
@@ -162,14 +213,13 @@ class BuildPcController extends Controller
             }
         }
 
-        if (!$found) {
+        if (!$found && $request->qty > 0) {
             $data[$categoryId][] = [
                 'product_id' => $request->productId,
                 'variant_id' => $request->variantId,
                 'quantity' => $request->qty
             ];
         }
-
 
         $builder->build_data = $data;
         $builder->save();
@@ -253,8 +303,16 @@ class BuildPcController extends Controller
     // Function to get the latest build data.
     public function getBuildData()
     {
-        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        $builder = PcBuilderSetup::where('user_id', $user_id)->first();
+        $user_id = auth('frontend')->check() ? auth('frontend')->user()->id : null;
+        $guestToken = request()->cookie('guest_token');
+        
+        $builder = PcBuilderSetup::when($user_id, function ($query) use ($user_id) {
+            $query->where('user_id', $user_id);
+        }, function ($query) use ($guestToken) {
+            $query->where('temp_user_id', $guestToken);
+        })
+        ->first();
+        
         $buildData = $builder ? $builder->build_data : [];
 
         $reviewData = [
@@ -358,11 +416,6 @@ class BuildPcController extends Controller
     {
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $guestToken = request()->cookie('guest_token');
-
-        if(!$guestToken){
-            $guestToken = uniqid('guest_', true);
-            cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
-        }
         $builderId = $request->builder_id;
 
         Cart::where('pc_builder_id', $builderId)
@@ -396,10 +449,36 @@ class BuildPcController extends Controller
             ]);
         }
 
+        // Reset configuration
+        $builder->build_data = [];
+        $builder->save();
         
         return response()->json([
             'status' => true,
             'message' => 'Configuration reset successfully'
         ]);
+    }
+
+    public function getModels(Request $request)
+    {
+        $brandId = $request->brand_id;
+        $categoryId = $request->category_id;
+
+        $query = DB::table('product_stocks as ps')
+            ->select('ps.model')
+            ->distinct()
+            ->leftJoin('products as p', 'p.id', '=', 'ps.product_id');
+
+        if ($brandId && $brandId != 0) {
+            $query->where('p.brand_id', $brandId);
+        }
+
+        if ($categoryId) {
+            $query->where('p.category_id', $categoryId);
+        }
+
+        $models = $query->pluck('model');
+
+        return response()->json($models);
     }
 }

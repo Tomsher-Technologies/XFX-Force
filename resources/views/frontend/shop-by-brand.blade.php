@@ -237,14 +237,21 @@
                 <!-- Desktop Filters -->
 
                 <!--promotion banners-->
-                <div class="swiper promobnrswiper relative overflow-hidden rounded-[20px]">
+				@if(!empty($banners))
+				<div class="swiper promobnrswiper relative">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide" data-swiper-autoplay="8000">
-                            <a href="#"><img src="src/images/sidebar-ad-banner-01.webp" alt="" title=""></a>
+						@foreach($banners as $banner)
+						<div class="swiper-slide" data-swiper-autoplay="8000">
+                            <a href="{{ getBannerUrl($banner) }}">
+								<img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" title="{{ $banner->title }}">
+							</a>
                         </div>
-                    </div>
-                </div>
-                <!--//promotion banners-->
+						@endforeach
+					</div>
+					<span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+				</div>
+				@endif
+				<!--//promotion banners-->
             </div>
 
             <div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
@@ -311,16 +318,18 @@
                     </div>
                     @else
                     @include('frontend.partials.product-list', ['products' => $products])
+                    
+                    <div id="product-loader" class="text-center my-3 text-white hidden">
+                        <div class="loader"></div>
+                    </div>
+                    <div class="text-center mt-4 text-white" id="load-more-wrapper">
+                        <button id="load-more-btn" class="btn btn-primary">
+                        Load More...
+                        </button>
+                    </div>
                     @endif
                 </div>
-                <div id="product-loader" class="text-center my-3 text-white hidden">
-                    <div class="loader"></div>
-                </div>
-                <div class="text-center mt-4 text-white" id="load-more-wrapper">
-                    <button id="load-more-btn" class="btn btn-primary">
-                    Load More...
-                    </button>
-                </div>
+                
             </div>
         </div>
 
@@ -519,99 +528,135 @@ let currentView = "gridview";
 
 // });
 
-/* ===============================
-   FILTER FUNCTION
-   =============================== */
-function filterProducts() {
-    const categories = Array.from(
-        document.querySelectorAll('input[name="categories[]"]:checked')
-    ).map(el => el.value);
+let page = 1;
+/* FILTER FUNCTION */
+    function filterProducts() {
+        // page = 1;
+		document.getElementById('load-more-wrapper').style.display = 'block';
 
-    const brandId = Array.from(
-        document.querySelectorAll('input[name="brands[]"]:checked')
-    ).map(el => el.value); // will be single brand, locked
+		const categories = Array.from(
+			document.querySelectorAll('input[name="categories[]"]:checked')
+		).map(el => el.value);
 
-    // const min_price = parseInt(document.getElementById('min-price')?.value) || 0;
-    // const max_price = parseInt(document.getElementById('max-price')?.value) || 300000;
-    const visibleFilter = [...document.querySelectorAll('.price-filter')]
+		const selectedBrands = Array.from(
+			document.querySelectorAll('input[name="brands[]"]:checked')
+		).map(el => el.value);
+
+		const visibleFilter = [...document.querySelectorAll('.price-filter')]
 			.find(el => el.offsetParent !== null);
 
-    const min_price = parseInt(
-        visibleFilter?.querySelector('.min-price')?.value
-    ) || 0;
+		const min_price = parseInt(
+			visibleFilter?.querySelector('.min-price')?.value
+		) || 0;
 
-    const max_price = parseInt(
-        visibleFilter?.querySelector('.max-price')?.value
-    ) || 300000;
+		const max_price = parseInt(
+			visibleFilter?.querySelector('.max-price')?.value
+		) || 300000;
 
-    const url = `/products`; // your AJAX route
+		const url = `/products`;
 
-    const params = new URLSearchParams({ min_price, max_price, sort: currentSort, view: currentView });
-    categories.forEach(cat => params.append('categories[]', cat));
-    brandId.forEach(b => params.append('brands[]', b));
+		// Store filters globally
+		currentFilters = new URLSearchParams({
+			min_price,
+			max_price,
+			sort: currentSort,
+			view: currentView
+		});
 
-    fetch(`${url}?${params.toString()}`, { method: 'GET', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-        .then(res => res.text())
-        .then(html => {
-            const wrapper = document.getElementById('product-list-wrapper');
-            wrapper.innerHTML = html;
+		categories.forEach(cat => currentFilters.append('categories[]', cat));
+		selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
 
-            // Scroll to product list
-            // const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
-            // window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+		return fetch(`${url}?${currentFilters.toString()}`, {
+				method: 'GET',
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest'
+				}
+			})
+			.then(res => res.json())
+			.then(data => {
 
-            // Update product count dynamically
-            const countSpan = document.getElementById('product-count');
-            if (countSpan) {
-                const productCount = wrapper.querySelectorAll('.product-card').length;
-                if (productCount === 0) {
-                    countSpan.textContent = `Items 0 of 0`;
-                } else {
-                    countSpan.textContent = `Items 1-${productCount} of ${productCount}`;
-                }
-                document.getElementById('total-product-count').textContent = `${productCount}`;
-            }
-        })
-        .catch(err => console.error('Filter products error:', err));
-}
+				const wrapper = document.getElementById('product-list-wrapper');
 
-	// Load script
-    let page = 1;
-    let loading = false;
+				// Show / Hide load more
+				const loadMore = document.getElementById('load-more-wrapper');
 
-    document.getElementById('load-more-btn')?.addEventListener('click', async function () {
+				if (!data.html.trim()) {
+					loadMore.style.display = 'none';
 
-        if (loading) return;
+					wrapper.innerHTML = `
+						<div class="text-white text-center py-10">
+							No Products Found!
+						</div>
+					`;
+				} else {
+					wrapper.innerHTML = data.html;
+					loadMore.style.display = data.hasMore ? 'block' : 'none';
+				}
+				updateProductCount();
 
-        loading = true;
-        page++;
+				// Scroll
+				const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
+				window.scrollTo({ top: offsetTop, behavior: 'smooth' });
 
-        document.getElementById('product-loader').classList.remove('hidden');
+				
+			})
+			.catch(err => console.error('Filter products error:', err));
+	}
 
-        try {
-            const url = new URL(window.location.href);
-            url.searchParams.set('page', page);
-            url.searchParams.set('scroll', 1);
+	// LOAD MORE SCRIPT
+	
+	let lastPage = {{ $products->lastPage() }};
+	let loading = false;
 
-            const res = await fetch(url, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
+	document.getElementById('load-more-btn').addEventListener('click', async function() {
+		if (loading || page >= lastPage) return;
+		loading = true;
+		page++;
 
-            const html = await res.text();
+		await loadMoreProducts(page);
+		loading = false;
 
-            document
-              .getElementById('product-list-wrapper')
-              .insertAdjacentHTML('beforeend', html);
-            updateProductCount(); 
-        } catch (e) {
-            console.error(e);
-        }
+		if (page >= lastPage) {
+			document.getElementById('load-more-wrapper').style.display = 'none';
+		}
+	});
 
-        document.getElementById('product-loader').classList.add('hidden');
-        loading = false;
-    });
+	async function loadMoreProducts(page) {
+		const loader = document.getElementById('product-loader');
+		loader.classList.remove('hidden');
+
+		try {
+
+			currentFilters.set('page', page);
+
+			const res = await fetch(`/products?${currentFilters.toString()}`, {
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest'
+				}
+			});
+
+			const data = await res.json();
+
+			if (!data.html.trim()) {
+				document.getElementById('load-more-wrapper').style.display = 'none';
+				return;
+			}
+
+			document.getElementById('product-list-wrapper')
+				.insertAdjacentHTML('beforeend', data.html);
+
+			if (!data.hasMore) {
+				document.getElementById('load-more-wrapper').style.display = 'none';
+			}
+
+			updateProductCount();
+
+		} catch (err) {
+			console.error(err);
+		} finally {
+			loader.classList.add('hidden');
+		}
+	}
 
 	function updateProductCount() {
 		const countEl = document.getElementById('product-count');
@@ -624,9 +669,17 @@ function filterProducts() {
 		} else {
 			visible = document.querySelectorAll('#product-list .product-card-list').length;
 		}
+
+		if (visible === 0) {
+			countEl.innerText = `Items 0 of 0`;
+            document.getElementById('product-list-wrapper').innerHTML = `
+						<div class="text-white text-center py-10">
+							No Products Found!
+						</div>`;
+			return;
+		}
 		countEl.innerText = `Items 1-${visible} of ${visible}`;
-    document.getElementById('total-product-count').innerText = `${visible}`;
-    // document.getElementById('category-count').innerText = `${visible}`;
+        document.getElementById('total-product-count').innerText = `${visible}`;
 	}
 </script>
 @endsection

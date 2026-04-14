@@ -191,22 +191,23 @@
                             <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3">
                                 <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">4</span> Payment Methods
                             </h2>
-                            <div class="space-y-3">
-                                <label class="flex items-center justify-between p-4 bg-[#161B22] border border-[#2A7CFF] rounded-xl cursor-pointer">
+                            <div class="grid grid-cols-2 gap-4 mb-8">
+                                <label class="flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-600 transition-all">
                                     <div class="flex items-center gap-3">
                                         <input type="radio" name="pay" checked class="accent-[#2A7CFF]">
+                                        <span>Cash On Delivery</span>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-center justify-between p-4 bg-[#161B22] border border-[#2A7CFF] rounded-xl cursor-pointer">
+                                    <div class="flex items-center gap-3">
+                                        <input type="radio" name="pay" class="accent-[#2A7CFF]">
                                         <span>Credit / Debit Card</span>
                                     </div>
                                     <div class="hidden md:flex gap-2">
-                                        <img src="src/images/payment-methods.png" alt="Payment Methods" class="w-full md:w-[280px] h-auto object-contain object-center block ml-auto">
+                                        <img src="{{ asset('assets/images/payment-methods.png') }}" alt="Payment Methods" class="w-full md:w-[280px] h-auto object-contain object-center block ml-auto">
                                     </div>
                                 </label>
-                                <!-- <label class="flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-600 transition-all">
-                                        <div class="flex items-center gap-3">
-                                            <input type="radio" name="pay" class="accent-[#2A7CFF]">
-                                            <span>Cash On Delivery</span>
-                                        </div>
-                                    </label> -->
                             </div>
                         </section>
                     </div>
@@ -217,7 +218,6 @@
                 <!--summary widget-->
                 <div class="sticky top-[180px] w-full bg-black/30 backdrop-blur-[60px] p-[20px] md:p-[40px] rounded-[20px] mb-[10px]">
                     <h2 class="text-white text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34]">Order Summary</h2>
-
 
                     <div>
                     @foreach($cartItems as $item)

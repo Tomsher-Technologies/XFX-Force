@@ -491,7 +491,7 @@ class OrderController extends Controller
                         <p>Hi {$customerName},</p>
                         <p>Your order has been <b>cancelled</b>.</p>
                         <p><b>Order Code:</b> {$orderCode}</p>
-                        <p>Thank you for shopping with us.</p>
+                        <p>Thank you for shopping with us. We hope to serve you again soon!</p>
                         <p>Best regards,</p>
                         <p>Team ".env('APP_NAME')."</p>";
                     $subject = "Your Order #{$orderCode} is Cancelled";
@@ -542,11 +542,14 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             abort(404);
         }
-        
-        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        $order = Order::with('orderDetails.product')
+        $user_id = auth('frontend')->user()->id ?? '';
+
+        $order = Order::with([
+                'orderDetails.product',
+                'orderDetails.returns'
+            ])
             ->where('id', $orderId)
-            ->where('user_id', $user_id) // security
+            ->where('user_id', $user_id)
             ->firstOrFail();
 
         $trackingHistory = OrderTracking::where('order_id', $orderId)
@@ -554,33 +557,26 @@ class OrderController extends Controller
             ->get()
             ->keyBy('status');
 
-        
-        // Only consider orderDetails where is_pc_builder = 0
+        // Only non PC builder items
         $details = $order->orderDetails->where('is_pc_builder', 0);
+        $hasReturnableItems = false;
 
-        // Total quantity in order (non-PC-builder items)
-        $totalOrderedQty = $details->sum('quantity');
+        foreach ($details as $detail) {
+            $approvedQty = $detail->returns->where('status', 'approved')->sum('return_qty');
+            $pendingQty  = $detail->returns->where('status', 'pending')->sum('return_qty');
+            $rejectedQty = $detail->returns->where('status', 'rejected')->sum('return_qty');
+            $processedQty = $approvedQty + $pendingQty + $rejectedQty;
 
-        // Total quantity returned (non-PC-builder items)
-        $totalReturnedQty = $details->sum(function($detail) {
-            return $detail->returns->where('status','approved')->sum('return_qty');
-        });
-
-        // Total quantity returned (non-PC-builder items)
-        $totalRequestedForReturnQty = $details->sum(function($detail) {
-            return $detail->returns->sum('return_qty');
-        });
-
-        $allReturned = false;
-        $allRequested = false;
-        if ($totalReturnedQty == $totalOrderedQty) {
-            $allReturned = true;
+            // if something still not processed → returnable
+            if ($processedQty < $detail->quantity) {
+                $hasReturnableItems = true;
+                break;
+            }
         }
 
-        if ($totalRequestedForReturnQty == $totalOrderedQty) {
-            $allRequested = true;
-        }
-        
-        return view('frontend.order.my-order-single', compact('order', 'trackingHistory', 'allReturned', 'allRequested'));
+        return view(
+            'frontend.order.my-order-single',
+            compact('order', 'trackingHistory', 'hasReturnableItems')
+        );
     }
 }
