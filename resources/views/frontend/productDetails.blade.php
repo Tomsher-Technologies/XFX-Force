@@ -388,7 +388,7 @@ if(!empty($overviewContent)) {
     <main class="max-w-6xl mx-auto px-[16px] md:px-[30px] lg:px-[50px] py-10">
 
 
-        <!-- <div class="w-full" x-data="{ activeReview: null }">
+        <div class="w-full" x-data="{ activeReview: null }">
             <svg width="0" height="0" class="absolute">
                 <defs>
                     <linearGradient id="half-star-grad">
@@ -397,11 +397,6 @@ if(!empty($overviewContent)) {
                     </linearGradient>
                 </defs>
             </svg>
-
-            <div class="border-b border-gray-800 pb-4 mb-6">
-                <h3 class="text-white text-2xl font-medium font-sans">User Reviews</h3>
-                <p class="text-gray-400 text-sm mt-1">What our customers are saying about this product.</p>
-            </div>
 
             <div class="grid grid-cols-1">
                 
@@ -428,38 +423,9 @@ if(!empty($overviewContent)) {
 
                     <div x-show="activeReview === 1" x-collapse x-cloak class="bg-white/5 rounded-xl mb-4">
                         <div class="p-6">
-                            <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                            <p class="text-gray-300 text-sm leading-relaxed">
                                 The performance is beyond expectations, especially for 4K video editing and heavy gaming. The cooling is silent even under load. The build quality feels premium and fits perfectly in my setup.
                             </p>
-                            
-                            <div class="ml-6 border-l-2 border-gray-800 pl-6 space-y-6">
-                                <div class="group">
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="text-blue-500 text-[11px] font-medium uppercase">Staff Response</span>
-                                        <span class="text-gray-500 text-[10px]">2 days ago</span>
-                                    </div>
-                                    <p class="text-gray-400 text-sm italic">"Thank you Ahmed! We're glad the cooling system is meeting your needs for 4K work."</p>
-                                    
-                                    <div x-data="{ openReply: false }" class="mt-2">
-                                        <button @click="openReply = !openReply" class="text-[10px] font-medium text-gray-200 hover:text-blue-500 uppercase transition-colors">Reply to this</button>
-                                        <div x-show="openReply" x-transition class="mt-3">
-                                            <textarea class="w-full bg-[#111518] border border-gray-800 rounded-lg p-3 text-white text-xs focus:border-blue-500 outline-none" rows="2" placeholder="Write a response..."></textarea>
-                                            <button class="mt-2 bg-blue-600 text-white text-[10px] font-medium px-3 py-1 rounded-[5px] uppercase">Submit</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div x-data="{ openReply: false }" class="mt-6 pt-4 border-t border-gray-800/50">
-                                <button @click="openReply = !openReply" class="text-xs font-medium uppercase text-blue-500 flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
-                                    Reply to Review
-                                </button>
-                                <div x-show="openReply" x-transition class="mt-4">
-                                    <textarea class="w-full bg-[#111518] border border-gray-800 rounded-xl p-4 text-white text-sm focus:border-blue-500 outline-none" rows="3" placeholder="Write a response..."></textarea>
-                                    <button class="mt-2 bg-blue-600 text-white text-[11px] font-medium px-5 py-2 rounded-[5px] uppercase">Submit Reply</button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -486,14 +452,7 @@ if(!empty($overviewContent)) {
                     </div>
                     <div x-show="activeReview === 2" x-collapse x-cloak class="bg-white/5 rounded-xl mb-4">
                         <div class="p-6">
-                            <p class="text-gray-300 text-sm leading-relaxed mb-4">The internals are amazing. My only complaint is the external packaging. Everything inside was safe, but the box looked like it had a rough trip.</p>
-                            <div x-data="{ openReply: false }">
-                                <button @click="openReply = !openReply" class="text-xs font-medium uppercase text-blue-500 flex items-center gap-2">Reply</button>
-                                <div x-show="openReply" x-transition class="mt-4">
-                                    <textarea class="w-full bg-[#111518] border border-gray-800 rounded-xl p-4 text-white text-sm focus:border-blue-500 outline-none" rows="3" placeholder="Write a response..."></textarea>
-                                    <button class="mt-2 bg-blue-600 text-white text-[11px] font-medium px-5 py-2 rounded-[5px] uppercase">Submit</button>
-                                </div>
-                            </div>
+                            <p class="text-gray-300 text-sm leading-relaxed">The internals are amazing. My only complaint is the external packaging. Everything inside was safe, but the box looked like it had a rough trip.</p>
                         </div>
                     </div>
                 </div>
@@ -521,13 +480,6 @@ if(!empty($overviewContent)) {
                     <div x-show="activeReview === 3" x-collapse x-cloak class="bg-white/5 rounded-xl mb-4">
                         <div class="p-6">
                             <p class="text-gray-300 text-sm leading-relaxed mb-4">Extremely happy with the service. The delivery was lightning fast and the product is working flawlessly.</p>
-                            <div x-data="{ openReply: false }">
-                                <button @click="openReply = !openReply" class="text-xs font-medium uppercase  text-blue-500 flex items-center gap-2">Reply</button>
-                                <div x-show="openReply" x-transition class="mt-4">
-                                    <textarea class="w-full bg-[#111518] border border-gray-800 rounded-xl p-4 text-white text-sm focus:border-blue-500 outline-none" rows="3" placeholder="Write a response..."></textarea>
-                                    <button class="mt-2 bg-blue-600 text-white text-[11px] font-medium px-5 py-2 rounded-[5px] uppercase">Submit</button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -564,10 +516,7 @@ if(!empty($overviewContent)) {
                     </button>
                 </form>
             </div>
-        </div> -->
-
-        <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        </div>
 
 
 
