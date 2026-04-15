@@ -15,6 +15,7 @@ use App\Models\OrderReturn;
 use App\Models\OrderTracking;
 use App\Models\Product;
 use App\Models\ProductStock;
+use App\Models\Review;
 use App\Models\User;
 use Auth;
 use DB;
@@ -574,9 +575,13 @@ class OrderController extends Controller
             }
         }
 
+        $userReviews = Review::where('user_id', $user_id)
+            ->pluck('product_id')
+            ->toArray();
+
         return view(
             'frontend.order.my-order-single',
-            compact('order', 'trackingHistory', 'hasReturnableItems')
+            compact('order', 'trackingHistory', 'hasReturnableItems', 'userReviews')
         );
     }
 }
