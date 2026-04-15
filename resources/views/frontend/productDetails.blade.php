@@ -173,7 +173,6 @@
                 $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
             @endphp
 
-            @if($approvedReviews->isNotEmpty())
             <!-- rating -->
             <a href="javascript:void(0)" 
             onclick="window.dispatchEvent(new CustomEvent('open-reviews-tab'));" 
@@ -220,10 +219,9 @@
                 <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">
                     ({{ $totalReviews }} reviews)
                 </span>
-
             </a>
             <!-- //rating -->
-            @endif
+            
 
             </div>
             <input type="hidden" value="{{ $firstStock->id}}" id="stock_id">
@@ -452,9 +450,7 @@
                 @endforeach
             @endif
 
-            @if($approvedReviews->isNotEmpty())
-                <a href="javascript:void(0)" @click="activeTab='reviews'" :class="activeTab === 'reviews' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Reviews</a>
-            @endif
+            <a href="javascript:void(0)" @click="activeTab='reviews'" :class="activeTab === 'reviews' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Reviews ({{ $approvedReviews->count() ?? 0 }})</a>
         </div>
     </nav>
 
@@ -525,8 +521,8 @@
             @endforeach
         @endif
 
-        @if($approvedReviews->isNotEmpty())
         <section x-show="activeTab === 'reviews'" x-transition class="tab-panel scroll-mt-[130px] md:scroll-mt-[200px] py-[50px]" id="reviews">
+        @if($approvedReviews->isNotEmpty())
             <div class="w-full" x-data="{ activeReview: null }">
                 <svg width="0" height="0" class="absolute">
                     <defs>
@@ -592,8 +588,15 @@
                     @endforeach
                 </div>
             </div>
-        </section>
+        @else
+            <!-- Empty State -->
+            <div class="text-center py-8">
+                <h3 class="text-white text-lg font-medium mb-2">
+                    No Reviews Yet
+                </h3>
+            </div>
         @endif
+        </section>
     </main>
 </div>
 <!--//specification-->
