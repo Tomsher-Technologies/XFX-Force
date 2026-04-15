@@ -348,11 +348,17 @@ $hideFooter = true;
                         <label class="text-gray-500 text-[12px] font-medium uppercase mb-3 block">Brand</label>
 
                         <div class="relative flex items-center">
-                            <select class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all appearance-none pr-10 cursor-pointer">
-                                <option>Select Brand</option>
-                                <option>ASUS ROG</option>
-                                <option>MSI Gaming</option>
-                                <option>Gigabyte</option>
+                            <select 
+                            id="mobile-brand"
+                            onchange="selectOption('brand', this.options[this.selectedIndex].text, this.value)"
+                            class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white"
+                            >
+                            <option value="0">All Brands</option>
+
+                            @foreach ($brands as $brand)
+                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                            @endforeach
+
                             </select>
 
                             <div class="absolute right-4 pointer-events-none text-gray-500">
@@ -367,11 +373,12 @@ $hideFooter = true;
                         <label class="text-gray-500 text-[12px] font-medium uppercase mb-3 block">Model Series</label>
 
                         <div class="relative flex items-center">
-                            <select class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all appearance-none pr-10 cursor-pointer">
-                                <option>Select Model</option>
-                                <option>RTX 5090</option>
-                                <option>RTX 5080</option>
-                                <option>RTX 5070</option>
+                            <select 
+                            id="mobile-model"
+                            onchange="selectOption('model', this.value)"
+                            class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white"
+                            >
+                            <option value="">All</option>
                             </select>
 
                             <div class="absolute right-4 pointer-events-none text-gray-500">
@@ -385,11 +392,18 @@ $hideFooter = true;
                     <div>
                         <label class="text-gray-500 text-[12px] font-medium uppercase mb-3 block">Sort Results By</label>
                         <div id="mobile-sort-options" class="grid grid-cols-2 gap-3">
-                            <button onclick="handleSortClick(this)" class="sort-btn py-3 px-2 bg-[#0B0F13] border border-[#2A7CFF] text-[#2A7CFF] rounded-xl text-[13px] font-medium transition-all active:scale-95">
-                                Price: Low-High
+                            <button 
+                            onclick="selectSort('price_low_high')" 
+                            class="sort-btn py-3 px-2 bg-[#0B0F13] border border-[#2A7CFF] text-[#2A7CFF] rounded-xl text-[13px] font-medium transition-all active:scale-95"
+                            >
+                            Price: Low-High
                             </button>
-                            <button onclick="handleSortClick(this)" class="sort-btn py-3 px-2 bg-[#0B0F13] border border-white/5 text-gray-400 rounded-xl text-[13px] font-medium hover:border-white/20 transition-all active:scale-95">
-                                Price: High-Low
+
+                            <button 
+                            onclick="selectSort('price_high_low')" 
+                            class="sort-btn py-3 px-2 bg-[#0B0F13] border border-white/5 text-gray-400 rounded-xl text-[13px] font-medium hover:border-white/20 transition-all active:scale-95"
+                            >
+                            Price: High-Low
                             </button>
                         </div>
                     </div>
@@ -452,6 +466,17 @@ $hideFooter = true;
             }
         }
 
+        /* Sync Mobile Dropdown */
+        if(type === 'brand'){
+            const mobileBrand = document.getElementById('mobile-brand');
+            if(mobileBrand) mobileBrand.value = brandId;
+        }
+
+        if(type === 'model'){
+            const mobileModel = document.getElementById('mobile-model');
+            if(mobileModel) mobileModel.value = value;
+        }
+
         const activeCategory = document.querySelector('.nav-item.active');
         if (!activeCategory) return;
 
@@ -464,7 +489,13 @@ $hideFooter = true;
             document.getElementById('model-label').innerText === "All" ? "" :
             document.getElementById('model-label').innerText;
 
-        const search = document.getElementById('brand-search').value || "";
+        /* Desktop Search */
+        const desktopSearch = document.getElementById('brand-search')?.value || "";
+
+        /* Mobile Search */
+        const mobileSearch = document.getElementById('mobile-search-input')?.value || "";
+
+        const search = desktopSearch || mobileSearch;
 
         loadProducts(categoryId, selectedBrandId, model, search, "");
 
@@ -473,7 +504,8 @@ $hideFooter = true;
             loadModels(brandId, categoryId);
         }
 
-        document.getElementById(`${type}-menu`).classList.add('hidden');
+        const menu = document.getElementById(`${type}-menu`);
+        if(menu) menu.classList.add('hidden');
     }
 
     // Bran search text
