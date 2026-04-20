@@ -31,7 +31,7 @@
 
                 <div>
                     <label class="text-gray-500 text-[12px] font-medium uppercase mb-1 block tracking-wider">Phone Number <span class="text-red-600">*</span></label>
-                    <input type="tel" name="phone" id="phone" autocomplete="off" class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all placeholder:text-gray-700"  value="{{ old('phone') }}" placeholder="+971xxxxxxxxxx">
+                    <input type="tel" name="phone" id="phone" autocomplete="off" class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all placeholder:text-gray-700"  value="{{ old('phone') }}" placeholder="971xxxxxxxxxx">
                     @error('phone') <span class="text-red-600">{{ $message }}</span> @enderror
                 </div>
 
