@@ -56,11 +56,12 @@
                 $slides = [];
             @endphp
 
-            <button data-product-id="{{ $product->id }}" data-page="product-details" data-stock-id="{{ $stockId }}" class="wishlist-toggle absolute top-[20px] right-[20px] z-[10] mt-2 w-[35px] h-[35px] md:w-[40px] md:h-[40px] bg-black/20 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white bg-black/20 transition-all duration-300 hover:bg-transparent hover:text-red-500 cursor-pointer group/heart" id="wishlist-button">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-active/heart:scale-125" fill="none"  viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-            </button>
+           
+            @include('frontend.partials.wishlist-icon', [
+                'product' => $product->id,
+                'stock' => $stockId,
+                'page' => 'product-details' ?? null,
+            ])
             <div class="swiper singleprdswiper relative overflow-hidden h-full w-full">
                 <input type="hidden" value="{{$product->id}}" id="main_product_id">
                 <input type="hidden" value="{{$stockId}}" id="selected_stock_id">
@@ -156,8 +157,8 @@
                 {{ $firstStock->stock_title ?? $product->name }}
             </h1>
             <p class="text-[12px] text-[#ffffff50] text-center xl:text-left py-1">
-                @if($product->brand) {{ $product->brand->name }} | @endif
-                @if($firstStock->model) {{ $firstStock->model }} @endif
+                @if($product->brand) {{ $product->brand->name }}  @endif
+                @if($firstStock->model) | {{ $firstStock->model }} @endif
                 @if($firstStock->sku) | {{ $firstStock->sku }} @endif
             </p>
 
@@ -361,16 +362,25 @@
                     <div class="h-[50px] w-[50px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/make-your-order.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
                         <h4 class="text-white text-[18px] mb-[0px]">Condition</h4>
-                        <span class="text-[15px] text-[#ffffff50] underline decoration-wavy underline-offset-8">
+                        <span class="text-[15px] text-[#ffffff50]">
                             {{ $conditionMap[$product->condition] ?? 'New' }}
                         </span>
                     </div>
                 </a>
                 <a href="{{ route('buildyourpc') }}" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30]">
-                    <div class="h-[50px] w-[50px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/configurator.svg')}}" alt="" title=""></div>
+                    <div class="h-[48px] w-[48px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/return-policy.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
-                        <h4 class="text-white text-[18px] mb-[0px]">Configurator</h4>
-                        <span class="text-[15px] text-[#ffffff50]">Create your dream PC</span>
+                        <h4 class="text-white text-[18px] mb-[0px]">Return Policy</h4>
+                        <span class="text-[15px] text-[#ffffff50]">
+                            @if($product->return_refund === 1)
+                                @php
+                                    $default_return = get_setting('default_return_time') ?? '';
+                                @endphp
+                                {{ $default_return ? $default_return . ' Days Return' : 'Return Available' }}
+                            @else
+                                No Return
+                            @endif
+                        </span>
                     </div>
                 </a>
                 <a href="#" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30]">
