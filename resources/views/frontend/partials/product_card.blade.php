@@ -42,7 +42,7 @@
                 $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
             @endphp
 
-            <a href="javascript:void(0)" class="flex items-center gap-[8px] -mt-2">
+            <div class="flex items-center gap-[8px] -mt-2">
                 <div class="flex items-center gap-[2px]">
                     {{-- Full Stars --}}
                     @for ($i = 0; $i < $fullStars; $i++)
@@ -82,7 +82,7 @@
                 <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">
                 ({{ $totalReviews }} reviews)
                 </span>
-            </a>
+            </div>
             
 
             <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[18px] leading-[20px] m-[0] font-bold align-center items-center gap-[5px]">

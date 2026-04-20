@@ -6,9 +6,9 @@
         <div class="top-bar w-full flex items-center justify-center sm:justify-content-center hidden xl:block">
             <div class="w-full m-auto flex items-center justify-center md:justify-between border-b border-[#393939] pt-[20px] pb-[20px]">
                 <div class="contact-info">
-                    <a href="#" target="_blank" class="text-[#ffffff] no-underline flex items-center gap-[10px]">
+                    <div class="text-[#ffffff] no-underline flex items-center gap-[10px]">
                         <img src="{{ asset('assets/images/location-marker.svg') }}" alt="address" title="address" /> <span class="hidden md:block">{{ get_setting('header_address') }}</span>
-                    </a>
+                    </div>
                 </div>
                 <div class="top-links flex items-center gap-[0px] md:gap-[50px] xl:gap-[100px] justify-between sm:justify-center">
                     <a href="mailto:{{ get_setting('header_email') }}" class="text-[#ffffff] no-underline flex items-center gap-[10px]">

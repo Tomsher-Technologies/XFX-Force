@@ -24,7 +24,7 @@ Log::info($_REQUEST);
 			<div class="swiper-slide" data-swiper-autoplay="8000">
 				<a href="{{ route('shop.category',$category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
 					<div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[100px] lg:h-[80px] xl:h-[95px] w-[100px] lg:w-[80px] xl:w-[95px] overflow-hidden">
-						<img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{$category->name}}" class="w-full m-auto">
+						<img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : asset('assets/images/placeholder.png') }}" alt="{{ $category->name }}" title="{{$category->name}}" class="w-full m-auto">
 					</div>
 					<h4 class="text-white text-center font-medium text-[15px] xl:text-[16px] capitalize">{{$category->name}}</h4>
 				</a>
@@ -303,7 +303,7 @@ Log::info($_REQUEST);
 					<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[15px] w-full">
 						<span class="text-[#898989] text-[14px] w-full text-center xl:text-right" id="product-count" data-per-page="{{ $products->perPage() }}" data-total="{{ $products->total() }}">
 							@if($products->count() > 0)
-								Items 1-{{ $products->count() }} of {{ $products->count() }}
+								Items {{ $products->firstItem() }} - {{ $products->lastItem() }} of {{ $products->total() }}
 							@else
 								Items 0 of 0
 							@endif
@@ -775,7 +775,7 @@ Log::info($_REQUEST);
 						</div>`;
 			return;
 		}
-		countEl.innerText = `Items 1-${visible} of ${visible}`;
+		countEl.innerText = `Items 1-${visible} of ${total}`;
 	}
 
 </script>
