@@ -368,7 +368,7 @@
                     </div>
                 </a>
                 <a href="{{ route('buildyourpc') }}" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30]">
-                    <div class="h-[48px] w-[48px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/return-policy.svg')}}" alt="" title=""></div>
+                    <div class="h-[47px] w-[47px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/return-policy.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
                         <h4 class="text-white text-[18px] mb-[0px]">Return Policy</h4>
                         <span class="text-[15px] text-[#ffffff50]">
