@@ -42,7 +42,7 @@
                 onclick="window.location= '{{ $firstStock ? route('product.details', ['slug' => $product->slug, 'sku' => $firstStock->sku]) : '#' }}'"
                 style="cursor: pointer;">
 
-                <div class="product-image w-[100px] sm:w-[180px] md:w-full md:col-span-1 shrink-0 overflow-hidden relative bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]">
+                <div class="product-image w-[100px] sm:w-[180px] md:w-full md:col-span-1 shrink-0 overflow-hidden relative bg-white">
                     <img src="{{ get_product_image($product->thumbnail_img,'300') }}" alt="{{ $product->name }}" title="{{ $product->name }}"
                         class="absolute left-0 top-0 h-full w-full object-contain object-center">
 

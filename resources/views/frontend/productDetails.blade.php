@@ -50,7 +50,7 @@
 <!--product single intro-->
 <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] md:pt-[0px] xl:mb-[100px]">
     <div class="flex flex-col xl:grid xl:grid-cols-11 gap-[30px] xl:gap-[100px]">
-        <div class="col-span-5 overflow-hidden h-[50vh] xl:h-[70vh] w-full relative bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]">
+        <div class="col-span-5 overflow-hidden h-[50vh] xl:h-[70vh] w-full relative bg-white rounded-xl">
             @php
                 $firstStock = $selectedStock; // This should be the stock user has selected
                 $slides = [];
