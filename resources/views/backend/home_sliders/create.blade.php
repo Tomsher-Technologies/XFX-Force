@@ -63,7 +63,7 @@
                             </div>
 
                             {{-- Mobile Banner --}}
-                            <div class="form-group row">
+                            <div class="form-group row d-none">
                                 <label class="col-md-3 col-form-label">Mobile Banner</label>
                                 <div class="col-md-9">
                                     <div class="input-group" data-toggle="aizuploader" data-type="image">
@@ -106,7 +106,7 @@
                             </div>
 
                             {{-- Mobile Video --}}
-                            <div class="form-group row">
+                            <div class="form-group row d-none">
                                 <label class="col-md-3 col-form-label">Video (Mobile)</label>
                                 <div class="col-md-9">
                                     <div class="input-group" data-toggle="aizuploader" data-type="video">
@@ -131,18 +131,18 @@
                             <label class="col-md-3 col-form-label">Title</label>
                             <div class="col-md-9">
                                 <input type="text" name="title" value="{{ old('title') }}"
-                                    class="form-control form-control-sm" placeholder="Title" required>
+                                    class="form-control form-control-sm" placeholder="Title" >
                                 @error('title')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row d-none">
                             <label class="col-md-3 col-form-label">Subtitle</label>
                             <div class="col-md-9">
                                 <input type="text" name="sub_title" value="{{ old('sub_title') }}"
-                                    class="form-control form-control-sm" placeholder="Subtitle" required>
+                                    class="form-control form-control-sm" placeholder="Subtitle" >
                                 @error('sub_title')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
@@ -178,8 +178,8 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">Sort Order</label>
                             <div class="col-md-9">
-                                <input type="number" name="sort_order" value="{{ old('sort_order') }}"
-                                    class="form-control form-control-sm" required>
+                                <input type="number" name="sort_order" value="{{ old('sort_order', 0) }}"
+                                    class="form-control form-control-sm" >
                             </div>
                         </div>
 

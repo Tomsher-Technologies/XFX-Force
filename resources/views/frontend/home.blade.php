@@ -33,7 +33,7 @@
                         <div class="meta absolute bottom-[15%] md:bottom-[25%] text-center w-full px-[16px]">
                             <div data-swiper-parallax="-400" class="slide-title flex flex-col items-center gap-[20px] justify-center">
 
-                                <h1 class="banner-caption text-center text-[35px] md:text-[55px] lg:text-[65px] xl:text-[75px] 2xl:text-[85px] uppercase w-[80%] md:w-[50%] leading-[1]">{{ $slider->name }}</h1>
+                                <h1 class="banner-caption text-center text-[35px] md:text-[55px] lg:text-[65px] xl:text-[75px] 2xl:text-[85px] uppercase w-[80%] md:w-[50%] leading-[1]">{{ $slider->title ?? '' }}</h1>
 
                                 @php
                                     switch ($slider->link_type) {
