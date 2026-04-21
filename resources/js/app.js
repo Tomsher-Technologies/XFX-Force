@@ -700,7 +700,7 @@ var swiper = new Swiper(".gamepcswiper", {
 });
 
 var swiper = new Swiper(".productswiper", {
-    slidesPerView: 5,
+    slidesPerView: 2,
     spaceBetween: 15,
     grabCursor: true,
     pagination: {
@@ -723,6 +723,9 @@ var swiper = new Swiper(".productswiper", {
         768: { slidesPerView: 2, spaceBetween: 15 },
         1024: { slidesPerView: 3, spaceBetween: 15 },
         1280: { slidesPerView: 4, spaceBetween: 15 },
+        1300: { slidesPerView: 4, spaceBetween: 15 },
+        1366: { slidesPerView: 4, spaceBetween: 15 },
+        1400: { slidesPerView: 5, spaceBetween: 15 },
     },
 });
 
