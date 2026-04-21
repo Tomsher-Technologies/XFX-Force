@@ -118,9 +118,9 @@
 
         @foreach($banners as $banner)
 
-            <div class="seg-card rounded-[20px] items-center flex flex-col gap-[20px] justify-end p-[30px] md:p-[40px] relative overflow-hidden min-h-[450px]">
-                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" class="absolute object-cover object-top w-full h-full">
-                <div class="content relative z-[1] flex flex-col items-center justify-end h-full w-full">
+            <div class="seg-card rounded-[20px] items-center flex flex-col gap-[20px] justify-between xl:justify-end p-[20px] md:p-[40px] relative overflow-hidden min-h-auto xl:min-h-[450px] bg-black">
+                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" class="relative xl:absolute object-cover object-top w-full h-fit bottom-0 left-0 rounded-[10px]">
+                <div class="content relative z-[1] flex flex-col items-center justify-between xl:justify-end h-full w-full">
                     <h2 class="text-[25px] md:text-[30px] text-[white] capitalize font-bold text-center">{{ $banner->title }}</h2>
                     <p class="text-[15px] text-[#ffffff] text-center">{{ $banner->sub_title }}</p>
                     <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full !text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium mt-[20px]" title="">{{ $banner->btn_text }}</a>
