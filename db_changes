@@ -424,12 +424,14 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 
 -- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'contact_us', 'Contact Us', NULL, NULL, '1', NULL, NULL);
 
-ALTER TABLE `product_stocks` CHANGE `image` `image` VARCHAR(2000) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL DEFAULT NULL;
+-- ALTER TABLE `product_stocks` CHANGE `image` `image` VARCHAR(2000) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL DEFAULT NULL;
 -- ALTER TABLE `brands` ADD `details` LONGTEXT NULL DEFAULT NULL AFTER `products`;
 
-INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'product_listing', 'Product Listing Page', NULL, '', '1', NULL, '2026-03-30 16:05:25');
-ALTER TABLE `product_specification` ADD `product_stock_id` INT NOT NULL AFTER `product_id`;
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'product_listing', 'Product Listing Page', NULL, '', '1', NULL, '2026-03-30 16:05:25');
+-- ALTER TABLE `product_specification` ADD `product_stock_id` INT NOT NULL AFTER `product_id`;
 
-ALTER TABLE `orders` CHANGE `cancel_approval` `cancel_approval` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0 - Pending, 1 - Approved, 2 - Rejected';
+-- ALTER TABLE `orders` CHANGE `cancel_approval` `cancel_approval` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0 - Pending, 1 - Approved, 2 - Rejected';
 
-ALTER TABLE `pc_builder_setups` ADD `temp_user_id` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL DEFAULT NULL AFTER `user_id`;
+-- ALTER TABLE `pc_builder_setups` ADD `temp_user_id` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL DEFAULT NULL AFTER `user_id`;
+
+-- ALTER TABLE `reviews` CHANGE `rating` `rating` DECIMAL(2,1) NOT NULL DEFAULT '0';

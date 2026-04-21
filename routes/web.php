@@ -13,6 +13,7 @@ use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\ProfileController;
+use App\Http\Controllers\Frontend\ReviewController;
 use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Frontend\WishlistController;
@@ -119,6 +120,8 @@ Route::group(['middleware' => ['auth:frontend']], function () {
     Route::post('/my-orders/{id}/return', [CheckoutController::class, 'returnOrderRequest'])
         ->name('orders.return');
 
-        Route::post('/notification/read/{id}', [NotificationController::class, 'markRead'])
+    Route::post('/notification/read/{id}', [NotificationController::class, 'markRead'])
     ->name('notification.read');
+
+    Route::post('/review/store', [ReviewController::class, 'store'])->name('reviews.save');
 });

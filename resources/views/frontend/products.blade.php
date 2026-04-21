@@ -303,7 +303,7 @@ Log::info($_REQUEST);
 					<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[15px] w-full">
 						<span class="text-[#898989] text-[14px] w-full text-center xl:text-right" id="product-count" data-per-page="{{ $products->perPage() }}" data-total="{{ $products->total() }}">
 							@if($products->count() > 0)
-								Items 1-{{ $products->count() }} of {{ $products->count() }}
+								Items {{ $products->firstItem() }} - {{ $products->lastItem() }} of {{ $products->total() }}
 							@else
 								Items 0 of 0
 							@endif
@@ -367,8 +367,8 @@ Log::info($_REQUEST);
 						<div class="loader"></div>
 					</div>
 					<div class="text-center mt-4 text-white" id="load-more-wrapper">
-						<button id="load-more-btn" class="mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hidden md:block hover:bg-white/5">
-							Load More...
+						<button id="load-more-btn" class="mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hidden md:block hover:bg-white/5" title="Click to View More Products">
+							Load More
 						</button>
 					</div>
 					@endif
@@ -775,7 +775,7 @@ Log::info($_REQUEST);
 						</div>`;
 			return;
 		}
-		countEl.innerText = `Items 1-${visible} of ${visible}`;
+		countEl.innerText = `Items 1-${visible} of ${total}`;
 	}
 
 </script>

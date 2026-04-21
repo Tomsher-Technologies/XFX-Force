@@ -343,8 +343,8 @@
                         <div class="loader"></div>
                     </div>
                     <div class="text-center mt-4 text-white" id="load-more-wrapper">
-                        <button id="load-more-btn" class="btn btn-primary">
-                            Load More...
+                        <button id="load-more-btn" class="mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hidden md:block hover:bg-white/5" title="Click to View More Products">
+                        Load More
                         </button>
                     </div>
                     @endif
@@ -724,8 +724,8 @@
 						</div>`;
 			return;
 		}
-		countEl.innerText = `Items 1-${visible} of ${visible}`;
-        document.getElementById('total-product-count').innerText = `${visible}`;
+		countEl.innerText = `Items 1-${visible} of ${total}`;
+        document.getElementById('total-product-count').innerText = `${total}`;
     	document.getElementById('category-count').innerText = `${visible}`;
 	}
 </script>

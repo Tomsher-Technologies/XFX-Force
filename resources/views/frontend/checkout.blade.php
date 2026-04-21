@@ -66,15 +66,15 @@
                                     <span class="text-red-400 text-xs mt-1 error-span error-billing_email"></span>
                                 </div>
                                 <div>
-                                    <div class="flex flex-col gap-2 w-full h-full">
+                                    {{-- <div class="flex flex-col gap-2 w-full h-full">
                                         <div class="h-full flex items-center bg-[#161B22] border border-gray-800 rounded-xl focus-within:border-[#2A7CFF] transition-all overflow-hidden group">
                                             <div class="bg-[#1c2128] px-4 py-4 border-r border-gray-800 flex items-center gap-2 h-full">
                                                 <span class="text-[#6a7282] font-medium text-[15px] h-full">+971</span>
                                             </div>
-                                            <input type="number" id="uae-phone-input" placeholder="50 123 4567" class="w-full bg-transparent px-4 py-4 text-white placeholder-gray-700 outline-none font-medium text-[15px]" name="billing_phone" value="{{ auth('frontend')->user()->phone ?? '' }}">
                                         </div>
-                                        <span class="text-red-400 text-xs mt-1 error-span error-billing_phone"></span>
-                                    </div>
+                                    </div> --}}
+                                    <input type="number" id="uae-phone-input" placeholder="971xxxxxxxxx" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="billing_phone" value="{{ auth('frontend')->user()->phone ?? '' }}">
+                                    <span class="text-red-400 text-xs mt-1 error-span error-billing_phone"></span>
                                 </div>
                                 <div>
                                     <input type="text" placeholder="Building / Apartment, Street *" class="md:col-span-2 bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="billing_address">
