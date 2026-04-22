@@ -208,7 +208,7 @@
                 <div class="relative group">
                     <input type="text" id="mega-search-input" placeholder="What are you looking for?" class="w-full bg-transparent border-0 border-b-2 border-white/10 outline-none focus:outline-none focus:ring-0 active:outline-none  py-6 text-2xl md:text-4xl text-white placeholder-gray-700 focus:outline-none focus:border-[#2A7CFF] transition-all">
                     <div class="absolute right-0 bottom-6 text-[#2A7CFF] opacity-0 group-focus-within:opacity-100 transition-opacity">
-                        <span class="text-[12px] font-medium uppercase tracking-widest">Press Enter to Search</span>
+                        <span class="hidden md:block text-[12px] font-medium uppercase tracking-widest">Press Enter to Search</span>
                     </div>
                 </div>
             </div>
