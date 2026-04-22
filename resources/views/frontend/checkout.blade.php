@@ -519,7 +519,7 @@
                             Save Address
                         </button>
 
-                        <button onclick="toggleAddressModal('.address-modal', false)" type="button"
+                        <button onclick="closeCheckoutAddressModal()" type="button"
                         class="flex-1 bg-transparent border border-gray-800 text-gray-500 font-medium py-4 rounded-xl uppercase text-[14px] cursor-pointer hover:bg-gray-800 hover:text-white transition-all">Discard</button>
 
                     </div>
@@ -532,8 +532,64 @@
 <!--//address modal-->
 
 <script>
+window.__pendingAddressMapInit = false;
+window.__initAddressMapCallback = function () {
+    if (window.initMap && window.initMap.__ready) {
+        window.initMap();
+        return;
+    }
+
+    window.__pendingAddressMapInit = true;
+};
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_API_KEY') }}&callback=__initAddressMapCallback&loading=async" async defer></script>
+
+<script>
 let timer;
 const checkoutForm = document.getElementById('checkout-form');
+
+window.openCheckoutAddressModal = function () {
+    const overlay = document.getElementById('addr-modal-overlay');
+    const container = document.getElementById('addr-modal-container');
+
+    if (!overlay || !container) {
+        return;
+    }
+
+    overlay.classList.remove('hidden');
+
+    requestAnimationFrame(() => {
+        overlay.classList.add('opacity-100');
+        container.classList.remove('scale-95', 'opacity-0');
+        container.classList.add('scale-100', 'opacity-100');
+    });
+
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+        if (window.refreshAddressMapPosition) {
+            window.refreshAddressMapPosition();
+        }
+    }, 320);
+}
+
+window.closeCheckoutAddressModal = function () {
+    const overlay = document.getElementById('addr-modal-overlay');
+    const container = document.getElementById('addr-modal-container');
+
+    if (!overlay || !container) {
+        return;
+    }
+
+    overlay.classList.remove('opacity-100');
+    container.classList.remove('scale-100', 'opacity-100');
+    container.classList.add('scale-95', 'opacity-0');
+
+    setTimeout(() => {
+        overlay.classList.add('hidden');
+        document.body.style.overflow = '';
+    }, 300);
+}
 
 function completeYourOrder(e, btn) {
     e.preventDefault(); // stop default submit immediately
@@ -618,8 +674,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const pickupSection = document.getElementById('pickup-section');
     const billingToggle = document.getElementById('billing-toggle');
     const addressListContainer = document.getElementById('address-list-container');
-    const mapModal = document.getElementById('map-modal-overlay');
     const cartShipping = document.getElementById('cart-shipping');
+    const openAddressModalButton = document.getElementById('open-address-modal');
+    const closeModalXButton = document.getElementById('close-modal-x');
+    const modalOverlay = document.getElementById('addr-modal-overlay');
 
     let originalShipping = cartShipping 
     ? parseFloat(cartShipping.textContent.replace(/,/g, '')) 
@@ -662,21 +720,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 3. Modal Logic
-    const openModal = () => {
-        mapModal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    };
+    if (openAddressModalButton) {
+        openAddressModalButton.addEventListener('click', () => {
+            const form = document.getElementById('addressForm');
 
-    const closeModal = () => {
-        mapModal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    };
+            if (form) {
+                form.reset();
+                form.address_id.value = 0;
+                form.querySelector('h4').innerText = 'Add New Address';
+            }
 
-    // document.getElementById('trigger-map-modal').addEventListener('click', openModal);
-    // document.getElementById('close-map').addEventListener('click', closeModal);
-    // document.getElementById('cancel-map').addEventListener('click', closeModal);
-    // document.getElementById('confirm-map').addEventListener('click', closeModal);
+            if (window.defaultMapLocation && window.setMapPosition) {
+                window.setMapPosition(window.defaultMapLocation);
+            }
+
+            window.openCheckoutAddressModal();
+        });
+    }
+
+    if (closeModalXButton) {
+        closeModalXButton.addEventListener('click', window.closeCheckoutAddressModal);
+    }
+
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', function (event) {
+            if (event.target === modalOverlay) {
+                window.closeCheckoutAddressModal();
+            }
+        });
+    }
 });
 
 
@@ -707,7 +779,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             toastr.success("Address saved successfully");
                             
                             setTimeout(function() {
-                                closeModal();
+                                window.closeCheckoutAddressModal();
                                 $("#address-list-container").load(location.href + " #address-list-container>*", "");
                             }, 3000);
 

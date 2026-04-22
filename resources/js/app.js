@@ -1593,32 +1593,36 @@ function formatPrice(amount) {
 
 let map;
 let marker;
+const defaultMapLocation = { lat: 25.2048, lng: 55.2708 };
+let pendingMapPosition = null;
+let addressMapInitialized = false;
 
-window.initMap = function() {
-    let defaultLocation = { lat: 25.2048, lng: 55.2708 }; // Dubai
-    map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 13,
-        center: defaultLocation,
-    });
+window.defaultMapLocation = defaultMapLocation;
 
-    marker = new google.maps.Marker({
-        position: defaultLocation,
-        map: map,
-        draggable: true
-    });
+window.setMapPosition = function(position) {
+    const pos = {
+        lat: parseFloat(position.lat),
+        lng: parseFloat(position.lng)
+    };
 
-    updateLatLng(defaultLocation);
+    pendingMapPosition = pos;
 
-    // click map
-    map.addListener("click", function(event){
-        marker.setPosition(event.latLng);
-        updateLatLng(event.latLng);
-    });
+    if (!map || !marker || !window.google || !google.maps) {
+        return;
+    }
 
-    // drag marker
-    marker.addListener("dragend", function(event){
-        updateLatLng(event.latLng);
-    });
+    google.maps.event.trigger(map, "resize");
+    marker.setPosition(pos);
+    map.setCenter(pos);
+    window.updateLatLng(pos);
+}
+
+window.refreshAddressMapPosition = function() {
+    if (pendingMapPosition) {
+        window.setMapPosition(pendingMapPosition);
+    } else {
+        window.setMapPosition(defaultMapLocation);
+    }
 }
 
 window.updateLatLng = function(location){
@@ -1632,18 +1636,65 @@ window.updateLatLng = function(location){
     console.log("Longitude:", lng);
 }
 
+window.initMap = function() {
+    const mapElement = document.getElementById("map");
+
+    if (!mapElement || !window.google || !google.maps) {
+        return;
+    }
+
+    if (addressMapInitialized && map && marker) {
+        window.refreshAddressMapPosition();
+        return;
+    }
+
+    map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 13,
+        center: defaultMapLocation,
+    });
+
+    marker = new google.maps.Marker({
+        position: defaultMapLocation,
+        map: map,
+        draggable: true
+    });
+
+    window.updateLatLng(defaultMapLocation);
+
+    // click map
+    map.addListener("click", function(event){
+        marker.setPosition(event.latLng);
+        window.updateLatLng(event.latLng);
+    });
+
+    // drag marker
+    marker.addListener("dragend", function(event){
+        window.updateLatLng(event.latLng);
+    });
+
+    if (pendingMapPosition) {
+        window.setMapPosition(pendingMapPosition);
+    }
+
+    addressMapInitialized = true;
+}
+
+window.initMap.__ready = true;
+
+if (window.__pendingAddressMapInit) {
+    window.__pendingAddressMapInit = false;
+    window.initMap();
+}
+
 
 window.getCurrentLocation = function(){
     if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(function(position){
-            let pos = {
+            const pos = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-            map.setCenter(pos);
-            marker.setPosition(pos);
-            document.getElementById("latitude").value = pos.lat;
-            document.getElementById("longitude").value = pos.lng;
+            window.setMapPosition(pos);
         });
     }
 }
