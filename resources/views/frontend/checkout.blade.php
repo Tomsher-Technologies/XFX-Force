@@ -87,9 +87,10 @@
                                 <div>
                                     <div class="relative w-full">
                                         <select id="emirate-select" class="w-full bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] appearance-none cursor-pointer transition-all font-medium bg-image-none" name="billing_state">
+                                            <option value="" disabled selected>Select Emirate</option>
                                             <option value="Abu Dhabi">Abu Dhabi</option>
                                             <option value="Ajman">Ajman</option>
-                                            <option value="Dubai" selected>Dubai</option>
+                                            <option value="Dubai">Dubai</option>
                                             <option value="Fujairah">Fujairah</option>
                                             <option value="Ras Al Khaimah">Ras Al Khaimah</option>
                                             <option value="Sharjah">Sharjah</option>

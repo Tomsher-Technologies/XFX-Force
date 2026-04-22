@@ -109,7 +109,8 @@ class CheckoutController
             'billing_address' => 'required|string',
         ], [
             'first_name.regex' => 'Only alphabets and spaces are allowed in the name field.',
-            'billing_phone.regex' => 'Please enter a valid phone number (numbers only, 7-15 digits).'
+            'billing_phone.regex' => 'Please enter a valid phone number (numbers only, 7-15 digits).',
+            'billing_state.required' => 'Please select an emirate.',
         ]);
 
         if ($validator->fails()) {
