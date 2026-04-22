@@ -51,7 +51,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row d-none">
                             <label class="col-md-3 col-form-label" for="signinSrEmail">
                                 Mobile Banner
                                 {{-- <small>(1300x650)</small> --}}
