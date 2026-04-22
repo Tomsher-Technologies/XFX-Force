@@ -10,7 +10,7 @@ class Brand extends Model
 
     protected $with = ['brand_translations'];
 
-    protected $fillable = ['name', 'logo', 'is_active'];
+    protected $fillable = ['name', 'logo', 'is_active','details'];
 
     public function getTranslation($field = '', $lang = false){
         $lang = $lang == false ? App::getLocale() : $lang;

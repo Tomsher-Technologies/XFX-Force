@@ -26,9 +26,15 @@
 
         @foreach($reviewProducts as $item)
         @php
-        $image = asset('assets/img/placeholder.jpg');
+        $image = asset('assets/img/placeholder.jpg'); // default placeholder
+
         if (!empty($item['image'])) {
-        $image = Storage::url($item['image']);
+            // If multiple images, take the first one
+            $images = explode(',', $item['image']);
+            $firstImage = trim($images[0]);
+            if ($firstImage) {
+                $image = Storage::url($firstImage);
+            }
         }
         @endphp
         <div class="grid grid-cols-12 gap-[20px] md:gap-[30px] items-center border-t-1 border-[#2E363E] py-[20px]">
@@ -41,13 +47,27 @@
 
                         // default page link
                         $pagelink = '#';
+
                         if ($productId && $variantId) {
-                            $pagelink = route('product.details', [$productId, $variantId]);
+                            // Fetch product with stocks
+                            $product = \App\Models\Product::with('stocks')->find($productId);
+
+                            if ($product) {
+                                // Find the stock by given variant_id
+                                $stock = $product->stocks->where('id', $variantId)->first();
+
+                                if ($stock) {
+                                    $pagelink = route('product.details', [
+                                        'slug' => $product->slug,
+                                        'sku'  => $stock->sku
+                                    ]);
+                                }
+                            }
                         }
                     @endphp
 
                     <a href="{{ $pagelink }}" target="_blank" class="w-20 h-20 bg-[#252c33] rounded-lg flex items-center justify-center">
-                        <img src="{{ $image }}" alt="PC" class="w-full">
+                        <img src="{{ $image }}" alt="{{ $item['variant_name'] ?: $item['product_name'] }}" title="{{ $item['variant_name'] ?: $item['product_name'] }}" class="w-full">
                     </a>
                 </div>
                 <a href="{{ $pagelink }}" target="_blank">

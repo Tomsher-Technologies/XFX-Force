@@ -10,7 +10,10 @@ var swiperOptions = {
   parallax: !0,
   autoplay: { delay: 20000, disableOnInteraction: !1 },
   watchSlidesProgress: !0,
-  pagination: { el: ".swiper-pagination", clickable: !0 },
+  pagination: {
+        el: ".swiper-pagination",
+        dynamicBullets: true,
+    },
   navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
   on: {
     progress: function () {

@@ -305,20 +305,133 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 
 -- Added on 10-03-2026
 
-CREATE TABLE `pc_builder_setups` (`id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NULL DEFAULT NULL , `build_data` LONGTEXT NULL DEFAULT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- CREATE TABLE `pc_builder_setups` (`id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NULL DEFAULT NULL , `build_data` LONGTEXT NULL DEFAULT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Added on 12-03-2026
 
-ALTER TABLE carts 
-ADD COLUMN pc_builder_id BIGINT NULL AFTER user_id,
-ADD COLUMN is_pc_builder TINYINT(1) DEFAULT 0 AFTER pc_builder_id;
+-- ALTER TABLE carts 
+-- ADD COLUMN pc_builder_id BIGINT NULL AFTER user_id,
+-- ADD COLUMN is_pc_builder TINYINT(1) DEFAULT 0 AFTER pc_builder_id;
 
 -- Added on 14-03-2026
-ALTER TABLE `orders` ADD `fulfillment_method` VARCHAR(20) NOT NULL DEFAULT 'delivery' COMMENT 'Delivery, store pickup' AFTER `payment_tracking_id`;
-ALTER TABLE `orders` DROP `combined_order_id`;
+-- ALTER TABLE `orders` ADD `fulfillment_method` VARCHAR(20) NOT NULL DEFAULT 'delivery' COMMENT 'Delivery, store pickup' AFTER `payment_tracking_id`;
+-- ALTER TABLE `orders` DROP `combined_order_id`;
 
-ALTER TABLE `product_stocks` CHANGE `qty` `qty` INT UNSIGNED NOT NULL DEFAULT '0';
+-- ALTER TABLE `product_stocks` CHANGE `qty` `qty` INT UNSIGNED NOT NULL DEFAULT '0';
 
-ALTER TABLE order_details 
-ADD COLUMN pc_builder_id BIGINT NULL AFTER product_stock_id,
-ADD COLUMN is_pc_builder TINYINT(1) DEFAULT 0 AFTER pc_builder_id;
+-- ALTER TABLE order_details 
+-- ADD COLUMN pc_builder_id BIGINT NULL AFTER product_stock_id,
+-- ADD COLUMN is_pc_builder TINYINT(1) DEFAULT 0 AFTER pc_builder_id;
+
+-- ALTER TABLE pc_builder_setups 
+-- ADD COLUMN is_ordered TINYINT(1) NOT NULL DEFAULT 0 COMMENT '0=>false, 1=>true' AFTER build_data;
+
+
+-- CREATE TABLE IF NOT EXISTS `menus` (
+--   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+--   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+--   `type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'normal | mega',
+--   `link_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'custom' COMMENT 'custom | category | brand | product',
+--   `link_value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'URL or ID',
+--   `sort_order` int DEFAULT '0',
+--   `status` tinyint(1) DEFAULT '1',
+--   `created_at` timestamp NULL DEFAULT NULL,
+--   `updated_at` timestamp NULL DEFAULT NULL,
+--   PRIMARY KEY (`id`)
+-- ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --
+-- -- Dumping data for table `menus`
+-- --
+
+-- INSERT INTO `menus` (`id`, `title`, `type`, `link_type`, `link_value`, `sort_order`, `status`, `created_at`, `updated_at`) VALUES
+-- (3, 'Home', 'normal', 'custom', 'https://pcgarage.tomsher.site/', 1, 1, '2026-03-25 10:54:02', '2026-03-26 08:12:03'),
+-- (4, 'Shop', 'mega', 'custom', NULL, 2, 1, '2026-03-25 10:54:19', '2026-03-26 08:12:03'),
+-- (5, 'Build Your PC New', 'normal', 'custom', 'https://pcgarage.tomsher.site/build-pc', 3, 1, '2026-03-25 11:34:59', '2026-03-26 10:59:42'),
+-- (6, 'Pre-built pc', 'mega', 'custom', NULL, 4, 1, '2026-03-25 12:22:05', '2026-03-26 13:40:13'),
+-- (7, 'Components', 'normal', 'custom', '#', 5, 1, '2026-03-25 14:09:03', '2026-03-26 08:12:03'),
+-- (12, 'About Us', 'normal', 'custom', 'https://pcgarage.tomsher.site/about-us', 6, 1, '2026-03-26 08:11:54', '2026-03-26 08:12:03');
+
+-- CREATE TABLE IF NOT EXISTS `menu_sections` (
+--   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+--   `menu_id` bigint UNSIGNED NOT NULL,
+--   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Shop by Categories',
+--   `link_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'custom' COMMENT 'category | brand | product | custom',
+--   `link_value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'id or url',
+--   `sort_order` int DEFAULT '0',
+--   `created_at` timestamp NULL DEFAULT NULL,
+--   `updated_at` timestamp NULL DEFAULT NULL,
+--   PRIMARY KEY (`id`),
+--   KEY `menu_id` (`menu_id`)
+-- ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- INSERT INTO `menu_sections` (`id`, `menu_id`, `title`, `link_type`, `link_value`, `sort_order`, `created_at`, `updated_at`) VALUES
+-- (3, 4, 'Shop By Brands', 'custom', NULL, 1, '2026-03-25 12:31:07', '2026-03-26 11:19:59'),
+-- (4, 4, 'Shop By Categories', 'custom', 'https://pcgarage.tomsher.site/', 2, '2026-03-26 08:07:46', '2026-03-26 11:20:10'),
+-- (6, 5, 'Customize PC', 'custom', NULL, 0, '2026-03-26 10:34:23', '2026-03-26 10:34:23'),
+-- (9, 5, 'Section 2', 'custom', NULL, 3, '2026-03-26 10:50:22', '2026-03-26 10:59:09'),
+-- (10, 6, 'aaaaaaaaa', 'custom', NULL, 0, '2026-03-26 13:40:22', '2026-03-26 13:40:22');
+
+
+-- ALTER TABLE `menu_sections`
+--   ADD CONSTRAINT `fk_menu_sections_menu` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE;
+
+-- CREATE TABLE IF NOT EXISTS `menu_items` (
+--   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+--   `menu_id` bigint UNSIGNED DEFAULT NULL,
+--   `menu_section_id` bigint UNSIGNED DEFAULT NULL,
+--   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+--   `link_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'custom' COMMENT 'category | brand | product | custom',
+--   `link_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'id or url',
+--   `sort_order` int DEFAULT '0',
+--   `created_at` timestamp NULL DEFAULT NULL,
+--   `updated_at` timestamp NULL DEFAULT NULL,
+--   PRIMARY KEY (`id`),
+--   KEY `menu_id` (`menu_id`),
+--   KEY `section_id` (`menu_section_id`)
+-- ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- INSERT INTO `menu_items` (`id`, `menu_id`, `menu_section_id`, `title`, `link_type`, `link_value`, `sort_order`, `created_at`, `updated_at`) VALUES
+-- (2, NULL, 3, 'Brand 1', 'custom', 'https://pcgarage.tomsher.site/', 1, '2026-03-25 12:32:20', '2026-03-26 12:04:08'),
+-- (3, NULL, 3, 'Brand 2', 'custom', 'https://pcgarage.tomsher.site/', 7, '2026-03-25 13:01:26', '2026-03-26 10:59:07'),
+-- (4, NULL, 3, 'Brand 3', 'custom', 'https://pcgarage.tomsher.site/', 1, '2026-03-25 13:13:56', '2026-03-26 10:59:07'),
+-- (9, NULL, 4, 'Category 1', 'custom', 'https://pcgarage.tomsher.site/', 2, '2026-03-26 08:08:01', '2026-03-26 10:59:07'),
+-- (10, NULL, 4, 'Category 2', 'custom', 'https://pcgarage.tomsher.site/', 4, '2026-03-26 08:08:18', '2026-03-26 10:59:07'),
+-- (11, NULL, 4, 'Category 3', 'custom', 'https://pcgarage.tomsher.site/', 6, '2026-03-26 08:08:31', '2026-03-26 10:59:07'),
+-- (14, NULL, 3, 'Brand 5', 'custom', 'https://pcgarage.tomsher.site/', 3, '2026-03-26 08:10:35', '2026-03-26 10:59:04');
+
+
+-- ALTER TABLE `menu_items`
+--   ADD CONSTRAINT `fk_menu_items_menu` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE,
+--   ADD CONSTRAINT `fk_menu_items_section` FOREIGN KEY (`menu_section_id`) REFERENCES `menu_sections` (`id`) ON DELETE CASCADE;
+
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'about-us', 'About Us', NULL, '', '1', NULL, '2026-03-07 14:06:06');
+
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'terms', 'Terms & Conditions', NULL, '', '1', NULL, '2026-03-07 14:06:06');
+
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'privacy_policy', 'Privacy Policy', NULL, '', '1', NULL, '2026-03-07 14:06:06');
+
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'return_policy', 'Return Policy', NULL, '', '1', NULL, '2026-03-07 14:06:06');
+
+-- ALTER TABLE pc_builder_setups 
+-- ADD COLUMN is_ordered TINYINT(1) NOT NULL DEFAULT 0 COMMENT '0=>false, 1=>true' AFTER build_data;
+
+-- ALTER TABLE `orders` ADD `warranty_amount` DOUBLE(20,2) NOT NULL DEFAULT '0.00' AFTER `offer_discount`;
+
+-- UPDATE `pages` SET `type` = 'about_us' WHERE `pages`.`id` = 2;
+
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'contact_us', 'Contact Us', NULL, NULL, '1', NULL, NULL);
+
+-- ALTER TABLE `product_stocks` CHANGE `image` `image` VARCHAR(2000) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL DEFAULT NULL;
+-- ALTER TABLE `brands` ADD `details` LONGTEXT NULL DEFAULT NULL AFTER `products`;
+
+-- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'product_listing', 'Product Listing Page', NULL, '', '1', NULL, '2026-03-30 16:05:25');
+-- ALTER TABLE `product_specification` ADD `product_stock_id` INT NOT NULL AFTER `product_id`;
+
+-- ALTER TABLE `orders` CHANGE `cancel_approval` `cancel_approval` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0 - Pending, 1 - Approved, 2 - Rejected';
+
+-- ALTER TABLE `pc_builder_setups` ADD `temp_user_id` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL DEFAULT NULL AFTER `user_id`;
+
+-- ALTER TABLE `reviews` CHANGE `rating` `rating` DECIMAL(2,1) NOT NULL DEFAULT '0';

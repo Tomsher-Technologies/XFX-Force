@@ -76,6 +76,9 @@ class BrandController extends Controller
         $slug_suffix = $same_slug_count ? '-' . $same_slug_count + 1 : '';
         $slug .= $slug_suffix;
         $brand->slug = $slug;
+        if(!empty($request->input('details'))){
+            $brand->details = json_encode($request->input('details'));
+        }
         $brand->save();
 
         // save brand seo
@@ -90,27 +93,27 @@ class BrandController extends Controller
         $brand_translation->save();
 
         // saving sections
-        if ($request->has('sections')) {
+        // if ($request->has('sections')) {
             
-            foreach ($request->sections as $section) {
+        //     foreach ($request->sections as $section) {
 
-                // Skip completely empty section
-                if (!empty($section['section_title'])) {
-                    $imagePath = "";
-                    if (isset($section['section_image']) && 
-                        $section['section_image'] instanceof \Illuminate\Http\UploadedFile) {
-                        $imagePath = $section['section_image']->store('brand_sections/images', 'public');
-                    }
+        //         // Skip completely empty section
+        //         if (!empty($section['section_title'])) {
+        //             $imagePath = "";
+        //             if (isset($section['section_image']) && 
+        //                 $section['section_image'] instanceof \Illuminate\Http\UploadedFile) {
+        //                 $imagePath = $section['section_image']->store('brand_sections/images', 'public');
+        //             }
 
-                    $brand->sections()->create([
-                        'title' => $section['section_title'] ?? "",
-                        'description' => $section['section_description'],
-                        'status' => $section['section_status'] ?? 0,
-                        'image' => $imagePath,
-                    ]);
-                }
-            }
-        }
+        //             $brand->sections()->create([
+        //                 'title' => $section['section_title'] ?? "",
+        //                 'description' => $section['section_description'],
+        //                 'status' => $section['section_status'] ?? 0,
+        //                 'image' => $imagePath,
+        //             ]);
+        //         }
+        //     }
+        // }
 
         // saving Tabs
         if ($request->has('tabs')) {
@@ -208,7 +211,9 @@ class BrandController extends Controller
         $brand->products = $request->products
             ? json_encode($request->products)
             : null;
-
+        if(!empty($request->input('details'))){
+            $brand->details = json_encode($request->input('details'));
+        }
         $brand->save();
 
         // saving seo details
@@ -271,39 +276,41 @@ class BrandController extends Controller
         // saving Tabs
 
         $existingTabIds = [];
-        foreach ($request->tabs as $index => $tab) {
-            $tabId = $tab['id'] ?? null;
-            $imagePath = null;
-            if ($request->hasFile("tabs.$index.tab_image")) {
-                $imagePath = $request->file("tabs.$index.tab_image")
-                    ->store('brand_tabs/images', 'public');
-            }
+        if ($request->has('tabs')) {
+            foreach ($request->tabs as $index => $tab) {
+                $tabId = $tab['id'] ?? null;
+                $imagePath = null;
+                if ($request->hasFile("tabs.$index.tab_image")) {
+                    $imagePath = $request->file("tabs.$index.tab_image")
+                        ->store('brand_tabs/images', 'public');
+                }
 
-            if ($tabId) {
-                $existingTab = BrandTab::find($tabId);
-                if ($existingTab) {
-                    $existingTab->update([
+                if ($tabId) {
+                    $existingTab = BrandTab::find($tabId);
+                    if ($existingTab) {
+                        $existingTab->update([
+                            'name'        => $tab['tab_name'] ?? "",
+                            'title'       => $tab['tab_title'] ?? "",
+                            'description' => $tab['tab_description'] ?? "",
+                            'status'      => $tab['tab_status'] ?? 0,
+                            'image'       => $imagePath ?? $existingTab->image,
+                        ]);
+
+                        $existingTabIds[] = $existingTab->id;
+                    }
+
+                } else {
+
+                    $newTab = $brand->tabs()->create([
                         'name'        => $tab['tab_name'] ?? "",
                         'title'       => $tab['tab_title'] ?? "",
                         'description' => $tab['tab_description'] ?? "",
                         'status'      => $tab['tab_status'] ?? 0,
-                        'image'       => $imagePath ?? $existingTab->image,
+                        'image'       => $imagePath ?? "",
                     ]);
 
-                    $existingTabIds[] = $existingTab->id;
+                    $existingTabIds[] = $newTab->id;
                 }
-
-            } else {
-
-                $newTab = $brand->tabs()->create([
-                    'name'        => $tab['tab_name'] ?? "",
-                    'title'       => $tab['tab_title'] ?? "",
-                    'description' => $tab['tab_description'] ?? "",
-                    'status'      => $tab['tab_status'] ?? 0,
-                    'image'       => $imagePath ?? "",
-                ]);
-
-                $existingTabIds[] = $newTab->id;
             }
         }
 

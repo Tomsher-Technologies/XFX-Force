@@ -46,7 +46,7 @@ class Bannercontroller extends Controller
         $request->validate([
             'name' => 'required',
             'banner' => 'required',
-            'mobile_banner' => 'required',
+            // 'mobile_banner' => 'required',
             'link_type' => 'required',
             'status' => 'required',
             'link' => 'nullable|required_if:link_type,external',
@@ -64,7 +64,7 @@ class Bannercontroller extends Controller
             'link' => $request->link,
             'status' => $request->status,
             'image'         => $request->banner,
-            'mobile_image'  => $request->mobile_banner,
+            'mobile_image'  => $request->mobile_banner ?? null,
             'title'         => $request->title,
             'sub_title'     => $request->sub_title,
             'btn_text'      => $request->btn_text,
@@ -112,7 +112,7 @@ class Bannercontroller extends Controller
         $request->validate([
             'name' => 'required',
             'banner' => 'required',
-            'mobile_banner' => 'required',
+            // 'mobile_banner' => 'required',
             'link_type' => 'required',
             'status' => 'required',
             'link' => 'nullable|required_if:link_type,external',
@@ -132,7 +132,7 @@ class Bannercontroller extends Controller
             $banner->link           = $request->link;
             $banner->status         = $request->status;
             $banner->image          = $request->banner;
-            $banner->mobile_image   = $request->mobile_banner;
+            $banner->mobile_image   = $request->mobile_banner ?? NULL;
             $banner->title          = $request->title;
             $banner->sub_title      = $request->sub_title;
             $banner->btn_text       = $request->btn_text;

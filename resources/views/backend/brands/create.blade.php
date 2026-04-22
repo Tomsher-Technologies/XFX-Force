@@ -52,29 +52,14 @@
                     <!-- Brand Information ends -->
 
                     <!-- Brand Sections -->
-                    <h6 class="mb-0">{{ trans('messages.brand') . ' ' . trans('messages.sections') }}</h6>
+                    <h6 class="mb-0">{{ trans('messages.brand') . ' ' . trans('messages.page') . ' ' . trans('messages.details') }}</h6>
                     <hr>
                     <div class="repeater" id="brand-sections-repeater">
                         <div data-repeater-list="sections">
-                            @include('backend.brands.partials.section')
-                        </div>
-                        <div class="text-right">
-                            <button type="button" data-repeater-create class="btn btn-primary btn-xs my-2">Add More Section</button>
+                            @include('backend.brands.partials.brand-details',['brand' => []])
                         </div>
                     </div>
                     <!-- Brand section ends -->
-                    <!-- Brand Tabs -->
-                    <h6 class="mb-0 mt-4">{{ trans('messages.brand') . ' ' . trans('messages.tabs') }}</h6>
-                    <hr>
-                    <div class="repeater" id="brand-tabs-repeater">
-                        <div data-repeater-list="tabs">
-                            @include('backend.brands.partials.tab')
-                        </div>
-                        <div class="text-right">
-                            <button type="button" data-repeater-create class="btn btn-primary btn-xs my-2">Add More Tab</button>
-                        </div>
-                    </div>
-                    <!-- Brand Tabs ends -->
                     <!-- SEO section starts -->
                     <h5 class="mb-0 h6">{{trans('messages.seo_section')}}</h5>
                     <hr>
@@ -92,7 +77,7 @@
                     <div class="form-group row">
                         <div class="col-md-12">
                             <label class="col-form-label" for="name">{{trans('messages.meta_description')}}</label>
-                            <textarea name="meta_description" class="aiz-text-editor form-control form-control-sm" data-min-height="200">{{ old('meta_description') }}</textarea>
+                            <textarea name="meta_description" class="form-control" data-min-height="200">{{ old('meta_description') }}</textarea>
                         </div>
                     </div>
 
@@ -110,11 +95,11 @@
                     <div class="form-group row">
                         <div class="col-md-6">
                             <label class="col-form-label" for="name">{{trans('messages.og_description')}}</label>
-                            <textarea name="og_description" class="aiz-text-editor form-control form-control-sm" data-min-height="200">{{ old('og_description') }}</textarea>
+                            <textarea name="og_description" class="form-control" data-min-height="200">{{ old('og_description') }}</textarea>
                         </div>
                         <div class="col-md-6">
                             <label class="col-form-label" for="name">{{trans('messages.twitter_description')}}</label>
-                            <textarea name="twitter_description" class="aiz-text-editor form-control form-control-sm" data-min-height="200">{{ old('twitter_description') }}</textarea>
+                            <textarea name="twitter_description" class="form-control" data-min-height="200">{{ old('twitter_description') }}</textarea>
                         </div>
                     </div>
 

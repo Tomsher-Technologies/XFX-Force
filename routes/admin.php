@@ -1,4 +1,4 @@
- <?php
+<?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\AbandonedCartController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SpecificationController;
 use App\Http\Controllers\Admin\PcBuilderCategorySettingController;
+use App\Http\Controllers\Admin\MenuController;
 
 
 Route::get('/admin/notifications', function () {
@@ -153,6 +154,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/bulk-product-delete', [ProductController::class, 'bulk_product_delete'])->name('bulk-product-delete');
     Route::post('/products/delete-thumbnail', [ProductController::class, 'delete_thumbnail'])->name('products.delete_thumbnail');
     Route::post('/products/delete_gallery', [ProductController::class, 'delete_gallery'])->name('products.delete_gallery');
+    Route::post('/products/delete_stock_gallery', [ProductController::class, 'delete_stock_gallery'])->name('products.delete_stock_gallery');
 
     Route::get('/product-bulk-upload/index', [ProductBulkUploadController::class, 'index'])->name('product_bulk_upload.index');
     Route::post('/bulk-product-upload', [ProductBulkUploadController::class, 'bulk_upload'])->name('bulk_product_upload');
@@ -270,6 +272,15 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('attributes', AttributeController::class);
     Route::get('/attributes/delete/{id}', [AttributeController::class, 'destroy'])->name('attributes.delete');
 
+    Route::prefix('menus')->name('menus.')->group(function(){
+        Route::get('/', [MenuController::class,'index'])->name('index');
+        Route::post('/', [MenuController::class,'store'])->name('store');
+        Route::get('{type}/{id}/edit', [MenuController::class,'edit']);
+        Route::put('{type}/{id}', [MenuController::class,'update']);
+        Route::delete('{type}/{id}', [MenuController::class,'destroy']);
+    });
+    Route::get('/menus/get-items/{type}', [MenuController::class, 'getItems'])->name('menus.getItems');
+    Route::post('menus/update-order', [MenuController::class, 'updateOrder'])->name('menus.updateOrder');
 });
 
 Route::get('/env-check', function () {

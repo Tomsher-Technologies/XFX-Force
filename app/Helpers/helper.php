@@ -16,6 +16,7 @@ use App\Models\RecentlyViewedProduct;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
+use App\Notifications\CommonNotification;
 // use DB;
 
 function is_active($route, $output = 'menu-active') {
@@ -25,6 +26,61 @@ function is_active($route, $output = 'menu-active') {
     return Route::currentRouteName() === $route ? $output : '';
 }
 
+function getBannerUrl($banner)
+{
+     switch ($banner->link_type) {
+        case 'external':
+            $url = $banner->link;
+            break;
+
+        case 'product':
+            // Get product by ID to retrieve slug and default stock
+            $product = \App\Models\Product::with('stocks')->find($banner->link_ref_id);
+
+            if ($product && $product->stocks->count() > 0) {
+                $defaultStock = $product->stocks->first(); // first stock as default
+                $url = route('product.details', [
+                    'slug' => $product->slug,
+                    'sku'  => $defaultStock->sku
+                ]);
+            } else {
+                $url = '#';
+            }
+            break;
+
+        case 'category':
+            $category = \App\Models\Category::with('category_translations')
+                ->find($banner->link_ref_id);
+
+            if ($category && $category->category_translations->isNotEmpty()) {
+                $url = route(
+                    'shop.category',
+                    ['slug' => $category->category_translations->first()->slug ]
+                    
+                );
+            } else {
+                $url = '#';
+            }
+            break;
+
+        case 'brand':
+            $brand = \App\Models\Brand::find($banner->link_ref_id);
+
+            if ($brand && $brand->slug) {
+                $url = route('shop.brand', [
+                    'slug' => $brand->slug
+                ]);
+            } else {
+                $url = '#';
+            }
+            break;
+            
+        default:
+            $url = '#';
+    }
+
+    return $url;
+}
 function setGuestToken(){
     $guestToken = Cookie::get('guest_token', Str::uuid());
     Cookie::queue('guest_token', $guestToken, 60 * 24 * 7); // 7 days
@@ -344,6 +400,47 @@ function getAllCategories()
     });
 }
 
+function getMenuCount(){
+    $menuCount = \App\Models\Menu::count();
+    return $menuCount;
+}
+
+function getMenuLink($menu){
+    if(!$menu->link_value){
+        return '#';
+    }
+
+    switch ($menu->link_type) {
+
+        case 'product':
+            $product = Product::select('slug','sku')->find($menu->link_value);
+            return $product ? url('/product/'.$product->slug.'/'.$product->sku) : '#';
+
+        case 'category':
+            $category = \App\Models\Category::find($menu->link_value);
+
+            if(!$category) return '#';
+
+            $slug = $category->getTranslation('slug');
+
+            return $slug ? url('/shop/category/'.$slug) : '#';
+        case 'brand':
+            $brand = Brand::select('slug')->find($menu->link_value);
+            return $brand ? url('/shop/brand/'.$brand->slug) : '#';
+
+        default:
+            return $menu->link_value; // custom link
+    }
+}
+
+function getMenus(){
+    return Cache::rememberForever('menus', function () {
+        return \App\Models\Menu::with([
+                    'sections.items',
+                    'items'
+                ])->orderBy('sort_order')->get();
+    });
+}
 function cleanSKU($sku)
 {
     $sku = str_replace(' ', '', $sku);
@@ -356,7 +453,7 @@ if (!function_exists('get_product_image')) {
     {
         if ($path) {
             if ($size == 'full') {
-                return app('url')->asset($path);
+                return app('url')->asset('storage/'.$path);
             } else {
                 $fileName = pathinfo($path)['filename'];
                 $ext   = pathinfo($path)['extension'];
@@ -366,7 +463,7 @@ if (!function_exists('get_product_image')) {
             }
         }
 
-        return app('url')->asset('admin_assets/assets/img/placeholder.jpg');
+        return app('url')->asset('/assets/img/placeholder.jpg');
     }
 }
 
@@ -593,6 +690,30 @@ function getUser()
     return $user;
 }
 
+function getFrontEndUser()
+{
+
+$user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+    $user = array(
+        'users_id_type' => 'temp_user_id',
+        'users_id' => null
+    );
+
+    if ($user_id) {
+        $user = array(
+            'users_id_type' => 'user_id',
+            'users_id' => $user_id
+        );
+    } else {
+        $user = array(
+            'users_id_type' => 'temp_user_id',
+            'users_id' => Request::cookie('guest_token')
+        );
+    }
+
+    return $user;
+}
+
 function cartCount()
 {
     $guest_token = request()->cookie('guest_token') ?? uniqid('guest_', true);
@@ -772,6 +893,53 @@ if (!function_exists('product_image_url')) {
         $fullPath = $dir . '/' . $filename . '.' . $ext;
 
         return Storage::url($fullPath); // returns /storage/products/11111/main/11111_300px.png
+    }
+}
+
+if (!function_exists('sendNotification')) {
+    function sendNotification($users, $message, $order = null, $type = null, $extra = [])
+    {
+        if (!$users) return;
+
+        if (is_iterable($users)) {
+            foreach ($users as $user) {
+                $user->notify(new CommonNotification($message, $order, $type, $extra));
+            }
+        } else {
+            $users->notify(new CommonNotification($message, $order, $type, $extra));
+        }
+    }
+}
+
+/**
+ * Function to check stock quantity per variant of product
+ */
+
+if (!function_exists('checkCartQuantityPerVariant')) {
+    function checkCartQuantityPerVariant(int $stockId)
+    {
+        $userId = (!empty(auth('frontend')->user())) 
+            ? auth('frontend')->user()->id 
+            : null;
+
+        $guestToken = request()->cookie('guest_token');
+
+        $cartItem = \App\Models\Cart::where('product_stock_id', $stockId)
+            ->where(function ($query) use ($guestToken, $userId) {
+
+                if ($userId) {
+                    // Logged-in user
+                    $query->where('user_id', $userId);
+                } else {
+                    // Guest user
+                    $query->where('temp_user_id', $guestToken);
+                }
+
+            })
+            ->where('status', 'pending')
+            ->first();
+
+        return $cartItem ? $cartItem->quantity : 0;
     }
 }
 

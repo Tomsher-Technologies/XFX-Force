@@ -10,46 +10,46 @@
             
             @include('frontend.layouts.sidebar')
 
-            <main class="flex-grow pb-24 lg:pb-0">
+            <main class="flex-grow lg:pb-0">
                 <div>
                     <div class="flex flex-col md:flex-row justify-between items-center md:items-center mb-10 pb-[30px] gap-4 border-b border-[#252B31] text-center md:text-left">
                         <div class="w-full">
                             <h2 class="text-[20px] font-medium mb-1 text-white uppercase">Account Details</h2>
                             <p class="text-gray-500">Manage your personal information and security.</p>
                         </div>
-                        <button onclick="toggleEditMode()" class="hidden md:flex bg-[#252B31] border border-white/5 px-6 py-3 rounded-xl hover:bg-[#2A7CFF] hover:border-[#2A7CFF] transition-all items-center gap-2 font-medium cursor-pointer text-sm text-white whitespace-nowrap">
+                        <button onclick="toggleEditMode()" class="hidden md:flex bg-[#252B31] border border-white/5 px-6 py-3 rounded-xl hover:bg-[#2A7CFF] hover:border-[#2A7CFF] transition-all items-center gap-2 font-medium cursor-pointer text-xs text-white whitespace-nowrap uppercase">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                            <span class="edit-text-sync">EDIT PROFILE</span>
+                            <span class="edit-text-sync">Edit Profile</span>
                         </button>
                     </div>
                     <div class="space-y-6">
                         <form id="account-details-form" action="{{ route('account.update') }}" method="POST" class="flex flex-col md:grid md:grid-cols-2 gap-3 md:gap-6 md:gap-8">
                             @csrf
-                            <div class="bg-[#1C2228] p-6 rounded-2xl border border-white/5 transition-all focus-within:border-[#2A7CFF]/50 group text-center md:text-left">
-                                <label class="text-gray-500 text-[12px] font-medium uppercase tracking-widest block mb-1 group-focus-within:text-[#2A7CFF]">Full Name</label>
+                            <div class="transition-all focus-within:border-[#2A7CFF]/50 group text-center md:text-left">
+                                <label class="text-gray-500 text-[12px] font-medium block mb-[5px] group-focus-within:text-[#2A7CFF]">Full Name</label>
                                 <input type="text" value="{{ auth('frontend')->user()->name }}" readonly name="name"
-                                    class="profile-input w-full bg-transparent text-lg font-medium text-white outline-none placeholder:text-gray-700 cursor-default focus:cursor-text read-only:opacity-70 text-center md:text-left" 
+                                    class="profile-input w-full bg-transparent p-0 pb-5 text-lg font-medium text-white outline-none border-b !border-0 !border-b-2 border-white/20 placeholder:text-gray-700 cursor-default focus:cursor-text read-only:opacity-70 text-center md:text-left" 
                                     placeholder="Enter your full name">
                                 <div class="text-red-500 text-sm error-name mt-1"></div>
                             </div>
 
-                            <div class="bg-[#1C2228] p-6 rounded-2xl border border-white/5 transition-all focus-within:border-[#2A7CFF]/50 group text-center md:text-left">
-                                <label class="text-gray-500 text-[12px] font-medium uppercase tracking-widest block mb-1 group-focus-within:text-[#2A7CFF]">Email Address</label>
+                            <div class="transition-all focus-within:border-[#2A7CFF]/50 group text-center md:text-left">
+                                <label class="text-gray-500 text-[12px] font-medium block mb-[5px] group-focus-within:text-[#2A7CFF]">Email Address</label>
                                 <input type="email" value="{{ auth('frontend')->user()->email }}" readonly name="email"
-                                    class="profile-input1 w-full bg-transparent text-lg font-medium text-white outline-none placeholder:text-gray-700 cursor-default focus:cursor-text read-only:opacity-70 text-center md:text-left" 
+                                    class="profile-input w-full bg-transparent p-0 pb-5 text-lg font-medium text-white outline-none border-b !border-0 !border-b-2 border-white/20 placeholder:text-gray-700 cursor-default focus:cursor-text read-only:opacity-70 text-center md:text-left" 
                                     placeholder="name@email.com">
                             </div>
 
-                            <div class="bg-[#1C2228] p-6 rounded-2xl border border-white/5 transition-all focus-within:border-[#2A7CFF]/50 group text-center md:text-left">
-                                <label class="text-gray-500 text-[12px] font-medium uppercase tracking-widest block mb-1 group-focus-within:text-[#2A7CFF]">Phone Number</label>
+                            <div class="transition-all focus-within:border-[#2A7CFF]/50 group text-center md:text-left">
+                                <label class="text-gray-500 text-[12px] font-medium block mb-[5px] group-focus-within:text-[#2A7CFF]">Phone Number</label>
                                 <input type="tel" value="{{ auth('frontend')->user()->phone }}" readonly
-                                    class="profile-input w-full bg-transparent text-lg font-medium text-white outline-none placeholder:text-gray-700 cursor-default focus:cursor-text read-only:opacity-70 text-center md:text-left"  name="phone"
+                                    class="profile-input w-full bg-transparent p-0 pb-5 text-lg font-medium text-white outline-none border-b !border-0 !border-b-2 border-white/20 placeholder:text-gray-700 cursor-default focus:cursor-text read-only:opacity-70 text-center md:text-left"  name="phone"
                                     placeholder="Enter phone..">
                                 <div class="text-red-500 text-sm error-phone mt-1"></div>
                             </div>
 
-                            {{-- <div class="bg-[#1C2228] p-6 rounded-2xl border border-white/5 opacity-50 select-none text-center md:text-left">
-                                <label class="text-gray-500 text-[12px] font-medium uppercase tracking-widest block mb-1">Account Status</label>
+                            {{-- <div class="opacity-50 select-none text-center md:text-left">
+                                <label class="text-gray-500 text-[12px] font-medium block mb-1">Account Status</label>
                                 <div class="flex items-center justify-center md:justify-between">
                                     <p class="text-lg font-medium text-green-500 flex items-center gap-2">
                                         <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Verified

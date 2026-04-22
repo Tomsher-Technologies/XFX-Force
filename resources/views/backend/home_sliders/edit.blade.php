@@ -61,7 +61,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row d-none">
                             <label class="col-md-3 col-form-label">Mobile Banner</label>
                             <div class="col-md-9">
                                 <div class="input-group" data-toggle="aizuploader" data-type="image">
@@ -96,7 +96,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row d-none">
                             <label class="col-md-3 col-form-label">Video (Mobile)</label>
                             <div class="col-md-9">
                                 <div class="input-group" data-toggle="aizuploader" data-type="video">
@@ -119,17 +119,17 @@
                         <div class="col-md-9">
                             <input type="text" name="title"
                                 value="{{ old('title', $homeSlider->title) }}"
-                                class="form-control form-control-sm" required>
+                                class="form-control form-control-sm" >
                         </div>
                     </div>
 
                     {{-- Subtitle --}}
-                    <div class="form-group row">
+                    <div class="form-group row d-none">
                         <label class="col-md-3 col-form-label">Subtitle</label>
                         <div class="col-md-9">
                             <input type="text" name="sub_title"
                                 value="{{ old('sub_title', $homeSlider->sub_title) }}"
-                                class="form-control form-control-sm" required>
+                                class="form-control form-control-sm" >
                         </div>
                     </div>
 
@@ -160,13 +160,19 @@
 
                     <div id="banner_form"></div>
 
+                    @error('link')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                    @error('link_ref_id')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
                     {{-- Sort Order --}}
                     <div class="form-group row">
                         <label class="col-md-3 col-form-label">Sort Order</label>
                         <div class="col-md-9">
                             <input type="number" name="sort_order"
                                 value="{{ old('sort_order', $homeSlider->sort_order) }}"
-                                class="form-control form-control-sm" required>
+                                class="form-control form-control-sm" >
                         </div>
                     </div>
 

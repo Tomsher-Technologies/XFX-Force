@@ -16,34 +16,34 @@ class WishlistController extends Controller
     public function index(Request $request)
     {
         $lang = getActiveLanguage();
-        $products = [];
-        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        if($user_id != ''){
-            $wishlist = Wishlist::with('product','product_stock')->where('user_id', $user_id)->get();
-           
-            if($wishlist){
-                foreach($wishlist as $data){
-                    if($data->product && $data->product_stock){
-                        $products[] = [
-                            'id' => $data->id ?? null,
-                            'product_id' => $data->product_id ?? null,
-                            'stock_id' => $data->product_stock_id ?? null,
-                            'thumbnail_img' => ($data->product_stock?->image != NULL && $data->product_stock?->image != '0') ? $data->product_stock?->image : $data->product?->thumbnail_img,
-                            'offer_tag' => $data->product_stock?->offer_tag ?? null,
-                            'name' => $data->product->name ?? null,
-                            'offer_price' => $data->product_stock?->offer_price ?? null,
-                            'price' => $data->product_stock?->price ?? null,
-                            'page' => 'wishlist',
-                        ];
-                    }
-                }    
-            }
-        }
-        // echo '<pre>';
-        // print_r($products);
-        // die;
+        $user_id = auth('frontend')->id();
 
-        return view('frontend.user.wishlist',compact('lang','products','wishlist'));
+        $wishlist = collect();
+
+        if ($user_id) {
+            $wishlist = Wishlist::with('product','product_stock')
+                                ->where('user_id', $user_id)
+                                ->paginate(30);
+
+            $wishlist->getCollection()->transform(function ($data) {
+                if ($data->product && $data->product_stock) {
+                    return [
+                        'id' => $data->id,
+                        'product_id' => $data->product_id,
+                        'stock_id' => $data->product_stock_id,
+                       'thumbnail_img' => (!empty($data->product_stock?->image) && $data->product_stock?->image != '0') ? explode(',', $data->product_stock->image)[0] : $data->product?->thumbnail_img,
+                        'offer_tag' => $data->product_stock?->offer_tag,
+                        'name' => $data->product_stock?->stock_title ?? $data->product?->name,
+                        'offer_price' => $data->product_stock?->offer_price,
+                        'price' => $data->product_stock?->price,
+                        'page' => 'wishlist',
+                    ];
+                }
+                return null;
+            })->filter(); // remove null values
+        }
+
+        return view('frontend.user.wishlist', compact('lang', 'wishlist'));
     }
 
     public function getWishlistCount($user)
@@ -116,6 +116,15 @@ class WishlistController extends Controller
                 'status' => 'added'
             ]);
         }
+    }
+
+    public function check(Request $request)
+    {
+        $exists = isWishlisted($request->product_id, $request->stock_id);
+
+        return response()->json([
+            'status' => $exists
+        ]);
     }
 
 }
