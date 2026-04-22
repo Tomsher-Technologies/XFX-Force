@@ -449,9 +449,20 @@
                         {{-- Emirate / State --}}
                         <div class="relative w-full">
 
-                            <input type="text"  name="state" id="state"  placeholder="Emirate / State *"
-                                value=""
-                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
+                            <select class="w-full bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] appearance-none cursor-pointer transition-all font-medium bg-image-none" name="state" id="state">
+                                <option value="Abu Dhabi">Abu Dhabi</option>
+                                <option value="Ajman">Ajman</option>
+                                <option value="Dubai" selected>Dubai</option>
+                                <option value="Fujairah">Fujairah</option>
+                                <option value="Ras Al Khaimah">Ras Al Khaimah</option>
+                                <option value="Sharjah">Sharjah</option>
+                                <option value="Umm Al Quwain">Umm Al Quwain</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
                             <p class="text-red-400 text-xs mt-1 error-state"></p>
                         </div>
 
@@ -465,7 +476,7 @@
                         {{-- Country --}}
                         <div>
                             <input type="text" name="country" id="country" placeholder="Country *"
-                                value=""
+                                value="United Arab Emirates" readonly
                                 class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
                             <p class="text-red-400 text-xs mt-1 error-country"></p>
                         </div>
