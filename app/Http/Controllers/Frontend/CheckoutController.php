@@ -108,8 +108,8 @@ class CheckoutController
             'billing_phone' => ['required', 'regex:/^\+?[0-9]{7,15}$/'],
             'billing_address' => 'required|string',
         ], [
-            'name.regex' => 'Only alphabets and spaces are allowed in the name field.',
-            'phone.regex' => 'Please enter a valid phone number (numbers only, 7-15 digits).'
+            'first_name.regex' => 'Only alphabets and spaces are allowed in the name field.',
+            'billing_phone.regex' => 'Please enter a valid phone number (numbers only, 7-15 digits).'
         ]);
 
         if ($validator->fails()) {

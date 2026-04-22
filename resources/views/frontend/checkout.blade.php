@@ -420,7 +420,7 @@
                         {{-- Phone --}}
                         <div>
                             <input type="text" name="phone" id="phone"
-                                placeholder="Phone Number *"
+                                placeholder="971xxxxxxxxx"
                                 value=""
                                 class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
 
