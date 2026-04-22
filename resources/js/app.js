@@ -815,9 +815,9 @@ var swiper = new Swiper(".promobnrswiper", {
 const tabButtons = document.querySelectorAll(".tab-btn");
 
 const inactiveClasses =
-    "tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black]";
+    "tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer hover:bg-[white] hover:text-[black]";
 const activeClasses =
-    "tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer hover:bg-[white] hover:text-[black]";
+    "tab-btn border rounded-full transition-all duration-300 border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer hover:bg-[white] hover:text-[black]";
 
 tabButtons.forEach((btn) => {
     btn.addEventListener("click", function (e) {

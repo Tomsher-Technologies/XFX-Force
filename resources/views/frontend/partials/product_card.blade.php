@@ -28,7 +28,7 @@
         </a>
         
         <div class="product-content w-full p-[15px] md:p-[20px] flex flex-col gap-[10px] md:gap-[15px] z-[1]">
-            <h4 class="text-white text-[13px] md:text-[18px] leading-[20px] md:leading-[25px] font-medium line-clamp-2 min-h-[45px] cursor-pointer" onclick="window.location= '{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}'">
+            <h4 class="text-white text-[13px] md:text-[18px] leading-[20px] md:leading-[25px] font-medium line-clamp-2 h-[40px] md:h-[50px] cursor-pointer" onclick="window.location= '{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}'">
                 {{ $prodData['name'] ?? '' }}</h4>
 
             
