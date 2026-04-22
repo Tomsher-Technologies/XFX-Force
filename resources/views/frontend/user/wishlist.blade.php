@@ -15,20 +15,25 @@
                     <div class="flex flex-col md:flex-row justify-between items-end mb-10 pb-[30px] gap-4 border-b border-[#252B31] text-center md:text-left">
                         <div class="w-full">
                             <h2 class="text-[20px] font-medium mb-1 text-white uppercase">My Wishlist</h2>
-                            <p class="text-gray-500">Manage your shipping and billing locations.</p>
+                            <p class="text-gray-500">Your favorite items, saved for later.</p>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-[5px] md:gap-[15px]">
+                    
+                    @forelse ($wishlist as $product)
+                        @if ($loop->first)
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-[5px] md:gap-[15px]">
+                        @endif
 
-                        @foreach ($wishlist as $product)
-                            @php
-                                $prodData = $product;
-                            @endphp
-                            @include('frontend.partials.product_card', ['prodData' => $prodData])
-                        @endforeach
-                       
-                        
-                    </div>
+                        @include('frontend.partials.product_card', ['prodData' => $product])
+
+                        @if ($loop->last)
+                            </div>
+                        @endif
+                    @empty
+                        <div class="text-center py-10 w-full">
+                            <p class="text-gray-500 text-md">Your wishlist is empty.</p>
+                        </div>
+                    @endforelse
                     
                 </div>
                 <div class="mt-10">

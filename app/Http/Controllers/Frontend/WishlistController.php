@@ -31,9 +31,7 @@ class WishlistController extends Controller
                         'id' => $data->id,
                         'product_id' => $data->product_id,
                         'stock_id' => $data->product_stock_id,
-                        'thumbnail_img' => ($data->product_stock?->image && $data->product_stock?->image != '0')
-                            ? $data->product_stock->image
-                            : $data->product?->thumbnail_img,
+                       'thumbnail_img' => (!empty($data->product_stock?->image) && $data->product_stock?->image != '0') ? explode(',', $data->product_stock->image)[0] : $data->product?->thumbnail_img,
                         'offer_tag' => $data->product_stock?->offer_tag,
                         'name' => $data->product_stock?->stock_title ?? $data->product?->name,
                         'offer_price' => $data->product_stock?->offer_price,

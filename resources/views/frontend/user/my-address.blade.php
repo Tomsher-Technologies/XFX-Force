@@ -448,8 +448,10 @@
             const lat = parseFloat(div.dataset.lat) || 25.2048;
             const lng = parseFloat(div.dataset.lng) || 55.2708;
             const pos = { lat: lat, lng: lng };
-            marker.setPosition(pos);
-            map.setCenter(pos);
+            // if (marker && map) {
+                marker.setPosition(pos);
+                map.setCenter(pos);
+            // }
             form.latitude.value = lat;
             form.longitude.value = lng;
 
@@ -468,8 +470,11 @@
 
             // Reset map to default location
             const defaultPos = { lat: 25.2048, lng: 55.2708 };
-            marker.setPosition(defaultPos);
-            map.setCenter(defaultPos);
+            if (marker && map) {
+                marker.setPosition(defaultPos);
+                map.setCenter(defaultPos);
+            }
+
             form.latitude.value = defaultPos.lat;
             form.longitude.value = defaultPos.lng;
 
