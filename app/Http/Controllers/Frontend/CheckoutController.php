@@ -253,7 +253,7 @@ class CheckoutController
             'shipping_type' => 'free_shipping',
             'shipping_cost' => 0,
             'delivery_status' => 'pending',
-            'payment_type' => $request->payment_method ?? '',
+            'payment_type' => $request->pay ?? '',
             'payment_status' => 'un_paid',
             'grand_total' => 0,
             'tax' => 0,
@@ -334,6 +334,7 @@ class CheckoutController
             'shipping_type' =>  ($request->fulfillment_method == 'pickup') 
                     ? 'pickup' 
                     : (($total_shipping == 0) ? 'free_shipping' : 'flat_rate'),
+            'pickup_location' => ($request->fulfillment_method == 'pickup') ? get_setting('pickup_address') : null,
             'coupon_discount' => round($total_coupon_discount),
             'coupon_code' => $coupon_code
         ]);
@@ -386,7 +387,7 @@ class CheckoutController
         return response()->json([
             'status' => true,
             'errors' => '',
-            'redirect' => route('order.success', $order->id)
+            'redirect' => route('order.success', base64_encode($order->id)), // route('order.success', (string)$order->id)
         ]);
     }
    

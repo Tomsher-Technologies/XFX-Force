@@ -193,20 +193,21 @@
                                 <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">4</span> Payment Methods
                             </h2>
                             <div class="grid grid-cols-2 gap-4 mb-8">
-                                <label class="flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-600 transition-all">
+
+                                <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
                                     <div class="flex items-center gap-3">
-                                        <input type="radio" name="pay" checked class="accent-[#2A7CFF]">
+                                        <input type="radio" name="pay" checked class="accent-[#2A7CFF]" value="cash_on_delivery">
                                         <span>Cash On Delivery</span>
                                     </div>
                                 </label>
 
-                                <label class="flex items-center justify-between p-4 bg-[#161B22] border border-[#2A7CFF] rounded-xl cursor-pointer">
+                                <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
                                     <div class="flex items-center gap-3">
-                                        <input type="radio" name="pay" class="accent-[#2A7CFF]">
+                                        <input type="radio" name="pay" class="accent-[#2A7CFF]" value="card">
                                         <span>Credit / Debit Card</span>
                                     </div>
                                     <div class="hidden md:flex gap-2">
-                                        <img src="{{ asset('assets/images/payment-methods.png') }}" alt="Payment Methods" class="w-full md:w-[280px] h-auto object-contain object-center block ml-auto">
+                                        <img src="{{ asset('assets/images/payment-methods.png') }}" class="w-full md:w-[280px] h-auto object-contain ml-auto">
                                     </div>
                                 </label>
                             </div>
@@ -826,5 +827,30 @@ document.addEventListener('DOMContentLoaded', () => {
        
     
 
+</script>
+<script id="pay-radio-script">
+    const options = document.querySelectorAll('.payment-option');
+
+    function updateBorders() {
+        options.forEach(label => {
+            const radio = label.querySelector('input[type="radio"]');
+            
+            if (radio.checked) {
+                label.classList.remove('border-gray-800');
+                label.classList.add('border-[#2A7CFF]');
+            } else {
+                label.classList.remove('border-[#2A7CFF]');
+                label.classList.add('border-gray-800');
+            }
+        });
+    }
+
+    // Run on load
+    updateBorders();
+
+    // Listen for change
+    options.forEach(label => {
+        label.querySelector('input').addEventListener('change', updateBorders);
+    });
 </script>
 @endsection

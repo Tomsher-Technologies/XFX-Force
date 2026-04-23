@@ -17,6 +17,7 @@ use App\Models\Product;
 use App\Models\ProductStock;
 use App\Models\Review;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
@@ -68,6 +69,7 @@ class OrderController extends Controller
 
     public function success($id)
     {
+        $id = base64_decode($id);
         $order = Order::with('orderDetails.product')->findOrFail($id);
         return view('frontend.order.success', compact('order'));
     }
@@ -539,7 +541,7 @@ class OrderController extends Controller
     public function myOrderSingle($id)
     {
         try {
-            $orderId = decrypt($id);
+            $orderId = base64_decode($id);
         } catch (\Exception $e) {
             abort(404);
         }
@@ -583,5 +585,29 @@ class OrderController extends Controller
             'frontend.order.my-order-single',
             compact('order', 'trackingHistory', 'hasReturnableItems', 'userReviews')
         );
+    }
+
+    public function invoice_download($id)
+    {
+        $direction = 'ltr';
+        $text_align = 'left';
+        $not_text_align = 'right';
+        
+        //$font_family = "'Roboto','sans-serif'";
+        $font_family = "'Roboto','sans-serif'";
+        $order = Order::findOrFail($id);
+
+        set_time_limit(300);
+
+        $pdf = Pdf::loadView('backend.invoices.invoice', [
+                    'order' => $order,
+                    'font_family' => $font_family,
+                    'direction' => $direction,
+                    'text_align' => $text_align,
+                    'not_text_align' => $not_text_align,
+                    'imagePath' => uploaded_asset(get_setting('header_logo'))
+                ]);
+        
+        return $pdf->download('order-' . $order->code . '.pdf');
     }
 }

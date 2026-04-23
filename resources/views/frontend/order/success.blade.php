@@ -25,22 +25,29 @@
                         <div class="bg-[#1C2228] border border-white/5 rounded-3xl p-8 md:p-12 mb-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-[30px] lg:gap-[100px] mb-10 pb-10 border-b border-white/5 text-center lg:text-left">
                                 <div>
-                                    <p class="text-[12px] font-medium text-gray-400 uppercase mb-2">Shipping Address</p>
-                                    <p class="text-white leading-relaxed">
-                                        @php 
-                                            $shippingAddress = json_decode($order->shipping_address);
-                                        @endphp
-                                        {{ $shippingAddress?->name }}<br>
-                                        {{ $shippingAddress?->address }} <br>
-                                        {{ $shippingAddress?->city }} <br>
-                                        {{ $shippingAddress?->state }} <br>
-                                        {{ $shippingAddress?->country }} <br>
-                                    </p>
+                                    @if ($order->shipping_type == "pickup")
+                                        <p class="text-[12px] font-medium text-gray-400 uppercase mb-2">Pickup Location</p>
+                                        <p class="text-white leading-relaxed">
+                                           {{ get_setting('pickup_address') }}
+                                        </p>
+                                    @else
+                                        <p class="text-[12px] font-medium text-gray-400 uppercase mb-2">Shipping Address</p>
+                                        <p class="text-white leading-relaxed">
+                                            @php 
+                                                $shippingAddress = json_decode($order->shipping_address);
+                                            @endphp
+                                            {{ $shippingAddress?->name }}<br>
+                                            {{ $shippingAddress?->address }} <br>
+                                            {{ $shippingAddress?->city }} <br>
+                                            {{ $shippingAddress?->state }} <br>
+                                            {{ $shippingAddress?->country }} <br>
+                                        </p>
+                                    @endif
                                 </div>
                                 <div>
                                     <p class="text-[12px] font-medium text-gray-400 uppercase mb-2">Payment Method</p>
                                     <p class="text-white leading-relaxed">
-                                        {{ $order->payment_type ?: 'Debit / Credit Card' }}<br>
+                                        {{ ($order->payment_type == 'cash_on_delivery') ? 'Cash on Delivery' :  'Debit / Credit Card' }}<br>
                                         <span class="text-[#2A7CFF] text-sm italic">
                                             Expected by {{ \Carbon\Carbon::parse($order->estimated_delivery)->format('F j, Y') }}
 
@@ -108,6 +115,9 @@
                                 
                                 @if($normalItems->count() > 0)
                                 <div class="space-y-6">
+                                    @if($pcBuilderItems->count() > 0)
+                                        <h3 class="text-white text-lg font-semibold mb-4">Other Products</h3>
+                                    @endif
                                     @foreach($normalItems as $item)
                                         @php
                                             $image = asset('assets/img/placeholder.jpg'); // default placeholder
@@ -175,13 +185,13 @@
                             <a href="{{ route('products') }}" class="flex-1 bg-white text-black text-center py-5 rounded-2xl font-medium uppercase text-[13px] hover:bg-[#2A7CFF] hover:text-white transition-all duration-300">
                                 Continue Shopping
                             </a>
-                            <a href="{{ route('orders.show', encrypt($order->id)) }}" class="flex-1 border border-white/10 text-white text-center py-5 rounded-2xl font-medium uppercase text-[13px] hover:bg-white/5 transition-all">
+                            <a href="{{ route('orders.show', base64_encode($order->id)) }}" class="flex-1 border border-white/10 text-white text-center py-5 rounded-2xl font-medium uppercase text-[13px] hover:bg-white/5 transition-all">
                                 Go to Order
                             </a>
                         </div>
 
                         <p class="text-center mt-12 text-gray-600 text-xs uppercase">
-                            Need Help? <a href="contact.html" class="text-[#2A7CFF] hover:underline px-1">Contact Support</a> or call <a href="tel:{{ get_setting('header_phone') }}" class="text-[#2A7CFF] hover:underline px-1">{{ get_setting('header_phone') }}</a>
+                            Need Help? <a href="{{ route('contact') }}" class="text-[#2A7CFF] hover:underline px-1">Contact Support</a> or call <a href="tel:{{ get_setting('header_phone') }}" class="text-[#2A7CFF] hover:underline px-1">{{ get_setting('header_phone') }}</a>
                         </p>
                     </div>
                 </main>
