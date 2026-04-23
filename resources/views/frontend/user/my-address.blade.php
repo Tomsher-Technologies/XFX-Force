@@ -291,64 +291,19 @@
 @endsection
 
 @section('script')
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_API_KEY') }}&callback=initMap&loading=async" async defer></script>
     <script>
-        let map;
-        let marker;
-
-        function initMap() {
-            let defaultLocation = { lat: 25.2048, lng: 55.2708 }; // Dubai
-            map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 13,
-                center: defaultLocation,
-            });
-
-            marker = new google.maps.Marker({
-                position: defaultLocation,
-                map: map,
-                draggable: true
-            });
-
-            updateLatLng(defaultLocation);
-
-            // click map
-            map.addListener("click", function(event){
-                marker.setPosition(event.latLng);
-                updateLatLng(event.latLng);
-            });
-
-            // drag marker
-            marker.addListener("dragend", function(event){
-                updateLatLng(event.latLng);
-            });
-        }
-
-        function updateLatLng(location){
-            let lat = typeof location.lat === "function" ? location.lat() : location.lat;
-            let lng = typeof location.lng === "function" ? location.lng() : location.lng;
-
-            document.getElementById("latitude").value = lat;
-            document.getElementById("longitude").value = lng;
-
-            console.log("Latitude:", lat);
-            console.log("Longitude:", lng);
-        }
-
-        function getCurrentLocation(){
-            if(navigator.geolocation){
-                navigator.geolocation.getCurrentPosition(function(position){
-                    let pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    map.setCenter(pos);
-                    marker.setPosition(pos);
-                    document.getElementById("latitude").value = pos.lat;
-                    document.getElementById("longitude").value = pos.lng;
-                });
+        window.__pendingAddressMapInit = false;
+        window.__initAddressMapCallback = function () {
+            if (window.initMap && window.initMap.__ready) {
+                window.initMap();
+                return;
             }
-        }
 
+            window.__pendingAddressMapInit = true;
+        };
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_API_KEY') }}&callback=__initAddressMapCallback&loading=async" async defer></script>
+    <script>
         function toggleAddressModal(selector, isOpen) {
             const modal = document.querySelector(selector);
             const container = modal.querySelector('#addr-modal-container');
@@ -365,6 +320,12 @@
                 });
 
                 document.body.style.overflow = 'hidden'; // Prevent background scroll
+
+                setTimeout(() => {
+                    if (window.refreshAddressMapPosition) {
+                        window.refreshAddressMapPosition();
+                    }
+                }, 320);
                 
             } else {
                 // 1. Reverse animations
@@ -445,13 +406,12 @@
             form.default.checked = div.dataset.default == "1";
 
             // Set map marker
-            const lat = parseFloat(div.dataset.lat) || 25.2048;
-            const lng = parseFloat(div.dataset.lng) || 55.2708;
+            const fallbackLat = window.defaultMapLocation ? window.defaultMapLocation.lat : 25.2048;
+            const fallbackLng = window.defaultMapLocation ? window.defaultMapLocation.lng : 55.2708;
+            const lat = parseFloat(div.dataset.lat) || fallbackLat;
+            const lng = parseFloat(div.dataset.lng) || fallbackLng;
             const pos = { lat: lat, lng: lng };
-            marker.setPosition(pos);
-            map.setCenter(pos);
-            form.latitude.value = lat;
-            form.longitude.value = lng;
+            window.setMapPosition(pos);
 
             // Update modal title
             form.querySelector('h4').innerText = 'Edit Address';
@@ -467,11 +427,7 @@
             form.querySelector('h4').innerText = 'Add New Address';
 
             // Reset map to default location
-            const defaultPos = { lat: 25.2048, lng: 55.2708 };
-            marker.setPosition(defaultPos);
-            map.setCenter(defaultPos);
-            form.latitude.value = defaultPos.lat;
-            form.longitude.value = defaultPos.lng;
+            window.setMapPosition(window.defaultMapLocation);
 
             toggleAddressModal('.address-modal', true);
         }

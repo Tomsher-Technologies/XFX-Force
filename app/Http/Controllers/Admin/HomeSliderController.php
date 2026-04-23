@@ -29,10 +29,10 @@ class HomeSliderController extends Controller
             'btn_text'    => 'nullable|string|max:255',
             'name' => 'required',
             'banner'        => 'required_if:slider_type,image',
-            'mobile_banner' => 'required_if:slider_type,image',
+            // 'mobile_banner' => 'required_if:slider_type,image',
 
             'video'         => 'required_if:slider_type,video',
-            'mobile_video'  => 'required_if:slider_type,video',
+            // 'mobile_video'  => 'required_if:slider_type,video',
             'link_type' => 'required',
             'status' => 'required',
             'link' => 'nullable|required_if:link_type,external',
@@ -95,10 +95,10 @@ class HomeSliderController extends Controller
             'btn_text'    => 'nullable|string|max:255',
 
             'banner'        => 'required_if:slider_type,image',
-            'mobile_banner' => 'required_if:slider_type,image',
+            // 'mobile_banner' => 'required_if:slider_type,image',
 
             'video'         => 'required_if:slider_type,video',
-            'mobile_video'  => 'required_if:slider_type,video',
+            // 'mobile_video'  => 'required_if:slider_type,video',
 
             'link_type'     => 'required',
             'link'          => 'nullable|required_if:link_type,external',

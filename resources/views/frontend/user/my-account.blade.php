@@ -36,7 +36,7 @@
                             <div class="transition-all focus-within:border-[#2A7CFF]/50 group text-center md:text-left">
                                 <label class="text-gray-500 text-[12px] font-medium block mb-[5px] group-focus-within:text-[#2A7CFF]">Email Address</label>
                                 <input type="email" value="{{ auth('frontend')->user()->email }}" readonly name="email"
-                                    class="profile-input w-full bg-transparent p-0 pb-5 text-lg font-medium text-white outline-none border-b !border-0 !border-b-2 border-white/20 placeholder:text-gray-700 cursor-default focus:cursor-text read-only:opacity-70 text-center md:text-left" 
+                                    class=" w-full bg-transparent p-0 pb-5 text-lg font-medium text-white outline-none border-b !border-0 !border-b-2 border-white/20 placeholder:text-gray-700 cursor-default focus:cursor-text read-only:opacity-70 text-center md:text-left" 
                                     placeholder="name@email.com">
                             </div>
 
@@ -123,7 +123,10 @@
                     $('#userName').text(name);
 
                     toastr.success(data.success);
-                    toggleEditMode();
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
                 }
             });
         });
