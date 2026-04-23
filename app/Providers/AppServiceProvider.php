@@ -60,8 +60,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-            $totalCartItemsCount = Cart::where('status', 'pending')
-                ->where(function($query) use ($guestToken, $user_id) {
+            $totalCartItemsCount = Cart::where(function($query) use ($guestToken, $user_id) {
                     if($user_id) {
                         // Logged-in user
                         $query->where('user_id', $user_id);
@@ -70,7 +69,7 @@ class AppServiceProvider extends ServiceProvider
                         $query->where('temp_user_id', $guestToken);
                     }
                 })
-                ->count();
+                ->sum('quantity');
 
             $view->with([
                 'headerCategories' => $headerCategories,

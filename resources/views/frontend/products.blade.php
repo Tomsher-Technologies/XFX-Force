@@ -570,7 +570,8 @@ Log::info($_REQUEST);
 			min_price,
 			max_price,
 			sort: currentSort,
-			view: currentView
+			view: currentView,
+			search: '{{ request('search', '') }}'
 		});
 
 		categories.forEach(cat => currentFilters.append('categories[]', cat));
