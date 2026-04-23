@@ -26,7 +26,7 @@ Log::info($_REQUEST);
 					<div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[75px] lg:h-[80px] xl:h-[95px] w-[75px] lg:w-[80px] xl:w-[95px] overflow-hidden">
 						<img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{$category->name}}" class="w-full m-auto">
 					</div>
-					<h4 class="text-white text-center font-medium text-[12px] xl:text-[16px] capitalize">{{$category->name}}</h4>
+					<h4 class="text-white text-center font-medium text-[12px] xl:text-[14px]">{{strtoupper($category->name)}}</h4>
 				</a>
 			</div>
 			@endforeach

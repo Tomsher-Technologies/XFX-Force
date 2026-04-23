@@ -124,7 +124,13 @@ class AuthController extends Controller
         }
 
         // If authentication fails
-        return redirect('login')->withErrors(['password' => 'Invalid credentials'])->withInput();
+        if ($request->has('checkout')) {
+            return redirect()->route('login', [
+                    'checkout' => 1
+                ])->withErrors(['password' => 'Invalid credentials'])->withInput();
+        }
+
+        return redirect()->route('login')->withErrors(['password' => 'Invalid credentials'])->withInput();
     }
 
     // Logout the user
