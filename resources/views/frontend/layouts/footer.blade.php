@@ -1,5 +1,5 @@
 <!--footer-->
-<footer class="bg-[#0F161B]">
+<footer class="bg-[#0F161B] relative z-[1]">
     <div style="background: url('{{ asset('assets/images/footer-top.png') }}')" class="footer-top bg-black xl:bg-transparent xl:bg-[url(/src/images/footer-top.png)] bg-no-repeat px-[16px] md:px-[30px] xl:px-[140px] pt-[50px] xl:pt-[80px] z-[1] relative">
         <div class="flex flex-col md:grid md:grid-cols-3 gap-4 w-full">
                 <div class="grid col-span-1 col-start-1 xl:col-start-2">

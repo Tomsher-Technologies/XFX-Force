@@ -215,7 +215,6 @@
             <div class="max-w-4xl mx-auto">
                 <div class="flex flex-col">
                     <div id="mega-search-results" class="mt-4 max-h-96 overflow-y-auto"></div>
-                     
                 </div>
             </div>
         </div>

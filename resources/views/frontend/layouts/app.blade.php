@@ -75,17 +75,7 @@
         @yield('content')
 
 
-    <!--gradients-->
-    <!-- <div class="absolute min-h-screen top-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[20%] -left-[35%] z-0 blur-[100px] opacity-50"></div>
-        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[30%] -right-[35%] z-0 blur-[100px] opacity-50"></div>
-        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[40%] -left-[35%] z-0 blur-[100px] opacity-50"></div>
-        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[50%] -right-[35%] z-0 blur-[100px] opacity-50"></div>
-        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[60%] -left-[35%] z-0 blur-[100px] opacity-50"></div>
-        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[70%] -right-[35%] z-0 blur-[100px] opacity-50"></div>
-        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[80%] -left-[35%] z-0 blur-[100px] opacity-50"></div>
-    </div> -->
-    <!--//gradients-->
+    
 
 
     </main>
