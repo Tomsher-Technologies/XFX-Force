@@ -4,6 +4,7 @@
 @section('content')
 
 
+
 @if(!empty($sliders))
 <section class="home-slider">
     <div class="hero-slider">
@@ -119,11 +120,11 @@
         @foreach($banners as $banner)
 
             <div class="seg-card rounded-[20px] items-center flex flex-col gap-[20px] justify-between xl:justify-end p-[20px] md:p-[30px] relative overflow-hidden min-h-auto xl:min-h-[450px] bg-black">
-                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" class="relative xl:absolute object-cover object-top w-full h-fit bottom-0 left-0 rounded-[10px]">
+                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" class="relative xl:absolute object-cover object-top w-full h-full bottom-0 left-0 rounded-[10px]">
                 <div class="content relative z-[1] flex flex-col items-center justify-between xl:justify-end h-full w-full">
                     <h2 class="text-[25px] text-[white] capitalize font-bold text-center">{{ $banner->title }}</h2>
                     <p class="text-[15px] text-[#ffffff] text-center">{{ $banner->sub_title }}</p>
-                    <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full !text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[10px] !bg-white font-medium mt-[20px]" title="">{{ $banner->btn_text }}</a>
+                    <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[10px] bg-white font-medium mt-[20px] transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white" title="">{{ $banner->btn_text }}</a>
                 </div>
             </div>
         @endforeach
@@ -147,7 +148,7 @@
                             <div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[75px] lg:h-[80px] xl:h-[95px] w-[75px] lg:w-[80px] xl:w-[95px] overflow-hidden">
                                 <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
                             </div>
-                            <h4 class="text-white text-center font-medium text-[12px] xl:text-[16px] capitalize">{{ $category->name }}</h4>
+                            <h4 class="text-white text-center font-medium text-[12px] xl:text-[16px] capitalize">{{ ucfirst($category->name) }}</h4>
                         </a>
                     </div>
                 @endforeach
@@ -793,4 +794,22 @@
 </section>
 @endif
 <!--//about & Brands-->
+
+<!--gradients-->
+    <div class="absolute min-h-screen top-0 w-full h-full overflow-hidden pointer-events-none">
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[20%] -left-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[30%] -right-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[40%] -left-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[50%] -right-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[60%] -left-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[70%] -right-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[80%] -left-[35%] z-0 blur-[100px] opacity-30"></div>
+    </div>
+    <!--//gradients-->
+
+
+
 @endsection
+
+
+

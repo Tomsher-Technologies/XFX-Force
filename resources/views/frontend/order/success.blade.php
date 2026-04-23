@@ -30,11 +30,7 @@
                                         @php 
                                             $shippingAddress = json_decode($order->shipping_address);
                                         @endphp
-                                        {{ $shippingAddress?->name }}<br>
-                                        {{ $shippingAddress?->address }} <br>
-                                        {{ $shippingAddress?->city }} <br>
-                                        {{ $shippingAddress?->state }} <br>
-                                        {{ $shippingAddress?->country }} <br>
+                                        {{ $shippingAddress?->name }}, {{ $shippingAddress?->address }}, {{ $shippingAddress?->city }}, {{ $shippingAddress?->state }}, {{ $shippingAddress?->country }}
                                     </p>
                                 </div>
                                 <div>
@@ -75,8 +71,8 @@
                                         }
                                     @endphp
                                     <div class="flex items-center gap-6 group">
-                                        <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
-                                            <img src="{{$image}}" class="w-full h-full object-cover cursor-pointer" alt="{{ $item->product->name ?? '' }}" title="{{ $item->product->name ?? '' }}" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
+                                        <div class="w-20 h-20 bg-white rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
+                                            <img src="{{$image}}" class="w-full h-full object-fit cursor-pointer" alt="{{ $item->product->name ?? '' }}" title="{{ $item->product->name ?? '' }}" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                         </div>
                                         <div class="flex-grow w-full">
                                             <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1  cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">{{ $item->product->name ?? '' }}</h4>
@@ -107,7 +103,7 @@
                                 @endif
                                 
                                 @if($normalItems->count() > 0)
-                                <div class="space-y-6">
+                                <div class="space-y-3">
                                     @foreach($normalItems as $item)
                                         @php
                                             $image = asset('assets/img/placeholder.jpg'); // default placeholder
@@ -124,8 +120,8 @@
                                             }
                                         @endphp
                                         <div class="flex items-center gap-6 group">
-                                            <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
-                                                <img src="{{$image}}" class="w-full h-full object-cover cursor-pointer" alt="{{ $item->product->name ?? '' }}" title="{{ $item->product->name ?? '' }}" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
+                                            <div class="w-20 h-20 bg-white rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
+                                                <img src="{{$image}}" class="w-full h-auto object-cover cursor-pointer" alt="{{ $item->product->name ?? '' }}" title="{{ $item->product->name ?? '' }}" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                             </div>
                                             <div class="flex-grow w-full">
                                                 <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1  cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">{{ $item->product->name ?? '' }}</h4>
