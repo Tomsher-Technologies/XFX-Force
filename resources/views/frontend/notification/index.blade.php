@@ -25,115 +25,115 @@
                         <div class="space-y-3 md:space-y-4">
                             @if($notifications->isNotEmpty())
                                 @foreach($notifications as $notification)
-                                @php
-                                    $isUnread = is_null($notification->read_at);
+                                    @php
+                                        $isUnread = is_null($notification->read_at);
                                     @endphp
-                                @php
-                                    $type = $notification->data['type'] ?? 'default';
+                                    @php
+                                        $type = $notification->data['type'] ?? 'default';
 
-                                    $config = [
-                                        'order_placed' => [
-                                            'heading' => 'Order Placed',
+                                        $config = [
+                                            'order_placed' => [
+                                                'heading' => 'Order Placed',
+                                                'color' => 'blue',
+                                                'icon' => 'check'
+                                            ],
+                                            'pending' => [
+                                                'heading' => 'Order Pending Confirmation',
+                                                'color' => 'yellow',
+                                                'icon' => 'clock'
+                                            ],
+                                            'confirmed' => [
+                                                'heading' => 'Order Confirmed',
+                                                'color' => 'green',
+                                                'icon' => 'check'
+                                            ],
+                                            'picked_up' => [
+                                                'heading' => 'Order Picked Up',
+                                                'color' => 'indigo',
+                                                'icon' => 'truck'
+                                            ],
+                                            'on_the_way' => [
+                                                'heading' => 'Out for Delivery',
+                                                'color' => 'purple',
+                                                'icon' => 'check'
+                                            ],
+                                            'delivered' => [
+                                                'heading' => 'Order Delivered',
+                                                'color' => 'green',
+                                                'icon' => 'check'
+                                            ],
+                                            'cancelled' => [
+                                                'heading' => 'Order Cancelled',
+                                                'color' => 'red',
+                                                'icon' => 'cancel'
+                                            ],
+                                            'cancel_approved' => [
+                                                'heading' => 'Cancellation Approved',
+                                                'color' => 'green',
+                                                'icon' => 'check'
+                                            ],
+                                            'cancel_rejected' => [
+                                                'heading' => 'Cancellation Rejected',
+                                                'color' => 'red',
+                                                'icon' => 'cancel'
+                                            ]
+                                        ];
+
+                                        $current = $config[$type] ?? [
+                                            'heading' => 'New Notification',
                                             'color' => 'blue',
-                                            'icon' => 'check'
-                                        ],
-                                        'pending' => [
-                                            'heading' => 'Order Pending Confirmation',
-                                            'color' => 'yellow',
-                                            'icon' => 'clock'
-                                        ],
-                                        'confirmed' => [
-                                            'heading' => 'Order Confirmed',
-                                            'color' => 'green',
-                                            'icon' => 'check'
-                                        ],
-                                        'picked_up' => [
-                                            'heading' => 'Order Picked Up',
-                                            'color' => 'indigo',
-                                            'icon' => 'truck'
-                                        ],
-                                        'on_the_way' => [
-                                            'heading' => 'Out for Delivery',
-                                            'color' => 'purple',
-                                            'icon' => 'check'
-                                        ],
-                                        'delivered' => [
-                                            'heading' => 'Order Delivered',
-                                            'color' => 'green',
-                                            'icon' => 'check'
-                                        ],
-                                        'cancelled' => [
-                                            'heading' => 'Order Cancelled',
-                                            'color' => 'red',
-                                            'icon' => 'cancel'
-                                        ],
-                                        'cancel_approved' => [
-                                            'heading' => 'Cancellation Approved',
-                                            'color' => 'green',
-                                            'icon' => 'check'
-                                        ],
-                                        'cancel_rejected' => [
-                                            'heading' => 'Cancellation Rejected',
-                                            'color' => 'red',
-                                            'icon' => 'cancel'
-                                        ]
-                                    ];
+                                            'icon' => 'bell'
+                                        ];
+                                    @endphp
 
-                                    $current = $config[$type] ?? [
-                                        'heading' => 'New Notification',
-                                        'color' => 'blue',
-                                        'icon' => 'bell'
-                                    ];
-                                @endphp
+                                    <div class="bg-[#1C2228] border border-[#282B34] border-l-4 {{ $isUnread ? 'border-l-[#2A7CFF]' : '' }} rounded-r-xl md:rounded-r-2xl overflow-hidden group hover:bg-[#252C33] transition-all duration-300">
+                                        <div class="p-3 md:p-6 gap-3 md:gap-6">
+                                            <div class="gap-3 md:gap-6">
+                                                <div>
+                                                    <div class="flex items-center gap-2 mb-0.5 md:mb-1">
+                                                        @if($isUnread)
+                                                        <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-[#2A7CFF] rounded-full"></span>
+                                                        @endif
+                                                        <h4 class="text-white font-medium text-[14px] md:text-lg leading-tight">
+                                                            @php
+                                                                $heading = 'New Notification';
 
-                                <div class="bg-[#1C2228] border border-[#282B34] border-l-4 {{ $isUnread ? 'border-l-[#2A7CFF]' : '' }} rounded-r-xl md:rounded-r-2xl overflow-hidden group hover:bg-[#252C33] transition-all duration-300">
-                                    <div class="p-3 md:p-6 gap-3 md:gap-6">
-                                        <div class="gap-3 md:gap-6">
-                                            <div>
-                                                <div class="flex items-center gap-2 mb-0.5 md:mb-1">
-                                                    @if($isUnread)
-                                                    <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-[#2A7CFF] rounded-full"></span>
-                                                    @endif
-                                                    <h4 class="text-white font-medium text-[14px] md:text-lg leading-tight">
-                                                        @php
-                                                            $heading = 'New Notification';
-
-                                                            if($notification->data['type'] == 'order_placed'){
-                                                                $heading = 'Order Placed';
-                                                            } elseif($notification->data['type'] == 'cancel_approved'){
-                                                                $heading = 'Cancellation Approved';
-                                                            } elseif($notification->data['type'] == 'cancel_rejected'){
-                                                                $heading = 'Cancellation Rejected';
-                                                            } elseif($notification->data['type'] == 'confirmed'){
-                                                                $heading = 'Order Confirmed';
-                                                            } elseif($notification->data['type'] == 'picked_up'){
-                                                                $heading = 'Order Picked Up';
-                                                            } elseif($notification->data['type'] == 'on_the_way'){
-                                                                $heading = 'Out for Delivery';
-                                                            } elseif($notification->data['type'] == 'delivered'){
-                                                                $heading = 'Order Delivered';
-                                                            } elseif($notification->data['type'] == 'cancelled'){
-                                                                $heading = 'Order Cancelled';
-                                                            } elseif($notification->data['type'] == 'pending'){
-                                                                $heading = 'Order Pending Confirmation';
-                                                            }
-                                                        @endphp
-                                                        {{ $heading }}
-                                                    </h4>
-                                                </div>
-                                                <div class="flex justify-between items-center">
-                                                    <p class="text-gray-400 text-[11px] md:text-sm line-clamp-1">{{ $notification->data['message'] ?? '' }}</p>
-                                                    <p class="text-gray-500 text-[9px] md:text-[11px] mt-1 uppercase tracking-tight font-bold" title="{{ $notification->created_at->format('F d, Y h:i A') }}">
-                                                        {{ $notification->created_at->isToday() 
-                                                            ? $notification->created_at->diffForHumans() 
-                                                            : $notification->created_at->format('M d, Y h:i A') 
-                                                        }}
-                                                    </p>
+                                                                if($notification->data['type'] == 'order_placed'){
+                                                                    $heading = 'Order Placed';
+                                                                } elseif($notification->data['type'] == 'cancel_approved'){
+                                                                    $heading = 'Cancellation Approved';
+                                                                } elseif($notification->data['type'] == 'cancel_rejected'){
+                                                                    $heading = 'Cancellation Rejected';
+                                                                } elseif($notification->data['type'] == 'confirmed'){
+                                                                    $heading = 'Order Confirmed';
+                                                                } elseif($notification->data['type'] == 'picked_up'){
+                                                                    $heading = 'Order Picked Up';
+                                                                } elseif($notification->data['type'] == 'on_the_way'){
+                                                                    $heading = 'Out for Delivery';
+                                                                } elseif($notification->data['type'] == 'delivered'){
+                                                                    $heading = 'Order Delivered';
+                                                                } elseif($notification->data['type'] == 'cancelled'){
+                                                                    $heading = 'Order Cancelled';
+                                                                } elseif($notification->data['type'] == 'pending'){
+                                                                    $heading = 'Order Pending Confirmation';
+                                                                }
+                                                            @endphp
+                                                            {{ $heading }}
+                                                        </h4>
+                                                    </div>
+                                                    <div class="flex justify-between items-center">
+                                                        <p class="text-gray-400 text-[11px] md:text-sm line-clamp-1">{{ $notification->data['message'] ?? '' }}</p>
+                                                        <p class="text-gray-500 text-[9px] md:text-[11px] mt-1 uppercase tracking-tight font-bold" title="{{ $notification->created_at->format('F d, Y h:i A') }}">
+                                                            {{ $notification->created_at->isToday() 
+                                                                ? $notification->created_at->diffForHumans() 
+                                                                : $notification->created_at->format('M d, Y h:i A') 
+                                                            }}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 @endforeach
                             @else
                                 <div class="py-4 text-center fs-16 text-white">
@@ -143,7 +143,14 @@
                             @endif
                         </div>
                     </div>
+                    @if($notifications->hasPages())
+                        <div class="mt-8 md:mt-10">
+                            {{ $notifications->links('vendor.pagination.frontend-dark') }}
+                        </div>
+                    @endif
                 </main>
+
+
         </div>
     </div>
 </section>
