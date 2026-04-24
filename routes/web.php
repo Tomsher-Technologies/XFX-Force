@@ -117,6 +117,7 @@ Route::group(['middleware' => ['auth:frontend']], function () {
     Route::get('/my-orders/{id}', [OrderController::class, 'myOrderSingle'])->name('orders.show');
     Route::post('/my-orders/{order_id}/cancel', [CheckoutController::class, 'cancelOrderRequest'])
         ->name('orders.cancel');
+    Route::get('invoice/{order_id}', [OrderController::class, 'invoice_download'])->name('order-invoice.download');
 
     Route::post('/my-orders/{id}/return', [CheckoutController::class, 'returnOrderRequest'])
         ->name('orders.return');

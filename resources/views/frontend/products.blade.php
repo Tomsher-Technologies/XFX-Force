@@ -23,10 +23,10 @@ Log::info($_REQUEST);
 			@foreach ($categoryList as $category)
 			<div class="swiper-slide" data-swiper-autoplay="8000">
 				<a href="{{ route('shop.category',$category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
-					<div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[100px] lg:h-[80px] xl:h-[95px] w-[100px] lg:w-[80px] xl:w-[95px] overflow-hidden">
+					<div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[75px] lg:h-[80px] xl:h-[95px] w-[75px] lg:w-[80px] xl:w-[95px] overflow-hidden">
 						<img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{$category->name}}" class="w-full m-auto">
 					</div>
-					<h4 class="text-white text-center font-medium text-[15px] xl:text-[16px] capitalize">{{$category->name}}</h4>
+					<h4 class="text-white text-center font-medium text-[12px] xl:text-[14px]">{{strtoupper($category->name)}}</h4>
 				</a>
 			</div>
 			@endforeach
@@ -282,7 +282,7 @@ Log::info($_REQUEST);
 
 				<!--promotion banners-->
 				@if(!empty($banners))
-				<div class="swiper promobnrswiper relative">
+				<div class="!hidden xl:!block swiper promobnrswiper relative">
                     <div class="swiper-wrapper">
 						@foreach($banners as $banner)
 						<div class="swiper-slide" data-swiper-autoplay="8000">
@@ -307,7 +307,7 @@ Log::info($_REQUEST);
 					<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[15px] w-full">
 						<span class="text-[#898989] text-[14px] w-full text-center xl:text-right" id="product-count" data-per-page="{{ $products->perPage() }}" data-total="{{ $products->total() }}">
 							@if($products->count() > 0)
-								Items 1-{{ $products->count() }} of {{ $products->count() }}
+								Items {{ $products->firstItem() }} - {{ $products->lastItem() }} of {{ $products->total() }}
 							@else
 								Items 0 of 0
 							@endif
@@ -590,7 +590,8 @@ Log::info($_REQUEST);
 			min_price,
 			max_price,
 			sort: currentSort,
-			view: currentView
+			view: currentView,
+			search: '{{ request('search', '') }}'
 		});
 
 		categories.forEach(cat => currentFilters.append('categories[]', cat));
@@ -854,7 +855,7 @@ Log::info($_REQUEST);
 						</div>`;
 			return;
 		}
-		countEl.innerText = `Items 1-${visible} of ${visible}`;
+		countEl.innerText = `Items 1-${visible} of ${total}`;
 	}
 
 </script>

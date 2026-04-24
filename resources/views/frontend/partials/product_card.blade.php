@@ -17,7 +17,7 @@
         ])
 
         <a href="{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}"
-            class="product-img h-[180px] w-full relative z-[1] bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]">
+            class="product-img h-[180px] w-full relative z-[1] bg-white">
             <img src="{{ get_product_image($prodData['thumbnail_img'],'300') }}"
                 class="absolute object-contain object-center w-full h-full" alt="{{ $prodData['name'] ?? '' }}"
                 title="{{ $prodData['name'] ?? '' }}">
@@ -28,7 +28,7 @@
         </a>
         
         <div class="product-content w-full p-[15px] md:p-[20px] flex flex-col gap-[10px] md:gap-[15px] z-[1]">
-            <h4 class="text-white text-[13px] md:text-[18px] leading-[20px] md:leading-[25px] font-medium line-clamp-2 h-[50px] cursor-pointer" onclick="window.location= '{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}'">
+            <h4 class="text-white text-[13px] md:text-[18px] leading-[20px] md:leading-[25px] font-medium line-clamp-2 h-[40px] md:h-[50px] cursor-pointer" onclick="window.location= '{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}'">
                 {{ $prodData['name'] ?? '' }}</h4>
 
             
@@ -42,7 +42,7 @@
                 $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
             @endphp
 
-            <a href="javascript:void(0)" class="flex items-center gap-[8px] -mt-2 cursor-default">
+            <div class="flex items-center gap-[8px] -mt-2">
                 <div class="flex items-center gap-[2px]">
                     {{-- Full Stars --}}
                     @for ($i = 0; $i < $fullStars; $i++)

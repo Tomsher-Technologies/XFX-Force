@@ -32,7 +32,7 @@
                     }
                 }
             @endphp
-        <div class="bg-[#252B31] rounded-[20px] mb-6 flex justify-center items-center overflow-hidden border border-[#2E363E]">
+        <div class="bg-white rounded-[20px] mb-6 flex justify-center items-center overflow-hidden border border-[#2E363E]">
             <img id="details-img" src="{{$image}}" alt="" title="" class="object-cover">
         </div>
 

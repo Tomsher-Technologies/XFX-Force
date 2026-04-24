@@ -434,5 +434,6 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 
 -- ALTER TABLE `pc_builder_setups` ADD `temp_user_id` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL DEFAULT NULL AFTER `user_id`;
 
+-- ALTER TABLE `reviews` CHANGE `rating` `rating` DECIMAL(2,1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `reviews` CHANGE `rating` `rating` DECIMAL(2,1) NOT NULL DEFAULT '0';
+ALTER TABLE `orders` ADD `pickup_location` TEXT NULL DEFAULT NULL AFTER `shipping_type`;

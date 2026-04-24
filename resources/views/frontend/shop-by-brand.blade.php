@@ -692,8 +692,8 @@ let page = 1;
 						</div>`;
 			return;
 		}
-		countEl.innerText = `Items 1-${visible} of ${visible}`;
-        document.getElementById('total-product-count').innerText = `${visible}`;
+		countEl.innerText = `Items 1-${visible} of ${total}`;
+        document.getElementById('total-product-count').innerText = `${total}`;
 	}
 </script>
 @endsection

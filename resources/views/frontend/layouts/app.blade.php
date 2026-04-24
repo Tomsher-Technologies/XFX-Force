@@ -61,10 +61,14 @@
             right: auto;
             background-image: url("{{ asset('assets/images/arrow-left.svg') }}"); 
         }
+
+        button.variant-btn.active {
+            border: 1px solid #2a7cff;
+        }
     </style>
 </head>
 
-<body class="m-[0] !overflow-x-hidden bg-[#0F161B]">
+<body class="m-[0] !overflow-x-hidden bg-[#0F161B] relative">
     <!-- Header -->
      @if(!isset($hideHeader) || !$hideHeader)
         @include('frontend.layouts.header')
@@ -73,6 +77,11 @@
     <!-- Main Content -->
     <main>
         @yield('content')
+
+
+    
+
+
     </main>
 
     <!-- Footer -->

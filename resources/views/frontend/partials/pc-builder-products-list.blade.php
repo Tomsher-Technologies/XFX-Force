@@ -4,7 +4,7 @@
 @if($stock->qty > 0)
 <div>
     <article onclick="viewProductDetails({{ $stock->id }})" class="group product-card w-full relative border border-transparent rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-variant-id = "{{ $stock->id }}" data-category-id="{{ $product->category_id }}">
-        <div class="group product-img h-[130px] md:h-[150px] w-full relative z-[1] bg-[#0B0F13] bg-gradient-to-t from-[#0B0F13] to-[#1E2225]" >
+        <div class="group product-img h-[130px] md:h-[150px] w-full relative z-[1] bg-white" >
             @php
                 $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
@@ -46,7 +46,7 @@
                 $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
             @endphp
 
-            <a href="javascript:void(0)" class="flex items-center gap-[8px] -mt-2 cursor-default">
+            <div class="flex items-center gap-[8px] -mt-2">
                 <div class="flex items-center gap-[2px]">
                     {{-- Full Stars --}}
                     @for ($i = 0; $i < $fullStars; $i++)
@@ -86,7 +86,7 @@
                 <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">
                 ({{ $totalReviews }} reviews)
                 </span>
-            </a>
+            </div>
             <!--//ratings-->
 
             <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[15px] leading-[20px] m-[0] font-bold align-center items-center gap-[10px]">

@@ -4,6 +4,7 @@
 @section('content')
 
 
+
 @if(!empty($sliders))
 <section class="home-slider">
     <div class="hero-slider">
@@ -33,7 +34,7 @@
                         <div class="meta absolute bottom-[15%] md:bottom-[25%] text-center w-full px-[16px]">
                             <div data-swiper-parallax="-400" class="slide-title flex flex-col items-center gap-[20px] justify-center">
 
-                                <h1 class="banner-caption text-center text-[35px] md:text-[55px] lg:text-[65px] xl:text-[75px] 2xl:text-[85px] uppercase w-[80%] md:w-[50%] leading-[1]">{{ $slider->name }}</h1>
+                                <h1 class="banner-caption text-center text-[35px] md:text-[55px] lg:text-[65px] xl:text-[75px] 2xl:text-[85px] uppercase w-[80%] md:w-[50%] leading-[1]">{{ $slider->title ?? '' }}</h1>
 
                                 @php
                                     switch ($slider->link_type) {
@@ -90,7 +91,7 @@
 
                                 <a href="{{ $url }}"
                                 @if($slider->link_type === 'external') target="_blank" @endif
-                                class="btn btn-cta !rounded-full !text-[#000000] !text-[15px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium">
+                                class="btn btn-cta !rounded-full !text-[#000000] !text-[15px] !uppercase !px-[30px] !py-[10px] !bg-white font-medium">
                                 {{ $slider->btn_text ?? 'START BUILDING' }}
                                 </a>
                             </div>
@@ -118,12 +119,12 @@
 
         @foreach($banners as $banner)
 
-            <div class="seg-card rounded-[20px] items-center flex flex-col gap-[20px] justify-end p-[30px] md:p-[40px] relative overflow-hidden min-h-[450px]">
-                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" class="absolute object-cover object-top w-full h-full">
-                <div class="content relative z-[1] flex flex-col items-center justify-end h-full w-full">
-                    <h2 class="text-[25px] md:text-[30px] text-[white] capitalize font-bold text-center">{{ $banner->title }}</h2>
+            <div class="seg-card rounded-[20px] items-center flex flex-col gap-[20px] justify-between xl:justify-end p-[20px] md:p-[30px] relative overflow-hidden min-h-auto xl:min-h-[450px] bg-black">
+                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" class="relative xl:absolute object-cover object-top w-full h-full bottom-0 left-0 rounded-[10px]">
+                <div class="content relative z-[1] flex flex-col items-center justify-between xl:justify-end h-full w-full">
+                    <h2 class="text-[25px] text-[white] capitalize font-bold text-center">{{ $banner->title }}</h2>
                     <p class="text-[15px] text-[#ffffff] text-center">{{ $banner->sub_title }}</p>
-                    <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full !text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[15px] !bg-white font-medium mt-[20px]" title="">{{ $banner->btn_text }}</a>
+                    <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[10px] bg-white font-medium mt-[20px] transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white" title="">{{ $banner->btn_text }}</a>
                 </div>
             </div>
         @endforeach
@@ -144,10 +145,10 @@
                 @foreach ($categories as $category)
                     <div class="swiper-slide" data-swiper-autoplay="8000">
                         <a href="{{ route('shop.category', $category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
-                            <div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[100px] lg:h-[80px] xl:h-[95px] w-[100px] lg:w-[80px] xl:w-[95px] overflow-hidden">
+                            <div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[75px] lg:h-[80px] xl:h-[95px] w-[75px] lg:w-[80px] xl:w-[95px] overflow-hidden">
                                 <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
                             </div>
-                            <h4 class="text-white text-center font-medium text-[15px] xl:text-[16px] capitalize">{{ $category->name }}</h4>
+                            <h4 class="text-white text-center font-medium text-[12px] xl:text-[16px] capitalize">{{ ucfirst($category->name) }}</h4>
                         </a>
                     </div>
                 @endforeach
@@ -182,10 +183,10 @@
         <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] xl:mr-[150px] justify-center xl:justify-end align-center">
             <div class="flex gap-[20px] tab-container relative z-[1]">
                 @if(!empty($newArrivals))
-                <button  @click="activeTab='newFeatured'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer active-tab" data-active="true">New Arrivals</button>
+                <button  @click="activeTab='newFeatured'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer active-tab" data-active="true">New Arrivals</button>
                 @endif
                 @if(!empty($popularItems))
-                <button @click="activeTab='popularFeatured'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="false">Popular Items</button>
+                <button @click="activeTab='popularFeatured'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer" data-active="false">Popular Items</button>
                 @endif
             </div>
             <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden xl:block"></div>
@@ -235,7 +236,7 @@
                                 </div>
                                 @if($product && $firstStock)
                                 <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}"
-                                    class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">shop
+                                    class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">shop
                                     now</a>
                                     @endif
                             </div>
@@ -293,7 +294,7 @@
                                 </div>
                                 @if($product && $firstStock)
                                 <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}"
-                                    class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">shop
+                                    class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">shop
                                     now</a>
                                     @endif
                             </div>
@@ -334,11 +335,11 @@
             <div class="flex gap-[20px] tab-container z-20">
                 @if(!empty($upcomingNewProducts))
                 <button @click="activeTab='newUpcoming'"
-                        class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer z-20" data-active="true">New Arrivals</button>
+                        class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer z-20" data-active="true">New Arrivals</button>
                 @endif
                 @if(!empty($upcomingPopularProducts))
                     <button @click="activeTab='popularUpcoming'" 
-                    class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer z-20" data-active="false">Popular Items</button>
+                    class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer z-20" data-active="false">Popular Items</button>
                 @endif
             </div>
             <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden xl:block"></div>
@@ -416,7 +417,7 @@
 
 <!--ads slider 01-->
 @if(!empty($middleBanners))
-<section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[80px] xl:py-[100px] relative">
+<section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] xl:py-[100px] relative">
     <div class="swiper adswipertwo overflow-hidden">
         <div class="swiper-wrapper">
             @foreach($middleBanners as $banner)
@@ -451,10 +452,10 @@
         <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] xl:mr-[150px] justify-center xl:justify-end align-center">
             <div class="flex gap-[20px] tab-container z-20">
                 @if(!empty($middleNewProducts))
-                <button @click="activeTab='newMiddleProducts'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="true">New Arrivals</button>
+                <button @click="activeTab='newMiddleProducts'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer" data-active="true">New Arrivals</button>
                 @endif
                 @if(!empty($middlePopularProducts))
-                <button @click="activeTab='popularMiddleProducts'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[15px] font-medium cursor-pointer" data-active="false">Popular Items</button>
+                <button @click="activeTab='popularMiddleProducts'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer" data-active="false">Popular Items</button>
                 @endif
             </div>
             <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden xl:block"></div>
@@ -601,10 +602,10 @@
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[15px]">
         @foreach($popularGalleryProducts as $product)
         <div class="group ftr-card relative rounded-[20px] overflow-hidden min-h-[300px] xl:min-h-[400px] cursor-pointer" onclick="window.location.href='{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}'">
-            <img src="{{ get_product_image($product->thumbnail_img) }}" class="absolute object-center object-cover w-full h-full top-0 left-0 transition-all duration-[600ms] group-hover:scale-110" alt="{{ $product->name }}" title="{{ $product->name }}">
-            <div class="content flex flex-col xl:flex-row items-end justify-end xl:justify-between gap-[20px] xl:gap-[30px] relative z-[1] w-full h-full bg-gradient-to-b from-transparent to-[#0000008a] p-[30px]">
+            <img src="{{ get_product_image($product->thumbnail_img) }}" class="relative object-center object-fit top-0 left-0 transition-all duration-[600ms] group-hover:scale-110" alt="{{ $product->name }}" title="{{ $product->name }}">
+            <div class="content flex flex-col xl:flex-row items-end justify-end xl:justify-between gap-[20px] xl:gap-[30px] relative z-[1] w-full h-fit bg-[#0b0f13] p-[30px]">
                 <h6 class="text-white text-[20px] font-medium w-full xl:w-[50%] text-center xl:text-left line-clamp-2">{{ $product->name }}</h6>
-                <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full xl:w-fit text-center text-black text-[13px] xl:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[15px] rounded-full transition-all duration-[600ms] group-hover:bg-[#2A7CFF] group-hover:text-white">Shop Now</a>
+                <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full xl:w-fit text-center text-black text-[13px] xl:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[10px] rounded-full transition-all duration-[600ms] group-hover:bg-[#2A7CFF] group-hover:text-white">Shop Now</a>
             </div>
         </div>
         @endforeach
@@ -760,32 +761,55 @@
 
 <!--about & Brands-->
 @if(!empty($homePageFooters))
-    <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] relative">
-        <div class="swiper aboutswiper overflow-hidden min-h-full">
-            <div class="swiper-wrapper">
-            @foreach($homePageFooters as $footer)
-                @php
-                    // Get the image file from uploads
-                    $footerImage = $footerUploads[$footer['footer_image']] ?? null;
-                    $footerImageUrl = $footerImage ? Storage::url($footerImage->file_name) : asset('assets/images/about-img.webp');
-                @endphp    
-                <div class="swiper-slide">
-                    <div class="flex flex-col xl:grid md:grid-cols-3">
-                        <div class="section-title mb-0">
-                            <h3 class="text-[30px] md:text-[50px] text-[white] font-bold uppercase text-center xl:text-left leading-[40px] md:leading-[50px] m-[0]">{{$footer['footer_title']}}</h3>
-                        </div>
-                        <img src="{{$footerImageUrl}}" alt="About PC Garage" title="About PC Garage" class="w-full h-auto relative left-[0px] xl:left-[-25%] right-0 m-auto z-[0]">
-                        <div class="grid col-span-3 col-start-3 mt-0 md:mt-[100px] mb-[50px] xl:mb-[100px]">
-                            <div style="color:rgb(255 255 255) !important;" class="text-white text-[15px] xl:text-[18px] font-normal leading-[30px] xl:leading-[35px] mb-[30px] text-center xl:text-left">{!! $footer['footer_content'] !!}</div>
-                            <a href="{{$footer['footer_button_link']}}" class="w-full md:w-fit m-auto xl:m-0 h-fit text-center text-black uppercase text-[13px] md:text-[14px] font-medium px-[30px] py-[15px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">{{$footer['footer_button_text']}}</a>
+    <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pb-[50px] xl:pb-[100px] relative">
+        <div class="max-w-6xl m-auto">
+            <div class="swiper aboutswiper overflow-hidden min-h-full">
+                <div class="swiper-wrapper">
+                @foreach($homePageFooters as $footer)
+                    @php
+                        // Get the image file from uploads
+                        $footerImage = $footerUploads[$footer['footer_image']] ?? null;
+                        $footerImageUrl = $footerImage ? Storage::url($footerImage->file_name) : asset('assets/images/about-img.webp');
+                    @endphp    
+                    <div class="swiper-slide">
+                        <div class="flex flex-col xl:grid md:grid-cols-2 gap-0 xl:gap-[100px] items-start xl:items-end">
+                            <div class="section-title mb-0 flex flex-col gap-10">
+                                <h3 class="text-[30px] md:text-[50px] text-[white] font-bold uppercase text-center xl:text-left leading-[40px] md:leading-[50px] m-[0]">{{$footer['footer_title']}}</h3>
+                                <div class="mt-[15px] mb-[30px] xl:mb-[0px] m-auto xl:m-0 w-full xl:w-[500px] h-full xl:h-[500px] relative">
+                                    <img src="{{$footerImageUrl}}" alt="About PC Garage" title="About PC Garage" class="w-full h-full relative xl:absolute object-cover object-top m-auto z-[0]">
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col gap-10">
+                                <div style="color:rgb(255 255 255) !important;" class="text-white text-[15px] xl:text-[18px] font-normal leading-[30px] xl:leading-[35px] text-center xl:text-left">{!! $footer['footer_content'] !!}</div>
+                                <a href="{{$footer['footer_button_link']}}" class="w-full md:w-fit m-auto xl:m-0 h-fit text-center text-black uppercase text-[13px] md:text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">{{$footer['footer_button_text']}}</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
-
+                @endforeach
+            </div>
         </div>
+        
     </div>
 </section>
 @endif
 <!--//about & Brands-->
+
+<!--gradients-->
+    <div class="absolute min-h-screen top-0 w-full h-full overflow-hidden pointer-events-none">
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[20%] -left-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[30%] -right-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[40%] -left-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[50%] -right-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[60%] -left-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[70%] -right-[35%] z-0 blur-[100px] opacity-30"></div>
+        <div class="h-[900px] w-[900px] rounded-full bg-[radial-gradient(circle,_#2A7CFF_0%,_rgba(15,22,27,0)_100%)] absolute top-[80%] -left-[35%] z-0 blur-[100px] opacity-30"></div>
+    </div>
+    <!--//gradients-->
+
+
+
 @endsection
+
+
+
