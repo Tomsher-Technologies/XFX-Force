@@ -143,7 +143,11 @@
                             @endif
                         </div>
                     </div>
-                    {{ $notifications->links() }}
+                    @if($notifications->hasPages())
+                        <div class="mt-8 md:mt-10">
+                            {{ $notifications->links('vendor.pagination.frontend-dark') }}
+                        </div>
+                    @endif
                 </main>
 
 
