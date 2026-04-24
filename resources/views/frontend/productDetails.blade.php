@@ -410,11 +410,18 @@
     $productTabs = $product->tabs;
 
     $productWarrantis = $product->warranties;
-    $overviewContent = $selectedStock->stock_description ?? $product->description;
+
+    $stockDesc = trim(strip_tags($selectedStock->stock_description ?? ''));
+    $productDesc = trim(strip_tags($product->description ?? ''));
+
+    $overviewContent = $stockDesc !== '' ? $selectedStock->stock_description : $product->description;
+
+    $cleanOverview = trim(strip_tags($overviewContent));
+
 
     $defaultTab = null;
 
-    if(!empty($overviewContent)) {
+    if(!empty($cleanOverview)) {
         $defaultTab = 'overview';
     } elseif($productSpecifications->isNotEmpty()) {
         $defaultTab = 'specs';
@@ -435,7 +442,7 @@
      ">
     <nav class="sticky top-[79px] md:top-[148px] z-50 w-full border-b border-gray-800 bg-[#0F151D] backdrop-blur-md">
         <div class="max-w-6xl mx-auto flex overflow-x-auto no-scrollbar whitespace-nowrap px-4 justify-start md:justify-center" id="tabs-section">
-            @if(!empty($overviewContent))
+            @if(!empty($cleanOverview))
                 <a href="javascript:void(0)" @click="activeTab='overview'" :class="activeTab === 'overview' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Overview</a>
             @endif
             @if($productSpecifications->isNotEmpty())
@@ -458,7 +465,7 @@
         <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-        @if(!empty($overviewContent))
+        @if(!empty($cleanOverview))
         <section x-show="activeTab === 'overview'" x-transition class="tab-panel" id="overview" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px] md:py-[100px]">
             <div class="mt-[30px]">
                 <div class="text-[15px] md:text-[18px] text-justify leading-[30px] text-[#ffffff50]">{!! $overviewContent !!}</div>

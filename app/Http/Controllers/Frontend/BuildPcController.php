@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\ProductStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BuildPcController extends Controller
 {
@@ -29,7 +30,14 @@ class BuildPcController extends Controller
         $products = [];
 
         if ($firstCategory) {
-            $products = Product::where('category_id', $firstCategory->category_id)
+
+            // Get parent + child categories
+            $categoryIds = Category::where('id', $firstCategory->category_id)
+                ->orWhere('parent_id', $firstCategory->category_id)
+                ->pluck('id')
+                ->toArray();
+
+            $products = Product::whereIn('category_id', $categoryIds)
                 ->with('stocks')
                 ->where('published', 1)
                 ->get();
@@ -85,7 +93,13 @@ class BuildPcController extends Controller
 
         // category
         if ($categoryId) {
-            $stocks->where('products.category_id', $categoryId);
+            // get parent + child category ids
+            $categoryIds = Category::where('id', $categoryId)
+                ->orWhere('parent_id', $categoryId)
+                ->pluck('id')
+                ->toArray();
+
+            $stocks->whereIn('products.category_id', $categoryIds);
         }
 
         // brand
@@ -100,9 +114,19 @@ class BuildPcController extends Controller
 
         // search
         if ($search) {
-            $stocks->leftJoin('brands', 'brands.id', '=', 'products.brand_id');
             $stocks->where(function ($query) use ($search) {
-                $query->Where('brands.name', 'LIKE', "%{$search}%");
+
+                $query->where(function ($q) use ($search) {
+                    // 1. FIRST priority: stock title
+                    $q->whereNotNull('product_stocks.stock_title')
+                    ->where('product_stocks.stock_title', 'LIKE', "%{$search}%");
+                })
+                ->orWhere(function ($q) use ($search) {
+                    // 2. ONLY if stock title is NULL → fallback to product name
+                    $q->whereNull('product_stocks.stock_title')
+                    ->where('products.name', 'LIKE', "%{$search}%");
+                });
+
             });
         }
 
@@ -121,7 +145,7 @@ class BuildPcController extends Controller
             $product = $items->first()->product;
             $product->setRelation('stocks', $items);
             return $product;
-        });
+        })->values();
 
         if ($products->isEmpty()) {
             return response()->json([
@@ -268,11 +292,12 @@ class BuildPcController extends Controller
                         'product_id' => $product->id,
                         'product_name' => $product->name,
                         'image' => $variant->image ?: $product->thumbnail_img ?: '',
-                        'price' => $variant->offer_price ?? 0,
+                        'price' => $variant->price ?? 0,
                         'quantity' => $quantity,
                         'variant_id' => $variant->id,
                         'variant_name' => $variant->stock_title ?? '',
                         'offer_price' => $variant->offer_price ?? 0,
+                        'offer_tag' => $variant->offer_tag ?? '',
                         'total_price' => $itemTotal,
                         'total_offer_price' => $itemOfferTotal,
                         'discount_sum' => $discountSum,
@@ -477,8 +502,57 @@ class BuildPcController extends Controller
             $query->where('p.category_id', $categoryId);
         }
 
+        $query->whereNotNull('ps.model')
+          ->where('ps.model', '!=', '');
+
         $models = $query->pluck('model');
 
         return response()->json($models);
+    }
+
+    public function deletePcBuilder(Request $request)
+    {
+         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        $guestToken = request()->cookie('guest_token');
+        $builderId = $request->builder_id;
+
+        Cart::where('pc_builder_id', $builderId)
+            ->where(function($query) use ($guestToken, $user_id) {
+                if($user_id) {
+                    // Logged-in user
+                    $query->where('user_id', $user_id);
+                } else {
+                    // Guest user
+                    $query->where('temp_user_id', $guestToken);
+                }
+            })
+            ->delete();
+
+        $builder = PcBuilderSetup::where('id', $builderId)
+            ->where(function($query) use ($guestToken, $user_id) {
+                if($user_id) {
+                    // Logged-in user
+                    $query->where('user_id', $user_id);
+                } else {
+                    // Guest user
+                    $query->where('temp_user_id', $guestToken);
+                }
+            })
+            ->first();
+
+        if (!$builder) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Configuration not found'
+            ]);
+        }
+
+        $builder->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Configuration deleted successfully',
+            'redirect_url' => route('cart') // or your pc builder route
+        ]);
     }
 }

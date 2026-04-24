@@ -282,7 +282,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="col-from-label">{{ trans('messages.model') }} </label>
-                                                <input type="text" placeholder="{{ trans('messages.model') }}" name="{{ trans('messages.model') }}" class="form-control form-control-sm">
+                                                <input type="text" placeholder="{{ trans('messages.model') }}" name="model" class="form-control form-control-sm">
                                             </div>
                                         </div> 
                                         <div class="form-group row">

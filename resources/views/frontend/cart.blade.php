@@ -277,5 +277,51 @@
     });
 }
 
+function deletePcBuilder(builderId) {
+
+    Swal.fire({
+        title: 'Delete Configuration?',
+        text: 'This will remove all selected items for PC Builder.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it'
+    }).then((result) => {
+
+        if (!result.isConfirmed) return;
+
+        fetch('/pc-builder/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                builder_id: builderId
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.status) {
+                toastr.success(data.message || 'Configuration deleted successfully');
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 800);
+                window.location.href = data.redirect_url;
+            } else {
+                toastr.error(data.message || 'Something went wrong');
+            }
+
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    });
+}
+
 </script>
 @endsection

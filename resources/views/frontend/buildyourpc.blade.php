@@ -43,7 +43,10 @@ $hideFooter = true;
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path class="icon" d="M12.4936 7.50636C12.5936 8.10091 12.7273 9.06545 12.7273 10C12.7273 10.9345 12.5945 11.8991 12.4936 12.4936C11.8991 12.5936 10.9345 12.7273 10 12.7273C9.06545 12.7273 8.10091 12.5945 7.50636 12.4936C7.40636 11.8991 7.27273 10.9345 7.27273 10C7.27273 9.06545 7.40545 8.10091 7.50636 7.50636C8.10091 7.40636 9.06545 7.27273 10 7.27273C10.9345 7.27273 11.8991 7.40545 12.4936 7.50636ZM20 11.8182C20 12.3209 19.5936 12.7273 19.0909 12.7273H18.04C17.9764 13.3845 17.8991 14.0027 17.82 14.5455H18.6364C19.1391 14.5455 19.5455 14.9518 19.5455 15.4545C19.5455 15.9573 19.1391 16.3636 18.6364 16.3636H17.5109C17.4682 16.5809 17.4391 16.7145 17.4336 16.74C17.3582 17.0873 17.0873 17.3582 16.74 17.4336C16.7145 17.4391 16.5809 17.4682 16.3636 17.5109V18.6364C16.3636 19.1391 15.9573 19.5455 15.4545 19.5455C14.9518 19.5455 14.5455 19.1391 14.5455 18.6364V17.82C14.0027 17.8991 13.3845 17.9764 12.7273 18.04V19.0909C12.7273 19.5936 12.3209 20 11.8182 20C11.3155 20 10.9091 19.5936 10.9091 19.0909V18.1627C10.6073 18.1736 10.3036 18.1818 10 18.1818C9.69636 18.1818 9.39273 18.1736 9.09091 18.1627V19.0909C9.09091 19.5936 8.68455 20 8.18182 20C7.67909 20 7.27273 19.5936 7.27273 19.0909V18.04C6.61545 17.9764 5.99727 17.8991 5.45455 17.82V18.6364C5.45455 19.1391 5.04818 19.5455 4.54545 19.5455C4.04273 19.5455 3.63636 19.1391 3.63636 18.6364V17.5109C3.41909 17.4682 3.28545 17.4391 3.26 17.4336C2.91273 17.3582 2.64182 17.0873 2.56636 16.74C2.56091 16.7145 2.53182 16.5809 2.48909 16.3636H1.36364C0.860909 16.3636 0.454545 15.9573 0.454545 15.4545C0.454545 14.9518 0.860909 14.5455 1.36364 14.5455H2.18C2.10091 14.0027 2.02364 13.3845 1.96 12.7273H0.909091C0.406364 12.7273 0 12.3209 0 11.8182C0 11.3155 0.406364 10.9091 0.909091 10.9091H1.83727C1.82636 10.6073 1.81818 10.3036 1.81818 10C1.81818 9.69636 1.82636 9.39273 1.83727 9.09091H0.909091C0.406364 9.09091 0 8.68455 0 8.18182C0 7.67909 0.406364 7.27273 0.909091 7.27273H1.96C2.02364 6.61545 2.10091 5.99727 2.18 5.45455H1.36364C0.860909 5.45455 0.454545 5.04818 0.454545 4.54545C0.454545 4.04273 0.860909 3.63636 1.36364 3.63636H2.48909C2.53182 3.41909 2.56091 3.28545 2.56636 3.26C2.64182 2.91273 2.91273 2.64182 3.26 2.56636C3.28545 2.56091 3.41909 2.53182 3.63636 2.48909V1.36364C3.63636 0.860909 4.04273 0.454545 4.54545 0.454545C5.04818 0.454545 5.45455 0.860909 5.45455 1.36364V2.18C5.99727 2.10091 6.61545 2.02364 7.27273 1.96V0.909091C7.27273 0.406364 7.67909 0 8.18182 0C8.68455 0 9.09091 0.406364 9.09091 0.909091V1.83727C9.39273 1.82636 9.69636 1.81818 10 1.81818C10.3036 1.81818 10.6073 1.82636 10.9091 1.83727V0.909091C10.9091 0.406364 11.3155 0 11.8182 0C12.3209 0 12.7273 0.406364 12.7273 0.909091V1.96C13.3845 2.02364 14.0027 2.10091 14.5455 2.18V1.36364C14.5455 0.860909 14.9518 0.454545 15.4545 0.454545C15.9573 0.454545 16.3636 0.860909 16.3636 1.36364V2.48909C16.5809 2.53182 16.7145 2.56091 16.74 2.56636C17.0873 2.64182 17.3582 2.91273 17.4336 3.26C17.4391 3.28545 17.4682 3.41909 17.5109 3.63636H18.6364C19.1391 3.63636 19.5455 4.04273 19.5455 4.54545C19.5455 5.04818 19.1391 5.45455 18.6364 5.45455H17.82C17.8991 5.99727 17.9764 6.61545 18.04 7.27273H19.0909C19.5936 7.27273 20 7.67909 20 8.18182C20 8.68455 19.5936 9.09091 19.0909 9.09091H18.1627C18.1736 9.39273 18.1818 9.69636 18.1818 10C18.1818 10.3036 18.1736 10.6073 18.1627 10.9091H19.0909C19.5936 10.9091 20 11.3155 20 11.8182ZM14.5455 10C14.5455 8.30546 14.1764 6.60455 14.16 6.53273C14.0836 6.18636 13.8136 5.91636 13.4673 5.84C13.3955 5.82364 11.6945 5.45455 10 5.45455C8.30546 5.45455 6.60455 5.82364 6.53273 5.84C6.18636 5.91636 5.91636 6.18636 5.84 6.53273C5.82364 6.60455 5.45455 8.30546 5.45455 10C5.45455 11.6945 5.82364 13.3955 5.84 13.4673C5.91636 13.8136 6.18636 14.0836 6.53273 14.16C6.60455 14.1764 8.30546 14.5455 10 14.5455C11.6945 14.5455 13.3955 14.1764 13.4673 14.16C13.8136 14.0836 14.0836 13.8136 14.16 13.4673C14.1764 13.3955 14.5455 11.6945 14.5455 10Z" fill="#9F9FA9" />
                             </svg>
-                            <span>{{ $builderCategory->category->name }}</span>
+                            <span>{{ $builderCategory->category->name }} {{ $builderCategory->min_select }} to {{ $builderCategory->max_select }}</span>
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-500">
+                                   
+                            </span>
                             <svg class="check-icon absolute right-[16px] top-[0px] bottom-[0px] m-auto hidden" width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M4.84324 11C4.41746 11.0002 4.00911 10.8283 3.70828 10.5222L0.276913 7.03766C-0.0923043 6.66246 -0.0923043 6.05428 0.276913 5.67908C0.646249 5.30401 1.24494 5.30401 1.61428 5.67908L4.84324 8.95926L13.3857 0.281305C13.7551 -0.0937682 14.3538 -0.0937682 14.7231 0.281305C15.0923 0.656497 15.0923 1.26468 14.7231 1.63988L5.97821 10.5222C5.67738 10.8283 5.26903 11.0002 4.84324 11Z" fill="white" />
                             </svg>
@@ -116,7 +119,7 @@ $hideFooter = true;
                 <!-- Filters in list page -->
                 <div class="hidden xl:flex items-center bg-[#252B31] border border-[#1E2529] rounded-[15px] h-[50px] relative">
                     <div class="relative h-full border-r border-[#2E3239] min-w-[200px]">
-                        <button onclick="toggleDropdown('brand-menu')" class="flex items-center px-6 w-full h-full hover:bg-[#252C33] transition-colors rounded-[15px]">
+                        <button onclick="toggleDropdown('brand-menu')" class="flex items-center px-6 w-full h-full hover:bg-[#252C33] transition-colors rounded-[15px]" id="brand-btn">
                             <span class="text-gray-400 text-[14px]">Brand: <b id="brand-label" class="text-white ml-1 text-[14px] font-medium" data-id="0">All Brands</b></span>
                             <svg class="ml-auto text-gray-500" width="12" height="12" viewBox="0 0 12 12" fill="none">
                                 <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" />
@@ -136,7 +139,7 @@ $hideFooter = true;
                     </div>
 
                     <div class="relative h-full border-r border-[#2E3239] min-w-[180px]">
-                        <button onclick="toggleDropdown('model-menu')" class="flex items-center px-6 w-full h-full hover:bg-[#252C33] transition-colors">
+                        <button onclick="toggleDropdown('model-menu')" class="flex items-center px-6 w-full h-full hover:bg-[#252C33] transition-colors" id="model-btn">
                             <span class="text-gray-400 text-[14px]">Model: <b id="model-label" class="text-white ml-1 font-medium text-[14px]">All</b></span>
                             <svg class="ml-auto text-gray-500" width="12" height="12" viewBox="0 0 12 12" fill="none">
                                 <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" />
@@ -144,8 +147,8 @@ $hideFooter = true;
                         </button>
 
                         <div id="model-menu" class="hidden absolute top-[70px] left-0 w-64 bg-[#1C2228] border border-[#1E2529] rounded-xl shadow-2xl z-50 p-2">
-                            <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4090')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">RTX 4090</a>
-                            <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4080')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">RTX 4080</a>
+                            <!-- <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4090')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">RTX 4090</a>
+                            <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4080')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">RTX 4080</a> -->
                         </div>
                     </div>
 
@@ -154,11 +157,11 @@ $hideFooter = true;
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
                         </svg>
-                        <input type="text" placeholder="Search your brand here" class="bg-transparent border-none outline-none text-[14px] text-white w-full placeholder:text-gray-600" id="brand-search">
+                        <input type="text" placeholder="Search products" class="bg-transparent border-none outline-none text-[14px] text-white w-full placeholder:text-gray-600" id="product-search">
                     </div>
 
                     <div class="flex items-center h-full px-6 gap-8">
-                        <button onclick="toggleDropdown('mega-menu')" class="flex items-center gap-3 text-white font-medium text-[14px] hover:text-[#2A7CFF] transition-colors">
+                        <button onclick="toggleDropdown('mega-menu')" class="flex items-center gap-3 text-white font-medium text-[14px] hover:text-[#2A7CFF] transition-colors" id="mega-btn">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                                 <path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M2 14h4m4-6h4m4 8h4" />
                             </svg>
@@ -169,7 +172,7 @@ $hideFooter = true;
                             <div>
                                 <div class="space-y-3">
                                     <label class="flex items-center gap-3 text-gray-400 text-[14px] cursor-pointer hover:text-white"><input type="checkbox" class="sort-checkbox accent-[#2A7CFF] transform scale-[25px]" data-sort="price_low_high"> Price: Low to High</label>
-                                    <label class="flex items-center gap-3 text-gray-400 text-[14px] cursor-pointer hover:text-white"><input type="checkbox" class="sort-checkboxaccent-[#2A7CFF] transform scale-[25px]" data-sort="price_high_low"> Price: High to Low</label>
+                                    <label class="flex items-center gap-3 text-gray-400 text-[14px] cursor-pointer hover:text-white"><input type="checkbox" class="sort-checkbox accent-[#2A7CFF] transform scale-[25px]" data-sort="price_high_low"> Price: High to Low</label>
                                 </div>
                             </div>
                         </div>
@@ -251,10 +254,11 @@ $hideFooter = true;
                         <div class="flex flex-row justify-between">
                             <span class="text-[#99a1af] text-[15px] justify-start text-left">Discount</span>
                             <span class="flex flex-row text-[#29A706] items-center justify-end text-right gap-[10px] text-[15px]">
+                                - 
                                 <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path class="fill-[#29A706]" d="M1.32445 0.0149494C1.33045 0.023919 1.36345 0.0642824 1.39495 0.103151C1.62444 0.37523 1.79693 0.817732 1.88993 1.37535C1.95143 1.74161 1.95443 1.85672 1.95443 3.25299V4.55359H1.32745C0.754472 4.55359 0.688474 4.5506 0.575979 4.52817C0.398985 4.4908 0.215992 4.39064 0.0929965 4.26207C-0.00449983 4.15892 -0.00149994 4.15294 0.00449983 4.46539C0.0119996 4.72401 0.0149994 4.75242 0.052498 4.89294C0.112496 5.11569 0.194993 5.28162 0.319488 5.42962C0.488982 5.63294 0.661475 5.74655 0.907466 5.82279C0.959964 5.83774 1.07096 5.84372 1.46395 5.84671L1.95443 5.85419V6.5015V7.1503L1.26295 7.14581L0.568479 7.14133L0.448483 7.09349C0.305989 7.03668 0.241491 6.99483 0.101996 6.87075L0 6.77955L0.00599978 7.06509C0.0134995 7.32969 0.0149994 7.35959 0.052498 7.49414C0.182993 7.96953 0.497981 8.30888 0.913466 8.4195C1.01696 8.44791 1.05746 8.4494 1.49094 8.45538L1.95443 8.46136V9.80083C1.95443 10.6096 1.94993 11.2061 1.94243 11.3077C1.93493 11.4004 1.91093 11.5738 1.88993 11.6949C1.79243 12.2525 1.61694 12.6726 1.36495 12.9447L1.31395 13H3.85036C5.3668 13 6.50076 12.994 6.66725 12.9865C6.95974 12.9716 7.61222 12.9073 7.75921 12.8759C7.80571 12.867 7.89271 12.8535 7.9497 12.8445C8.0712 12.8266 8.27219 12.7847 8.56168 12.7115C8.96966 12.6098 9.34165 12.4828 9.70614 12.3213C9.82013 12.2705 10.1471 12.1045 10.2341 12.0522C10.2806 12.0253 10.3361 11.9924 10.3571 11.9819C10.4156 11.9506 10.5131 11.8878 10.6556 11.7861C10.7261 11.7353 10.7966 11.6859 10.8116 11.6755C10.8746 11.6336 11.0921 11.4527 11.1911 11.3615C11.5676 11.0162 11.8826 10.632 12.127 10.2209C12.1615 10.1611 12.2065 10.0864 12.226 10.055C12.2755 9.97125 12.4795 9.55267 12.499 9.48988C12.508 9.46148 12.52 9.43158 12.526 9.4256C12.565 9.37477 12.79 8.66916 12.817 8.51518C12.826 8.46585 12.8305 8.45837 12.868 8.4509C12.892 8.44641 13.2415 8.44641 13.645 8.4494C14.452 8.45538 14.452 8.45538 14.6305 8.5376C14.731 8.58395 14.7609 8.60488 14.8719 8.70504C15.0174 8.8351 15.0039 8.85603 14.9949 8.53013C14.9889 8.33878 14.9814 8.22068 14.9679 8.17284C14.9169 7.98896 14.9049 7.95009 14.8599 7.85741C14.713 7.53749 14.467 7.30876 14.152 7.19963L14.029 7.15478L13.528 7.1488L13.0285 7.14133L13.0345 6.96642C13.0405 6.7362 13.0405 6.28024 13.033 6.04554L13.027 5.85718L13.696 5.85419C14.269 5.8512 14.3755 5.85419 14.4385 5.87063C14.6275 5.92295 14.7549 5.99471 14.9109 6.13673L14.9979 6.21746V5.99621C14.9979 5.7331 14.9844 5.61649 14.9304 5.44308C14.8239 5.09177 14.614 4.83015 14.314 4.6687C14.119 4.56405 14.107 4.56106 13.4365 4.55658C13.0435 4.55359 12.838 4.54761 12.8275 4.53864C12.8185 4.52967 12.811 4.51472 12.811 4.50276C12.811 4.4908 12.7885 4.39662 12.7585 4.29496C12.4075 3.05865 11.7521 2.07647 10.7936 1.34844C10.6631 1.24828 10.3436 1.03749 10.2146 0.965731C10.1651 0.937328 10.1111 0.907429 10.0976 0.898459C10.0346 0.864075 9.67314 0.687673 9.58314 0.650299C9.52914 0.62638 9.45865 0.596481 9.42715 0.584522C8.89767 0.355796 8.0097 0.139029 7.33173 0.0717571C7.22073 0.0612926 7.07374 0.0448482 7.00624 0.0388684C6.70025 0.00448482 6.27577 0 3.86536 0C1.82843 0 1.31695 0.00448482 1.32445 0.0149494ZM6.28477 0.662259C6.79175 0.692157 7.10373 0.731026 7.46822 0.819227C8.58118 1.08234 9.36415 1.63845 9.93263 2.56831C9.98513 2.65501 10.2071 3.10649 10.2401 3.19768C10.3976 3.62075 10.4741 3.8719 10.5416 4.20377C10.5581 4.2845 10.5806 4.39213 10.5911 4.44296C10.6016 4.4923 10.6061 4.53864 10.6016 4.54312C10.5941 4.5491 9.08816 4.55209 7.25223 4.5506L3.91485 4.54761L3.91035 2.62661C3.90885 1.57118 3.91035 0.693652 3.91485 0.677208L3.92085 0.648804H4.98731C5.57229 0.648804 6.15727 0.654784 6.28477 0.662259ZM10.7471 5.89903C10.7576 5.96332 10.7576 7.05462 10.7471 7.10844L10.7381 7.1488L7.32573 7.14581L3.91485 7.14133L3.91185 6.50747C3.90885 6.15915 3.91185 5.86914 3.91485 5.86316C3.91935 5.85568 5.3728 5.8512 7.33023 5.8512H10.7381L10.7471 5.89903ZM10.5941 8.46585C10.6016 8.48827 10.5656 8.67215 10.4921 8.97114C10.4081 9.3075 10.2941 9.64685 10.1786 9.898C10.1216 10.0266 9.97913 10.3046 9.94463 10.3569C9.92813 10.3809 9.88013 10.4571 9.83813 10.5244C9.56814 10.946 9.18266 11.3302 8.74317 11.6142C8.58268 11.7158 8.25269 11.8893 8.1642 11.9162C8.1462 11.9207 8.1267 11.9296 8.1192 11.9356C8.1087 11.9446 7.9722 11.9954 7.81321 12.0522C7.52072 12.1554 6.96424 12.2675 6.51726 12.3138C6.22777 12.3422 6.18127 12.3437 5.06681 12.3437H3.91335V10.4048V8.46435L7.22673 8.45837C9.04916 8.45538 10.5506 8.4509 10.5626 8.44791C10.5761 8.44641 10.5896 8.45538 10.5941 8.46585Z" fill="#99a1af" />
                                 </svg>
-                                - <span id="summary-total-discount-price">0.00</span>
+                                <span id="summary-total-discount-price">0.00</span>
                             </span>
                         </div>
                     </li>
@@ -443,150 +447,199 @@ $hideFooter = true;
     const minusIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 12H4" /></svg>`;
 
     /***** Filter related scripts *******/
-    function toggleDropdown(menuId) {
-        const menus = ['brand-menu', 'model-menu', 'mega-menu'];
-        menus.forEach(id => {
-            const menu = document.getElementById(id);
-            if (id === menuId) {
-                menu.classList.toggle('hidden');
-            } else {
-                menu.classList.add('hidden');
-            }
-        });
-    }
+    let filterState = {
+        sort: ""
+    };
 
-    function selectOption(type, value, brandId = 0) {
-        const label = document.getElementById(`${type}-label`);
+    
 
-        if (label) {
-            label.innerText = value;
 
-            if (type === 'brand') {
-                label.dataset.id = brandId;
-            }
-        }
-
-        /* Sync Mobile Dropdown */
-        if(type === 'brand'){
-            const mobileBrand = document.getElementById('mobile-brand');
-            if(mobileBrand) mobileBrand.value = brandId;
-        }
-
-        if(type === 'model'){
-            const mobileModel = document.getElementById('mobile-model');
-            if(mobileModel) mobileModel.value = value;
-        }
-
-        const activeCategory = document.querySelector('.nav-item.active');
-        if (!activeCategory) return;
-
-        const categoryId = activeCategory.dataset.categoryId;
-
-        const selectedBrandId = document.getElementById('brand-label').dataset.id || 0;
-
-        const model =
-            type === 'model' ? value :
-            document.getElementById('model-label').innerText === "All" ? "" :
-            document.getElementById('model-label').innerText;
-
-        /* Desktop Search */
-        const desktopSearch = document.getElementById('brand-search')?.value || "";
-
-        /* Mobile Search */
-        const mobileSearch = document.getElementById('mobile-search-input')?.value || "";
-
-        const search = desktopSearch || mobileSearch;
-
-        loadProducts(categoryId, selectedBrandId, model, search, "");
-
-        if (type === 'brand') {
-            document.getElementById('model-label').innerText = "All";
-            loadModels(brandId, categoryId);
-        }
-
-        const menu = document.getElementById(`${type}-menu`);
-        if(menu) menu.classList.add('hidden');
-    }
-
-    // Bran search text
-    document.getElementById('brand-search').addEventListener('keyup', function () {
-        const search = this.value;
-        const brandId = document.getElementById('brand-label').dataset.id || 0;
-        const activeCategory = document.querySelector('.nav-item.active');
-
-        if (!activeCategory) return;
-
-        const categoryId = activeCategory.dataset.categoryId;
-
-        const model = document.getElementById('model-label').innerText === "All"
-            ? ""
-            : document.getElementById('model-label').innerText;
-
-        loadProducts(categoryId, brandId, model, search, "");
-    });
-
-    function loadModels(brandId, categoryId) {
-        fetch(`/builder/models?brand_id=${brandId}&category_id=${categoryId}`)
-            .then(res => res.json())
-            .then(models => {
-
-                let html = `<a href="javascript:void(0)" 
-                    onclick="selectOption('model', 'All')"
-                    class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">
-                    All Models
-                </a>`;
-
-                models.forEach(model => {
-                    html += `
-                        <a href="javascript:void(0)" 
-                        onclick="selectOption('model', '${model}', '${brandId}')"
-                        class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">
-                            ${model}
-                        </a>`;
-                });
-
-                document.getElementById('model-menu').innerHTML = html;
-            });
-    }
-
-    document.querySelectorAll('.sort-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function(){
-
-            // Uncheck all others
-            document.querySelectorAll('.sort-checkbox').forEach(cb => {
-                if(cb !== this) cb.checked = false;
-            });
-
-            const sort = this.checked ? this.dataset.sort : ''; // '' if unchecked
-
-            const brandId = document.getElementById('brand-label').dataset.id || '';
-            const model = document.getElementById('model-label').innerText;
-            const activeCategory = document.querySelector('.nav-item.active');
-            const search = document.getElementById('brand-search').value || '';
-
-            if(activeCategory){
-                const categoryId = activeCategory.dataset.categoryId;
-                loadProducts(categoryId, brandId, "", search, sort);
-            }
-        });
-    });
-
-    // Close if clicked outside
-    window.onclick = function(event) {
-        if (!event.target.closest('.relative')) {
+        function toggleDropdown(menuId) {
             const menus = ['brand-menu', 'model-menu', 'mega-menu'];
             menus.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
+                const menu = document.getElementById(id);
+                if (id === menuId) {
+                    menu.classList.toggle('hidden');
+                } else {
+                    menu.classList.add('hidden');
+                }
             });
         }
-    }
+
+        document.addEventListener('click', function (event) {
+            const menus = ['brand-menu', 'model-menu', 'mega-menu'];
+            const buttons = ['brand-btn', 'model-btn', 'mega-btn']; // adjust IDs
+
+            let clickedInside = false;
+
+            menus.forEach((menuId, index) => {
+                const menu = document.getElementById(menuId);
+                const btn = document.getElementById(buttons[index]);
+
+                if (menu?.contains(event.target) || btn?.contains(event.target)) {
+                    clickedInside = true;
+                }
+            });
+
+            if (!clickedInside) {
+                menus.forEach(id => {
+                    document.getElementById(id)?.classList.add('hidden');
+                });
+            }
+        });
+
+        function selectOption(type, value, brandId = 0) {
+            const label = document.getElementById(`${type}-label`);
+
+            if (label) {
+                label.innerText = value;
+
+                if (type === 'brand') {
+                    label.dataset.id = brandId;
+                }
+            }
+
+            /* Sync Mobile Dropdown */
+            if(type === 'brand'){
+                const mobileBrand = document.getElementById('mobile-brand');
+                if(mobileBrand) mobileBrand.value = brandId;
+            }
+
+            if(type === 'model'){
+                const mobileModel = document.getElementById('mobile-model');
+                if(mobileModel) mobileModel.value = value;
+            }
+
+            const activeCategory = document.querySelector('.nav-item.active');
+            if (!activeCategory) return;
+
+            const categoryId = activeCategory.dataset.categoryId;
+
+            const selectedBrandId = document.getElementById('brand-label').dataset.id || 0;
+
+            const model =
+                type === 'model' ? value :
+                document.getElementById('model-label').innerText === "All" ? "" :
+                document.getElementById('model-label').innerText;
+
+            /* Desktop Search */
+            const desktopSearch = document.getElementById('product-search')?.value || "";
+
+            /* Mobile Search */
+            const mobileSearch = document.getElementById('mobile-search-input')?.value || "";
+
+            const search = desktopSearch || mobileSearch;
+
+            console.log("called before selectoption");
+            const sort = filterState.sort || "";
+            loadProducts(categoryId, selectedBrandId, model, search, sort);
+
+            if (type === 'brand') {
+                document.getElementById('model-label').innerText = "All";
+                loadModels(brandId, categoryId);
+            }
+
+            const menu = document.getElementById(`${type}-menu`);
+            if(menu) menu.classList.add('hidden');
+        }
+
+        // product search text
+        document.getElementById('product-search').addEventListener('keyup', function () {
+            const search = this.value;
+            const brandId = document.getElementById('brand-label').dataset.id || 0;
+            const activeCategory = document.querySelector('.nav-item.active');
+
+            if (!activeCategory) return;
+
+            const categoryId = activeCategory.dataset.categoryId;
+
+            const model = document.getElementById('model-label').innerText === "All"
+                ? ""
+                : document.getElementById('model-label').innerText;
+
+            console.log("called when keyup in product search box");
+            const sort = filterState.sort || "";
+            loadProducts(categoryId, brandId, model, search, sort);
+        });
+
+        function loadModels(brandId, categoryId) {
+            if(brandId == 0) {
+                document.getElementById('model-menu').innerHTML = '';
+                return;
+            }
+
+            fetch(`/builder/models?brand_id=${brandId}&category_id=${categoryId}`)
+                .then(res => res.json())
+                .then(models => {
+
+                    let html = `<a href="javascript:void(0)" 
+                        onclick="selectOption('model', 'All')"
+                        class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">
+                        All Models
+                    </a>`;
+
+                    models.forEach(model => {
+                        html += `
+                            <a href="javascript:void(0)" 
+                            onclick="selectOption('model', '${model}', '${brandId}')"
+                            class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">
+                                ${model}
+                            </a>`;
+                    });
+
+                    document.getElementById('model-menu').innerHTML = html;
+                });
+        }
+
+        document.querySelectorAll('.sort-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function(){
+
+                // Uncheck all others
+                document.querySelectorAll('.sort-checkbox').forEach(cb => {
+                    if(cb !== this) cb.checked = false;
+                });
+
+                const sort = this.checked ? this.dataset.sort : ''; // '' if unchecked
+
+                const brandId = document.getElementById('brand-label').dataset.id || '';
+                const activeCategory = document.querySelector('.nav-item.active');
+                
+                /* Desktop Search */
+                const desktopSearch = document.getElementById('product-search')?.value || "";
+
+                /* Mobile Search */
+                const mobileSearch = document.getElementById('mobile-search-input')?.value || "";
+
+                const search = desktopSearch || mobileSearch;
+
+                const model = document.getElementById('model-label').innerText === "All" ? "" :
+                    document.getElementById('model-label').innerText;
+
+                if(activeCategory){
+                    const categoryId = activeCategory.dataset.categoryId;
+                    console.log("called when sorting option changed");
+                    filterState.sort = sort;
+                    loadProducts(categoryId, brandId, model, search, sort);
+                }
+            });
+        });
+
+        // Close if clicked outside
+        window.onclick = function(event) {
+            if (!event.target.closest('.relative')) {
+                const menus = ['brand-menu', 'model-menu', 'mega-menu'];
+                menus.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden');
+                });
+            }
+        }
 
     /******end filter related functions****/
 
 
-    // initially show the selected products and add tick for its category
-    function viewSelectedPcBuildProducts() {        
+    // if the user has already selected some products under the given category, show those products with check icon.
+    function viewSelectedPcBuildProducts() {   
         if (!buildData) return;
 
         // Remove all check-icon first.
@@ -639,7 +692,7 @@ $hideFooter = true;
         document.querySelector('.category-sub-heading').innerText = categoryName;
     }
 
-    // load products on category click
+    // Load products when clicking on category
     function loadProducts(categoryId, brandId, model = "", search = "", sort = "") {
         const productsList = document.getElementById('products-list');
         const loader = document.getElementById('products-loader');
@@ -649,6 +702,7 @@ $hideFooter = true;
 
         const url = `/buildyourpc/products/${categoryId}/${brandId}/${model}`
             + `?search=${encodeURIComponent(search)}&sort=${encodeURIComponent(sort)}`;
+            console.log("Fetching products with URL:", url);
 
         fetch(url)
             .then(res => res.json())
@@ -670,208 +724,231 @@ $hideFooter = true;
             });
     }
 
-    // click navitem(categories listed) 
+    // category click event
     navItems.forEach(item => {
-        item.addEventListener('click', function(e) {
+        item.addEventListener('click', function (e) {
             e.preventDefault();
+            
+            const clickedCategoryId = this.dataset.categoryId;
+            const activeItem = document.querySelector('.nav-item.active');
+            const activeCategoryId = activeItem ? activeItem.dataset.categoryId : null;
 
-            const activeIndex = getActiveCategoryIndex();
             const categories = getCategories();
-            const currentCategory = categories[activeIndex];
 
+            const currentIndex = getActiveCategoryIndex();
+            const clickedIndex = Array.from(categories).indexOf(this);
+
+            const currentCategory = categories[currentIndex];
             const categoryId = currentCategory.dataset.categoryId;
             const categoryName = currentCategory.dataset.categoryName;
-            const minSelect = parseInt(currentCategory.dataset.minSelect || 0);
 
-            const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0;
-
-            // Don't validate if clicking same category
-            if (!this.classList.contains('active')) {
-
-                // If last category
-                if (activeIndex === categories.length - 1) {
-                    showCategorySelectionMessage(currentCategory);
-                }
-
-                // Validate before switching
-                if (selectedCount < minSelect) {
-                    toastr.warning(`Please select at least ${minSelect} product(s) in ${categoryName}`);
+            // moving forward → validate
+            if (clickedIndex > currentIndex) {
+                if (!validateMin(categoryId, categoryName)) {
                     return;
                 }
             }
 
-            // Remove active
-            navItems.forEach(nav => {
-                nav.classList.remove('active');
-            });
+            // moving backward → show warning only
+            if (clickedIndex < currentIndex) {
+                showCategoryInfo(categoryId);
+            }
 
-            const clickedCategoryName = this.dataset.categoryName;
-            document.querySelector('.category-heading').innerText = clickedCategoryName;
-            document.querySelector('.category-sub-heading').innerText = clickedCategoryName;
+            // reset filters ONLY after validation passes
+            if (activeCategoryId !== clickedCategoryId) {
+                document.getElementById('reset-filters').click();
+                // reset sort state
+                filterState.sort = "";
+            }
 
+            // switch category
+            categories.forEach(n => n.classList.remove('active'));
             this.classList.add('active');
 
-            const newCategoryId = this.dataset.categoryId;
-            const brandId = document.getElementById('brand-label').dataset.id;
+            document.querySelector('.category-heading').innerText = this.dataset.categoryName;
+            document.querySelector('.category-sub-heading').innerText = this.dataset.categoryName;
 
-            document.getElementById('proceed-to-order-btn').classList.add('hidden');
+            console.log("called when click on a category");
+            const model = document.getElementById('model-label').innerText === "All" ? "" :
+                    document.getElementById('model-label').innerText;
+
+            const sort = filterState.sort || "";
+            
+
+            /* Desktop Search */
+            const desktopSearch = document.getElementById('product-search')?.value || "";
+
+            /* Mobile Search */
+            const mobileSearch = document.getElementById('mobile-search-input')?.value || "";
+
+            const search = desktopSearch || mobileSearch;
+
+            loadProducts(
+                this.dataset.categoryId,
+                document.getElementById('brand-label').dataset.id,
+                model, search, sort
+            );
 
             updateNavButtons();
-            backToConfiguration();
-
-            loadProducts(newCategoryId, brandId, "", "", "");
-
             checkAllCategoriesCompleted();
         });
     });
 
-    // pc builder save function
-    function savePcBuilder(productId, variantId, categoryId, builderId, qty){
-        fetch(`/buildyourpc/savePcBuilder?productId=${productId}&variantId=${variantId}&categoryId=${categoryId}&builder_id=${builderId}&qty=${qty}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status) {
-                    buildData = data.build_data;
-                    if (!builderId && data.builder_id) {
-                        document.getElementById('pcBuilderId').value = data.builder_id;
-                    }
-                    viewSelectedPcBuildProducts();
-                    checkAllCategoriesCompleted();
-                } else {
-                    console.error("Failed to save product");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
+    // handle next and previous step buttons
+    function handleNextStep() {
+        const categories = getCategories();
+        const index = getActiveCategoryIndex();
+
+        const currentCategory = categories[index];
+        const categoryId = currentCategory.dataset.categoryId;
+        const categoryName = currentCategory.dataset.categoryName;
+
+        if (!validateMin(categoryId, categoryName)) {
+            return;
+        }
+
+        if (index < categories.length - 1) {
+            setActiveCategory(index + 1);
+        }
     }
 
-    // Function to check category limit
-    function checkCategoryLimit(categoryId) {
-        // check product selection allowed for category
-        const categoryElement = document.querySelector(`.nav-item[data-category-id="${categoryId}"]`);
-        if(categoryElement){
-            const maxLimit = categoryElement.dataset.maxSelect;
+    function handlePrevStep() {
+        const index = getActiveCategoryIndex();
+        if (index > 0) {
+            setActiveCategory(index - 1);
+        }
+    }
+
+    // validate minimum selection for the category before moving to the next category
+    function validateMin(categoryId, categoryName) {
+        const categoryEl = document.querySelector(
+            `.nav-item[data-category-id="${categoryId}"]`
+        );
+
+        const minSelect = parseInt(categoryEl?.dataset.minSelect || 0);
+
+        // const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0;
+        const selectedCount = buildData[categoryId]
+            ? buildData[categoryId].reduce((sum, item) => {
+                return sum + (parseInt(item.quantity) || 0);
+            }, 0)
+            : 0;
+
+        if (minSelect && selectedCount < minSelect) {
+            showWarning(`Please select at least ${minSelect} product(s) in ${categoryName}`);
+            return false;
+        }
+
+        return true;
+    }
+
+    // validate maximum selection for the category before selecting a product
+    function canSelectProduct() {
+        const activeCategoryEl = document.querySelector('.nav-item.active');
+        const categoryId = activeCategoryEl.dataset.categoryId;
+        const categoryName = activeCategoryEl.dataset.categoryName;
+        const maxSelect = activeCategoryEl.dataset.maxSelect;
         
-            if (isCategoryLimitExceeded(categoryElement, maxLimit, categoryId)) {
-                toastr.warning(`You can only select ${maxLimit} products in this category`);
-                return false;
-            }
+        if (!maxSelect) return true;
+        
+        // const selectedCount = buildData[categoryId] ? buildData[categoryId].length + 1 : 0; // add 1 because we are checking before adding the product to the buildData
+
+        const selectedCount = buildData[categoryId]
+            ? buildData[categoryId].reduce((sum, item) => {
+                return sum + (parseInt(item.quantity) || 0);
+            }, 0)
+            : 0;
+
+
+        // block only if already reached max
+        if (selectedCount >= maxSelect) {
+            showWarning(`You can select only ${maxSelect} product(s) in ${categoryName}`);
+            return false;
         }
         return true;
     }
 
-    /**
-     * Handles "Select" button toggle and +/- quantity logic
-     */
-    function selectProduct(buttonElement, qty = 1) {
-        // Scope to the nearest container to avoid interfering with other products
-        const container = buttonElement.closest('.counter-container');
-        const counter = container.querySelector('.counter-wrapper');
-        const productId = buttonElement.dataset.productId;
-        const variantId = buttonElement.dataset.stockId;
-        const categoryId = buttonElement.dataset.categoryId;
-        const builderId = document.getElementById('pcBuilderId').value;
-        const productCard = buttonElement.closest('.product-card');
-        productCard.classList.add('product-selected');
 
-        if (!checkCategoryLimit(categoryId)) {
-            return;
-        }
+    // update navigation buttons
+    function updateNavButtons() {
+        const categories = getCategories();
+        const index = getActiveCategoryIndex();
+        const prevBtn = document.getElementById('prev-btn');
 
-        buttonElement.classList.add('hidden');
-        counter.classList.remove('hidden');
-        counter.classList.add('flex');
-
-        // save buid data
-        savePcBuilder(productId, variantId, categoryId, builderId, qty);
-        
-        /** add selected product category to build data script **/
-        if (!buildData[categoryId]) buildData[categoryId] = [];
-
-        // Check if already selected
-        const index = buildData[categoryId].findIndex(v => v.variant_id == variantId);
-        if (index > -1) {
-            // Deselect
-            buildData[categoryId].splice(index, 1);
-            productCard.classList.remove('product-selected');
+        // Hide previous on first
+        if (index === 0) {
+            prevBtn.classList.add('hidden');
         } else {
-            // Add to buildData
-            buildData[categoryId].push({ product_id: productId, variant_id: variantId });
-            productCard.classList.add('product-selected');
-        }
-        /** add selected product category to build data script ends **/
-    }
-
-    function updateBuilderItemQty(buttonElement, change, source = 'list') {
-        const container = buttonElement.closest('.counter-container');
-        const input = container.querySelector('.qty-input');
-        const minusBtn = container.querySelector('.minus-btn');
-        const iconWrapper = minusBtn.querySelector('.icon-wrapper');
-        const counterWrapper = container.querySelector('.counter-wrapper');
-        let currentVal = parseInt(input.value) || 0;
-        let newVal = currentVal + change;
-
-        const productId = container.dataset.productId;
-        const variantId = container.dataset.stockId;
-        const categoryId = container.dataset.categoryId;
-
-        const stockQty = parseInt(container.dataset.stockQty) || 0;
-        const cartQty = parseInt(container.dataset.cartQty) || 0;
-
-        // Available qty user can select
-        const availableQty = stockQty - cartQty;
-
-        // Stop if exceeding stock
-        if (newVal > availableQty) {
-            toastr.warning(`Only ${availableQty} item(s) available`);
-            return;
-        }
-
-        if (!checkCategoryLimit(categoryId)) {
-            return;
-        }
-
-        if (newVal >= 0) {
-            if (source == 'list') {
-                const selectBtn = container.querySelector('.action-btn');
-                selectProduct(selectBtn, newVal);
-            } else {
-                const builderId = document.getElementById('pcBuilderId').value;
-                if (newVal == 0) {
-                    const categoryElement = document.querySelector(`.nav-item[data-category-id="${categoryId}"]`);
-                    if (categoryElement) {
-                        const minLimit = categoryElement.dataset.minSelect;
-                        const categoryName = categoryElement.dataset.categoryName;
-                        const selectedCount = document.querySelectorAll(
-                            `#products-review-page #review_block .review-product-item[data-category-id="${categoryId}"]`
-                        ).length;
-                        if (selectedCount <= minLimit) {
-                            toastr.warning(`Please select at least ${minLimit} product(s) in ${categoryName}`);
-                            return;
-                        }
-                    }
-                }
-                savePcBuilder(productId, variantId, categoryId, builderId, newVal);
-                proceedToOrder();
-                iconWrapper.innerHTML = (newVal > 1) ? minusIcon : trashIcon;
-            }
-        }
-
-        if (newVal > 0) {
-            input.value = newVal;
-            iconWrapper.innerHTML = (newVal > 1) ? minusIcon : trashIcon;
-        } else {
-            if (source == 'list') {
-                counterWrapper.classList.add('hidden');
-                counterWrapper.classList.remove('flex');
-                container.querySelector('.action-btn').classList.remove('hidden');
-                input.value = 0;
-                iconWrapper.innerHTML = trashIcon;
-            }
+            prevBtn.classList.remove('hidden');
         }
     }
 
+    // show category selection info when user tries to go back without fulfilling the minimum requirement
+    function showCategoryInfo(categoryId){
+        const categoryEl = document.querySelector(
+            `.nav-item[data-category-id="${categoryId}"]`
+        );
+
+        const min = categoryEl.dataset.minSelect;
+        const max = categoryEl.dataset.maxSelect;
+        const name = categoryEl.dataset.categoryName;
+
+        // if(min && max){
+        //     toastr.info(`Select ${min} - ${max} products in ${name}`);
+        // }
+        // else if(min){
+        //     toastr.info(`Select at least ${min} products in ${name}`);
+        // }
+    }
+
+    // get active category index
+    function getActiveCategoryIndex() {
+        const categories = getCategories();
+        for (let i = 0; i < categories.length; i++) {
+            if (categories[i].classList.contains('active')) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    // Get category
+    function getCategories() {
+        return document.querySelectorAll('.nav-item');
+    }
+
+    // function to set active category by index (used in next and previous buttons)
+    function setActiveCategory(index) {
+        const categories = getCategories();
+        categories.forEach(c => c.classList.remove('active'));
+
+        if (categories[index]) {
+            categories[index].classList.add('active');
+            categories[index].click();
+            const categoryName = categories[index].dataset.categoryName;
+            document.querySelector('.category-heading').innerText = categoryName;
+            document.querySelector('.category-sub-heading').innerText = categoryName;
+        }
+
+        updateNavButtons();
+    }
+
+    // Function to show warnings
+    let isAlertVisible = false;
+
+    function showWarning(message){
+        if(isAlertVisible) return;
+
+        isAlertVisible = true;
+
+        toastr.warning(message);
+
+        setTimeout(()=>{
+            isAlertVisible = false;
+        },1000);
+    }
+
+    // function to view product details
     function viewProductDetails(stockId) {
         // 1. Logic to populate data (Same as your previous script)
         document.getElementById('default-view').classList.add('hidden');
@@ -900,94 +977,141 @@ $hideFooter = true;
             });
     }
 
-    function showDefaultView() {
-        // 1. Reset Views
-        document.getElementById('details-view').classList.add('hidden');
-        document.getElementById('default-view').classList.remove('hidden');
+    // Select product from the list and add to the build
+    function selectProduct(buttonElement, qty = 1) {
+        const categoryId = buttonElement.dataset.categoryId;
+        const categoryName = buttonElement.closest('.product-card')
+            .querySelector('.category-name')?.innerText || 'this category';
 
-        // 2. Mobile Modal Close
-        if (window.innerWidth < 1024) {
-            const sidebar = document.getElementById('details-sidebar');
-            const overlay = document.getElementById('details-overlay');
+        if (!canSelectProduct()) {
+            return;
+        }
 
-            // Hide Overlay
-            overlay.classList.replace('opacity-100', 'opacity-0');
-            overlay.classList.replace('pointer-events-auto', 'pointer-events-none');
+        const container = buttonElement.closest('.counter-container');
+        const counter = container.querySelector('.counter-wrapper');
 
-            // Slide Sidebar Down
-            sidebar.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
-            sidebar.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        const productId = buttonElement.dataset.productId;
+        const variantId = buttonElement.dataset.stockId;
+        const builderId = document.getElementById('pcBuilderId').value;
 
-            document.body.style.overflow = 'auto'; // Restore scroll
+        buttonElement.classList.add('hidden');
+        counter.classList.remove('hidden');
+
+        savePcBuilder(productId, variantId, categoryId, builderId, qty);
+        updateAfterRemove(categoryId);
+    }
+
+    // save the selected products to the database and update the build summary
+    function savePcBuilder(productId, variantId, categoryId, builderId, qty, callback = null){
+        fetch(`/buildyourpc/savePcBuilder?productId=${productId}&variantId=${variantId}&categoryId=${categoryId}&builder_id=${builderId}&qty=${qty}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    buildData = data.build_data;
+                    if (!builderId && data.builder_id) {
+                        document.getElementById('pcBuilderId').value = data.builder_id;
+                    }
+                    viewSelectedPcBuildProducts();
+                    checkAllCategoriesCompleted();
+
+                    if (callback) callback(data.build_data);
+                } else {
+                    console.error("Failed to save product");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    }
+
+    
+    function checkAllCategoriesCompleted() {
+        let allCompleted = true;
+        document.querySelectorAll('.nav-item').forEach(category => {
+            const categoryId = category.dataset.categoryId;
+            const minSelect = parseInt(category.dataset.minSelect || 0);
+            // const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0; // no need to add 1 here because we are checking the buildData which is already updated after selection
+
+            const selectedCount = buildData[categoryId]
+                ? buildData[categoryId].reduce((sum, item) => {
+                    return sum + (parseInt(item.quantity) || 0);
+                }, 0)
+                : 0;
+            if (selectedCount < minSelect) {
+                allCompleted = false;
+            }
+        });
+
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const proceedBtn = document.getElementById('proceed-to-order-btn');
+
+        if (allCompleted) {
+            prevBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            proceedBtn.classList.remove('hidden');
+        } else {
+            proceedBtn.classList.add('hidden');
+            updateNavButtons(); // handle prev/next normally
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const isValid = validateMinSelection();
-        if (isValid) {
-            proceedToOrder();
-        } else{
-            backToConfiguration();
-        }
-        updateNavButtons();
-        viewSelectedPcBuildProducts();
+    function updateAfterRemove(categoryId) {
         checkAllCategoriesCompleted();
+    }
 
+    function validateAllCategories(){
+        let valid = true;
+        document.querySelectorAll('.nav-item').forEach(category => {
+            const categoryId = category.dataset.categoryId;
+            const categoryName = category.dataset.categoryName;
+            const minSelect = parseInt(category.dataset.minSelect || 0);
+            // const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0; // no need to add 1 here because we are checking the buildData which is already updated after selection
+
+            const selectedCount = buildData[categoryId]
+                ? buildData[categoryId].reduce((sum, item) => {
+                    return sum + (parseInt(item.quantity) || 0);
+                }, 0)
+                : 0;
+            
+            if (selectedCount < minSelect) {
+                showWarning(`Please complete ${categoryName}`);
+                valid = false;
+            }
+        });
+
+        return valid;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        viewSelectedPcBuildProducts();
+        setTimeout(() => {
+            const isValid = validateMinSelection();
+            if (isValid) {
+                proceedToOrder();
+            } else {
+                backToConfiguration();
+            }
+            // updateCategoryCheckIcons();
+            checkAllCategoriesCompleted();
+            updateNavButtons();
+
+        }, 300);
     });
 
-    function isCategoryLimitExceeded(categoryElement, maxSelect, categoryId) {
-
-        if (!categoryElement) return false;
-
-        // null, empty or undefined → unlimited
-        if (!maxSelect || maxSelect === "null") return false;
-
-        const maxLimit = parseInt(maxSelect);
-
-        const selectedProducts = document.querySelectorAll(
-            `.product-card.product-selected[data-category-id="${categoryId}"]`
-        );
-
-        let totalSelectedProducts = selectedProducts.length;
-
-        // If buildData exists and category exists
-        if (buildData && buildData[categoryId]) {
-            totalSelectedProducts = Math.max(
-                totalSelectedProducts,
-                buildData[categoryId].length
-            );
-        }
-
-        console.log("selected products length = " + totalSelectedProducts);
-        console.log("category maximum limit = " + maxLimit);
-
-        return totalSelectedProducts > maxLimit;
-    }
-
-    // Get active category
-    function getCategories() {
-        return document.querySelectorAll('.nav-item');
-    }
-
-    function getActiveCategoryIndex() {
-        const categories = getCategories();
-        for (let i = 0; i < categories.length; i++) {
-            if (categories[i].classList.contains('active')) {
-                return i;
-            }
-        }
-        return 0;
-    }
-
-    // Validate min selected products for each category.
+     // Validate min selected products for each category.
     function validateMinSelection() {
         let valid = true;
         document.querySelectorAll('.nav-item').forEach(category => {
             const categoryId = category.dataset.categoryId;
             const minLimit = parseInt(category.dataset.minSelect);
-            const selectedCount = buildData[categoryId] ?
-                buildData[categoryId].length :
-                0;
+            // const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0; // no need to add 1 here because we are checking the buildData which is already updated after selection
+
+            const selectedCount = buildData[categoryId]
+                ? buildData[categoryId].reduce((sum, item) => {
+                    return sum + (parseInt(item.quantity) || 0);
+                }, 0)
+                : 0;
 
             if (selectedCount < minLimit) {
                 valid = false;
@@ -996,96 +1120,6 @@ $hideFooter = true;
         });
         return valid;
     }
-
-    //Navigation script
-    function setActiveCategory(index) {
-        const categories = getCategories();
-        categories.forEach(c => c.classList.remove('active'));
-
-        if (categories[index]) {
-            categories[index].classList.add('active');
-            categories[index].click();
-            const categoryName = categories[index].dataset.categoryName;
-            document.querySelector('.category-heading').innerText = categoryName;
-            document.querySelector('.category-sub-heading').innerText = categoryName;
-        }
-
-        updateNavButtons();
-    }
-
-    // Update nav button
-    function updateNavButtons() {
-
-        const categories = getCategories();
-        const activeIndex = getActiveCategoryIndex();
-
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-
-        prevBtn.disabled = false;
-        prevBtn.classList.remove('opacity-50', 'cursor-not-allowed','hidden');
-        // Disable previous if first
-        if (activeIndex === 0) {
-            prevBtn.disabled = true;
-            prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
-        } 
-
-        // Hide next if last
-        if (activeIndex === categories.length - 1) {
-            nextBtn.classList.add('hidden');
-        } else {
-            nextBtn.classList.remove('hidden');
-        }
-    }
-
-    // previous button
-    function handlePrevStep() {
-        const index = getActiveCategoryIndex();
-
-        if (index > 0) {
-            setActiveCategory(index - 1);
-        }
-    }
-
-    // Minimum selection check
-    function isMinSelectionSatisfied(categoryId, minSelect) {
-        if (!minSelect) return true;
-        const min = parseInt(minSelect);
-        const selectedProducts = document.querySelectorAll(`.product-card.product-selected[data-category-id="${categoryId}"]`);
-        return selectedProducts.length >= min;
-    }
-
-    // Next button
-    function handleNextStep() {
-        const categories = getCategories();
-        const index = getActiveCategoryIndex();
-        const currentCategory = categories[index];
-        const categoryId = currentCategory.dataset.categoryId;
-        const minSelect = currentCategory.dataset.minSelect;
-        
-        // Store result
-        const isValid = validateMinSelection();
-
-        // Only check the current category when Next is clicked
-        const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0;
-        if (selectedCount < minSelect) {
-            toastr.warning(`Please select at least ${minSelect} product(s) in ${currentCategory.innerText}`);
-            return; // stop proceeding to next step
-        }
-
-        document.querySelector(`.nav-item[data-category-id="${categories[index+1].dataset.categoryId}"]`).click();
-
-        if (index < categories.length - 1) {
-            setActiveCategory(index + 1);
-        }
-
-        if (isValid) {
-            document.getElementById('next-btn').classList.add('hidden');
-            document.getElementById('prev-btn').classList.add('hidden');
-            document.getElementById('proceed-to-order-btn').classList.remove('hidden');
-        }
-    }
-
 
     // Proceed to order function
     function proceedToOrder() {
@@ -1099,7 +1133,12 @@ $hideFooter = true;
 
                 document.getElementById('details-sidebar').classList.add('hidden');
                 document.getElementById('summary-sidebar').classList.remove('hidden');
+                document.querySelectorAll('.nav-item').forEach(cat=>{
+                    cat.classList.add('pointer-events-none');
+                    cat.classList.remove('active');
+                }); // disable category navigation in review page
 
+                
                 document.getElementById('summary-total-price').innerText =
                     parseFloat(data.total_price).toLocaleString('en-AE', {
                         minimumFractionDigits: 2,
@@ -1133,6 +1172,16 @@ $hideFooter = true;
         document.getElementById('products-list-page').classList.remove('hidden');
         document.getElementById('summary-sidebar').classList.add('hidden');
         document.getElementById('details-sidebar').classList.remove('hidden');
+
+        document.querySelectorAll('.nav-item').forEach(cat=>{
+            cat.classList.remove('pointer-events-none');
+            cat.classList.remove('active');
+        }); // enable category navigation in list page
+
+        // make first item active
+        if (navItems.length > 0) {
+            navItems[0].classList.add('active');
+        }
                 
     }
 
@@ -1231,7 +1280,7 @@ $hideFooter = true;
         modelLabel.innerText = 'All';
 
         // Reset Search
-        document.getElementById('brand-search').value = '';
+        document.getElementById('product-search').value = '';
 
         // Reset Sort
         document.querySelectorAll('.sort-checkbox').forEach(cb => {
@@ -1248,47 +1297,310 @@ $hideFooter = true;
             loadModels(0, categoryId);
 
             // reload products
+            console.log("called when reset filters");
             loadProducts(categoryId, 0, "", "", "");
         }
     });
 
-    
+    function toggleNavigationButtons(currentIndex, totalTabs) {
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
 
-    function checkAllCategoriesCompleted() {
-        const isValid = validateMinSelection();
-
-        if (isValid) {
-            document.getElementById('next-btn').classList.add('hidden');
-            document.getElementById('prev-btn').classList.add('hidden');
-            document.getElementById('proceed-to-order-btn').classList.remove('hidden');
+        // Hide Previous on first category
+        if (currentIndex === 0) {
+            prevBtn.classList.add('hidden');
         } else {
-            document.getElementById('next-btn').classList.remove('hidden');
-            document.getElementById('prev-btn').classList.remove('hidden');
-            document.getElementById('proceed-to-order-btn').classList.add('hidden');
+            prevBtn.classList.remove('hidden');
+        }
+
+        // Hide Next on last category (optional)
+        if (currentIndex === totalTabs - 1) {
+            nextBtn.innerText = 'Finish';
+        } else {
+            nextBtn.innerText = 'Next';
         }
     }
 
-    function showCategorySelectionMessage(categoryElement) {
-        const minSelect = categoryElement.dataset.minSelect;
-        const maxSelect = categoryElement.dataset.maxSelect;
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabs = document.querySelectorAll('.nav-item');
+        toggleNavigationButtons(0, tabs.length);
+    });
+
+    function showDefaultView() {
+        // 1. Reset Views
+        document.getElementById('details-view').classList.add('hidden');
+        document.getElementById('default-view').classList.remove('hidden');
+
+        // 2. Mobile Modal Close
+        if (window.innerWidth < 1024) {
+            const sidebar = document.getElementById('details-sidebar');
+            const overlay = document.getElementById('details-overlay');
+
+            // Hide Overlay
+            overlay.classList.replace('opacity-100', 'opacity-0');
+            overlay.classList.replace('pointer-events-auto', 'pointer-events-none');
+
+            // Slide Sidebar Down
+            sidebar.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
+            sidebar.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+
+            document.body.style.overflow = 'auto'; // Restore scroll
+        }
+    }
+
+
+    // function updateBuilderItemQty(buttonElement, change, source = 'list') {
+
+    //     const container = buttonElement.closest('.counter-container');
+    //     const input = container.querySelector('.qty-input');
+    //     const iconWrapper = container.querySelector('.icon-wrapper');
+    //     const counterWrapper = container.querySelector('.counter-wrapper');
+    //     const actionBtn = container.querySelector('.action-btn');
+
+    //     let currentVal = parseInt(input.value) || 0;
+    //     let newVal = currentVal + change;
+
+    //     const productId = container.dataset.productId;
+    //     const variantId = container.dataset.stockId;
+    //     const categoryId = container.dataset.categoryId;
+    //     const builderId = document.getElementById('pcBuilderId').value;
+
+    //     const reviewItem = document.querySelector(`.review-item[data-product-id="${productId}"][data-stock-id="${variantId}"]`);
+
+    //     // check min and max limits allowed for that category
+    //     const categoryElement = document.querySelector(`.nav-item[data-category-id="${categoryId}"]`);
+
+    //     const maxLimit = categoryElement.dataset.maxSelect 
+    //         ? parseInt(categoryElement.dataset.maxSelect) 
+    //         : 0;
+
+    //     const minLimit = parseInt(categoryElement.dataset.minSelect || 0);
+    //     const categoryName = categoryElement.dataset.categoryName;
+
+    //     // current total qty
+    //     const currentTotal = (buildData?.[categoryId] || [])
+    //         .reduce((sum, item) => sum + +item.quantity, 0);
+
+
+    //     // simulate next total
+    //     const nextTotal = currentTotal + change;
+
+    //     // MAX check (increment)
+    //     if (change > 0 && maxLimit > 0 && nextTotal > maxLimit) {
+    //         toastr.warning(`Maximum ${maxLimit} items allowed in ${categoryName}`);
+    //         return;
+    //     }
+
+    //     // MIN check (decrement / delete)
+    //     if (change < 0 && nextTotal < minLimit) {
+    //         toastr.warning(`Minimum ${minLimit} items required in ${categoryName}`);
+    //         return;
+    //     }
+
+
+    //     // check stock quantity
+    //     const stockQty = parseInt(container.dataset.stockQty) || 0;
+    //     const cartQty = parseInt(container.dataset.cartQty) || 0;
+
+    //     // Available qty user can select
+    //     const availableQty = stockQty - cartQty;
+
+    //     // Stop if exceeding stock
+    //     if (newVal > availableQty) {
+    //         toastr.warning(`Only ${availableQty} item(s) available`);
+    //         return;
+    //     }
+
+    //     if (newVal < 0) return;
+
+    //     if (newVal === 0) {
+
+    //         Swal.fire({
+    //             title: 'Remove Item?',
+    //             text: 'Are you sure you want to remove this item?',
+    //             icon: 'warning',
+    //             showCancelButton: true,
+    //             confirmButtonColor: '#d33',
+    //             cancelButtonColor: '#6c757d',
+    //             confirmButtonText: 'Yes, remove it'
+    //         }).then((result) => {
+
+    //             if (!result.isConfirmed) return;
+
+    //             savePcBuilder(productId, variantId, categoryId, builderId, 0, function (freshBuildData) {
+
+    //                 if(source === 'review'){
+    //                     const categoryElement = document.querySelector(`.nav-item[data-category-id="${categoryId}"]`);
+
+    //                     if (!categoryElement) return;
+
+    //                     const minLimit = parseInt(categoryElement.dataset.minSelect || 0);
+    //                     // const currentCount = freshBuildData?.[categoryId]?.length || 0;
+    //                     const currentCount = (freshBuildData?.[categoryId] || [])
+    //                         .reduce((sum, item) => sum + +item.quantity, 0);
+    //                     const categoryName = categoryElement.dataset.categoryName;
+
+    //                     if (currentCount < minLimit) {
+    //                         toastr.warning(`Minimum ${minLimit} product(s) required in ${categoryName}`);
+    //                         editBuilderCategory(categoryElement);
+    //                         updateNavButtons();
+    //                     }
+    //                     // remove that item div here in review page
+                        
+    //                     if (reviewItem) {
+    //                         reviewItem.remove();
+    //                     }
+    //                 } else{
+    //                     // UI reset
+    //                     input.value = 0;
+    //                     counterWrapper.classList.add('hidden');
+    //                     counterWrapper.classList.remove('flex');
+    //                     actionBtn.classList.remove('hidden');
+    //                 }
+    //             });   
+                    
+    //         });
+
+    //         return;
+    //     }
+
+    //     // update UI immediately (optimistic)
+    //     input.value = newVal;
+    //     iconWrapper.innerHTML = (newVal > 1) ? minusIcon : trashIcon;
+    //     if(reviewItem){
+    //         reviewItem.querySelector('.review-product-price').innerText = formatNumberUAE((newVal * parseFloat(reviewItem.querySelector('.review-item-offer-price').value))) ;
+    //     }
+
+    //     savePcBuilder(productId, variantId, categoryId, builderId, newVal);
+    // }
+
+    function updateBuilderItemQty(buttonElement, change, source = 'list') {
+
+        const container = buttonElement.closest('.counter-container');
+        const input = container.querySelector('.qty-input');
+        const iconWrapper = container.querySelector('.icon-wrapper');
+        const counterWrapper = container.querySelector('.counter-wrapper');
+        const actionBtn = container.querySelector('.action-btn');
+
+        const productId = container.dataset.productId;
+        const variantId = container.dataset.stockId;
+        const categoryId = container.dataset.categoryId;
+        const builderId = document.getElementById('pcBuilderId').value;
+
+        const reviewItem = document.querySelector(
+            `.review-item[data-product-id="${productId}"][data-stock-id="${variantId}"]`
+        );
+
+        const categoryElement = document.querySelector(`.nav-item[data-category-id="${categoryId}"]`);
+        if (!categoryElement) return;
+
         const categoryName = categoryElement.dataset.categoryName;
 
-        let message = '';
+        const maxLimit = parseInt(categoryElement.dataset.maxSelect) || Infinity;
+        const minLimit = parseInt(categoryElement.dataset.minSelect) || 0;
 
-        if (minSelect && maxSelect && maxSelect !== "null") {
-            message = `Select ${minSelect} - ${maxSelect} product(s) in ${categoryName}`;
-        } 
-        // else if (minSelect) {
-        //     message = `Select at least ${minSelect} product(s) in ${categoryName}`;
-        // } 
-        else if (maxSelect && maxSelect !== "null") {
-            message = `You can select up to ${maxSelect} product(s) in ${categoryName}`;
+        const currentVal = parseInt(input.value) || 0;
+        const newVal = currentVal + change;
+
+        if (newVal < 0) return;
+
+        // ---------- current total qty in category ----------
+        const currentTotal = (buildData?.[categoryId] || [])
+            .reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+
+        // IMPORTANT: remove old qty of this product before applying new one
+        const currentItemQty = (buildData?.[categoryId] || [])
+            .find(i => i.product_id == productId && i.variant_id == variantId)?.quantity || 0;
+
+        const nextTotal = currentTotal - currentItemQty + newVal;
+
+        // ---------- MAX validation ----------
+        if (change > 0 && nextTotal > maxLimit) {
+            toastr.warning(`Maximum ${maxLimit} items allowed in ${categoryName}`);
+            return;
         }
 
-        if (message) {
-            toastr.info(message);
+        // ---------- MIN validation ----------
+        if (change < 0 && nextTotal < minLimit) {
+            toastr.warning(`Minimum ${minLimit} items required in ${categoryName}`);
+            return;
         }
+
+        // ---------- stock validation ----------
+        const stockQty = parseInt(container.dataset.stockQty) || 0;
+        const cartQty = parseInt(container.dataset.cartQty) || 0;
+        const availableQty = stockQty - cartQty;
+
+        if (newVal > availableQty) {
+            toastr.warning(`Only ${availableQty} item(s) available`);
+            return;
+        }
+
+        // ---------- DELETE ----------
+        if (newVal === 0) {
+
+            Swal.fire({
+                title: 'Remove Item?',
+                text: 'Are you sure you want to remove this item?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, remove it'
+            }).then((result) => {
+
+                if (!result.isConfirmed) return;
+
+                savePcBuilder(productId, variantId, categoryId, builderId, 0, function (freshBuildData) {
+
+                    buildData = freshBuildData; // IMPORTANT sync
+
+                    if (reviewItem) reviewItem.remove();
+
+                    input.value = 0;
+                    counterWrapper.classList.add('hidden');
+                    counterWrapper.classList.remove('flex');
+                    actionBtn.classList.remove('hidden');
+
+                    updateNavButtons();
+                });
+
+            });
+
+            return;
+        }
+
+        // ---------- UI update ----------
+        input.value = newVal;
+        iconWrapper.innerHTML = (newVal > 1) ? minusIcon : trashIcon;
+
+        if (reviewItem) {
+            const price = parseFloat(reviewItem.querySelector('.review-item-offer-price').value) || 0;
+            reviewItem.querySelector('.review-product-price').innerText =
+                formatNumberUAE(newVal * price);
+        }
+
+        // ---------- persist ----------
+        savePcBuilder(productId, variantId, categoryId, builderId, newVal, function (freshBuildData) {
+            buildData = freshBuildData; // keep synced
+            updateNavButtons();
+        });
     }
 
+    function onCategoryClick(navItem) {
+
+        // reset filters every time category changes
+        document.getElementById('reset-filters').click();
+
+        let categoryId = navItem.dataset.categoryId;
+
+        // your existing logic
+        loadProducts(categoryId);
+    }
+    
+    function formatNumberUAE(value) {
+        return Number(value).toLocaleString('en-AE');
+    }
+ 
 </script>
 @endsection

@@ -79,6 +79,7 @@ Route::get('/buildyourpc/savePcBuilder', [BuildPcController::class, 'savePcBuild
 Route::get('/buildyourpc/getBuildData', [BuildPcController::class, 'getBuildData']);
 Route::get('/buildyourpc/place-order', [BuildPcController::class, 'placePcBuilderOrder'])->name('pcbuilder.place.order');
 Route::post('/pc-builder/reset', [BuildPcController::class, 'resetConfiguration'])->name('pc.builder.reset');
+Route::post('/pc-builder/delete', [BuildPcController::class, 'deletePcBuilder'])->name('pc.builder.delete');
 
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 Route::post('/checkout/placeOrder', [CheckoutController::class, 'placeOrder']);

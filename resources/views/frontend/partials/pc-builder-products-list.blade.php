@@ -46,7 +46,7 @@
                 $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
             @endphp
 
-            <a href="javascript:void(0)" class="flex items-center gap-[8px] -mt-2">
+            <a href="javascript:void(0)" class="flex items-center gap-[8px] -mt-2 cursor-default">
                 <div class="flex items-center gap-[2px]">
                     {{-- Full Stars --}}
                     @for ($i = 0; $i < $fullStars; $i++)

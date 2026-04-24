@@ -374,6 +374,20 @@
 
 		if (!minSlider || !maxSlider || !minInput || !maxInput || !progress) return;
 
+        minInput.addEventListener('keydown', function (e) {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				this.blur(); // triggers input update safely
+			}
+		});
+
+		maxInput.addEventListener('keydown', function (e) {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				this.blur();
+			}
+		});
+
 		const maxPrice = parseInt(maxSlider.max);
 
 		function updateProgress(minVal, maxVal) {
