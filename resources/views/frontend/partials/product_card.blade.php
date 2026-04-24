@@ -82,7 +82,7 @@
                 <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">
                 ({{ $totalReviews }} reviews)
                 </span>
-            </a>
+            </div>
             @php
                 $firstStock = $product->stocks->first();
                 $cartQty = \App\Models\Cart::where('product_stock_id', $prodData['stock_id'])->sum('quantity');
