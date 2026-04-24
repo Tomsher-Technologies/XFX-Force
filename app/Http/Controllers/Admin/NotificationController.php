@@ -20,7 +20,7 @@ class NotificationController extends Controller
         $user = auth('frontend')->user();
         if (!$user) abort(403, 'Unauthorized');
 
-        $notifications = $user->notifications()->paginate(15);
+        $notifications = $user->notifications()->paginate(10);
         $user->unreadNotifications->markAsRead();
 
         return view('frontend.notification.index', compact('notifications'));

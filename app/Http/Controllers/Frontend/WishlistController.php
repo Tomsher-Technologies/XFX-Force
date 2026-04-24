@@ -23,7 +23,7 @@ class WishlistController extends Controller
         if ($user_id) {
             $wishlist = Wishlist::with('product','product_stock')
                                 ->where('user_id', $user_id)
-                                ->paginate(30);
+                                ->paginate(12);
 
             $wishlist->getCollection()->transform(function ($data) {
                 if ($data->product && $data->product_stock) {
