@@ -73,7 +73,7 @@ Log::info($_REQUEST);
 				<div id="filter-wrapper">
 					<form class="hidden xl:block">
 						<!-- <div id="clear-filters" class="text-[#898989] text-[14px] text-right mt-2 cursor-pointer">Clear All</div> -->
-						<button id="clear-filters"
+						<button id="clear-filters" type="button"
 							class="inline-block w-full text-[#898989] text-[13px] md:text-[14px] font-medium 
 									px-3 py-1.5 mt-2 rounded-[6px] transition-all duration-200 
 									hover:bg-white/10 hover:text-white cursor-pointer flex items-center gap-2 mb-[10px]">
@@ -200,7 +200,11 @@ Log::info($_REQUEST);
 												<input type="number" class="min-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none border-0" value="0" min="0" max="300000" step="100">
 											</div>
 										</div>
-										<div class="h-[1px] w-4 bg-gray-600"></div>
+										<div>
+											<span class="text-gray-400 text-xs block mb-2">&nbsp;</span>
+											<div class="h-[1px] w-4 bg-gray-600"></div>
+										</div>
+										
 										<div class="w-full">
 											<span class="text-gray-400 text-xs block mb-2 text-right">Max</span>
 											<div class="bg-[#282B34] rounded-[10px] border border-white/5 text-right w-full price-input-box">
@@ -403,6 +407,21 @@ Log::info($_REQUEST);
 
 		if (!minSlider || !maxSlider || !minInput || !maxInput || !progress) return;
 
+		minInput.addEventListener('keydown', function (e) {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				this.blur(); // triggers input update safely
+			}
+		});
+
+		maxInput.addEventListener('keydown', function (e) {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				this.blur();
+			}
+		});
+
+
 		const maxPrice = parseInt(maxSlider.max);
 
 		function updateProgress(minVal, maxVal) {
@@ -542,7 +561,8 @@ Log::info($_REQUEST);
 	function filterProducts() {
 
 		page = 1;
-		document.getElementById('load-more-wrapper').style.display = 'block';
+		// document.getElementById('load-more-wrapper').style.display = 'block';
+		document.getElementById('product-loader').classList.remove('hidden');
 
 		const categories = Array.from(
 			document.querySelectorAll('input[name="categories[]"]:checked')
@@ -585,7 +605,7 @@ Log::info($_REQUEST);
 			})
 			.then(res => res.json())
 			.then(data => {
-
+				document.getElementById('product-loader').classList.add('hidden');
 				const wrapper = document.getElementById('product-list-wrapper');
 				
 				// Show / Hide load more
@@ -606,8 +626,8 @@ Log::info($_REQUEST);
 				updateProductCount();
 
 				// Scroll
-				const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
-				window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+				// const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
+				// window.scrollTo({ top: offsetTop, behavior: 'smooth' });
 
 				
 			})
@@ -615,47 +635,106 @@ Log::info($_REQUEST);
 	}
 
 	/* CLEAR FILTER */
+	// document.addEventListener('DOMContentLoaded', () => {
+	// 	const clearBtn = document.getElementById('clear-filters');
+	// 	if (!clearBtn) return;
+
+	// 	clearBtn.addEventListener('click', () => {
+	// 		// Reset sliders and inputs
+	// 		const minSlider = document.querySelector('.range-min');
+	// 		const maxSlider = document.querySelector('.range-max');
+	// 		const minInput = document.querySelector('.min-price');
+	// 		const maxInput = document.querySelector('.max-price');
+	// 		if (minSlider && maxSlider && minInput && maxInput) {
+	// 			minSlider.value = 0;
+	// 			maxSlider.value = maxSlider.max;
+	// 			minInput.value = 0;
+	// 			maxInput.value = maxSlider.max;
+	// 		}
+
+	// 		// updateProgress(0, parseInt(maxSlider.max));
+	// 		 updateProgress(0, maxVal);
+
+	// 		// Uncheck all categories and brands
+	// 		document.querySelectorAll('input[name="categories[]"], input[name="brands[]"]').forEach(cb => cb.checked = false);
+	// 		selectedBrands = [];
+
+	// 		// Reset sort and view if desired
+	// 		currentSort = "newest";
+	// 		currentView = "gridview";
+
+	// 		filterProducts();
+	// 	});
+	// });
+
+	// function updateProgress(minVal, maxVal) {
+
+	// 	const progress = document.querySelector('.slider-progress');
+	// 	const maxPrice = 300000;
+	// 	const minPercent = (minVal / maxPrice) * 100;
+	// 	const maxPercent = 100 - (maxVal / maxPrice) * 100;
+		
+
+	// 	progress.style.left = minPercent + "%";
+	// 	progress.style.right = maxPercent + "%";
+	// }
+
 	document.addEventListener('DOMContentLoaded', () => {
 		const clearBtn = document.getElementById('clear-filters');
 		if (!clearBtn) return;
 
-		clearBtn.addEventListener('click', () => {
-			// Reset sliders and inputs
+		clearBtn.addEventListener('click', (e) => {
+			e.preventDefault(); // IMPORTANT because button inside form
+
 			const minSlider = document.querySelector('.range-min');
 			const maxSlider = document.querySelector('.range-max');
 			const minInput = document.querySelector('.min-price');
 			const maxInput = document.querySelector('.max-price');
+
+			const maxVal = parseInt(maxSlider?.max || 300000);
+
 			if (minSlider && maxSlider && minInput && maxInput) {
 				minSlider.value = 0;
-				maxSlider.value = maxSlider.max;
+				maxSlider.value = maxVal;
 				minInput.value = 0;
-				maxInput.value = maxSlider.max;
+				maxInput.value = maxVal;
 			}
 
-			updateProgress(0, parseInt(maxSlider.max));
+			// update slider bar
+			updateProgress(0, maxVal);
 
-			// Uncheck all categories and brands
-			document.querySelectorAll('input[name="categories[]"], input[name="brands[]"]').forEach(cb => cb.checked = false);
+			// Reset checkboxes
+			document.querySelectorAll('input[name="categories[]"], input[name="brands[]"]')
+				.forEach(cb => cb.checked = false);
+
 			selectedBrands = [];
 
-			// Reset sort and view if desired
 			currentSort = "newest";
 			currentView = "gridview";
+
+			// reset URL clean
+			window.history.replaceState({}, '', '/products');
 
 			filterProducts();
 		});
 	});
 
 	function updateProgress(minVal, maxVal) {
+		const container = document.querySelector('.price-filter');
+		if (!container) return;
 
-		const progress = document.getElementById('slider-progress');
-		const maxPrice = 300000;
+		const progress = container.querySelector('.slider-progress');
+		const maxPrice = parseInt(container.querySelector('.range-max')?.max || 0);
+
+		if (!progress || !maxPrice) return;
+
 		const minPercent = (minVal / maxPrice) * 100;
 		const maxPercent = 100 - (maxVal / maxPrice) * 100;
 
 		progress.style.left = minPercent + "%";
 		progress.style.right = maxPercent + "%";
 	}
+
 	/* CATEGORY + BRAND CHECKBOX CHANGE */
 	document.addEventListener('change', function (e) {
 		if (

@@ -49,7 +49,7 @@ class ProductController extends Controller
         $query = null;
         $seller_id = null;
         $sort_search = null;
-        $products = Product::orderBy('created_at', 'asc');
+        $products = Product::orderBy('created_at', 'desc');
         $category = ($request->has('category')) ? $request->category : '';
 
         if ($request->type != null) {
@@ -373,7 +373,7 @@ class ProductController extends Controller
                         $stock_images_gallery[] = ImageHelper::downloadAndResizeImage(
                             'sub_product', 
                             $file, 
-                            $product->sku, 
+                            $stock->sku, 
                             true,
                             $key + 1
                         );
@@ -599,9 +599,9 @@ class ProductController extends Controller
         $seo->twitter_description   = $request->twitter_description;
         $seo->save();
 
+        ProductTabs::where('product_id', $product->id)->delete();
         //save product tabs
         if ($request->has('tabs')) {
-            ProductTabs::where('product_id', $product->id)->delete();
             foreach ($request->tabs as $tab) {
                 if ($tab['tab_heading'] != '' && $tab['tab_description'] != '') {
                     $p_tab = $product->tabs()->create([
@@ -613,9 +613,10 @@ class ProductController extends Controller
             }
         }
 
+        ProductWarranty::where('product_id', $product->id)->delete();
         // saving warranty
         if ($request->has('extended_warranty')) {
-            ProductWarranty::where('product_id', $product->id)->delete();
+            
             foreach ($request->extended_warranty as $warranty) {
                 if (!empty($warranty['warranty_title']) && !empty($warranty['warranty_months'])) {
                     $product->warranties()->create([
@@ -760,7 +761,7 @@ class ProductController extends Controller
                         $new_stock_gallery[] = ImageHelper::downloadAndResizeImage(
                             'sub_product',
                             $file,
-                            $product->sku,
+                            $stock->sku,
                             true
                         );
                     }
