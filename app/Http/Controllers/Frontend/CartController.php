@@ -225,7 +225,7 @@ class CartController extends Controller
             ->where('status', 'pending')
             ->get();
 
-           return $cartItems->count();
+           return $cartItems->sum('quantity');
     }
 
     public function removeCartItem($id)
@@ -335,7 +335,7 @@ class CartController extends Controller
         $offerSum     = $cartItems->sum('offer_sum');
         $discountSum  = $subTotal - $offerSum;
 
-        $cartCount    = $cartItems->count();
+        $cartCount    = $cartItems->sum('quantity');
         $warrantySum  = $cartItems->sum('warranty_price');
 
         // coupon discount

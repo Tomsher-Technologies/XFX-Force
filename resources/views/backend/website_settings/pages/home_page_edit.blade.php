@@ -815,18 +815,5 @@
         initAizRepeater('.footer-section-repeater');
     });
 
-    $(document).on('change', '.aiz-selectpicker[multiple]', function () {
-        var selected = $(this).val();
-        var options = $(this).find('option');
-
-        options.each(function () {
-            if (selected.includes($(this).val())) {
-                $(this).detach();
-                $(this).appendTo($(this).parent());
-            }
-        });
-
-        $(this).selectpicker('refresh');
-    });
 </script>
 @endsection
