@@ -87,9 +87,10 @@
                                 <div>
                                     <div class="relative w-full">
                                         <select id="emirate-select" class="w-full bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] appearance-none cursor-pointer transition-all font-medium bg-image-none" name="billing_state">
+                                            <option value="" disabled selected>Select Emirate</option>
                                             <option value="Abu Dhabi">Abu Dhabi</option>
                                             <option value="Ajman">Ajman</option>
-                                            <option value="Dubai" selected>Dubai</option>
+                                            <option value="Dubai">Dubai</option>
                                             <option value="Fujairah">Fujairah</option>
                                             <option value="Ras Al Khaimah">Ras Al Khaimah</option>
                                             <option value="Sharjah">Sharjah</option>
@@ -192,20 +193,21 @@
                                 <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">4</span> Payment Methods
                             </h2>
                             <div class="grid grid-cols-2 gap-4 mb-8">
-                                <label class="flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-600 transition-all">
+
+                                <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
                                     <div class="flex items-center gap-3">
-                                        <input type="radio" name="pay" checked class="accent-[#2A7CFF]">
+                                        <input type="radio" name="pay" checked class="accent-[#2A7CFF]" value="cash_on_delivery">
                                         <span>Cash On Delivery</span>
                                     </div>
                                 </label>
 
-                                <label class="flex items-center justify-between p-4 bg-[#161B22] border border-[#2A7CFF] rounded-xl cursor-pointer">
+                                <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
                                     <div class="flex items-center gap-3">
-                                        <input type="radio" name="pay" class="accent-[#2A7CFF]">
+                                        <input type="radio" name="pay" class="accent-[#2A7CFF]" value="card">
                                         <span>Credit / Debit Card</span>
                                     </div>
                                     <div class="hidden md:flex gap-2">
-                                        <img src="{{ asset('assets/images/payment-methods.png') }}" alt="Payment Methods" class="w-full md:w-[280px] h-auto object-contain object-center block ml-auto">
+                                        <img src="{{ asset('assets/images/payment-methods.png') }}" class="w-full md:w-[280px] h-auto object-contain ml-auto">
                                     </div>
                                 </label>
                             </div>
@@ -420,7 +422,7 @@
                         {{-- Phone --}}
                         <div>
                             <input type="text" name="phone" id="phone"
-                                placeholder="Phone Number *"
+                                placeholder="971xxxxxxxxx"
                                 value=""
                                 class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
 
@@ -449,9 +451,20 @@
                         {{-- Emirate / State --}}
                         <div class="relative w-full">
 
-                            <input type="text"  name="state" id="state"  placeholder="Emirate / State *"
-                                value=""
-                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
+                            <select class="w-full bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] appearance-none cursor-pointer transition-all font-medium bg-image-none" name="state" id="state">
+                                <option value="Abu Dhabi">Abu Dhabi</option>
+                                <option value="Ajman">Ajman</option>
+                                <option value="Dubai" selected>Dubai</option>
+                                <option value="Fujairah">Fujairah</option>
+                                <option value="Ras Al Khaimah">Ras Al Khaimah</option>
+                                <option value="Sharjah">Sharjah</option>
+                                <option value="Umm Al Quwain">Umm Al Quwain</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
                             <p class="text-red-400 text-xs mt-1 error-state"></p>
                         </div>
 
@@ -465,7 +478,7 @@
                         {{-- Country --}}
                         <div>
                             <input type="text" name="country" id="country" placeholder="Country *"
-                                value=""
+                                value="United Arab Emirates" readonly
                                 class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
                             <p class="text-red-400 text-xs mt-1 error-country"></p>
                         </div>
@@ -814,5 +827,30 @@ document.addEventListener('DOMContentLoaded', () => {
        
     
 
+</script>
+<script id="pay-radio-script">
+    const options = document.querySelectorAll('.payment-option');
+
+    function updateBorders() {
+        options.forEach(label => {
+            const radio = label.querySelector('input[type="radio"]');
+            
+            if (radio.checked) {
+                label.classList.remove('border-gray-800');
+                label.classList.add('border-[#2A7CFF]');
+            } else {
+                label.classList.remove('border-[#2A7CFF]');
+                label.classList.add('border-gray-800');
+            }
+        });
+    }
+
+    // Run on load
+    updateBorders();
+
+    // Listen for change
+    options.forEach(label => {
+        label.querySelector('input').addEventListener('change', updateBorders);
+    });
 </script>
 @endsection

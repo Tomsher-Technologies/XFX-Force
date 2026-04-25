@@ -10,6 +10,20 @@
         <div class="card-body">
             <div class="row gutters-5">
                 <div class="col text-center text-md-left">
+                    <h6 class="mb-1 fw-600">Billing Address</h6>
+                    @php
+                        $billing_address = json_decode($order->billing_address);
+                    @endphp
+                    @if ($billing_address)
+                        <address>
+                            <span>{{ $billing_address->name }}</span><br>
+                            {{ $billing_address->email }}<br>
+                            {{ $billing_address->phone }}<br>
+                            {{ $billing_address->address }},
+                            {{ $billing_address->city }}, {{ $billing_address->state }}, {{ $billing_address->country }},
+                            
+                        </address>
+                    @endif
                 </div>
                 @php
                     $delivery_status = $order->delivery_status;
@@ -61,19 +75,30 @@
             </div>
             <div class="row gutters-5">
                 <div class="col-sm-12 col-md-6 text-md-left">
-                    @php
-                        $shipping_address = json_decode($order->shipping_address);
-                    @endphp
-                    @if ($shipping_address)
+
+                    @if($order->shipping_type == "pickup")
+                        <h6 class="mb-1 fw-600">Pickup Location</h6>
                         <address>
-                            <strong class="text-main">{{ $shipping_address->name }}</strong><br>
-                            {{ $shipping_address->email }}<br>
-                            {{ $shipping_address->phone }}<br>
-                            {{ $shipping_address->address }},
-                            {{ $shipping_address->city }}, {{ $shipping_address->state }}, {{ $shipping_address->country }},
-                            
+                            {{ $order->pickup_location }}
                         </address>
+                    @else
+                        @php
+                            $shipping_address = json_decode($order->shipping_address);
+                        @endphp
+                        <h6 class="mb-1 fw-600">Shipping Address</h6>
+                        @if ($shipping_address)
+                            <address>
+                                <span>{{ $shipping_address->name }}</span><br>
+                                {{ $shipping_address->email }}<br>
+                                {{ $shipping_address->phone }}<br>
+                                {{ $shipping_address->address }},
+                                {{ $shipping_address->city }}, {{ $shipping_address->state }}, {{ $shipping_address->country }},
+                                
+                            </address>
+                        @endif
                     @endif
+                    
+                    
                     
                     
                 </div>

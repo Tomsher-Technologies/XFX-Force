@@ -410,11 +410,10 @@ class ProductController extends Controller
         }
 
         $seo = $product->seo->first();
-
         $seoContents = [
             'title' => $seo->meta_title ?? '',
             'meta_description' => $seo->meta_description ?? '',
-            'keywords' => $seo->keywords ?? '',
+            'keywords' => $seo->meta_keywords ?? '',
             'og_title' => $seo->og_title ?? '',
             'og_description' => $seo->og_description ?? '',
             'twitter_title' => $seo->twitter_title ?? '',
@@ -828,7 +827,7 @@ class ProductController extends Controller
         $seoContents = [
             'title' => $category->category_translations[0]['meta_title'] ?? '',
             'meta_description' => $category->category_translations[0]['meta_description'] ?? '',
-            'keywords' => $category->category_translations[0]['keywords'] ?? '',
+            'keywords' => $category->category_translations[0]['meta_keyword'] ?? '',
             'og_title' => $category->category_translations[0]['og_title'] ?? '',
             'og_description' => $category->category_translations[0]['og_description'] ?? '',
             'twitter_title' => $category->category_translations[0]['twitter_title'] ?? '',
@@ -973,7 +972,7 @@ class ProductController extends Controller
         $seoContents = [
             'title' => $brand->brand_translations[0]['meta_title'] ?? '',
             'meta_description' => $brand->brand_translations[0]['meta_description'] ?? '',
-            'keywords' => $brand->brand_translations[0]['keywords'] ?? '',
+            'keywords' => $brand->brand_translations[0]['meta_keywords'] ?? '',
             'og_title' => $brand->brand_translations[0]['og_title'] ?? '',
             'og_description' => $brand->brand_translations[0]['og_description'] ?? '',
             'twitter_title' => $brand->brand_translations[0]['twitter_title'] ?? '',

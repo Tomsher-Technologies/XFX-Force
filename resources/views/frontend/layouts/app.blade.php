@@ -61,6 +61,10 @@
             right: auto;
             background-image: url("{{ asset('assets/images/arrow-left.svg') }}"); 
         }
+
+        button.variant-btn.active {
+            border: 1px solid #2a7cff;
+        }
     </style>
 </head>
 

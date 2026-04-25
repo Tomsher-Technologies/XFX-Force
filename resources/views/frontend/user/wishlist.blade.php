@@ -36,9 +36,14 @@
                     @endforelse
                     
                 </div>
-                <div class="mt-10">
-                    {{ $wishlist->links('pagination::tailwind') }}
-                </div>
+               
+
+                @if($wishlist->hasPages())
+                    <div class="mt-8 md:mt-10">
+                        {{ $wishlist->links('vendor.pagination.frontend-dark') }}
+                    </div>
+                @endif
+
             </main>
         </div>
     </div>

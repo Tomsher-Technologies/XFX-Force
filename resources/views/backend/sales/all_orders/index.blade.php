@@ -89,6 +89,7 @@
                         <th  class="text-center">Num. of Products</th>
                         <th >Customer</th>
                         <th class="text-center" >Amount</th>
+                        <th  class="text-center">Shipping Method</th>
                         <th  class="text-center">Delivery Status</th>
                         <th  class="text-center">Payment Status</th>
                         <th class="text-center" width="15%">{{trans('messages.options')}}</th>
@@ -120,6 +121,13 @@
                         </td>
                         <td class="text-center">
                             {{ single_price($order->grand_total) }}
+                        </td>
+                        <td class="text-center">
+                            @if ($order->shipping_type == 'pickup')
+                                Pickup
+                            @else
+                                Delivery
+                            @endif
                         </td>
                         <td class="text-center">
                             @php

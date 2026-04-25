@@ -599,7 +599,7 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <label>&nbsp;</label>
+                                                    <label class="d-block">&nbsp;</label>
                                                     <button type="button" class="remove-spec border-0 bg-transparent">
                                                         <i class="las la-trash text-danger"></i>
                                                     </button>
@@ -792,7 +792,7 @@
                                                     </div>
 
                                                     <div class="col-md-2">
-                                                        <label>&nbsp;</label>
+                                                        <label class="d-block">&nbsp;</label>
                                                         <button type="button"
                                                         class="remove-spec border-0 bg-transparent">
                                                         <i class="las la-trash text-danger"></i>
@@ -1219,7 +1219,7 @@ $tabs[$key]['tab_description'] = $tab->content;
 
     // Initialize **existing items** separately **after DOM load**, but avoid cloning problems
 $(function() {
-    $(".specification-block").first().find('.remove-spec').hide();
+    // $(".specification-block").first().find('.remove-spec').hide();
     var textarea = $(this).find('.text-area');
 
     if (!textarea.hasClass('summernote-initialized')) {

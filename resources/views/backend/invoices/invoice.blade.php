@@ -130,7 +130,12 @@
             <div class="invoice-info-left">
                 <strong>Invoice Number:</strong> {{ $order->code }} <br>
                 <hr style="border: 0.5px solid #eee">
-                <strong>Payment Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->payment_type)) }}
+                <strong>Payment Method:</strong> 
+                @if($order->payment_type == 'cash_on_delivery')
+                    Cash on Delivery
+                @else
+                    Debit / Credit Card
+                @endif
                 <br>
                 <hr style="border: 0.5px solid #eee">
                 <strong>Shipping Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->shipping_type)) }}
@@ -163,17 +168,24 @@
                 </p>
             </div>
             <div class="invoice-info-left" style="float: right; text-align:right">
-                <strong>Shipping Address:</strong>
-                <p>
-                    @php 
-                        $shippingAddress = json_decode($order->shipping_address);
-                    @endphp
-                    {{ $shippingAddress?->name }}<br>
-                    {{ $shippingAddress?->address }} <br>
-                    {{ $shippingAddress?->city }} <br>
-                    {{ $shippingAddress?->phone }} <br>
-                    {{ $shippingAddress?->email }} <br>
-                </p>
+                 @if($order->shipping_type == 'pickup')
+                    <strong>Pickup Location:</strong>
+                    <p>
+                        {{ $order->pickup_location }}
+                    </p>
+                @else
+                    <strong>Shipping Address:</strong>
+                    <p>
+                        @php 
+                            $shippingAddress = json_decode($order->shipping_address);
+                        @endphp
+                        {{ $shippingAddress?->name }}<br>
+                        {{ $shippingAddress?->address }} <br>
+                        {{ $shippingAddress?->city }} <br>
+                        {{ $shippingAddress?->phone }} <br>
+                        {{ $shippingAddress?->email }} <br>
+                    </p>
+                @endif
             </div>
         </div>
 
@@ -194,7 +206,7 @@
 
                 @if($pcBuilderItems->count() > 0)
                     <tr class="bg-light">
-                        <td class="fw-bold text-dark" colspan="4">PC Builder Items</td>
+                        <td class="fw-bold text-dark" colspan="4" style="font-weight: 600;">PC Builder Items</td>
                     </tr>
                     @foreach ($pcBuilderItems as $key => $orderDetail)
                         <tr>
@@ -229,7 +241,7 @@
 
                 <!-- Other Products -->
                 <tr class="bg-light">
-                    <td class="fw-bold text-dark" colspan="4">Other products</td>
+                    <td class="fw-bold text-dark" colspan="4" style="font-weight: 600;">Other products</td>
                 </tr>
                 @endif
                 @foreach ($normalItems as $key => $orderDetail)
