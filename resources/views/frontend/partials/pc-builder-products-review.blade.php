@@ -1,7 +1,7 @@
 <div class="sticky top-0 bg-[#1C2228] border border-[#1E2529] p-[15px] md:p-[30px] rounded-[20px] flex flex-col justify-between group transition-all gap-[30px] z-[1]">
     <div class="flex flex-col md:flex-row justify-between w-full gap-[15px] md:gap-[0px]">
         <div class="flex flex-col gap-[5px] w-full">
-            <h2 class="text-white text-[20px] font-bold">Complete Your Order</h2>
+            <h2 class="text-white text-[20px] font-medium">Complete Your Order</h2>
             <p class="text-gray-500 text-[15px]">Review your build and enter shipping details</p>
         </div>
         <div class="w-full left-0 flex items-center justify-between md:justify-end mt-auto gap-[20px]">
@@ -16,7 +16,7 @@
 </div>
 <div class="p-[30px] min-w-0 overflow-x-hidden relative z-[0] bg-[#1C2228] rounded-[20px] mt-[30px]">
     <div class="flex flex-col gap-[5px] w-full">
-        <h2 class="text-white text-[20px] font-bold">Selected Items</h2>
+        <h2 class="text-white text-[20px] font-medium">Selected Items</h2>
         <p class="text-gray-500 text-[15px]">Review your selected items</p>
     </div>
     <div class="w-full flex flex-col mt-[30px]" id="review_block">
@@ -37,7 +37,7 @@
             }
         }
         @endphp
-        <div class="grid grid-cols-12 gap-[20px] md:gap-[30px] items-center border-t-1 border-[#2E363E] py-[20px] review-item" data-product-id="{{ $item['product_id'] }}" data-stock-id="{{ $item['variant_id'] }}" data-category-id="{{ $item['category_id'] }}"  >
+        <div class="grid grid-cols-12 gap-[20px] md:gap-[30px] items-center border-t border-[#2E363E] py-[20px] review-item" data-product-id="{{ $item['product_id'] }}" data-stock-id="{{ $item['variant_id'] }}" data-category-id="{{ $item['category_id'] }}"  >
             <div class="col-span-12 md:col-span-5 flex flex-row gap-[20px] items-center">
                 <div>
 
@@ -66,12 +66,12 @@
                         }
                     @endphp
 
-                    <a href="{{ $pagelink }}" target="_blank" class="w-20 h-20 bg-[#252c33] rounded-lg flex items-center justify-center">
+                    <a href="{{ $pagelink }}" target="_blank" class="w-20 h-20 bg-white rounded-lg flex items-center justify-center">
                         <img src="{{ $image }}" alt="{{ $item['variant_name'] ?: $item['product_name'] }}" title="{{ $item['variant_name'] ?: $item['product_name'] }}" class="w-full">
                     </a>
                 </div>
                 <a href="{{ $pagelink }}" target="_blank">
-                    <label class="text-[12px] uppercase text-gray-500 mb-2 block">{{ $item['category_name']?? '' }}</label>
+                    <label class="text-[12px] uppercase text-gray-500 mb-[5px] block">{{ $item['category_name']?? '' }}</label>
                     <h4 class="text-white text-[15px] mb-[0px]">{{ $item['variant_name'] ?: $item['product_name'] }}</h4>
                 </a>
             </div>
@@ -93,7 +93,7 @@
                         </span>
                     </button>
 
-                    <input type="number" value="{{ $item['quantity'] }}" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-bold rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                    <input type="number" value="{{ $item['quantity'] }}" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-medium rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
 
                     <button onclick="updateBuilderItemQty(this,1,'review')" class="cursor-pointer flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg transition-all active:scale-90">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

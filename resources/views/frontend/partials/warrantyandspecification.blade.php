@@ -21,7 +21,7 @@ return [
 ->values();
 
 @endphp
-<div class="spec-modal-overlay fixed inset-0 z-[9999] hidden overflow-y-auto bg-black/80 backdrop-blur-md transition-all duration-300 opacity-0 px-4 py-10">
+<div class="spec-modal-overlay fixed top-0 left-0 w-full h-full inset-0 z-[9999] hidden overflow-y-auto bg-black/80 backdrop-blur-md transition-all duration-300 opacity-0 px-4 py-10">
     <div class="spec-modal-container relative mx-auto bg-[#0B0F13] border border-gray-800 w-full max-w-4xl rounded-2xl shadow-2xl transform scale-100 transition-all duration-300 mt-[100px]">
         <div class="flex justify-end p-4">
             <button onclick="closeSpecModal(this.closest('.spec-modal-overlay'))"

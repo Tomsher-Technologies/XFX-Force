@@ -423,7 +423,7 @@
             @foreach($middleBanners as $banner)
             <div class="swiper-slide" data-swiper-autoplay="8000">
                 <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif>
-                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full" alt="{{ $banner->name}}">
+                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full rounded-[20px]" alt="{{ $banner->name}}">
                 </a>
             </div>
             @endforeach
@@ -541,7 +541,7 @@
             @foreach($middleFullBanners as $banner)
             <div class="swiper-slide" data-swiper-autoplay="8000">
                 <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif>
-                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full" alt="{{ $banner->name }}">
+                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full rounded-[20px]" alt="{{ $banner->name }}">
                 </a>
             </div>
             @endforeach
@@ -601,7 +601,7 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[15px]">
         @foreach($popularGalleryProducts as $product)
-        <div class="group ftr-card relative rounded-[20px] overflow-hidden min-h-[300px] xl:min-h-[400px] cursor-pointer" onclick="window.location.href='{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}'">
+        <div class="group ftr-card relative rounded-[20px] overflow-hidden cursor-pointer" onclick="window.location.href='{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}'">
             <img src="{{ get_product_image($product->thumbnail_img) }}" class="relative object-center object-fit top-0 left-0 transition-all duration-[600ms] group-hover:scale-110" alt="{{ $product->name }}" title="{{ $product->name }}">
             <div class="content flex flex-col xl:flex-row items-end justify-end xl:justify-between gap-[20px] xl:gap-[30px] relative z-[1] w-full h-fit bg-[#0b0f13] p-[30px]">
                 <h6 class="text-white text-[20px] font-medium w-full xl:w-[50%] text-center xl:text-left line-clamp-2">{{ $product->name }}</h6>

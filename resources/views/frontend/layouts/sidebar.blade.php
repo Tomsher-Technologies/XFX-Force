@@ -2,7 +2,7 @@
     <div class="bg-[#0f161b47] backdrop-blur-[60px] xl:bg-[#1C2228] border border-[#282B34] p-[5px] rounded-[15px] xl:rounded-[20px] xl:p-6 xl:sticky xl:top-[180px] shadow-2xl">
         
         <div class="hidden xl:flex items-center gap-4 mb-5 pb-6 border-b border-[#282B34]">
-            <div id="userAvatarSidebar" class="flex items-center justify-center w-12 h-12 rounded-full bg-[#282B34] border border-white/5 text-white font-bold text-xl">?</div>
+            <div id="userAvatarSidebar" class="flex items-center justify-center w-12 h-12 rounded-full bg-[#282B34] border border-white/5 text-white font-medium text-xl">?</div>
             <div class="flex flex-col gap-[2px] line-clamp-2">
                 <span id="userNameSidebar" class="font-medium text-[18px] text-white">{{ auth('frontend')->user()->name ?? '' }}</span>
                 <p class="text-gray-500 text-[11px] tracking-wider">{{ auth('frontend')->user()->email ?? '' }}</p>
