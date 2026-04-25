@@ -89,7 +89,7 @@
             </div>
             <!--//ratings-->
 
-            <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[15px] leading-[20px] m-[0] font-bold align-center items-center gap-[10px]">
+            <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[15px] leading-[20px] m-[0] font-medium align-center items-center gap-[10px]">
                 <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]" alt="AED" title="Symbol of AED">{{ number_format($stock->offer_price, 2) }} 
                 @if(filled($stock->offer_tag))
                 <span class="text-[#898989] font-medium line-through">{{ number_format($stock->price, 2) }}</span>
@@ -109,7 +109,7 @@
                         </span>
                     </button>
 
-                    <input type="number" value="1" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-bold rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                    <input type="number" value="1" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-medium rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
 
                     <button onclick="updateBuilderItemQty(this, 1); event.stopPropagation();" class="cursor-pointer flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg transition-all active:scale-90">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
