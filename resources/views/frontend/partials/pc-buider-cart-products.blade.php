@@ -26,15 +26,37 @@
                                     $image = Storage::url($item->product->thumbnail_img);
                                 }
                             @endphp
-                            <img src="{{ $image }}" class="object-cover object-center w-auto md:w-full h-[150px] md:h-fit" alt="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}" title="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}">
+                            
+                            <img src="{{ $image }}" class="object-cover object-center w-auto md:w-full h-[150px] md:h-fit cursor-pointer" alt="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}" title="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}" onclick="window.location='{{ route('product.details' ,[$item->product->slug, $item->product_stock->sku]) }}'">
+                            
                         </div>
                         <div class="flex flex-col gap-[10px]">
-                            <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 md:line-clamp-1 xl:line-clamp-2 text-center md:text-left cursor-pointer">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>
-                            <!-- <a onclick="toggleSpecModal()" class="text-[#2A7CFF] text-[14px] cursor-pointer text-center md:text-left">Specifications</a>
-                            <a onclick="toggleWarrantyModal()" class="text-center md:text-left w-full py-[5px] text-[12px] text-white flex flex-row items-center justify-center md:justify-start gap-[10px] leading-[0px] cursor-pointer"><i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i>Choose Your Warranty Plan</a> -->
-                            <p class="text-[10px] text-[#ffffff50] text-center xl:text-left">Color: Red | Size: 100M | Color: Red | Size: 100M | Color: Red | Size: 100M | Color: Red | Size: 100M | Color: Red | Size: 100M | Color: Red | Size: 100M</p>
+                            <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 md:line-clamp-1 xl:line-clamp-2 text-center md:text-left cursor-pointer" onclick="window.location='{{ route('product.details' ,[$item->product->slug, $item->product_stock->sku]) }}'">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>
+                            <p class="text-[10px] text-[#ffffff50] text-center xl:text-left">
+                                @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
+                                    <span class="text-gray-400 text-sm">
+                                        
+                                        @foreach($item->product_stock->attributes as $attr)
+                                            {{ $attr->attribute?->name ?? '' }}:
+                                            {{ $attr->value?->value ?? '' }}
+
+                                            @if(!$loop->last) | @endif
+                                        @endforeach
+                                        
+                                    </span>
+                                @endif
+                                
+                            </p>
+
                             @php
-                                $productSpecifications = $item->product_stock->specifications;
+                                
+                                 $productSpecifications = \App\Models\ProductSpecification::where(
+                                    'product_stock_id',
+                                    $item->product_stock->id
+                                    )->with(['specification','specificationItem'])
+                                    ->orderBy('sort_order')
+                                    ->get();
+                               
                             @endphp
                             @if($productSpecifications->isNotEmpty())
                                 <a onclick="toggleSpecModal(this)" class="text-[#2A7CFF] text-[14px] cursor-pointer text-center md:text-left">Specifications</a>
@@ -43,9 +65,16 @@
                             <!-- Warranty popup link -->
                             @php
                                 $productWarranties = $item->product->warranties;
+                                $selectedWarranty = $productWarranties->firstWhere('id', $item->warranty_id);
                             @endphp
                             @if($productWarranties->isNotEmpty())
-                                <a onclick="toggleWarrantyModal(this)" class="text-center xl:text-left w-full py-[5px] text-[12px] text-white flex flex-row items-center justify-center md:justify-start gap-[10px] leading-[0px] cursor-pointer"><i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i>Choose Your Warranty Plan</a>
+                                <a onclick="toggleWarrantyModal(this)" class="text-center w-full text-[12px] text-white flex flex-row items-center gap-[10px] leading-[0px] cursor-pointer {{ $selectedWarranty ? 'md:text-left p-[15px] bg-[#1A202A] rounded-full flex justify-between' : 'xl:text-left py-[5px] justify-center md:justify-start' }} "  data-cartid="{{$item->id}}">
+                                    @if($selectedWarranty)
+                                    {{ $selectedWarranty->title }} ({{ $selectedWarranty->price > 0 ? format_price($selectedWarranty->price): 'FREE' }} ) <span>✕</span>
+                                    @else
+                                    <i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i> Choose Your Warranty Plan
+                                    @endif
+                                </a>
                             @endif
                             
                         </div>

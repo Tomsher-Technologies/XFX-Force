@@ -59,7 +59,7 @@ $hideFooter = true;
 
             <div class="p-[30px] border-t-1 border-[#2E363E] flex flex-col gap-[20px]">
                 <div>
-                    <label class="text-[14px] text-gray-400 mb-[5px] block text-left md:text-left">Total Price</label>
+                    <label class="text-[14px] text-gray-400 mb-[5px] block text-left md:text-left">Total Price (with tax)</label>
                     <div class="price w-full flex flex-row items-end gap-[15px]">
                         <h5 class="price flex flex-row text-white text-left text-[20px] m-[0] font-medium align-center items-center gap-[10px] leading-[35px]">
                             <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -187,7 +187,7 @@ $hideFooter = true;
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-3 gap-[5px] xl:gap-4 py-[30px] min-w-0 overflow-x-hidden relative z-[0]" id="products-list">
-                @include('frontend.partials.pc-builder-products-list', ['products' => $products ?? []])
+                @include('frontend.partials.pc-builder-products-list', ['stocks' => $stocks ?? []])
             </div>
 
             <!-- Optional: hidden spinner -->
@@ -827,12 +827,7 @@ $hideFooter = true;
 
         const minSelect = parseInt(categoryEl?.dataset.minSelect || 0);
 
-        // const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0;
-        const selectedCount = buildData[categoryId]
-            ? buildData[categoryId].reduce((sum, item) => {
-                return sum + (parseInt(item.quantity) || 0);
-            }, 0)
-            : 0;
+        const selectedCount = getSelectedCount(categoryId);
 
         if (minSelect && selectedCount < minSelect) {
             showWarning(`Please select at least ${minSelect} product(s) in ${categoryName}`);
@@ -850,15 +845,8 @@ $hideFooter = true;
         const maxSelect = activeCategoryEl.dataset.maxSelect;
         
         if (!maxSelect) return true;
-        
-        // const selectedCount = buildData[categoryId] ? buildData[categoryId].length + 1 : 0; // add 1 because we are checking before adding the product to the buildData
 
-        const selectedCount = buildData[categoryId]
-            ? buildData[categoryId].reduce((sum, item) => {
-                return sum + (parseInt(item.quantity) || 0);
-            }, 0)
-            : 0;
-
+        const selectedCount = getSelectedCount(categoryId);
 
         // block only if already reached max
         if (selectedCount >= maxSelect) {
@@ -994,11 +982,12 @@ $hideFooter = true;
         const variantId = buttonElement.dataset.stockId;
         const builderId = document.getElementById('pcBuilderId').value;
 
+        
+
+        savePcBuilder(productId, variantId, categoryId, builderId, qty);
         buttonElement.classList.add('hidden');
         counter.classList.add('flex');
         counter.classList.remove('hidden');
-
-        savePcBuilder(productId, variantId, categoryId, builderId, qty);
         updateAfterRemove(categoryId);
         getBuildItemTotal();
     }
@@ -1010,6 +999,7 @@ $hideFooter = true;
             .then(data => {
                 if (data.status) {
                     buildData = data.build_data;
+                    window.buildData = buildData; // update global variable
                     if (!builderId && data.builder_id) {
                         document.getElementById('pcBuilderId').value = data.builder_id;
                     }
@@ -1032,13 +1022,9 @@ $hideFooter = true;
         document.querySelectorAll('.nav-item').forEach(category => {
             const categoryId = category.dataset.categoryId;
             const minSelect = parseInt(category.dataset.minSelect || 0);
-            // const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0; // no need to add 1 here because we are checking the buildData which is already updated after selection
+            
 
-            const selectedCount = buildData[categoryId]
-                ? buildData[categoryId].reduce((sum, item) => {
-                    return sum + (parseInt(item.quantity) || 0);
-                }, 0)
-                : 0;
+            const selectedCount = getSelectedCount(categoryId);
             if (selectedCount < minSelect) {
                 allCompleted = false;
             }
@@ -1068,13 +1054,9 @@ $hideFooter = true;
             const categoryId = category.dataset.categoryId;
             const categoryName = category.dataset.categoryName;
             const minSelect = parseInt(category.dataset.minSelect || 0);
-            // const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0; // no need to add 1 here because we are checking the buildData which is already updated after selection
+            
 
-            const selectedCount = buildData[categoryId]
-                ? buildData[categoryId].reduce((sum, item) => {
-                    return sum + (parseInt(item.quantity) || 0);
-                }, 0)
-                : 0;
+            const selectedCount = getSelectedCount(categoryId);
             
             if (selectedCount < minSelect) {
                 showWarning(`Please complete ${categoryName}`);
@@ -1107,13 +1089,9 @@ $hideFooter = true;
         document.querySelectorAll('.nav-item').forEach(category => {
             const categoryId = category.dataset.categoryId;
             const minLimit = parseInt(category.dataset.minSelect);
-            // const selectedCount = buildData[categoryId] ? buildData[categoryId].length : 0; // no need to add 1 here because we are checking the buildData which is already updated after selection
+            
 
-            const selectedCount = buildData[categoryId]
-                ? buildData[categoryId].reduce((sum, item) => {
-                    return sum + (parseInt(item.quantity) || 0);
-                }, 0)
-                : 0;
+            const selectedCount = getSelectedCount(categoryId);
 
             if (selectedCount < minLimit) {
                 valid = false;
@@ -1350,132 +1328,6 @@ $hideFooter = true;
         }
     }
 
-
-    // function updateBuilderItemQty(buttonElement, change, source = 'list') {
-
-    //     const container = buttonElement.closest('.counter-container');
-    //     const input = container.querySelector('.qty-input');
-    //     const iconWrapper = container.querySelector('.icon-wrapper');
-    //     const counterWrapper = container.querySelector('.counter-wrapper');
-    //     const actionBtn = container.querySelector('.action-btn');
-
-    //     let currentVal = parseInt(input.value) || 0;
-    //     let newVal = currentVal + change;
-
-    //     const productId = container.dataset.productId;
-    //     const variantId = container.dataset.stockId;
-    //     const categoryId = container.dataset.categoryId;
-    //     const builderId = document.getElementById('pcBuilderId').value;
-
-    //     const reviewItem = document.querySelector(`.review-item[data-product-id="${productId}"][data-stock-id="${variantId}"]`);
-
-    //     // check min and max limits allowed for that category
-    //     const categoryElement = document.querySelector(`.nav-item[data-category-id="${categoryId}"]`);
-
-    //     const maxLimit = categoryElement.dataset.maxSelect 
-    //         ? parseInt(categoryElement.dataset.maxSelect) 
-    //         : 0;
-
-    //     const minLimit = parseInt(categoryElement.dataset.minSelect || 0);
-    //     const categoryName = categoryElement.dataset.categoryName;
-
-    //     // current total qty
-    //     const currentTotal = (buildData?.[categoryId] || [])
-    //         .reduce((sum, item) => sum + +item.quantity, 0);
-
-
-    //     // simulate next total
-    //     const nextTotal = currentTotal + change;
-
-    //     // MAX check (increment)
-    //     if (change > 0 && maxLimit > 0 && nextTotal > maxLimit) {
-    //         toastr.warning(`Maximum ${maxLimit} items allowed in ${categoryName}`);
-    //         return;
-    //     }
-
-    //     // MIN check (decrement / delete)
-    //     if (change < 0 && nextTotal < minLimit) {
-    //         toastr.warning(`Minimum ${minLimit} items required in ${categoryName}`);
-    //         return;
-    //     }
-
-
-    //     // check stock quantity
-    //     const stockQty = parseInt(container.dataset.stockQty) || 0;
-    //     const cartQty = parseInt(container.dataset.cartQty) || 0;
-
-    //     // Available qty user can select
-    //     const availableQty = stockQty - cartQty;
-
-    //     // Stop if exceeding stock
-    //     if (newVal > availableQty) {
-    //         toastr.warning(`Only ${availableQty} item(s) available`);
-    //         return;
-    //     }
-
-    //     if (newVal < 0) return;
-
-    //     if (newVal === 0) {
-
-    //         Swal.fire({
-    //             title: 'Remove Item?',
-    //             text: 'Are you sure you want to remove this item?',
-    //             icon: 'warning',
-    //             showCancelButton: true,
-    //             confirmButtonColor: '#d33',
-    //             cancelButtonColor: '#6c757d',
-    //             confirmButtonText: 'Yes, remove it'
-    //         }).then((result) => {
-
-    //             if (!result.isConfirmed) return;
-
-    //             savePcBuilder(productId, variantId, categoryId, builderId, 0, function (freshBuildData) {
-
-    //                 if(source === 'review'){
-    //                     const categoryElement = document.querySelector(`.nav-item[data-category-id="${categoryId}"]`);
-
-    //                     if (!categoryElement) return;
-
-    //                     const minLimit = parseInt(categoryElement.dataset.minSelect || 0);
-    //                     // const currentCount = freshBuildData?.[categoryId]?.length || 0;
-    //                     const currentCount = (freshBuildData?.[categoryId] || [])
-    //                         .reduce((sum, item) => sum + +item.quantity, 0);
-    //                     const categoryName = categoryElement.dataset.categoryName;
-
-    //                     if (currentCount < minLimit) {
-    //                         toastr.warning(`Minimum ${minLimit} product(s) required in ${categoryName}`);
-    //                         editBuilderCategory(categoryElement);
-    //                         updateNavButtons();
-    //                     }
-    //                     // remove that item div here in review page
-                        
-    //                     if (reviewItem) {
-    //                         reviewItem.remove();
-    //                     }
-    //                 } else{
-    //                     // UI reset
-    //                     input.value = 0;
-    //                     counterWrapper.classList.add('hidden');
-    //                     counterWrapper.classList.remove('flex');
-    //                     actionBtn.classList.remove('hidden');
-    //                 }
-    //             });   
-                    
-    //         });
-
-    //         return;
-    //     }
-
-    //     // update UI immediately (optimistic)
-    //     input.value = newVal;
-    //     iconWrapper.innerHTML = (newVal > 1) ? minusIcon : trashIcon;
-    //     if(reviewItem){
-    //         reviewItem.querySelector('.review-product-price').innerText = formatNumberUAE((newVal * parseFloat(reviewItem.querySelector('.review-item-offer-price').value))) ;
-    //     }
-
-    //     savePcBuilder(productId, variantId, categoryId, builderId, newVal);
-    // }
-
     function updateBuilderItemQty(buttonElement, change, source = 'list') {
 
         const container = buttonElement.closest('.counter-container');
@@ -1616,6 +1468,14 @@ $hideFooter = true;
                     maximumFractionDigits: 2
                 });
             })
+    }
+
+    function getSelectedCount(categoryId) {
+        return buildData[categoryId]
+            ? buildData[categoryId].reduce((sum, item) => {
+                return sum + (parseInt(item.quantity) || 0);
+            }, 0)
+            : 0;
     }
 </script>
 @endsection

@@ -36,7 +36,22 @@
             <img id="details-img" src="{{$image}}" alt="" title="" class="object-cover">
         </div>
 
-        <h4 id="details-title" class="text-[20px] font-medium leading-[30px] text-white"> {{ $stock->title ?? $stock->product->name ?? '' }}</h4>
+        <h4 id="details-title" class="text-[20px] font-medium leading-[30px] text-white mb-1"> {{ $stock->title ?? $stock->product->name ?? '' }}
+          <p class="text-[10px] text-[#ffffff50] text-center xl:text-left">  
+            @if($stock && $stock->attributes && $stock->attributes->count())
+                <span class="text-gray-400 text-sm">
+                    
+                    @foreach($stock->attributes as $attr)
+                        {{ $attr->attribute?->name ?? '' }}:
+                        {{ $attr->value?->value ?? '' }}
+
+                        @if(!$loop->last) | @endif
+                    @endforeach
+                    
+                </span>
+            @endif
+          </p>
+        </h4>
         
         <!--ratings-->
         @if($stock)
@@ -101,7 +116,7 @@
         </div>
 
         <div class="space-y-4 mb-10">
-            <h5 class="text-[15px] text-white font-medium uppercase mb-5">Specifications</h5>
+            
 
             @php
                 $productSpecifications = \App\Models\ProductSpecification::where(
@@ -123,12 +138,15 @@
                 ->filter()
                 ->values();
             @endphp
-            @foreach ($specifications as $specification)
-            <div class="flex justify-between items-center pb-3 border-b border-[#2E363E]">
-                <span class="text-gray-400 text-[14px]">{{ $specification['title'] }}</span>
-                <span id="spec-vram" class="text-white text-[14px] font-medium">{{ $specification['value'] }}</span>
-            </div>
-            @endforeach
+            @if($specifications->isNotEmpty())
+                <h5 class="text-[15px] text-white font-medium uppercase mb-5">Specifications</h5>
+                @foreach ($specifications as $specification)
+                <div class="flex justify-between items-center pb-3 border-b border-[#2E363E]">
+                    <span class="text-gray-400 text-[14px]">{{ $specification['title'] }}</span>
+                    <span id="spec-vram" class="text-white text-[14px] font-medium">{{ $specification['value'] }}</span>
+                </div>
+                @endforeach
+            @endif
         </div>
         @if($stock)
         <a href="{{ route('product.details', [$stock->product->slug, $stock->sku] ) }}" id="view-product-link" target="_blank" class="text-[15px] text-center px-4 py-3 rounded-[10px] text-gray-400 bg-[#252C33] hover:text-white transition-all duration-300">

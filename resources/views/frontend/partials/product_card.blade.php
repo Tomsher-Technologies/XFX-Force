@@ -96,7 +96,9 @@
                         <span class="text-[#898989] font-medium line-through">{{ $prodData['price'] }}</span>
                     @endif
                 </h5>
-                <div class="flex justify-center items-center gap-2 px-4 py-2 align-center {{ ($cartQty === $firstStock->qty && $firstStock->qty == 0) ? '' : '!hidden' }}">
+                
+                
+                <div class="flex justify-center items-center gap-2 px-4 py-2 align-center {{ ($firstStock->qty == 0 || $cartQty > $firstStock->qty) ? '' : '!hidden' }}" >
                     <span class="relative flex h-2 w-2" >
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-[#c0392b]"></span>

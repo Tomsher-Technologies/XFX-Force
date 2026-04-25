@@ -28,18 +28,21 @@ class BuildPcController extends Controller
         $firstCategory = $builderCategories->first();
 
         $products = [];
+        $stocks = collect();
 
         if ($firstCategory) {
 
-            // Get parent + child categories
             $categoryIds = Category::where('id', $firstCategory->category_id)
                 ->orWhere('parent_id', $firstCategory->category_id)
                 ->pluck('id')
                 ->toArray();
 
-            $products = Product::whereIn('category_id', $categoryIds)
-                ->with('stocks')
-                ->where('published', 1)
+            $stocks = ProductStock::with(['product.brand', 'product.reviews'])
+                ->join('products', 'products.id', '=', 'product_stocks.product_id')
+                ->where('products.published', 1)
+                ->whereIn('products.category_id', $categoryIds)
+                ->select('product_stocks.*')
+                ->latest()
                 ->get();
         }
 
@@ -69,12 +72,12 @@ class BuildPcController extends Controller
 
         return view('frontend.buildyourpc', compact(
             'builderCategories',
-            'products',
+            'stocks',
             'firstCategory',
             'builder',
             'buildData',
             'reviewProducts',
-            'brands'
+            'brands',
         ));
     }
 
@@ -87,13 +90,13 @@ class BuildPcController extends Controller
         $search     = $request->search;
         $sort       = $request->sort;
 
-        $stocks = ProductStock::select('product_stocks.*')
+        $stocks = ProductStock::with(['product.brand','product.reviews'])
             ->join('products', 'products.id', '=', 'product_stocks.product_id')
-            ->where('products.published', 1);
+            ->where('products.published', 1)
+            ->select('product_stocks.*');
 
-        // category
+        // category filter
         if ($categoryId) {
-            // get parent + child category ids
             $categoryIds = Category::where('id', $categoryId)
                 ->orWhere('parent_id', $categoryId)
                 ->pluck('id')
@@ -102,12 +105,12 @@ class BuildPcController extends Controller
             $stocks->whereIn('products.category_id', $categoryIds);
         }
 
-        // brand
+        // brand filter
         if ($brandId && $brandId != 0) {
             $stocks->where('products.brand_id', $brandId);
         }
 
-        // model
+        // model filter
         if ($modelName && $modelName != 'All') {
             $stocks->where('product_stocks.model', $modelName);
         }
@@ -115,47 +118,31 @@ class BuildPcController extends Controller
         // search
         if ($search) {
             $stocks->where(function ($query) use ($search) {
-
-                $query->where(function ($q) use ($search) {
-                    // 1. FIRST priority: stock title
-                    $q->whereNotNull('product_stocks.stock_title')
-                    ->where('product_stocks.stock_title', 'LIKE', "%{$search}%");
-                })
-                ->orWhere(function ($q) use ($search) {
-                    // 2. ONLY if stock title is NULL → fallback to product name
-                    $q->whereNull('product_stocks.stock_title')
-                    ->where('products.name', 'LIKE', "%{$search}%");
-                });
-
+                $query->where('product_stocks.stock_title', 'LIKE', "%{$search}%")
+                    ->orWhere('products.name', 'LIKE', "%{$search}%");
             });
         }
 
-        // sort
+        // sorting
         if ($sort == 'price_low_high') {
             $stocks->orderBy('product_stocks.offer_price', 'asc');
-        }
-
-        if ($sort == 'price_high_low') {
+        } elseif ($sort == 'price_high_low') {
             $stocks->orderBy('product_stocks.offer_price', 'desc');
+        } else {
+            $stocks->latest(); // default
         }
 
-        $stocks = $stocks->with('product.brand')->get();
+        // PAGINATION
+        $stocks = $stocks->get();
 
-        $products = $stocks->groupBy('product_id')->map(function ($items) {
-            $product = $items->first()->product;
-            $product->setRelation('stocks', $items);
-            return $product;
-        })->values();
+        $html = view('frontend.partials.pc-builder-products-list', [
+            'stocks' => $stocks
+        ])->render();
 
-        if ($products->isEmpty()) {
-            return response()->json([
-                'html' => '<div class="text-center text-gray-400 py-10">No Products Found</div>'
-            ]);
-        }
-
-        $html = view('frontend.partials.pc-builder-products-list', compact('products'))->render();
-
-        return response()->json(['html' => $html]);
+        return response()->json([
+            'html' => $html,
+            // 'hasMore' => $stocks->hasMorePages()
+        ]);
     }
 
     public function getProductDetails(Request $request)

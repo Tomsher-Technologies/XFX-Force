@@ -245,6 +245,20 @@
                         </div>
                         <div class="flex-1">
                             <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>
+                            <p class="text-[10px] text-[#ffffff50] text-center xl:text-left">  
+                                @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
+                                    <span class="text-gray-400 text-sm">
+                                        
+                                        @foreach($item->product_stock->attributes as $attr)
+                                            {{ $attr->attribute?->name ?? '' }}:
+                                            {{ $attr->value?->value ?? '' }}
+
+                                            @if(!$loop->last) | @endif
+                                        @endforeach
+                                        
+                                    </span>
+                                @endif
+                            </p>
                             <div class="flex gap-[15px] items-center mt-2 items-center divide-x divide-[#282B34] justify-start w-full">
                                 <p class="text-[15px] text-gray-500 mt-[5px]">Qty: {{ $item->quantity }}</p>
                                 <span class="grid pl-[15px]">
@@ -648,31 +662,66 @@ function completeYourOrder(e, btn) {
         .then(data => {
             console.log(data);
 
-            if (data.status === 'error') {
+            // handle business failure FIRST
+            if (data.status === false) {
+
                 if (data.errors) {
-                    $.each(data.errors, function (key, value) {
-                        $(".error-" + key).text(value[0]);
-                    });
+                    data.errors.forEach(msg => toastr.error(msg));
+                } else {
+                    toastr.error(data.message || 'Order failed');
                 }
-                return;
+
+                window.location.href = data.redirect;
+
+                return; // STOP HERE (VERY IMPORTANT)
             }
 
-            // Disable button immediately
+            // Disable button immediately (ONLY success case)
             btn.disabled = true;
             btn.classList.add('opacity-50','cursor-not-allowed');
             btn.innerHTML = 'Processing...';
 
-            if (data.status) {
-                console.log('Order placed successfully!');
-                window.location.href = data.redirect;
-            } else {
-                console.log('Failed to place order. Please try again.');
-                window.location.href = "/order-fail";
-            }
+            console.log('Order placed successfully!');
+            window.location.href = data.redirect;
         })
+        // .then(data => {
+            
+        //     if (!data.status) {
+        //         if (data.errors) {
+        //             data.errors.forEach(msg => toastr.error(msg));
+        //         } else {
+        //             toastr.error(data.message || 'Order cannot be placed');
+        //         }
+
+        //         window.location.href = data.redirect;
+        //         return;
+        //     }
+
+        //     if (data.status === 'error') {
+        //         if (data.errors) {
+        //             $.each(data.errors, function (key, value) {
+        //                 $(".error-" + key).text(value[0]);
+        //             });
+        //         }
+        //         return;
+        //     }
+
+        //     // Disable button immediately
+        //     btn.disabled = true;
+        //     btn.classList.add('opacity-50','cursor-not-allowed');
+        //     btn.innerHTML = 'Processing...';
+
+        //     if (data.status) {
+        //         console.log('Order placed successfully!');
+        //         window.location.href = data.redirect;
+        //     } else {
+        //         console.log('Failed to place order. Please try again.');
+        //         // window.location.href = "/order-fail";
+        //     }
+        // })
         .catch(error => {
             console.log('An error occurred while placing your order. Please try again.');
-            window.location.href = "/order-fail";
+            // window.location.href = "/order-fail";
         });
 
     }, 500); // reduced delay (optional)
