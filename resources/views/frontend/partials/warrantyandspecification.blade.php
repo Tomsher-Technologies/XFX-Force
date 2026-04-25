@@ -77,14 +77,15 @@ return [
                             <label onclick="selectWarranty(this)" class="warranty-card relative flex items-center justify-between p-5 rounded-xl cursor-pointer transition-all duration-200 {{ $item->warranty_id == $warranty->id 
                                     ? 'border-2 border-[#2A7CFF] bg-[#161B22]' 
                                     : 'border border-gray-800 bg-[#282B3450]' 
-                                }} cursor-pointer transition-all duration-200" data-cartid="{{$item->id}}" data-warrantyid="{{$warranty->id}}" data-warrantyname="{{$warranty->title}}">
+                                }} cursor-pointer transition-all duration-200" data-cartid="{{$item->id}}" data-warrantyid="{{$warranty->id}}" data-warrantyname="{{$warranty->title}}" data-warrantyprice = "{{ format_price($warranty->price) }}">
                                 <div class="flex flex-col gap-1">
                                     <span class="text-white font-bold text-[16px]">{{$warranty->title}}</span>
                                     <div class="text-[13px] text-[#636671]">{!! $warranty->description !!}</div>
+                                    <div class="text-[13px] text-[#636671]">{{ $warranty->months }} Months</div>
                                 </div>
                                 <div class="flex items-center gap-4">
                                     <span class="text-white font-bold text-[18px]">{{$warranty->price > 0 ? format_price($warranty->price): 'FREE' }}</span>
-                                    <div class="check-icon text-[#2A7CFF] hidden">
+                                    <div class="check-icon text-[#2A7CFF] {{ $item->warranty_id == $warranty->id ? '' : 'hidden' }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                                         </svg>

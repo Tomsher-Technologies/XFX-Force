@@ -214,12 +214,7 @@ class CheckoutController
             }
         }
 
-        /* ---------------- Convert Guest Cart ---------------- */
-        Cart::where('temp_user_id', $temp_user_id)
-            ->update([
-                'user_id' => $user_id,
-                'temp_user_id' => null
-            ]);
+        
 
         /* ---------------- Get Cart ---------------- */
         $carts = Cart::where(function ($query) use ($user_id, $temp_user_id) {
@@ -229,6 +224,40 @@ class CheckoutController
             ->orderBy('id')
             ->get();
 
+        /* ---------------- Stock Validation ---------------- */
+        $stockErrors = [];
+
+        foreach ($carts as $cartItem) {
+
+            $stock = ProductStock::find($cartItem->product_stock_id);
+
+            if (!$stock) {
+                $stockErrors[] = "Product stock not found for item ID {$cartItem->product_stock_id}";
+                continue;
+            }
+
+            if ($stock->qty < $cartItem->quantity) {
+                $stockErrors[] = $stock->product->name . " is out of stock.";
+            }
+        }
+
+        if (!empty($stockErrors)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Some items are out of stock',
+                'errors' => $stockErrors,
+                'redirect' => route('cart')
+            ]);
+        }
+        
+        /* ---------------- Convert Guest Cart ---------------- */
+        Cart::where('temp_user_id', $temp_user_id)
+            ->update([
+                'user_id' => $user_id,
+                'temp_user_id' => null
+            ]);
+            
+        // check cart empty
         if ($carts->isEmpty()) {
             return response()->json([
                 'status' => false,
@@ -365,8 +394,7 @@ class CheckoutController
                 ]);
         }
 
-        /* ---------------- Clear Cart ---------------- */
-        Cart::where('user_id', $user_id)->delete();
+        
 
         // Send mail to customer and admin when order placed.
         NotificationUtility::sendOrderPlacedNotification($order);
@@ -383,6 +411,8 @@ class CheckoutController
             $order,
             'order_placed'
         );
+        /* ---------------- Clear Cart ---------------- */
+        Cart::where('user_id', $user_id)->delete();
 
         return response()->json([
             'status' => true,

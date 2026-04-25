@@ -453,11 +453,13 @@ class CartController extends Controller
                 if ($sum >= $coupon_details->min_buy) {
                     if ($coupon->discount_type == 'percent') {
                         $coupon_discount = ($sum * $coupon->discount) / 100;
-                        if ($coupon_discount > $coupon_details->max_discount) {
-                            $coupon_discount = $coupon_details->max_discount;
-                        }
                     } elseif ($coupon->discount_type == 'amount') {
                         $coupon_discount = $coupon->discount;
+                    }
+
+                    // APPLY MAX CAP FOR BOTH
+                    if (!empty($coupon_details->max_discount) && $coupon_discount > $coupon_details->max_discount) {
+                        $coupon_discount = $coupon_details->max_discount;
                     }
 
                     Cart::where($user['users_id_type'], $user['users_id'])->update([
@@ -480,8 +482,8 @@ class CartController extends Controller
             } elseif ($coupon->type == 'product_base') {
                 $coupon_discount = 0;
 
-                foreach ($cart_items as $key => $cartItem) {
-                    foreach ($coupon_details as $key => $coupon_detail) {
+                foreach ($cart_items as $cartItem) {
+                    foreach ($coupon_details as $coupon_detail) {
                         if ($coupon_detail->product_id == $cartItem['product_id']) {
                             if ($coupon->discount_type == 'percent') {
                                 $coupon_discount += ($cartItem['offer_price'] * $coupon->discount / 100) * $cartItem['quantity'];
@@ -491,6 +493,19 @@ class CartController extends Controller
                         }
                     }
                 }
+
+                // Apply max discount cap
+                if (!empty($coupon_details->max_discount)) {
+                    $coupon_discount = min($coupon_discount, $coupon_details->max_discount);
+                }
+
+                // Prevent over discount (cart total)
+                $subtotal = 0;
+                foreach ($cart_items as $cartItem) {
+                    $subtotal += $cartItem['offer_price'] * $cartItem['quantity'];
+                }
+
+                $coupon_discount = min($coupon_discount, $subtotal);
 
                 if($coupon_discount != 0){
                     Cart::where($user['users_id_type'], $user['users_id'])->update([
@@ -552,24 +567,31 @@ class CartController extends Controller
 
         $couponDetails = json_decode($coupon->details);
 
+        if (!$couponDetails || !isset($couponDetails->min_buy)) {
+            return 0;
+        }
+
+        // Not eligible
+        if ($total < $couponDetails->min_buy) {
+            return 0;
+        }
+
         $couponDiscount = 0;
 
-        if ($total >= $couponDetails->min_buy) {
-
+        // Calculate base discount
             if ($coupon->discount_type == 'percent') {
-
                 $couponDiscount = ($total * $coupon->discount) / 100;
-
-                if (isset($couponDetails->max_discount) && $couponDiscount > $couponDetails->max_discount) {
-                    $couponDiscount = $couponDetails->max_discount;
-                }
-
             } elseif ($coupon->discount_type == 'amount') {
-
                 $couponDiscount = $coupon->discount;
-
             }
+
+        // Apply max discount cap (for BOTH types)
+        if (!empty($couponDetails->max_discount)) {
+            $couponDiscount = min($couponDiscount, $couponDetails->max_discount);
         }
+
+        // Prevent discount > total
+        $couponDiscount = min($couponDiscount, $total);
 
         return $couponDiscount;
     }
