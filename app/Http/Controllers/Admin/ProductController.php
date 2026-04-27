@@ -366,21 +366,39 @@ class ProductController extends Controller
                 $stock->stock_title = $variantData['stock_title'] ?? '';
 
 
-                if(isset($variantData['variant_images']) && $request->hasFile("variants.$index.variant_images")){
+                if (isset($variantData['variant_images']) && $request->hasFile("variants.$index.variant_images")) {
+
                     $stock_images_gallery = [];
 
-                    foreach($request->file("variants.$index.variant_images") as $key => $file){
-                        $stock_images_gallery[] = ImageHelper::downloadAndResizeImage(
-                            'sub_product', 
-                            $file, 
-                            $stock->sku, 
-                            true,
-                            $key + 1
-                        );
+                    $files = $request->file("variants.$index.variant_images");
+
+                    if (is_array($files)) {
+
+                        foreach ($files as $fileIndex => $file) {
+
+                            if (!$file || !$file->isValid()) continue;
+
+                            // 🔥 STRONG UNIQUE COUNT (prevents collisions)
+                            $uniqueCount = $index . '_' . $fileIndex . '_' . uniqid();
+
+                            $savedPath = ImageHelper::downloadAndResizeImage(
+                                'sub_product',
+                                $file,
+                                $stock->sku . '_' . $uniqueCount,
+                                false,
+                                $fileIndex + 1
+                            );
+
+                            $stock_images_gallery[] = $savedPath;
+                        }
                     }
 
-                    // Option 1: Save as comma-separated string (quick)
-                    $stock->image = implode(',', $stock_images_gallery);
+                    // 🔥 HARD CLEAN (remove duplicates safely)
+                    $stock_images_gallery = array_values(array_unique(array_filter($stock_images_gallery)));
+
+                    $stock->image = !empty($stock_images_gallery)
+                        ? implode(',', $stock_images_gallery)
+                        : null;
                 }
 
                 $offertag = '';
@@ -751,24 +769,42 @@ class ProductController extends Controller
                 $stock->model = $variantData['model'] ?? '';
                 $stock->stock_title = $variantData['stock_title'] ?? '';
                 
-                if($request->hasFile("variants.$index.variant_images")) {
-                    // Existing images
-                    $old_stock_gallery = $stock->image ? explode(',', $stock->image) : [];
+                if ($request->hasFile("variants.$index.variant_images")) {
 
-                    // New uploaded images
+                    // Clean existing images safely
+                    $old_stock_gallery = array_values(array_filter(
+                        $stock->image ? explode(',', $stock->image) : []
+                    ));
+
                     $new_stock_gallery = [];
-                    foreach($request->file("variants.$index.variant_images") as $key => $file){
-                        $new_stock_gallery[] = ImageHelper::downloadAndResizeImage(
-                            'sub_product',
-                            $file,
-                            $stock->sku,
-                            true
-                        );
+
+                    $files = $request->file("variants.$index.variant_images");
+
+                    if (is_array($files)) {
+                        foreach ($files as $fileIndex => $file) {
+
+                            if (!$file || !$file->isValid()) continue;
+
+                            $uniqueKey = $stock->sku . '_' . $index . '_' . $fileIndex . '_' . uniqid();
+
+                            $new_stock_gallery[] = ImageHelper::downloadAndResizeImage(
+                                'sub_product',
+                                $file,
+                                $uniqueKey,
+                                false,
+                                $fileIndex + 1
+                            );
+                        }
                     }
 
-                    // Only append new images to existing DB values
-                    $stock->image = implode(',', array_merge($old_stock_gallery, $new_stock_gallery));
+                    // Merge + HARD CLEAN
+                    $merged = array_values(array_unique(array_filter(
+                        array_merge($old_stock_gallery, $new_stock_gallery)
+                    )));
+
+                    $stock->image = !empty($merged) ? implode(',', $merged) : null;
                 }
+
                 $offertag = '';
                 $productOrgPrice = $variantData['price'];
                 $discountPrice = $productOrgPrice;
@@ -1006,5 +1042,23 @@ class ProductController extends Controller
         } else {
             return 0;
         }
+    }
+
+    public function checkSku(Request $request)
+    {
+        $sku = $request->sku;
+
+        $query = ProductStock::where('sku', $sku);
+
+        // ignore current variant
+        if ($request->stock_id) {
+            $query->where('id', '!=', $request->stock_id);
+        }
+
+        $exists = $query->exists();
+        
+        return response()->json([
+            'exists' => $exists
+        ]);
     }
 }

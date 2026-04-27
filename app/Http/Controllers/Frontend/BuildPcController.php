@@ -462,8 +462,8 @@ class BuildPcController extends Controller
         }
 
         // Reset configuration
-        $builder->build_data = [];
-        $builder->save();
+        /*$builder->build_data = [];
+        $builder->save();*/
         
         return response()->json([
             'status' => true,
@@ -534,7 +534,7 @@ class BuildPcController extends Controller
             ]);
         }
 
-        $builder->delete();
+        // $builder->delete();
 
         return response()->json([
             'status' => true,
