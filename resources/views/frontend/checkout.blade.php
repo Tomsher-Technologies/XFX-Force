@@ -144,31 +144,89 @@
                                         <span class="text-[15px] text-gray-400 group-hover:text-white transition-colors">Same as billing address</span>
                                     </label>
                                 </div>
-
+                                <input type="hidden" name="is_guest" value="{{ auth('frontend')->check() ? 0 : 1 }}">
                                 <div id="address-list-container" class="hidden space-y-4">
                                     <h2 class="shipping-heading flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3 font-medium text-white">
-                                            <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">3</span> 
-                                            Shipping Information
-                                        </h2>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-[20px]">
-                                        @foreach ($addresses as $address)
-                                        <label class="relative p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer flex justify-between hover:border-gray-600 transition-all">
+                                        <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">3</span> 
+                                        Shipping Information
+                                    </h2>
+                                    @if(!auth('frontend')->check())
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
-                                                <span class="block text-white font-bold text-sm">{{ ucfirst($address->type) ?? $address->type }}</span>
-                                                <span class="block text-gray-500 text-xs mt-1">
-                                                    {{ $address->name }}<br>
-                                                    {!! nl2br($address->address) !!}<br>
-                                                    {{ $address->city }}, {{ $address->state_name }},<br> 
-                                                    {{ $address->country_name }} {{ $address->postal_code ? '- '. $address->postal_code : '' }}
-                                                </span>
+                                                <input type="text" name="shipping_first_name"
+                                                placeholder="First Name *"
+                                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl w-full">
+                                                <span class="text-red-400 text-xs mt-1 error-span error-shipping_first_name"></span>
                                             </div>
-                                            <input type="checkbox" name="selected_addr" {{ $address->set_default == 1 ? 'checked' : '' }} class="accent-[#2A7CFF] w-4 h-4 rounded-circle" value="{{ $address->id }}">
-                                        </label>
-                                        @endforeach
-                                        <button type="button" id="open-address-modal" class="cursor-pointer md:col-span-2 p-4 border-2 border-dashed border-gray-800 rounded-xl text-gray-500 hover:text-[#2A7CFF] hover:border-[#2A7CFF]/50 transition-all font-medium uppercase text-[12px] tracking-wider">
-                                            + Add New Address
-                                        </button>
-                                    </div>
+                                            <div>
+                                                <input type="text" name="shipping_last_name"
+                                                placeholder="Last Name *"
+                                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl w-full">
+                                                <span class="text-red-400 text-xs mt-1 error-span error-shipping_last_name"></span>
+                                            </div>
+                                            
+                                            <div>
+                                                <input type="text" name="shipping_phone"
+                                                placeholder="Phone *"
+                                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl w-full">
+                                                <span class="text-red-400 text-xs mt-1 error-span error-shipping_phone"></span>
+                                            </div>
+                                            
+                                            <div>
+                                                <input type="text" name="shipping_address"
+                                                placeholder="Address *"
+                                                class="md:col-span-2 bg-[#161B22] border border-gray-800 p-4 rounded-xl w-full">
+                                                <span class="text-red-400 text-xs mt-1 error-span error-shipping_address"></span>
+                                            </div>
+                                            
+                                            <div>
+                                                <input type="text" name="shipping_city"
+                                                placeholder="City *"
+                                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl w-full">
+                                                <span class="text-red-400 text-xs mt-1 error-span error-shipping_city"></span>
+                                            </div>
+                                            
+                                            <div>
+                                                <select name="shipping_state"
+                                                        class="bg-[#161B22] border border-gray-800 p-4 rounded-xl w-full">
+                                                    <option value="">Select Emirate</option>
+                                                    <option>Dubai</option>
+                                                    <option>Abu Dhabi</option>
+                                                    <option>Sharjah</option>
+                                                    <option>Ajman</option>
+                                                    <option>Fujairah</option>
+                                                    <option>Ras Al Khaimah</option>
+                                                    <option>Umm Al Quwain</option>
+                                                </select>
+                                                <span class="text-red-400 text-xs mt-1 error-span error-shipping_state"></span>
+                                            </div>
+                                            
+                                            <div>
+                                                <input type="text" readonly value="United Arab Emirates"
+                                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-gray-500" name="shipping_country">
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-[20px]">
+                                            @foreach ($addresses as $address)
+                                            <label class="relative p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer flex justify-between hover:border-gray-600 transition-all">
+                                                <div>
+                                                    <span class="block text-white font-bold text-sm">{{ ucfirst($address->type) ?? $address->type }}</span>
+                                                    <span class="block text-gray-500 text-xs mt-1">
+                                                        {{ $address->name }}<br>
+                                                        {!! nl2br($address->address) !!}<br>
+                                                        {{ $address->city }}, {{ $address->state_name }},<br> 
+                                                        {{ $address->country_name }} {{ $address->postal_code ? '- '. $address->postal_code : '' }}
+                                                    </span>
+                                                </div>
+                                                <input type="checkbox" name="selected_addr" {{ $address->set_default == 1 ? 'checked' : '' }} class="accent-[#2A7CFF] w-4 h-4 rounded-circle" value="{{ $address->id }}">
+                                            </label>
+                                            @endforeach
+                                            <button type="button" id="open-address-modal" class="cursor-pointer md:col-span-2 p-4 border-2 border-dashed border-gray-800 rounded-xl text-gray-500 hover:text-[#2A7CFF] hover:border-[#2A7CFF]/50 transition-all font-medium uppercase text-[12px] tracking-wider">
+                                                + Add New Address
+                                            </button>
+                                        </div>
+                                    @endauth
                                 </div>
                             </div>
 
@@ -630,9 +688,15 @@ function completeYourOrder(e, btn) {
         const billingSame = document.getElementById('billing-toggle')?.checked;
         const selectedAddress = document.querySelector('input[name="selected_addr"]:checked');
 
-        if (!billingSame && !selectedAddress) {
-            toastr.error('Please select shipping address');
-            return;
+        const isGuest = document.querySelector('[name="is_guest"]')?.value === "1";
+
+        
+        if (!isGuest && !billingSame) {
+
+            if (!selectedAddress) {
+                toastr.error('Please select shipping address');
+                return;
+            }
         }
 
         // Serialize form data
@@ -653,72 +717,47 @@ function completeYourOrder(e, btn) {
             },
             body: params
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Server error");
+        .then(async (response) => {
+
+            const text = await response.text();
+
+            if (!text || text.trim().startsWith('<!DOCTYPE')) {
+                throw new Error("Invalid response from server");
             }
-            return response.json();
+
+            return JSON.parse(text);
         })
         .then(data => {
-            console.log(data);
 
-            // handle business failure FIRST
+            // validation errors (Laravel)
+            if (data.status === 'error') {
+                $.each(data.errors, function (key, value) {
+                    $(".error-" + key).text(value[0]);
+                });
+                return;
+            }
+
+            // business failure
             if (data.status === false) {
-
                 if (data.errors) {
                     data.errors.forEach(msg => toastr.error(msg));
                 } else {
                     toastr.error(data.message || 'Order failed');
                 }
 
-                window.location.href = data.redirect;
-
-                return; // STOP HERE (VERY IMPORTANT)
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                }
+                return;
             }
 
-            // Disable button immediately (ONLY success case)
+            // success
             btn.disabled = true;
             btn.classList.add('opacity-50','cursor-not-allowed');
             btn.innerHTML = 'Processing...';
 
-            console.log('Order placed successfully!');
             window.location.href = data.redirect;
         })
-        // .then(data => {
-            
-        //     if (!data.status) {
-        //         if (data.errors) {
-        //             data.errors.forEach(msg => toastr.error(msg));
-        //         } else {
-        //             toastr.error(data.message || 'Order cannot be placed');
-        //         }
-
-        //         window.location.href = data.redirect;
-        //         return;
-        //     }
-
-        //     if (data.status === 'error') {
-        //         if (data.errors) {
-        //             $.each(data.errors, function (key, value) {
-        //                 $(".error-" + key).text(value[0]);
-        //             });
-        //         }
-        //         return;
-        //     }
-
-        //     // Disable button immediately
-        //     btn.disabled = true;
-        //     btn.classList.add('opacity-50','cursor-not-allowed');
-        //     btn.innerHTML = 'Processing...';
-
-        //     if (data.status) {
-        //         console.log('Order placed successfully!');
-        //         window.location.href = data.redirect;
-        //     } else {
-        //         console.log('Failed to place order. Please try again.');
-        //         // window.location.href = "/order-fail";
-        //     }
-        // })
         .catch(error => {
             console.log('An error occurred while placing your order. Please try again.');
             // window.location.href = "/order-fail";
