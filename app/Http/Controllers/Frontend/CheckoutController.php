@@ -99,7 +99,11 @@ class CheckoutController
      */
     public function placeOrder(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        
+        $isGuest = !auth('frontend')->check();
+        $billing_shipping_same = $request->same_as_billing ?? null;
+
+        $rules = [
             'first_name' => 'required|regex:/^[a-zA-Z\s]+$/u|max:100',
             'billing_email' => 'required|email|max:255',
             'billing_city' => 'required|string|max:100',
@@ -107,11 +111,26 @@ class CheckoutController
             'billing_country' => 'required|string|max:100',
             'billing_phone' => ['required', 'regex:/^\+?[0-9]{7,15}$/'],
             'billing_address' => 'required|string',
-        ], [
+             'same_as_billing' => 'nullable',
+        ];
+
+        if ($isGuest && !$billing_shipping_same) {
+            $rules = array_merge($rules, [
+                'shipping_first_name'    => 'required|string|max:100',
+                'shipping_phone'   => ['required', 'regex:/^\+?[0-9]{7,15}$/'],
+                'shipping_address' => 'required|string',
+                'shipping_city'    => 'required|string|max:100',
+                'shipping_state'   => 'required|string|max:100',
+            ]);
+        }
+
+        $validator = Validator::make($request->all(), $rules, [
             'first_name.regex' => 'Only alphabets and spaces are allowed in the name field.',
             'billing_phone.regex' => 'Please enter a valid phone number (numbers only, 7-15 digits).',
             'billing_state.required' => 'Please select an emirate.',
+            'shipping_phone.regex' => 'Please enter a valid phone number (numbers only, 7-15 digits).',
         ]);
+
 
         if ($validator->fails()) {
             return response()->json([
@@ -152,32 +171,60 @@ class CheckoutController
             'phone'   => $request->billing_phone,
         ];
 
+        $isGuest = !$user_id;
+
+        /* ---------------- SHIPPING ---------------- */
+
         if ($billing_shipping_same != 'on') {
 
-            if ($request->selected_addr) {
+            // ---------------- LOGGED IN USER ----------------
+            if (!$isGuest) {
 
-                $selectedAddress = Address::find($request->selected_addr);
-                
+                if ($request->selected_addr) {
+
+                    $selectedAddress = Address::find($request->selected_addr);
+
+                    if ($selectedAddress) {
+                        $shipping_address = [
+                            'name'    => $selectedAddress->name,
+                            'email'   => $request->billing_email,
+                            'address' => $selectedAddress->address,
+                            'city'    => $selectedAddress->city,
+                            'state'   => $selectedAddress->state_name,
+                            'country' => $selectedAddress->country_name,
+                            'phone'   => $selectedAddress->phone,
+                        ];
+                    }
+
+                } else {
+
+                    $shipping_address = [
+                        'name'    => $request->shipping_name ?? $name,
+                        'email'   => $request->billing_email,
+                        'address' => $request->shipping_address ?? $request->billing_address,
+                        'city'    => $request->shipping_city ?? $request->billing_city,
+                        'state'   => $request->shipping_state ?? $request->billing_state,
+                        'country' => $request->shipping_country ?? $request->billing_country,
+                        'phone'   => $request->shipping_phone ?? $request->billing_phone,
+                    ];
+                }
+
+            }
+
+            // ---------------- GUEST USER ----------------
+            else {
+                $shippingFirstName = trim($request->shipping_first_name ?? '');
+                $shippingLastName  = trim($request->shipping_last_name ?? '');
+
+                $shippingName = trim($shippingFirstName . ' ' . $shippingLastName);
+
                 $shipping_address = [
-                    'name'    => $selectedAddress->name,
-                    'email'   => $request->billing_email,
-                    'address' => $selectedAddress->address,
-                    'city'    => $selectedAddress->city,
-                    'state'   => $selectedAddress->state_name,
-                    'country' => $selectedAddress->country_name,
-                    'phone'   => $selectedAddress->phone,
-                ];
-
-            } else {
-
-                $shipping_address = [
-                    'name'    => $request->shipping_name ?? $name,
-                    'email'   => $request->billing_email,
-                    'address' => $request->shipping_address ?? $request->billing_address,
-                    'city'    => $request->shipping_city ?? $request->billing_city,
-                    'state'   => $request->shipping_state ?? $request->billing_state,
-                    'country' => $request->shipping_country ?? $request->billing_country,
-                    'phone'   => $request->shipping_phone ?? $request->billing_phone,
+                    'name'    => $shippingName ?? $name,
+                    'address' => $request->shipping_address,
+                    'city'    => $request->shipping_city,
+                    'state'   => $request->shipping_state,
+                    'country' => $request->shipping_country,
+                    'phone'   => $request->shipping_phone,
                 ];
             }
 
