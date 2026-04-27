@@ -110,7 +110,11 @@
                         </td>
                         <td>
                             @if ($order->user != null)
-                            {{ $order->user->name }}
+                                @if($order->user->user_type == 'guest')
+                                    Guest
+                                @else
+                                    {{ $order->user->name }}
+                                @endif
                             @else
                                 @php
                                     $shipping_address = json_decode($order->shipping_address);

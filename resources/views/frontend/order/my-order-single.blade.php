@@ -269,19 +269,33 @@
                                                     $totalReturnedPrice += $returnedPrice;
                                                 @endphp
                                             
-                                                <a href="{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}" class="p-6 flex items-center gap-6 group">
+                                                <a href="javascript:void(0)" class="p-6 flex items-center gap-6 group cursor-default">
                                                     <!-- Image -->
                                                     <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
-                                                        <img src="{{ $image }}" class="w-full h-full object-cover" alt="{{ $item->product_stock->stock_title  ?? '' }}" title="{{ $item->product_stock->stock_title  ?? '' }}">
+                                                        <img src="{{ $image }}" class="w-full h-full object-cover cursor-pointer" alt="{{ $item->product_stock->stock_title  ?? '' }}" title="{{ $item->product_stock->stock_title  ?? '' }}" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                     </div>
 
                                                     <!-- Details -->
                                                     <div class="flex-grow w-full">
-                                                        <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1">
+                                                        <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1 cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                             {{ $item->product->name ?? 'Product Name' }}
                                                         </h4>
-                                                        <p class="text-gray-500 text-xs mt-1">
+                                                        <p class="text-gray-500 text-xs mt-1 cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                             {{ $item->product_stock->stock_title  ?? '' }}
+                                                        </p>
+                                                        <p class="text-[10px] text-[#ffffff50] text-center xl:text-left"> 
+                                                            @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
+                                                                <span class="text-gray-400 text-sm">
+                                                                    
+                                                                    @foreach($item->product_stock->attributes as $attr)
+                                                                        {{ $attr->attribute?->name ?? '' }}:
+                                                                        {{ $attr->value?->value ?? '' }}
+
+                                                                        @if(!$loop->last) | @endif
+                                                                    @endforeach
+                                                                    
+                                                                </span>
+                                                            @endif
                                                         </p>
                                                         
                                                         <!-- Mobile price -->
@@ -346,20 +360,34 @@
                                                     $totalReturnedPrice += $returnedPrice;
                                                 @endphp
                                         
-                                                <a href="javascript:void(0)" class="p-6 flex items-center gap-6 group">
+                                                <a href="javascript:void(0)" class="p-6 flex items-center gap-6 group cursor-default">
                                                     <!-- Image -->
-                                                    <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
+                                                    <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2 cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                         <img src="{{ $image }}" class="w-full h-full object-cover" alt="{{ $item->product_stock->stock_title  ?? '' }}" title="{{ $item->product_stock->stock_title  ?? '' }}">
                                                     </div>
 
                                                     <!-- Details -->
                                                     <div class="flex-grow w-full">
-                                                        <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
+                                                        <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1 cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                             {{ $item->product->name ?? '' }}
                                                         </h4>
 
-                                                        <p class="text-gray-500 text-xs mt-1" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
+                                                        <p class="text-gray-500 text-xs mt-1 cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                             {{ $item->product_stock->stock_title  ?? '' }}
+                                                        </p>
+                                                        <p class="text-[10px] text-[#ffffff50] text-center xl:text-left"> 
+                                                            @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
+                                                                <span class="text-gray-400 text-sm">
+                                                                    
+                                                                    @foreach($item->product_stock->attributes as $attr)
+                                                                        {{ $attr->attribute?->name ?? '' }}:
+                                                                        {{ $attr->value?->value ?? '' }}
+
+                                                                        @if(!$loop->last) | @endif
+                                                                    @endforeach
+                                                                    
+                                                                </span>
+                                                            @endif
                                                         </p>
 
                                                         <div>
@@ -477,7 +505,16 @@
                                                                 </defs>
                                                             </svg>
                                                             <div class="bg-[#1C2228] border border-gray-800 rounded-[20px] p-8">
-                                                            <h4 class="text-white text-xl font-medium mb-6">Write a Review</h4>
+                                                                <div class="p-6 border-b border-[#282B34] flex justify-between items-center bg-[#1C2228]">
+                                                                    <h4 class="text-white text-xl font-medium mb-6">Write a Review</h4>
+                                                                    <button type="button"
+                                                                        class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5 text-gray-400 transition-colors cursor-pointer"
+                                                                        onclick="closeReviewModal({{ $index }})">
+                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
                                                                 <form class="space-y-6" x-data="{ 
                                                                     rating: 0,
                                                                     updateRating(i) {
@@ -516,7 +553,7 @@
                                                                         <input type="hidden" name="rating" id="rating-value" :value="rating"> 
                                                                         <input type="hidden" name="product_id" value="{{ $item->product->id ?? '' }}">
                                                                     </div>
-                                                                    <textarea name="comment" rows="4" placeholder="Share your experience..." class="w-full bg-white/5 border border-white/10 rounded-[10px] p-4 text-white text-sm focus:border-blue-500 outline-none resize-none"></textarea>
+                                                                    <textarea name="comment" rows="4" placeholder="Share your experience..." class="w-full bg-white/5 border border-white/10 rounded-[10px] p-4 text-white text-sm focus:border-blue-500 outline-none resize-none" required></textarea>
                                                                     
                                                                     <button type="submit" class="w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer">
                                                                         Submit Review
@@ -726,6 +763,11 @@
             <div class="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-2">
                 @foreach($order->orderDetails->where('is_pc_builder', 0) as $detail)
                     @php
+                        // Skip products that are NOT eligible for return
+                        if (empty($detail->product) || $detail->product->return_refund != 1) {
+                            continue;
+                        }
+
                         // Total quantity already returned for this order detail
                         $returnedQty = $detail->returns->sum('return_qty');
                         // Remaining quantity that can still be returned
@@ -1158,14 +1200,28 @@
             openBtn.addEventListener('click', () => {
                 modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
+
+                /* RESET FORM */
+                returnOrderForm.reset();
+
+                /* Uncheck all checkboxes */
+                document.querySelectorAll('.return-checkbox').forEach(cb => {
+                    cb.checked = false;
+                });
+
+                /* Hide qty dropdowns again */
+                document.querySelectorAll('.return-qty-container').forEach(el => {
+                    el.classList.add('hidden');
+                });
+                
             });
         }
         const closeModal = () => {
             modal.classList.remove('active');
             document.body.style.overflow = '';
         };
-        closeX.onclick = closeModal();
-        cancelBtn.onclick = closeModal();
+        closeX.onclick = closeModal;
+        cancelBtn.onclick = closeModal;
         modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
         window.addEventListener('keydown', e => { if (e.key === "Escape") closeModal(); });
 

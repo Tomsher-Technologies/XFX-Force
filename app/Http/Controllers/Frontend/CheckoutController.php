@@ -256,6 +256,14 @@ class CheckoutController
                 'user_id' => $user_id,
                 'temp_user_id' => null
             ]);
+
+        /*re-fetch cart after conversion */
+        $carts = Cart::where(function ($query) use ($user_id, $temp_user_id) {
+                $query->where('user_id', $user_id)
+                    ->orWhere('temp_user_id', $temp_user_id);
+            })
+            ->orderBy('id')
+            ->get();
             
         // check cart empty
         if ($carts->isEmpty()) {

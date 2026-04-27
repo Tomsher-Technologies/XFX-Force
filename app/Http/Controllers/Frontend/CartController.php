@@ -107,9 +107,9 @@ class CartController extends Controller
 
         $guestToken = request()->cookie('guest_token');
 
-        if(!$guestToken){
+        if (!$guestToken) {
             $guestToken = uniqid('guest_', true);
-            cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
+            cookie()->queue('guest_token', $guestToken, 60 * 24 * 14); // 14 days
         }
 
         $variantId = $request->variantId;
@@ -120,12 +120,10 @@ class CartController extends Controller
         $stock = ProductStock::findOrFail($variantId);
 
         $cartItem = Cart::where('product_stock_id', $variantId)
-            ->where(function($query) use ($guestToken, $userId) {
-                if($userId) {
-                    // Logged-in user
+            ->where(function ($query) use ($guestToken, $userId) {
+                if ($userId) {
                     $query->where('user_id', $userId);
                 } else {
-                    // Guest user
                     $query->where('temp_user_id', $guestToken);
                 }
             })
@@ -134,6 +132,7 @@ class CartController extends Controller
 
         $currentCartQty = $cartItem ? $cartItem->quantity : 0;
 
+        // Calculate new quantity
         if ($mode === 'increment') {
             $newQty = $currentCartQty + $requestedQty;
         } else {
@@ -154,22 +153,31 @@ class CartController extends Controller
             ]);
         }
 
-        // Stock validation
-        if ($newQty > $stock->qty) {
+        // Handle OUT OF STOCK (do NOT delete, only block increment)
+        if ($stock->qty == 0 && $newQty > $currentCartQty) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item is out of stock',
+                'cartQty' => $currentCartQty,
+                'availableQty' => 0
+            ]);
+        }
+
+        // Stock validation (only when increasing)
+        if ($newQty > $stock->qty && $newQty > $currentCartQty) {
             return response()->json([
                 'success' => false,
                 'message' => "Only {$stock->qty} item(s) available.",
                 'cartQty' => $currentCartQty,
-                'availableQty' => $stock->qty - $currentCartQty
+                'availableQty' => max(0, $stock->qty - $currentCartQty)
             ]);
         }
 
+        // Update or create cart item
         if ($cartItem) {
-
             $cartItem->quantity = $newQty;
             $cartItem->save();
         } else {
-
             Cart::create([
                 'user_id' => $userId,
                 'temp_user_id' => $userId ? null : $guestToken,
@@ -184,11 +192,20 @@ class CartController extends Controller
             ]);
         }
 
+        // Dynamic message
+        if ($newQty > $currentCartQty) {
+            $message = 'Item added to cart';
+        } elseif ($newQty < $currentCartQty) {
+            $message = 'Item quantity updated';
+        } else {
+            $message = 'Cart updated';
+        }
+
         return response()->json([
             'success' => true,
-            'message' => trans('messages.product_add_cart_success'),
+            'message' => $message,
             'cartQty' => $newQty,
-            'availableQty' => $stock->qty - $newQty,
+            'availableQty' => max(0, $stock->qty - $newQty),
             'totalCartItemsCount' => $this->getCount(),
             'price' => format_price($stock->price * $newQty),
             'offerPrice' => format_price($stock->offer_price * $newQty),
