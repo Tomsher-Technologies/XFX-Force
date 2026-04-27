@@ -606,11 +606,10 @@
                                                 @php
                                                 $shippingAddress = json_decode($order->shipping_address);
                                                 @endphp
-
+                                                
                                                 <h4 class="text-white font-medium mb-1">{{ $shippingAddress?->name }}</h4>
                                                 <p class="text-gray-500 text-sm leading-relaxed">
-                                                    {{ $shippingAddress?->address }} <br>
-                                                    {{ $shippingAddress?->city }}
+                                                    {{ $shippingAddress?->name }}, {{ $shippingAddress?->address }}, {{ $shippingAddress?->city }}, {{ $shippingAddress?->state }}, {{ $shippingAddress?->country }}, , {{ $shippingAddress?->phone }}
                                                 </p>
                                             @endif
                                         </div>

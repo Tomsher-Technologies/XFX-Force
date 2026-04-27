@@ -203,7 +203,7 @@
                                             
                                             <div>
                                                 <input type="text" readonly value="United Arab Emirates"
-                                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-gray-500" name="shipping_country">
+                                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-gray-500 w-full" name="shipping_country">
                                             </div>
                                         </div>
                                     @else
