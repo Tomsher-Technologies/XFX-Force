@@ -36,7 +36,7 @@
                                             @php 
                                                 $shippingAddress = json_decode($order->shipping_address);
                                             @endphp
-                                            {{ $shippingAddress?->name }}, {{ $shippingAddress?->address }}, {{ $shippingAddress?->city }}, {{ $shippingAddress?->state }}, {{ $shippingAddress?->country }}
+                                            {{ $shippingAddress?->name }}, {{ $shippingAddress?->address }}, {{ $shippingAddress?->city }}, {{ $shippingAddress?->state }}, {{ $shippingAddress?->country }}, , {{ $shippingAddress?->phone }}
                                         </p>
                                     @endif
                                 </div>
