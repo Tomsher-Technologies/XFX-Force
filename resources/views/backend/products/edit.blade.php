@@ -1341,6 +1341,48 @@ $(function() {
                             <input type="file" name="variants[${index}][image]" multiple class="form-control form-control-sm" accept="image/*">
                         </div>
                     </div>
+                    <!-- Specifications for this variant -->
+                    <hr>
+                    <div class="shadow p-2 bg-light">
+                        <div class="specifications-wrapper">
+                            <div class="specification-block row mb-2">
+                                <div class="col-md-4">
+                                    <label>Specification</label>
+                                    <select class="form-control form-control-sm aiz-selectpicker specification-select" 
+                                            name="variants[${index}][specifications][]" data-live-search="true">
+                                        <option value="">Select Specification</option>
+                                        @foreach(\App\Models\Specification::where('status',1)->orderBy('display_title','asc')->get() as $spec)
+                                        <option value="{{ $spec->id }}">{{ $spec->main_title }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Items</label>
+                                    <select class="form-control form-control-sm aiz-selectpicker specification-item" 
+                                            name="variants[${index}][specification_items][]" data-live-search="true">
+                                        <option value="">Select Items</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Sort Order</label>
+                                    <input type="number" class="form-control form-control-sm" name="variants[${index}][sort_orders][]" value="0">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="d-block">&nbsp;</label>
+                                    <button type="button" class="remove-spec border-0 bg-transparent">
+                                        <i class="las la-trash text-danger"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="text-right mb-3">
+                                <button type="button" class="btn btn-success btn-xs add-spec" data-name-prefix="variants[${index}]">
+                                    Add More
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                <!-- Specifications for this variant ends -->
                     <div class="form-group row">
                         <label class="col-md-12 col-from-label">{{trans('messages.description') }}</label>
                         <div class="col-md-12">
