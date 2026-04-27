@@ -265,7 +265,8 @@
                                         <div class="form-group row">
                                             <div class="col-md-6">
                                                 <label class="col-from-label">{{ trans('messages.sku') }} </label>
-                                                <input type="text" placeholder="{{ trans('messages.sku') }}" name="sku" class="form-control form-control-sm">
+                                                <input type="text" placeholder="{{ trans('messages.sku') }}" name="sku" class="form-control form-control-sm sku-input">
+                                                <span class="sku-error text-danger text-xs"></span>
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="col-from-label">{{ trans('messages.quantity') }} <span  class="text-danger">*</span></label>
@@ -650,7 +651,8 @@ function addVariantBox() {
             <div class="form-group row">
                 <div class="col-md-6">
                     <label>SKU</label>
-                    <input type="text" name="variants[${index}][sku]" class="form-control form-control-sm">
+                    <input type="text" name="variants[${index}][sku]" class="form-control form-control-sm sku-input">
+                    <span class="sku-error text-danger text-xs"></span>
                 </div>
                 <div class="col-md-6">
                     <label>Quantity</label>
@@ -952,6 +954,59 @@ $(document).on('change', ".specification-select", function () {
             .selectpicker('refresh');
     }
 });
+
+document.addEventListener('blur', function (e) {
+    if (e.target.classList.contains('sku-input')) {
+        checkSku(e.target);
+    }
+}, true); 
+
+
+function checkSku(inputEl) {
+    const sku = inputEl.value;
+    if (!sku) return;
+
+    const errorEl = inputEl.parentElement.querySelector('.sku-error');
+
+    
+    // check db
+    fetch("{{ route('products.check.sku') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ sku: sku })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.exists) {
+            errorEl && (errorEl.innerText = "SKU already exists");
+        } else {
+            // errorEl && (errorEl.innerText = "");
+        }
+    })
+    .catch(err => console.error(err));
+
+    // 1. CHECK DUPLICATE INSIDE FORM FIRST
+    let duplicateFound = false;
+
+    document.querySelectorAll('.sku-input').forEach(el => {
+        if (el !== inputEl && el.value.trim() === sku) {
+            duplicateFound = true;
+        }
+    });
+
+    if (duplicateFound) {
+        if (errorEl) errorEl.innerText = "SKU must be unique";
+        return; // STOP — no need to call API
+    } else {
+        if (errorEl) errorEl.innerText = "";
+    }
+
+}
+
 
 
 </script>

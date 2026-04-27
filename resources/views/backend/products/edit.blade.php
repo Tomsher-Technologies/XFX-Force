@@ -489,7 +489,8 @@
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="col-from-label">{{ trans('messages.sku') }} </label>
-                                            <input type="text" placeholder="{{ trans('messages.sku') }}" name="sku" class="form-control form-control-sm" value="{{ $product->stocks->first()?->sku }}">
+                                            <input type="text" placeholder="{{ trans('messages.sku') }}" name="sku" class="form-control form-control-sm sku-input" value="{{ $product->stocks->first()?->sku }}" data-stock-id="{{ $product->stocks->first()?->id ?? '' }}" data-original-sku="{{ $product->stocks->first()?->sku ?? '' }}">
+                                            <span class="sku-error text-danger text-xs"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="col-from-label">{{ trans('messages.quantity') }} <span class="text-danger">*</span></label>
@@ -682,7 +683,8 @@
                                             <div class="form-group row">
                                                 <div class="col-md-6">
                                                     <label class="col-from-label">{{ trans('messages.sku') }} </label>
-                                                    <input type="text" placeholder="{{ trans('messages.sku') }}" name="variants[{{ $index }}][sku]" class="form-control form-control-sm" value="{{ $stock->sku }}">
+                                                    <input type="text" placeholder="{{ trans('messages.sku') }}" name="variants[{{ $index }}][sku]" class="form-control form-control-sm sku-input" value="{{ $stock->sku }}" data-stock-id="{{ $stock->id ?? '' }}" data-original-sku="{{ $stock->sku ?? '' }}">
+                                                    <span class="sku-error text-danger text-xs"></span>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="col-from-label">{{ trans('messages.quantity') }} <span class="text-danger">*</span></label>
@@ -1318,7 +1320,8 @@ $(function() {
                     <div class="form-group row">
                         <div class="col-md-6">
                             <label>SKU</label>
-                            <input type="text" name="variants[${index}][sku]" class="form-control form-control-sm">
+                            <input type="text" name="variants[${index}][sku]" class="form-control form-control-sm sku-input">
+                            <span class="sku-error text-danger text-xs"></span>
                         </div>
                         <div class="col-md-6">
                             <label>Quantity</label>
@@ -1565,6 +1568,85 @@ $(function() {
                 .selectpicker('refresh');
         }
     });
+
+    
+document.addEventListener('blur', function (e) {
+    if (e.target.classList.contains('sku-input')) {
+        checkSku(e.target);
+    }
+}, true);
+
+function checkSku(inputEl) {
+
+    const sku = inputEl.value.trim();
+    const errorEl = inputEl.parentElement.querySelector('.sku-error');
+
+    if (!sku) {
+        if (errorEl) errorEl.innerText = '';
+        return;
+    }
+
+    const stockId = inputEl.dataset.stockId || null;
+    const originalSku = inputEl.dataset.originalSku || null;
+
+    // -----------------------------------
+    // 1. SKIP IF SAME AS ORIGINAL (EDIT)
+    // -----------------------------------
+    if (originalSku && sku === originalSku) {
+        if (errorEl) errorEl.innerText = '';
+        return;
+    }
+
+    // -----------------------------------
+    // 2. CHECK DUPLICATE IN FORM
+    // -----------------------------------
+    let duplicateFound = false;
+
+    document.querySelectorAll('.sku-input').forEach(el => {
+        const val = el.value.trim();
+
+        if (!val) return;
+
+        if (el !== inputEl && val === sku) {
+            duplicateFound = true;
+        }
+    });
+
+    if (duplicateFound) {
+        if (errorEl) errorEl.innerText = "SKU must be unique";
+        return;
+    }
+
+    if (errorEl) errorEl.innerText = '';
+
+    // -----------------------------------
+    // 3. CHECK DB
+    // -----------------------------------
+    fetch("{{ route('products.check.sku') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            sku: sku,
+            stock_id: stockId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.exists) {
+            if (errorEl) errorEl.innerText = "SKU already exists";
+        } else {
+            if (errorEl) errorEl.innerText = "";
+        }
+
+    })
+    .catch(err => console.error(err));
+}
+
 </script>
 @endsection
 

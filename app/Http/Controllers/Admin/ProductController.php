@@ -1043,4 +1043,22 @@ class ProductController extends Controller
             return 0;
         }
     }
+
+    public function checkSku(Request $request)
+    {
+        $sku = $request->sku;
+
+        $query = ProductStock::where('sku', $sku);
+
+        // ignore current variant
+        if ($request->stock_id) {
+            $query->where('id', '!=', $request->stock_id);
+        }
+
+        $exists = $query->exists();
+        
+        return response()->json([
+            'exists' => $exists
+        ]);
+    }
 }
