@@ -4,8 +4,8 @@
     
     <div class="flex flex-col divide-y divide-[#282B34]">
         @foreach($pcBuilderItems as $builderId => $items)
-            <div class="flex flex-row justify-between mb-2 align-center items-center">
-                <h2 class="text-center md:text-left text-white text-[20px] uppercase">Build your PC</h2>
+            <div class="flex flex-row justify-between mb-1 align-center items-center">
+                <h2 class="text-center md:text-left text-white text-[20px] uppercase w-full">Build your PC</h2>
             </div>
             @foreach($items as $item)
             <div class="cart-box">
@@ -100,8 +100,8 @@
             @endforeach
     </div>
     
-    <div class="flex flex-row items-center justify-end mt-[20px] gap-[15px]">
-        <a href="#" onclick="resetAndRedirect({{ $builderId }})" class="flex w-full cursor-pointer items-center justify-center gap-3 px-6 py-4 rounded-xl border border-[#2E363E] text-gray-400 font-medium uppercase text-[13px] hover:bg-[#252C33] hover:text-white transition-all duration-300 group" fdprocessedid="x22w2b" >
+    <div class="flex flex-col xl:flex-row items-center justify-end mt-[20px] gap-[15px]">
+        <a href="#" onclick="resetAndRedirect({{ $builderId }})" class="flex w-full cursor-pointer items-center justify-center gap-3 px-5 py-3 rounded-xl border border-[#2E363E] text-gray-400 font-medium uppercase text-[13px] hover:bg-[#252C33] hover:text-white transition-all duration-300 group" fdprocessedid="x22w2b" >
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M7.06225 2.46955C7.44287 2.55401 8.58718 2.86026 9.38256 3.64338C10.1665 4.41446 10.4778 5.51582 10.5671 5.90217C9.98386 6.54506 9.27096 7.29742 8.40698 8.16096C4.82477 11.7404 3.39283 12.6795 3.33374 12.7176C3.25164 12.7705 3.15773 12.8017 3.0603 12.8094L0.636471 12.9979C0.621313 12.9996 0.606133 12.9998 0.591549 12.9998C0.434944 12.9998 0.283705 12.9368 0.172604 12.825C0.0503889 12.7019 -0.0112895 12.5318 0.00170553 12.3582L0.190182 9.93732C0.197865 9.8386 0.230155 9.74226 0.283932 9.659C0.325253 9.5957 1.26836 8.16301 4.84546 4.58869C5.69033 3.7444 6.42826 3.04514 7.06225 2.46955ZM10.3953 0.00763642C10.5012 0.0244213 11.4443 0.191172 12.1277 0.864082C12.8078 1.55404 12.9752 2.49891 12.9919 2.60529C13.0144 2.74743 12.9856 2.89353 12.9099 3.01545C12.8842 3.05747 12.5011 3.66234 11.4851 4.85725C11.2593 4.23886 10.8658 3.44182 10.2078 2.79377C9.55179 2.1479 8.74277 1.76131 8.11694 1.53889C9.33083 0.505953 9.94742 0.117453 9.99194 0.0896677C10.1119 0.0147327 10.2552 -0.0155577 10.3953 0.00763642Z" fill="white"></path>
         </svg>
@@ -110,7 +110,7 @@
 
     <a href="javascript:void(0)"
                 onclick="deletePcBuilder({{ $builderId }})"
-                class="flex w-full cursor-pointer items-center justify-center gap-3 px-6 py-4 rounded-xl border border-[#2E363E] text-gray-400 font-medium uppercase text-[13px] hover:bg-red-500/10 hover:border-red-500/10 hover:text-white transition-all duration-300 group">
+                class="flex w-full cursor-pointer items-center justify-center gap-3 px-5 py-3 rounded-xl border border-[#2E363E] text-gray-400 font-medium uppercase text-[13px] hover:bg-red-500/10 hover:border-red-500/10 hover:text-white transition-all duration-300 group">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-red-500">
   <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
 </svg>

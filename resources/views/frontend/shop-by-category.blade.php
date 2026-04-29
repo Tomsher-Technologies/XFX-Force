@@ -7,7 +7,7 @@
 <input type="hidden" id="category-current-page" value="{{ $products->currentPage() }}">
     <!--inner banner-->
     <section class="px-[16px] md:px-[140px] pt-[80px] md:pt-[150px] pb-[0px] relative">
-        <div class="section-title mb-[0px] relative border-t-1 border-[#ffffff30] pt-[30px] md:pt-0 xl:pt-[50px]">
+        <div class="section-title mb-[0px] relative border-t border-[#ffffff30] pt-[30px] md:pt-0 xl:pt-[50px]">
             <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center xl:text-left uppercase flex flex-col md:flex-row flex-start justify-center xl:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">shop: {{ $category->name }}<span class="text-[18px] text-[#2A7CFF] top-[6px] tracking-[0px] relative font-sans h-[0px]" id="total-product-count">{{ $products->count() }}</span></h3>
         </div>
         <input type="hidden" id="current-category-id" value="{{ $category->category_translations->first()->slug }}">
@@ -70,7 +70,7 @@
                                     </svg>
                                 </span>
                             </button>
-                            <el-disclosure id="filter-section-categories" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[20px]">
+                            <el-disclosure id="filter-section-categories" hidden class="pt-6 [&:not([hidden])]:block border-t border-[#282B34] pb-[20px]">
 
                                 <div class="w-full">
                                     <div class="space-y-4">
@@ -171,7 +171,7 @@
                                     </svg>
                                 </span>
                             </button>
-                            <el-disclosure id="filter-section-price" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[30px]">
+                            <el-disclosure id="filter-section-price" hidden class="pt-6 [&:not([hidden])]:block border-t border-[#282B34] pb-[30px]">
                                 <div class="w-full price-filter">
                                     <div class="flex justify-between items-center mb-8 gap-[20px] align-center">
                                         <div class="w-full">
@@ -212,7 +212,7 @@
                                     </svg>
                                 </span>
                             </button>
-                            <el-disclosure id="filter-section-brand" hidden class="pt-6 [&:not([hidden])]:block border-t-1 border-[#282B34] pb-[20px]">
+                            <el-disclosure id="filter-section-brand" hidden class="pt-6 [&:not([hidden])]:block border-t border-[#282B34] pb-[20px]">
 
                                 <div class="w-full">
                                     <div id="brand-grid" class="space-y-4">
@@ -258,12 +258,12 @@
 
                 <!--promotion banners-->
 				@if(!empty($banners))
-				<div class="swiper promobnrswiper relative">
+				<div class="!hidden xl:!block swiper promobnrswiper relative">
                     <div class="swiper-wrapper">
 						@foreach($banners as $banner)
 						<div class="swiper-slide" data-swiper-autoplay="8000">
                             <a href="{{ getBannerUrl($banner) }}">
-								<img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" title="{{ $banner->title }}">
+								<img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full" alt="{{ $banner->title }}" title="{{ $banner->title }}">
 							</a>
                         </div>
 						@endforeach

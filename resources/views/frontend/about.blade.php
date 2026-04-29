@@ -5,14 +5,14 @@
 
     <!--about banner intro-->
     <section
-        class="min-h-screen relative justify-between w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px] border-b-1 border-gray-800 xl:border-none">
+        class="min-h-screen relative justify-between w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px] border-b border-gray-800 xl:border-none">
 
         <img src="{{ uploaded_asset($page_content['image1'] ?? '') }}" alt="" title=""
             class="absolute left-0 top-0 w-full h-full object-cover object-center z-[-1]">
 
         <!--breadcrumb-->
         <div>
-            <nav class="flex text-gray-400 py-[15px] md:py-[30px] border-t-1 border-[#ffffff30] w-full"
+            <nav class="flex text-gray-400 py-[15px] md:py-[30px] border-t border-[#ffffff30] w-full"
                 aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3 flex-wrap">
                     <li class="inline-flex items-center">
@@ -47,8 +47,7 @@
                         {{ $page_content['title'] ?? 'About Us' }}</h1>
                 </div>
                 <div class="w-full">
-                    <p
-                        class="text-[#ffffff80] text-[15px] xl:text-[20px] leading-[30px] xl:leading-[40px] text-center xl:text-left">
+                    <p class="text-[#ffffff80] text-[15px] xl:text-[20px] leading-[30px] xl:leading-[40px] text-center xl:text-left">
                         
                         {{ $page_content['description'] ?? '' }}</p>
                 </div>
@@ -60,7 +59,7 @@
 
     <!--about-->
     <section
-        class="h-full xl:min-h-screen relative flex flex-col bg-black justify-start xl:justify-between w-full px-[16px] md:px-[30px] xl:px-[250px] py-[40px] xl:py-[100px] border-b-1 border-gray-800 xl:border-none">
+        class="h-full xl:min-h-screen relative flex flex-col bg-black justify-start xl:justify-between w-full px-[16px] md:px-[30px] xl:px-[250px] py-[40px] xl:py-[100px] border-b border-gray-800 xl:border-none">
 
         <img src="{{ uploaded_asset($page_content['image2'] ?? '') }}" alt="" title=""
             class="hidden xl:block absolute left-0 top-0 w-full h-full object-contain object-center z-[0]">
@@ -73,12 +72,11 @@
         </div>
 
         <div class="w-full xl:w-1/2 self-end text-center xl:text-left px-0 xl:px-[50px] relative z-1">
-            <h3
-                class="about-title text-[18px] xl:text-[25px] leading-[30px] xl:leading-[35px] text-white mb-4 w-full xl:w-sm">
+            <h3 class="about-title text-[18px] xl:text-[25px] leading-[30px] xl:leading-[35px] text-white mb-4 w-full">
                 {{ $page_content['mid_sub_title'] ?? '' }}
             </h3>
             <p
-                class="text-[#ffffff90] text-[15px] xl:text-[18px] leading-[30px] xl:leading-[35px] full xl:max-w-2xl xl:ml-auto font-medium">
+                class="text-[#ffffff90] text-[15px] xl:text-[18px] leading-[30px] xl:leading-[35px] full xl:ml-auto font-medium">
                 {{ $page_content['mid_description'] ?? '' }}
             </p>
         </div>

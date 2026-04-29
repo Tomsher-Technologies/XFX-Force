@@ -32,7 +32,7 @@
 
     <!--product list-->
     <div x-show="activeTab === 'listview'" x-transition class="tab-panel">
-        <div class="flex flex-col gap-[15px]">
+        <div class="flex flex-col gap-[5px]">
             @foreach ($products as $product)
             @php
             $firstStock = $product->stocks->first();
@@ -55,7 +55,7 @@
 
                 <div class="flex flex-col flex-1 md:contents">
 
-                    <div class="md:col-span-2 p-4 md:p-[30px]">
+                    <div class="md:col-span-2 p-4 pb-0 md:p-[30px]">
                         <h4 class="text-white text-[15px] sm:text-[18px] md:text-[20px] mb-1 md:mb-[10px] leading-tight font-medium line-clamp-2">
                             {{ $product->name }}
                         </h4>
@@ -152,7 +152,7 @@
                         @endif
                     </div>
 
-                    <div class="md:col-span-1 p-4 md:pt-[30px] md:px-[30px] flex flex-col justify-between items-start md:items-end">
+                    <div class="md:col-span-1 p-4 pt-2 md:pt-[30px] md:px-[30px] flex flex-col justify-between items-start md:items-end">
                         <div class="price flex flex-row md:flex-col items-center md:items-end gap-3 w-full justify-between md:justify-start">
                             <h5 class="price flex flex-row text-[#2A7CFF] text-[18px] md:text-[28px] m-0 font-bold items-center gap-1">
                                 <img src="{{ asset('assets/images/aed.svg') }}" class="w-4 h-4 md:w-[22px] md:h-[22px]" alt="AED">

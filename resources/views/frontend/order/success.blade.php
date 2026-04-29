@@ -26,12 +26,12 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-[30px] lg:gap-[100px] mb-10 pb-10 border-b border-white/5 text-center lg:text-left">
                                 <div>
                                     @if ($order->shipping_type == "pickup")
-                                        <p class="text-[12px] font-medium text-gray-400 uppercase mb-2">Pickup Location</p>
+                                        <p class="text-[12px] font-medium text-gray-400 uppercase mb-1">Pickup Location</p>
                                         <p class="text-white leading-relaxed">
                                            {{ get_setting('pickup_address') }}
                                         </p>
                                     @else
-                                        <p class="text-[12px] font-medium text-gray-400 uppercase mb-2">Shipping Address</p>
+                                        <p class="text-[12px] font-medium text-gray-400 uppercase mb-1">Shipping Address</p>
                                         <p class="text-white leading-relaxed">
                                             @php 
                                                 $shippingAddress = json_decode($order->shipping_address);

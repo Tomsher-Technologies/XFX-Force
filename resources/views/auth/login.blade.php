@@ -4,7 +4,7 @@
 
 @section('content')
 
-<section class="bg-[#0F161B] max-w-6xl mx-auto py-[50px] pt-[100px] md:pt-[200px] md:pb[100px] flex flex-col gap-[30px] md:gap-[50px]">
+<section class="bg-[#0F161B] max-w-6xl mx-auto py-[50px] pt-[100px] xl:pt-[200px] md:pb[100px] flex flex-col gap-[30px] md:gap-[50px]">
     <div class="flex items-center justify-center p-6">
         <div class="w-full max-w-md bg-[#1C2228] rounded-[20px] border border-white/5 p-8 md:p-10 shadow-2xl">
             <div class="text-center mb-10">

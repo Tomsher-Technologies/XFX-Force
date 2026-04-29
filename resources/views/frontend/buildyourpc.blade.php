@@ -8,8 +8,8 @@ $hideFooter = true;
 @endphp
 
 
-<section class="m-[16px] xl:m-0 bg-[#0F161B] h-screen p-[0px] xl:p-[30px] flex flex-col overflow-x-hidden">
-    <main class="grid grid-cols-1 xl:grid-cols-12 h-full xl:h-[calc(100vh-60px)] overflow-y-auto rounded-[20px] custom-scrollbar">
+<section class="m-[16px] xl:m-0 bg-[#0F161B] h-screen p-[0px] xl:p-[15px] flex flex-col overflow-x-hidden">
+    <main class="grid grid-cols-1 xl:grid-cols-12 h-full xl:h-[calc(100vh-15px)] overflow-y-auto rounded-[20px] custom-scrollbar">
 
         <!--left sidebar-->
         <div onclick="closeAllMobileSystems()" id="sidebar-overlay" data-backdrop="true" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] opacity-0 pointer-events-none transition-opacity duration-300 flex justify-end p-5">
@@ -20,7 +20,7 @@ $hideFooter = true;
                 </svg>
             </button>
         </div>
-        <aside id="mobile-sidebar" class="fixed xl:static left-[-100%] xl:left-0 col-span-2 bg-[#1C2228] border border-[#1E2529] rounded-[0px] md:rounded-[20px] flex flex-col overflow-hidden shadow-2xl transition-all duration-300 h-screen xl:h-[calc(100vh-60px)] top-0 z-[99999]">
+        <aside id="mobile-sidebar" class="fixed xl:static left-[-100%] xl:left-0 col-span-2 bg-[#1C2228] border border-[#1E2529] rounded-[0px] md:rounded-[20px] flex flex-col overflow-hidden shadow-2xl transition-all duration-300 h-screen xl:h-[calc(100vh-30px)] top-0 z-[99999]">
 
             <div class="p-[30px] border-b border-[#2E363E]">
                 <a href="{{ route('home') }}" class="items-center gap-[20px]">
@@ -57,7 +57,7 @@ $hideFooter = true;
 
             </nav>
 
-            <div class="p-[30px] border-t-1 border-[#2E363E] flex flex-col gap-[20px]">
+            <div class="p-[30px] border-t border-[#2E363E] flex flex-col gap-[20px]">
                 <div>
                     <label class="text-[14px] text-gray-400 mb-[5px] block text-left md:text-left">Total Price</label>
                     <div class="price w-full flex flex-row items-end gap-[15px]">
@@ -81,9 +81,9 @@ $hideFooter = true;
         <!--//left sidebar-->
 
         <!--middle section-->
-        <section class="col-span-7 h-[calc(100vh-32px)] xl:h-[calc(100vh-60px)] overflow-y-auto no-scrollbar overflow-x-hidden px-0 xl:px-[30px] pb-[100px] xl:pb-0" id="products-list-page">
+        <section class="col-span-7 h-[calc(100vh-16px)] xl:h-[calc(100vh-15px)] overflow-y-auto no-scrollbar overflow-x-hidden px-0 xl:px-[15px] pb-[100px] xl:pb-0" id="products-list-page">
 
-            <div class="sticky top-0 bg-[#1C2228] border border-[#1E2529] p-[15px] md:p-[30px] rounded-[20px] flex flex-col justify-between group transition-all gap-[30px] z-[1]">
+            <div class="sticky top-0 left-0 right-0 bg-[#1C2228] border border-[#1E2529] p-[15px] md:p-[30px] rounded-[20px] rounded-t-none flex flex-col justify-between group transition-all gap-[30px] z-[1]">
 
                 <div class="flex flex-col md:flex-row justify-between w-full gap-[15px] md:gap-[0px]">
                     <div class="flex flex-col gap-[5px] w-full">
@@ -93,20 +93,20 @@ $hideFooter = true;
 
                     <!-- Navigation buttons -->
                     <div class="w-full left-0 flex items-center justify-between md:justify-end mt-auto gap-[20px]">
-                        <button id="prev-btn" onclick="handlePrevStep()" class="flex w-full md:w-fit cursor-pointer items-center justify-center gap-3 px-6 py-4 rounded-xl border border-[#2E363E] text-gray-400 font-medium uppercase text-[13px] hover:bg-[#252C33] hover:text-white transition-all duration-300 group">
+                        <button id="prev-btn" onclick="handlePrevStep()" class="flex w-full md:w-fit cursor-pointer items-center justify-center gap-3 px-5 py-3 rounded-xl border border-[#2E363E] text-gray-400 font-medium uppercase text-[13px] hover:bg-[#252C33] hover:text-white transition-all duration-300 group">
                             <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M-3.14713e-05 6.707C-0.000488758 6.44439 0.0509577 6.18428 0.151352 5.94162C0.251746 5.69896 0.399108 5.47853 0.584969 5.293L5.87897 0L7.29297 1.414L1.99997 6.707L7.29297 12L5.87897 13.414L0.585969 8.121C0.399928 7.93556 0.252382 7.71516 0.151814 7.4725C0.0512471 7.22983 -0.000357628 6.96968 -3.14713e-05 6.707Z" fill="white" />
                             </svg>
                             <span>Previous</span>
                         </button>
-                        <button id="next-btn" onclick="handleNextStep()" class="flex w-full md:w-fit cursor-pointer items-center justify-center gap-3 px-8 py-4 rounded-xl bg-[#2A7CFF] text-white font-medium uppercase text-[13px] hover:bg-[#3E81FF] transition-all duration-[600ms] group">
+                        <button id="next-btn" onclick="handleNextStep()" class="flex w-full md:w-fit cursor-pointer items-center justify-center gap-3 px-5 py-3 rounded-xl bg-[#2A7CFF] text-white font-medium uppercase text-[13px] hover:bg-[#3E81FF] transition-all duration-[600ms] group">
                             <span>Next</span>
                             <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M7.293 6.707C7.29346 6.96961 7.24201 7.22972 7.14162 7.47238C7.04122 7.71505 6.89386 7.93547 6.708 8.121L1.414 13.414L0 12L5.293 6.707L0 1.414L1.414 -9.53674e-07L6.707 5.293C6.89304 5.47845 7.04059 5.69884 7.14115 5.9415C7.24172 6.18417 7.29333 6.44432 7.293 6.707Z" fill="white" />
                             </svg>
                         </button>
                         <!--proceed button-->
-                        <button id="proceed-to-order-btn" onclick="proceedToOrder()" class="hidden flex w-full md:w-fit cursor-pointer items-center justify-center gap-3 px-8 py-4 rounded-xl bg-[#077F09] text-white font-medium uppercase text-[13px] hover:bg-[#055E07] transition-all duration-[600ms] group">
+                        <button id="proceed-to-order-btn" onclick="proceedToOrder()" class="hidden flex w-full md:w-fit cursor-pointer items-center justify-center gap-3 px-5 py-3 rounded-xl bg-[#077F09] text-white font-medium uppercase text-[13px] hover:bg-[#055E07] transition-all duration-[600ms] group">
                             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M4.375 12.5C5.06522 12.5 5.62479 13.0598 5.625 13.75C5.625 14.4404 5.06535 15 4.375 15C3.68465 15 3.125 14.4404 3.125 13.75C3.12521 13.0598 3.68478 12.5 4.375 12.5ZM10.625 12.5C11.3152 12.5 11.8748 13.0598 11.875 13.75C11.875 14.4404 11.3154 15 10.625 15C9.93465 15 9.375 14.4404 9.375 13.75C9.37521 13.0598 9.93478 12.5 10.625 12.5ZM0.763672 0C1.22266 0.000213547 1.66578 0.168673 2.00879 0.473633C2.35176 0.778715 2.57121 1.19942 2.625 1.65527L2.65137 1.875H15L13.6475 9.375H3.53418L3.61523 10.0723C3.633 10.2244 3.70688 10.3649 3.82129 10.4668C3.93567 10.5685 4.08326 10.625 4.23633 10.625H12.5V11.875H4.23633C3.77734 11.8748 3.33422 11.7063 2.99121 11.4014C2.64824 11.0963 2.42879 10.6756 2.375 10.2197L1.38477 1.80176C1.36684 1.64975 1.29309 1.50991 1.17871 1.4082C1.06432 1.30649 0.916744 1.25002 0.763672 1.25H0V0H0.763672ZM3.38672 8.125H12.6025L13.5039 3.125H2.79883L3.38672 8.125Z" fill="white" />
                             </svg>
@@ -186,7 +186,7 @@ $hideFooter = true;
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-3 gap-[5px] xl:gap-4 py-[30px] min-w-0 overflow-x-hidden relative z-[0]" id="products-list">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-[5px] xl:gap-4 py-[15px] min-w-0 overflow-x-hidden relative z-[0]" id="products-list">
                 @include('frontend.partials.pc-builder-products-list', ['products' => $products ?? []])
             </div>
 
@@ -207,7 +207,7 @@ $hideFooter = true;
 
         <!--right sidebar-->
         <div id="details-overlay" onclick="showDefaultView()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[140] opacity-0 pointer-events-none transition-opacity duration-300 xl:hidden"></div>
-        <aside id="details-sidebar" class=" fixed inset-x-4 inset-y-10 z-[150] translate-y-full opacity-0 pointer-events-none transition-all duration-300 xl:translate-y-0 xl:opacity-100 xl:pointer-events-auto xl:relative xl:inset-0 xl:z-auto xl:col-span-3 bg-[#1C2228] border border-[#1E2529] rounded-[20px] flex flex-col shadow-2xl h-[calc(100vh-80px)] xl:h-[calc(100vh-60px)] overflow-hidden">
+        <aside id="details-sidebar" class=" fixed inset-x-4 inset-y-10 z-[150] translate-y-full opacity-0 pointer-events-none transition-all duration-300 xl:translate-y-0 xl:opacity-100 xl:pointer-events-auto xl:relative xl:inset-0 xl:z-auto xl:col-span-3 bg-[#1C2228] border border-[#1E2529] rounded-[20px] flex flex-col shadow-2xl h-[calc(100vh-80px)] xl:h-[calc(100vh-30px)] overflow-hidden">
 
             <!--default-->
             <div id="default-view" class="flex flex-col gap-[15px] justify-center items-center h-full p-6">
@@ -289,7 +289,7 @@ $hideFooter = true;
                 </div>
                 <div class="w-full">
                     <!--place order button-->
-                    <button id="place-your-order-btn" onclick="placeYourOrder()" class="flex w-full cursor-pointer items-center justify-center gap-3 px-8 py-4 rounded-xl bg-[#077F09] text-white font-medium uppercase text-[13px] hover:bg-[#055E07] transition-all duration-[600ms] group">
+                    <button id="place-your-order-btn" onclick="placeYourOrder()" class="flex w-full cursor-pointer items-center justify-center gap-3 px-5 py-3 rounded-xl bg-[#077F09] text-white font-medium uppercase text-[13px] hover:bg-[#055E07] transition-all duration-[600ms] group">
                         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4.375 12.5C5.06522 12.5 5.62479 13.0598 5.625 13.75C5.625 14.4404 5.06535 15 4.375 15C3.68465 15 3.125 14.4404 3.125 13.75C3.12521 13.0598 3.68478 12.5 4.375 12.5ZM10.625 12.5C11.3152 12.5 11.8748 13.0598 11.875 13.75C11.875 14.4404 11.3154 15 10.625 15C9.93465 15 9.375 14.4404 9.375 13.75C9.37521 13.0598 9.93478 12.5 10.625 12.5ZM0.763672 0C1.22266 0.000213547 1.66578 0.168673 2.00879 0.473633C2.35176 0.778715 2.57121 1.19942 2.625 1.65527L2.65137 1.875H15L13.6475 9.375H3.53418L3.61523 10.0723C3.633 10.2244 3.70688 10.3649 3.82129 10.4668C3.93567 10.5685 4.08326 10.625 4.23633 10.625H12.5V11.875H4.23633C3.77734 11.8748 3.33422 11.7063 2.99121 11.4014C2.64824 11.0963 2.42879 10.6756 2.375 10.2197L1.38477 1.80176C1.36684 1.64975 1.29309 1.50991 1.17871 1.4082C1.06432 1.30649 0.916744 1.25002 0.763672 1.25H0V0H0.763672ZM3.38672 8.125H12.6025L13.5039 3.125H2.79883L3.38672 8.125Z" fill="white" />
                         </svg>
@@ -306,7 +306,7 @@ $hideFooter = true;
         <!--mobile navigation-->
         <!--navigation menu-->
         <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[92%] md:block xl:hidden">
-            <div class="bg-[#1E2225]/90 backdrop-blur-lg border border-white/10 rounded-[22px] shadow-2xl grid grid-cols-4 h-[70px]">
+            <div class="bg-[#1E2225]/90 backdrop-blur-lg border border-white/10 rounded-[10px] shadow-2xl grid grid-cols-4 h-[70px]">
                 <button onclick="toggleMobileMenu(event)" class="flex flex-col items-center justify-center gap-1 text-gray-400 border-r border-white/5">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M3 12h18M3 6h18M3 18h18" />
