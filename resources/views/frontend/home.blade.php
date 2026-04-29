@@ -122,7 +122,7 @@
             <div class="seg-card rounded-[20px] items-center flex flex-col gap-[20px] justify-between xl:justify-end p-[20px] md:p-[30px] relative overflow-hidden min-h-auto xl:min-h-[450px] bg-black">
                 <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" class="relative xl:absolute object-cover object-top w-full h-full bottom-0 left-0 rounded-[10px]">
                 <div class="content relative z-[1] flex flex-col items-center justify-between xl:justify-end h-full w-full">
-                    <h2 class="text-[25px] text-[white] capitalize font-bold text-center">{{ $banner->title }}</h2>
+                    <h2 class="text-[25px] text-white capitalize font-bold text-center">{{ $banner->title }}</h2>
                     <p class="text-[15px] text-[#ffffff] text-center">{{ $banner->sub_title }}</p>
                     <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[10px] bg-white font-medium mt-[20px] transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white" title="">{{ $banner->btn_text }}</a>
                 </div>
@@ -137,7 +137,7 @@
 @if(!empty($categories))
 <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[50px] md:pt-0 lg:pt-0 xl:pt-[50px] pb-[50px] md:pb-[50px] lg:pb-[50px] xl:pb-[100px] relative border-b border-[#ffffff10] xl:border-hidden">
     <div class="section-title mb-[30px] relative">
-        <h3 class="text-[30px] md:text-[50px] text-[white] font-bold text-center xl:text-left uppercase">{{ $page_content['category_title'] ?? ''}}</h3>
+        <h3 class="text-[30px] md:text-[50px] text-white font-bold text-center xl:text-left uppercase">{{ $page_content['category_title'] ?? ''}}</h3>
     </div>
     <div class="relative group">
         <div class="swiper cateswiper relative overflow-x-hidden">
@@ -662,9 +662,9 @@
 <!--testimonials-->
 @if(!empty($testimonialsVideo) || !empty($testimonialsText))
 <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] relative">
-    <div class="border-y-1 border-[#ffffff10] py-[50px] xl:py-[100px]">
+    <div class="border-y border-[#ffffff10] py-[50px] xl:py-[100px]">
         <div class="section-title mb-[30px] relative flex items-center justify-center">
-            <h3 class="text-[30px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">{{$page_content['testimonials_title'] ?? ''}}</h3>
+            <h3 class="text-[30px] md:text-[50px] text-white font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">{{$page_content['testimonials_title'] ?? ''}}</h3>
         </div>
         <div class="flex flex-col xl:flex-row gap-[30px] max-w-6xl m-auto">
             <div>
@@ -730,7 +730,7 @@
                                     @foreach ($testimonialsText as $testimonialsText)    
                                     <div class="swiper-slide">
                                         <div class="flex flex-col gap-[30px] xl:gap-[50px] justify-between h-full">
-                                            <p class="text-white text-center lg:text-left text-[15px] font-normal leading-[30px]">{{$testimonialsText->comment}}</p>
+                                            <p class="text-white text-center xl:text-left text-[15px] font-normal leading-[30px]">{{$testimonialsText->comment}}</p>
                                             <div class="flex flex-row gap-[20px] justify-center xl:justify-start">
                                                 <div id="userAvatar" class="flex items-center justify-center w-12 h-12 rounded-full bg-[#393B42] text-white font-bold text-xl">{{ strtoupper(substr($testimonialsText->name, 0, 1)) }}</div>
                                                 <div>
@@ -774,7 +774,7 @@
                     <div class="swiper-slide">
                         <div class="flex flex-col xl:grid md:grid-cols-2 gap-0 xl:gap-[100px] items-start xl:items-end">
                             <div class="section-title mb-0 flex flex-col gap-10">
-                                <h3 class="text-[30px] md:text-[50px] text-[white] font-bold uppercase text-center xl:text-left leading-[40px] md:leading-[50px] m-[0]">{{$footer['footer_title']}}</h3>
+                                <h3 class="text-[30px] md:text-[50px] text-white font-bold uppercase text-center xl:text-left leading-[40px] md:leading-[50px] m-[0]">{{$footer['footer_title']}}</h3>
                                 <div class="mt-[15px] mb-[30px] xl:mb-[0px] m-auto xl:m-0 w-full xl:w-[500px] h-full xl:h-[500px] relative">
                                     <img src="{{$footerImageUrl}}" alt="About PC Garage" title="About PC Garage" class="w-full h-full relative xl:absolute object-cover object-top m-auto z-[0]">
                                 </div>

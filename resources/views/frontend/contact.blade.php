@@ -7,7 +7,7 @@
             <div class="pt-0 justify-center">
                 <main>
                     <div>
-                        <div class="section-title mb-10 relative border-t-1 border-[#ffffff30] pt-[50px]">
+                        <div class="section-title mb-10 relative border-t border-[#ffffff30] pt-[50px]">
                             <h1 class="w-full text-[40px] md:text-[50px] text-white font-bold text-center uppercase flex flex-col md:flex-row flex-start justify-center lg:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">
                                 {{ $page_content['title'] ?? '' }}
                             </h1>

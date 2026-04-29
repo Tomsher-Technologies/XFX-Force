@@ -4,7 +4,7 @@
 @section('content')
 <!--inner banner-->
 <section class="px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] md:pt-[100px] xl:pt-[150px] pb-[0px] relative">
-    <div class="section-title mb-[0px] relative border-t-1 border-[#282B34] pt-[50px]">
+    <div class="section-title mb-[0px] relative border-t border-[#282B34] pt-[50px]">
         <h3 class="w-full text-[40px] xl:text-[50px] text-white capitalize font-bold text-center uppercase flex flex-col md:flex-row flex-start justify-center md:justify-start items-center xl:items-start gap-[0px] xl:gap-[10px] m-0 leading-[30px] md:leading-[0px] xl:leading-[60px]">CART<span class="text-[18px] text-[#2A7CFF] top-[6px] tracking-[0px] relative font-sans h-[0px]" id="cart-count">
                 ({{ $cartCount }})
             </span></h3>
@@ -17,7 +17,7 @@
 <section class="bg-[#0F161B]">
     <main class="px-[16px] md:px-[30px] xl:px-[140px] pt-[50px] pb-[50px] xl:pb-[100px]" id="main-cart-section">
         @if($cartCount > 0)
-        <div class="flex flex-col gap-[30px] xl:col-col xl:grid xl:grid-cols-12 xl:gap-[30px] w-full" id="cart-block">
+        <div class="flex flex-col gap-[15px] xl:col-col xl:grid xl:grid-cols-12 xl:gap-[30px] w-full" id="cart-block">
             <div class="col-span-8 flex flex-col gap-[10px]">
 
                 <!--build pc cart-->
@@ -50,7 +50,7 @@
                                 </div>
                                 <div class="flex flex-col gap-[10px]">
                                     <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 md:line-clamp-1 xl:line-clamp-2 text-center md:text-left cursor-pointer" onclick="window.location='{{ route('product.details' ,[$item->product->slug, $item->product_stock->sku]) }}'">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>
-                                    <p class="text-[10px] text-[#ffffff50] text-center xl:text-left">
+                                    <p class="text-[10px] text-[#ffffff50] text-center md:text-left">
                                         @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
                                             <span class="text-gray-400 text-sm">
                                                
@@ -139,7 +139,7 @@
                 <div class="sticky top-[180px] w-full bg-black/30 backdrop-blur-[60px] p-[20px] md:p-[30px] rounded-[20px] mb-[10px]">
                     <h2 class="text-white text-center md:text-left text-[20px] uppercase mb-[20px] pb-[20px] border-b border-[#282B34]">Order Summary</h2>
                     <form>
-                        <div class="max-w-sm md:max-w-screen-xl">
+                        <div class="w-full md:max-w-sm md:max-w-screen-xl">
                             <label for="coupon" class="block text-sm font-medium text-gray-400 mb-[10px]">Discount code / Promo code</label>
                             <div class="relative group">
                                 <input type="text" id="coupon_code" placeholder="PROMO2026" class="w-full bg-[#282B34] border border-gray-800 text-white text-sm rounded-xl px-4 py-4 pr-24 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all placeholder-gray-600" value="{{ $couponCode ?? '' }}" />

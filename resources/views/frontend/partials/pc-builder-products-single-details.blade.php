@@ -65,7 +65,7 @@
             $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
         @endphp
 
-        <a href="javascript:void(0)" class="flex items-center gap-[8px] -mt-2 cursor-default">
+        <a href="javascript:void(0)" class="flex items-center gap-[8px] mt-2 cursor-default">
             <div class="flex items-center gap-[2px]">
                 {{-- Full Stars --}}
                 @for ($i = 0; $i < $fullStars; $i++)
@@ -166,29 +166,6 @@
                 </svg>
                 <span id="details-price" class="text-white text-left text-[20px] font-medium leading-[35px]">{{ number_format($stock?->offer_price, 2) }}</span>
             </h5>
-        </div>
-    </div>
-    <div class="counter-container w-full block xl:hidden">
-        <button onclick="selectProduct(this)" class="action-btn w-full text-center text-white uppercase text-[13px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] bg-transparent hover:bg-[#2A7CFF] hover:border-[#2A7CFF] transition-all duration-300">
-            Select
-        </button>
-
-        <div class="counter-wrapper hidden items-center gap-2 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 w-full">
-            <button onclick="updateMultiQty(this, -1); event.stopPropagation();" class="minus-btn flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all active:scale-90">
-                <span class="icon-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                </span>
-            </button>
-
-            <input type="number" value="1" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-medium rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-
-            <button onclick="updateMultiQty(this, 1); event.stopPropagation();" class="flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg transition-all active:scale-90">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
-                </svg>
-            </button>
         </div>
     </div>
 </div>

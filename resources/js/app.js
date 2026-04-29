@@ -1880,7 +1880,7 @@ const desktop = document.getElementById('desktop-filter');
 const mobile = document.getElementById('mobile-filter');
 
 function moveFilter() {
-    if (window.innerWidth < 1024) {
+    if (window.innerWidth < 1300) {
         if(mobile) mobile.appendChild(filter);
         // filter.querySelector('form').classList.remove('hidden');
     } else {
@@ -1910,7 +1910,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filterForm.querySelectorAll('.category-box, .price-box, .brand-box').forEach(box => {
                 // Remove classes from the box itself
                 box.classList.remove('bg-black/30', 'backdrop-blur-[60px]', 'px-[30px]', 'py-[15px]', 'rounded-[20px]', 'mb-[10px]');
-                box.classList.add('border-t', 'border-gray-200', 'px-4', 'py-6');
+                box.classList.add('border-t', 'border-gray-700', 'px-4', 'py-6');
 
                 // Remove classes from the button inside the box
                 const button = box.querySelector('button');
@@ -1918,8 +1918,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     button.classList.remove('py-3'); 
                     const span = button.querySelector('span');
                     if (span) {
-                        span.classList.remove('text-white', 'font-bold'); // add the classes you want to remove
-                        span.classList.add('text-gray-900');
+                        span.classList.remove('text-white', 'font-medium'); // add the classes you want to remove
+                        span.classList.add('text-white');
                     }
                 }
 
