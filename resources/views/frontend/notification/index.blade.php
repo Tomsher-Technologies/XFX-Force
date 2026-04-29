@@ -76,7 +76,18 @@
                                                 'heading' => 'Cancellation Rejected',
                                                 'color' => 'red',
                                                 'icon' => 'cancel'
-                                            ]
+                                            ],
+                                            'return_approved' => [
+                                                'heading' => 'Return Request Approved',
+                                                'color' => 'green',
+                                                'icon' => 'check'
+                                            ],
+                                            'return_rejected' => [
+                                                'heading' => 'Return Request Rejected',
+                                                'color' => 'red',
+                                                'icon' => 'cancel'
+                                            ],
+                                            
                                         ];
 
                                         $current = $config[$type] ?? [
@@ -116,7 +127,12 @@
                                                                     $heading = 'Order Cancelled';
                                                                 } elseif($notification->data['type'] == 'pending'){
                                                                     $heading = 'Order Pending Confirmation';
+                                                                } elseif($notification->data['type'] == 'return_approved'){
+                                                                    $heading = 'Return Request Approved';
+                                                                } elseif($notification->data['type'] == 'return_rejected'){
+                                                                    $heading = 'Return Request Rejected';
                                                                 }
+                                                                
                                                             @endphp
                                                             {{ $heading }}
                                                         </h4>

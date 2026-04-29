@@ -36,7 +36,7 @@
                                             @php 
                                                 $shippingAddress = json_decode($order->shipping_address);
                                             @endphp
-                                            {{ $shippingAddress?->name }}, {{ $shippingAddress?->address }}, {{ $shippingAddress?->city }}, {{ $shippingAddress?->state }}, {{ $shippingAddress?->country }}
+                                            {{ $shippingAddress?->name }}, {{ $shippingAddress?->address }}, {{ $shippingAddress?->city }}, {{ $shippingAddress?->state }}, {{ $shippingAddress?->country }}, , {{ $shippingAddress?->phone }}
                                         </p>
                                     @endif
                                 </div>
@@ -83,7 +83,23 @@
                                         </div>
                                         <div class="flex-grow w-full">
                                             <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1  cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">{{ $item->product->name ?? '' }}</h4>
+
                                             <p class="text-gray-500 text-xs mt-1">{{ $item->product_stock->stock_title ?? '' }}</p>
+                                            
+                                            <p class="text-[10px] text-[#ffffff50] text-center xl:text-left"> 
+                                                @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
+                                                    <span class="text-gray-400 text-sm">
+                                                        
+                                                        @foreach($item->product_stock->attributes as $attr)
+                                                            {{ $attr->attribute?->name ?? '' }}:
+                                                            {{ $attr->value?->value ?? '' }}
+
+                                                            @if(!$loop->last) | @endif
+                                                        @endforeach
+                                                        
+                                                    </span>
+                                                @endif
+                                            </p>
                                             <div class="mt-2 text-sm md:hidden">
                                                 <div class="price w-full flex flex-row items-center gap-[10px]">
                                                     <h5 class="price flex flex-row text-white text-left text-[15px] lg:text-[20px] m-[0] font-medium align-center items-center gap-[5px] lg:gap-[10px]">
@@ -135,7 +151,24 @@
                                             </div>
                                             <div class="flex-grow w-full">
                                                 <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1  cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">{{ $item->product->name ?? '' }}</h4>
+                                                
                                                 <p class="text-gray-500 text-xs mt-1">{{ $item->product_stock->stock_title ?? '' }}</p>
+
+                                                <p class="text-[10px] text-[#ffffff50] text-center xl:text-left"> 
+                                                    @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
+                                                        <span class="text-gray-400 text-sm">
+                                                            
+                                                            @foreach($item->product_stock->attributes as $attr)
+                                                                {{ $attr->attribute?->name ?? '' }}:
+                                                                {{ $attr->value?->value ?? '' }}
+
+                                                                @if(!$loop->last) | @endif
+                                                            @endforeach
+                                                            
+                                                        </span>
+                                                    @endif
+                                                </p>
+                                                
                                                 <div class="mt-2 text-sm md:hidden">
                                                     <div class="price w-full flex flex-row items-center gap-[10px]">
                                                         <h5 class="price flex flex-row text-white text-left text-[15px] lg:text-[20px] m-[0] font-medium align-center items-center gap-[5px] lg:gap-[10px]">
@@ -181,9 +214,11 @@
                             <a href="{{ route('products') }}" class="flex-1 bg-white text-black text-center py-5 rounded-2xl font-medium uppercase text-[13px] hover:bg-[#2A7CFF] hover:text-white transition-all duration-300">
                                 Continue Shopping
                             </a>
+                            @auth('frontend')
                             <a href="{{ route('orders.show', base64_encode($order->id)) }}" class="flex-1 border border-white/10 text-white text-center py-5 rounded-2xl font-medium uppercase text-[13px] hover:bg-white/5 transition-all">
                                 Go to Order
                             </a>
+                            @endauth
                         </div>
 
                         <p class="text-center mt-12 text-gray-600 text-xs uppercase">

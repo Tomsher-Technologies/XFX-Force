@@ -340,8 +340,44 @@ window.selectWarranty = async function (selectedElement) {
                 // find warranty name from the selected element
                 console.log(selectedElement.dataset);
                 const warrantyName = selectedElement.dataset.warrantyname || 'Warranty'; 
-                warrantyLink.innerHTML = `<i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i> Warranty: ${warrantyName}`;
+                const warrantyPrice = selectedElement.dataset.warrantyprice || 0;
+
+                warrantyLink.classList.remove(
+                    'xl:text-left',
+                    'py-[5px]',
+                    'justify-center',
+                    'md:justify-start'
+                );
+
+                warrantyLink.classList.add(
+                    'md:text-left',
+                    'p-[15px]',
+                    'bg-[#1A202A]',
+                    'rounded-full',
+                    'justify-between'
+                );
+
+
+                warrantyLink.innerHTML = `
+                    ${warrantyName} (${warrantyPrice > 0 ? warrantyPrice : 'FREE'})
+                    <span>✕</span>
+                `
             } else {
+                warrantyLink.classList.remove(
+                    'md:text-left',
+                    'p-[15px]',
+                    'bg-[#1A202A]',
+                    'rounded-full',
+                    'justify-between'
+                );
+
+                warrantyLink.classList.add(
+                    'xl:text-left',
+                    'py-[5px]',
+                    'justify-center',
+                    'md:justify-start'
+                );
+
                 warrantyLink.innerHTML = `<i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i> Choose Your Warranty Plan`;
             }
         }
@@ -1159,7 +1195,7 @@ window.handleSortClick = function (selectedBtn) {
                 const addToCartBtn = document.querySelector(".add-to-cart");
                 const counterWrapper = document.querySelector(".counter-wrapper");
                 if(!counterWrapper){
-                    location.reload();
+                    // location.reload();
                 }
 
                 if(response.cartQty > 0){
@@ -1345,22 +1381,58 @@ window.handleSortClick = function (selectedBtn) {
                 if(document.getElementById('cart-tax')) document.getElementById('cart-tax').innerText = formatPrice(data.tax);
                 if(document.getElementById('cart-total')) document.getElementById('cart-total').innerText = formatPrice(data.total);
                 if(document.getElementById('cart-count')) document.getElementById('cart-count').innerText =  `(${data.cart_count || 0})`;
+
+                // shipping section 
                 let shippingElement = document.getElementById('cart-shipping');
-                if(shippingElement){
-                document.getElementById('cart-shipping').innerText = formatPrice(data.shipping);
+                let freeShippingEl = document.getElementById("free_shipping");
+                let notFreeShippingEl = document.getElementById("not_free_shipping");
+
+                if (data.shipping > 0) {
+
+                    // paid shipping
+                    if (freeShippingEl) freeShippingEl.style.display = 'none';
+                    if (notFreeShippingEl) notFreeShippingEl.style.display = 'inline-flex';
+
+                } else {
+
+                    // free shipping
+                    if (freeShippingEl) freeShippingEl.style.display = 'inline-block';
+                    if (notFreeShippingEl) notFreeShippingEl.style.display = 'none';
                 }
+
+                if (shippingElement) {
+                    shippingElement.innerText = formatPrice(data.shipping);
+                }
+
+               
                 
+                // warranty
                 let warrantyElement = document.getElementById('cart-warranty');
                 if(warrantyElement) {
                     document.getElementById('cart-warranty').innerText = formatPrice(data.warranty_sum);
                 }
                 
                 document.getElementById('total-cart-count-top').innerText = data.cart_count;
+
+                // toggle coupon
+                const couponSection = document.getElementById('coupon-section');
+                if (data.couponDiscount > 0) {
+                    if (couponSection) {
+                        couponSection.style.display = 'list-item'; // or 'block' depending on your layout
+                        
+                    } else {
+                        // optionally create the li dynamically if it doesn't exist
+                    }
+                } else if (couponSection) {
+                    couponSection.style.display = 'none';
+                }
+
                 let couponDiscountElement = document.getElementById('coupon_discount');
                 if(couponDiscountElement) {
                 document.getElementById('coupon_discount').innerHTML = formatPrice(data.couponDiscount);
                 }
 
+                // warranty section
                 const warrantySection = document.getElementById('warranty-section');
                 if (data.warranty_sum > 0) {
                     if (warrantySection) {

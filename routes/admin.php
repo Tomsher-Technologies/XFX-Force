@@ -291,3 +291,6 @@ Route::get('/env-check', function () {
         'php_binary' => PHP_BINARY,
     ];
 });
+
+Route::post('/products/check-sku', [ProductController::class, 'checkSku'])
+    ->name('products.check.sku');

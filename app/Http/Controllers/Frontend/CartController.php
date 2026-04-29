@@ -107,9 +107,9 @@ class CartController extends Controller
 
         $guestToken = request()->cookie('guest_token');
 
-        if(!$guestToken){
+        if (!$guestToken) {
             $guestToken = uniqid('guest_', true);
-            cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
+            cookie()->queue('guest_token', $guestToken, 60 * 24 * 14); // 14 days
         }
 
         $variantId = $request->variantId;
@@ -120,12 +120,10 @@ class CartController extends Controller
         $stock = ProductStock::findOrFail($variantId);
 
         $cartItem = Cart::where('product_stock_id', $variantId)
-            ->where(function($query) use ($guestToken, $userId) {
-                if($userId) {
-                    // Logged-in user
+            ->where(function ($query) use ($guestToken, $userId) {
+                if ($userId) {
                     $query->where('user_id', $userId);
                 } else {
-                    // Guest user
                     $query->where('temp_user_id', $guestToken);
                 }
             })
@@ -134,6 +132,7 @@ class CartController extends Controller
 
         $currentCartQty = $cartItem ? $cartItem->quantity : 0;
 
+        // Calculate new quantity
         if ($mode === 'increment') {
             $newQty = $currentCartQty + $requestedQty;
         } else {
@@ -154,22 +153,31 @@ class CartController extends Controller
             ]);
         }
 
-        // Stock validation
-        if ($newQty > $stock->qty) {
+        // Handle OUT OF STOCK (do NOT delete, only block increment)
+        if ($stock->qty == 0 && $newQty > $currentCartQty) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item is out of stock',
+                'cartQty' => $currentCartQty,
+                'availableQty' => 0
+            ]);
+        }
+
+        // Stock validation (only when increasing)
+        if ($newQty > $stock->qty && $newQty > $currentCartQty) {
             return response()->json([
                 'success' => false,
                 'message' => "Only {$stock->qty} item(s) available.",
                 'cartQty' => $currentCartQty,
-                'availableQty' => $stock->qty - $currentCartQty
+                'availableQty' => max(0, $stock->qty - $currentCartQty)
             ]);
         }
 
+        // Update or create cart item
         if ($cartItem) {
-
             $cartItem->quantity = $newQty;
             $cartItem->save();
         } else {
-
             Cart::create([
                 'user_id' => $userId,
                 'temp_user_id' => $userId ? null : $guestToken,
@@ -184,11 +192,20 @@ class CartController extends Controller
             ]);
         }
 
+        // Dynamic message
+        if ($newQty > $currentCartQty) {
+            $message = 'Item added to cart';
+        } elseif ($newQty < $currentCartQty) {
+            $message = 'Item quantity updated';
+        } else {
+            $message = 'Cart updated';
+        }
+
         return response()->json([
             'success' => true,
-            'message' => trans('messages.product_add_cart_success'),
+            'message' => $message,
             'cartQty' => $newQty,
-            'availableQty' => $stock->qty - $newQty,
+            'availableQty' => max(0, $stock->qty - $newQty),
             'totalCartItemsCount' => $this->getCount(),
             'price' => format_price($stock->price * $newQty),
             'offerPrice' => format_price($stock->offer_price * $newQty),
@@ -453,11 +470,13 @@ class CartController extends Controller
                 if ($sum >= $coupon_details->min_buy) {
                     if ($coupon->discount_type == 'percent') {
                         $coupon_discount = ($sum * $coupon->discount) / 100;
-                        if ($coupon_discount > $coupon_details->max_discount) {
-                            $coupon_discount = $coupon_details->max_discount;
-                        }
                     } elseif ($coupon->discount_type == 'amount') {
                         $coupon_discount = $coupon->discount;
+                    }
+
+                    // APPLY MAX CAP FOR BOTH
+                    if (!empty($coupon_details->max_discount) && $coupon_discount > $coupon_details->max_discount) {
+                        $coupon_discount = $coupon_details->max_discount;
                     }
 
                     Cart::where($user['users_id_type'], $user['users_id'])->update([
@@ -480,8 +499,8 @@ class CartController extends Controller
             } elseif ($coupon->type == 'product_base') {
                 $coupon_discount = 0;
 
-                foreach ($cart_items as $key => $cartItem) {
-                    foreach ($coupon_details as $key => $coupon_detail) {
+                foreach ($cart_items as $cartItem) {
+                    foreach ($coupon_details as $coupon_detail) {
                         if ($coupon_detail->product_id == $cartItem['product_id']) {
                             if ($coupon->discount_type == 'percent') {
                                 $coupon_discount += ($cartItem['offer_price'] * $coupon->discount / 100) * $cartItem['quantity'];
@@ -491,6 +510,19 @@ class CartController extends Controller
                         }
                     }
                 }
+
+                // Apply max discount cap
+                if (!empty($coupon_details->max_discount)) {
+                    $coupon_discount = min($coupon_discount, $coupon_details->max_discount);
+                }
+
+                // Prevent over discount (cart total)
+                $subtotal = 0;
+                foreach ($cart_items as $cartItem) {
+                    $subtotal += $cartItem['offer_price'] * $cartItem['quantity'];
+                }
+
+                $coupon_discount = min($coupon_discount, $subtotal);
 
                 if($coupon_discount != 0){
                     Cart::where($user['users_id_type'], $user['users_id'])->update([
@@ -552,24 +584,31 @@ class CartController extends Controller
 
         $couponDetails = json_decode($coupon->details);
 
+        if (!$couponDetails || !isset($couponDetails->min_buy)) {
+            return 0;
+        }
+
+        // Not eligible
+        if ($total < $couponDetails->min_buy) {
+            return 0;
+        }
+
         $couponDiscount = 0;
 
-        if ($total >= $couponDetails->min_buy) {
-
+        // Calculate base discount
             if ($coupon->discount_type == 'percent') {
-
                 $couponDiscount = ($total * $coupon->discount) / 100;
-
-                if (isset($couponDetails->max_discount) && $couponDiscount > $couponDetails->max_discount) {
-                    $couponDiscount = $couponDetails->max_discount;
-                }
-
             } elseif ($coupon->discount_type == 'amount') {
-
                 $couponDiscount = $coupon->discount;
-
             }
+
+        // Apply max discount cap (for BOTH types)
+        if (!empty($couponDetails->max_discount)) {
+            $couponDiscount = min($couponDiscount, $couponDetails->max_discount);
         }
+
+        // Prevent discount > total
+        $couponDiscount = min($couponDiscount, $total);
 
         return $couponDiscount;
     }

@@ -1,7 +1,9 @@
-@foreach($products as $product)
-@if($product->stocks->isNotEmpty())
-@foreach($product->stocks as $stock)
-@if($stock->qty > 0)
+@foreach($stocks as $stock)
+    @php 
+        $product = $stock->product; 
+    @endphp
+
+    @if($stock->qty > 0)
 <div>
     <article class="group product-card w-full relative border border-transparent rounded-[10px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-variant-id = "{{ $stock->id }}" data-category-id="{{ $product->category_id }}">
         <div class="group product-img h-[130px] md:h-[150px] w-full relative z-[1] bg-white" onclick="viewProductDetails({{ $stock->id }})" >
@@ -120,7 +122,5 @@
         </div>
     </article>
 </div>
-@endif
-@endforeach
 @endif
 @endforeach
