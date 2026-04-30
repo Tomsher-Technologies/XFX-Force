@@ -42,8 +42,9 @@
                 $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
             @endphp
 
-            <div class="flex items-center gap-[8px] -mt-2">
+            <div class="flex flex-col sm:flex-row gap-[2px] -mt-2">
                 <div class="flex items-center gap-[2px]">
+                    
                     {{-- Full Stars --}}
                     @for ($i = 0; $i < $fullStars; $i++)
                     <svg class="w-3 h-3 md:w-4 md:h-4 text-[#FFB800] fill-current" viewBox="0 0 20 20">
@@ -75,13 +76,11 @@
                     @endfor
                 </div>
 
-                <span class="text-white text-[12px] md:text-[14px] font-medium">
-                {{ number_format($rating,1) }}
-                </span>
+                <div>
+                    <span class="text-white text-[12px] md:text-[14px] font-medium">{{ number_format($rating,1) }}</span>
+                    <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">({{ $totalReviews }} reviews)</span>
+                </div>
 
-                <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">
-                ({{ $totalReviews }} reviews)
-                </span>
             </div>
             @php
                 $firstStock = $product->stocks->first();

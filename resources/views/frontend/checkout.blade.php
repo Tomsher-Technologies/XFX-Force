@@ -5,12 +5,12 @@
 
 
 <!--inner banner-->
-<section class="px-[16px] md:px-[140px] pt-[80px] md:pt-[150px] pb-[0px] relative">
-    <!-- <div class="section-title mb-[0px] relative border-t-1 border-[#282B34] pt-[50px] flex flex-col gap-[30px] "> -->
-        <div class="w-full section-title mb-[0px] relative border-t-1 border-[#282B34] pt-[50px] flex items-center justify-between">
+<section class="px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] md:pt-[100px] xl:pt-[150px] pb-[0px] relative">
+    <!-- <div class="section-title mb-[0px] relative border-t border-[#282B34] pt-[50px] flex flex-col gap-[30px] "> -->
+        <div class="w-full section-title mb-[0px] relative border-t border-[#282B34] pt-[30px] flex items-center justify-between">
 
-        <h3 class="text-[40px] md:text-[50px] text-white font-bold text-center uppercase flex flex-col md:flex-row flex-start justify-center md:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">Checkout</h3>
-        <a href="{{ route('cart') }}" class="border border-white/10 text-white text-center px-6 py-4 rounded-xl font-medium uppercase text-[13px] hover:bg-white/5 transition-all">
+        <h3 class="text-[40px] xl:text-[50px] text-white font-bold text-center uppercase flex flex-col md:flex-row flex-start justify-center md:justify-start items-center xl:items-start gap-[0px] xl:gap-[10px] m-0 leading-[30px] md:leading-[0px] xl:leading-[60px]">Checkout</h3>
+        <a href="{{ route('cart') }}" class="border w-fit border-white/10 text-white text-center px-6 py-3 rounded-xl font-medium uppercase text-[13px] hover:bg-white/5 transition-all">
                                 Back to Cart
         </a>
     </div>
@@ -19,13 +19,13 @@
 
 <!-- Confirm guest login -->
  @if(empty(auth('frontend')->user()))
- <div id="checkout-login-box" class="checkout-login-box px-[16px] md:px-[140px] pt-[50px] ">
+ <div id="checkout-login-box" class="checkout-login-box px-[16px] md:px-[30px] xl:px-[140px] pt-[30px]">
     <div class="flex gap-2 text-white">
-        <a href="{{ route('login', ['checkout' => 1]) }}" class="mt-[0px] flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">
+        <a href="{{ route('login', ['checkout' => 1]) }}" class="mt-[0px] flex flex-row justify-center align-center items-center text-center text-black uppercase text-[13px] font-medium px-6 py-3 rounded-xl bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">
             Login
         </a>
 
-        <button type="button" onclick="continueGuest()" class="mt-[0px] flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">
+        <button type="button" onclick="continueGuest()" class="mt-[0px] flex flex-row justify-center align-center items-center text-center text-black uppercase text-[13px] font-medium px-6 py-3 rounded-xl bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">
             Continue as Guest
         </button>
     </div>
@@ -35,8 +35,8 @@
 <!--checkout-->
 <section class="bg-[#0F161B]">
 
-    <main class="px-[16px] md:px-[140px] pt-[50px] pb-[50px] md:pb-[100px]">
-        <div class="block md:flex md:col-col md:grid md:grid-cols-12 md:gap-[30px] w-full">
+    <main class="px-[16px] md:px-[30px] xl:px-[140px] pt-[50px] pb-[50px] xl:pb-[100px]">
+        <div class="flex flex-col gap-[15px] xl:col-col xl:grid xl:grid-cols-12 xl:gap-[30px] w-full">
             <div class="col-span-8 flex flex-col gap-[10px]">
                 <form id="checkout-form">
                     @csrf
@@ -54,15 +54,15 @@
                                     $lastName = $nameParts[1] ?? '';
                                 @endphp     
                                 <div>
-                                    <input type="text" placeholder="First Name *" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="first_name" value="{{ $firstName }}">
+                                    <input type="text" placeholder="First Name *" class="bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="first_name" value="{{ $firstName }}">
                                     <span class="text-red-400 text-xs mt-1 error-span error-first_name"></span>
                                 </div>
                                 <div>
-                                    <input type="text" placeholder="Last Name" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="last_name" value="{{ $lastName }}">
+                                    <input type="text" placeholder="Last Name" class="bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="last_name" value="{{ $lastName }}">
                                     <span class="text-red-400 text-xs mt-1 error-span error-last_name"></span>
                                 </div>
                                 <div>
-                                    <input type="email" placeholder="Email Address *" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="billing_email" value="{{ auth('frontend')->user()->email ?? '' }}">
+                                    <input type="email" placeholder="Email Address *" class="bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="billing_email" value="{{ auth('frontend')->user()->email ?? '' }}">
                                     <span class="text-red-400 text-xs mt-1 error-span error-billing_email"></span>
                                 </div>
                                 <div>
@@ -73,20 +73,20 @@
                                             </div>
                                         </div>
                                     </div> --}}
-                                    <input type="number" id="uae-phone-input" placeholder="971xxxxxxxxx" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="billing_phone" value="{{ auth('frontend')->user()->phone ?? '' }}">
+                                    <input type="number" id="uae-phone-input" placeholder="971xxxxxxxxx" class="bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="billing_phone" value="{{ auth('frontend')->user()->phone ?? '' }}">
                                     <span class="text-red-400 text-xs mt-1 error-span error-billing_phone"></span>
                                 </div>
                                 <div>
-                                    <input type="text" placeholder="Building / Apartment, Street *" class="md:col-span-2 bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="billing_address">
+                                    <input type="text" placeholder="Building / Apartment, Street *" class="md:col-span-2 bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl focus:border-[#2A7CFF] outline-none transition-all w-full" name="billing_address">
                                     <span class="text-red-400 text-xs mt-1 error-span error-billing_address"></span>
                                 </div>
                                 <div>
-                                    <input type="text" placeholder="City *" class="w-full bg-[#161B22] border border-gray-800 p-4 rounded-xl focus:border-[#2A7CFF] outline-none transition-all" name="billing_city">
+                                    <input type="text" placeholder="City *" class="w-full bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl focus:border-[#2A7CFF] outline-none transition-all" name="billing_city">
                                     <span class="text-red-400 text-xs mt-1 error-span error-billing_city"></span>
                                 </div>
                                 <div>
                                     <div class="relative w-full">
-                                        <select id="emirate-select" class="w-full bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] appearance-none cursor-pointer transition-all font-medium bg-image-none" name="billing_state">
+                                        <select id="emirate-select" class="w-full bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl text-white outline-none focus:border-[#2A7CFF] appearance-none cursor-pointer transition-all font-medium bg-image-none" name="billing_state">
                                             <option value="" disabled selected>Select Emirate</option>
                                             <option value="Abu Dhabi">Abu Dhabi</option>
                                             <option value="Ajman">Ajman</option>
@@ -104,7 +104,7 @@
                                     </div>
                                     <span class="text-red-400 text-xs mt-1 error-span error-billing_state"></span>
                                 </div>
-                                <input type="text" readonly placeholder="United Arab Emirates" class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-gray-500 disabled:cursor-not-allowed disabled:border-gray-900" name="billing_country" value="United Arab Emirates">
+                                <input type="text" readonly placeholder="United Arab Emirates" class="bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl text-gray-500 disabled:cursor-not-allowed disabled:border-gray-900" name="billing_country" value="United Arab Emirates">
                             </div>
                         </section>
 
@@ -113,17 +113,17 @@
                                 <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">2</span> Fulfillment Information
                             </h2>
 
-                            <div class="grid grid-cols-2 gap-4 mb-8">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
                                 <label class="cursor-pointer group">
                                     <input type="radio" name="fulfillment_method" value="delivery" id="delivery-choice" checked class="peer hidden">
-                                    <div class="p-5 rounded-xl border-2 border-gray-800 bg-[#161B22] peer-checked:border-[#2A7CFF] peer-checked:bg-[#2A7CFF]/5 transition-all text-center">
-                                        <span class="block text-white font-medium uppercase text-[14px]">Delivery</span>
+                                    <div class="px-6 py-3 rounded-xl border-2 border-gray-800 bg-[#161B22] peer-checked:border-[#2A7CFF] peer-checked:bg-[#2A7CFF]/5 transition-all text-center">
+                                        <span class="block text-white font-medium uppercase text-[13px]">Delivery</span>
                                     </div>
                                 </label>
                                 <label class="cursor-pointer group">
                                     <input type="radio" name="fulfillment_method" value="pickup" id="pickup-choice" class="peer hidden">
-                                    <div class="p-5 rounded-xl border-2 border-gray-800 bg-[#161B22] peer-checked:border-[#2A7CFF] peer-checked:bg-[#2A7CFF]/5 transition-all text-center">
-                                        <span class="block text-white font-medium uppercase text-[14px]">Store Pickup</span>
+                                    <div class="px-6 py-3 rounded-xl border-2 border-gray-800 bg-[#161B22] peer-checked:border-[#2A7CFF] peer-checked:bg-[#2A7CFF]/5 transition-all text-center">
+                                        <span class="block text-white font-medium uppercase text-[13px]">Store Pickup</span>
                                     </div>
                                 </label>
                             </div>
@@ -231,7 +231,7 @@
                             </div>
 
                             <div id="pickup-section" class="hidden animate-fade-in">
-                                <div class="p-6 bg-[#161B22] border border-gray-800 rounded-xl flex items-center gap-4">
+                                <div class="p-3 xl:p-6 bg-[#161B22] border border-gray-800 rounded-xl flex items-center gap-4">
                                     <div class="p-3 bg-[#2A7CFF]/10 rounded-lg">
                                         <svg class="w-6 h-6 text-[#2A7CFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -250,7 +250,7 @@
                             <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3">
                                 <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">4</span> Payment Methods
                             </h2>
-                            <div class="grid grid-cols-2 gap-4 mb-8">
+                            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-0 xl:mb-8">
 
                                 <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
                                     <div class="flex items-center gap-3">
@@ -461,14 +461,14 @@
             </svg>
         </button>
 
-        <div class="p-6 md:p-8">
+        <div class="p-0 xl:p-5 md:p-8">
             
             <form id="addressForm" action="{{ route('save-address') }}" method="POST">
                 @csrf
 
                 <input type="hidden" name="address_id" value="0">
 
-                <div class="p-6 md:p-8">
+                <div class="p-5 md:p-8">
 
                     <h4 class="text-xl font-medium text-white mb-6 uppercase tracking-wider">
                         Add New Address
@@ -498,7 +498,7 @@
                         <div>
                             <input type="text" name="name" id="name" placeholder="Full Name *"
                                 value=""
-                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
+                                class="bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
 
                             <p class="text-red-400 text-xs mt-1 error-name"></p>
                         </div>
@@ -508,7 +508,7 @@
                             <input type="text" name="phone" id="phone"
                                 placeholder="971xxxxxxxxx"
                                 value=""
-                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
+                                class="bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
 
                             <p class="text-red-400 text-xs mt-1 error-phone"></p>
                         </div>
@@ -518,7 +518,7 @@
                             <input type="text" name="address" id="address"
                                 placeholder="Address (Building, Street, Area etc.) *"
                                 value=""
-                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
+                                class="bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
 
                             <p class="text-red-400 text-xs mt-1 error-address"></p>
                         </div>
@@ -527,7 +527,7 @@
                         <div>
                             <input type="text" name="city" id="city" placeholder="City *"
                                 value=""
-                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
+                                class="bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
 
                             <p class="text-red-400 text-xs mt-1 error-city"></p>
                         </div>
@@ -535,7 +535,7 @@
                         {{-- Emirate / State --}}
                         <div class="relative w-full">
 
-                            <select class="w-full bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] appearance-none cursor-pointer transition-all font-medium bg-image-none" name="state" id="state">
+                            <select class="w-full bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl text-white outline-none focus:border-[#2A7CFF] appearance-none cursor-pointer transition-all font-medium bg-image-none" name="state" id="state">
                                 <option value="Abu Dhabi">Abu Dhabi</option>
                                 <option value="Ajman">Ajman</option>
                                 <option value="Dubai" selected>Dubai</option>
@@ -556,14 +556,14 @@
                         <div>
                             <input type="text" name="zipcode" id="zipcode" placeholder="ZIP Code"
                                 value=""
-                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
+                                class="bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
                         </div>
 
                         {{-- Country --}}
                         <div>
                             <input type="text" name="country" id="country" placeholder="Country *"
                                 value="United Arab Emirates" readonly
-                                class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
+                                class="bg-[#161B22] border border-gray-800 px-5 py-3 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
                             <p class="text-red-400 text-xs mt-1 error-country"></p>
                         </div>
 
