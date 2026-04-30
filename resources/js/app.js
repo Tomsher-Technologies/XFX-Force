@@ -944,7 +944,13 @@ var swiper = new Swiper(".singleprdswiper", {
     speed: 3000,
     freeMode: false,
     parallax: true,
-    navigation: true,
+
+    // FIXED NAVIGATION
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+    },
+
     autoplay: { delay: 5000, disableOnInteraction: false },
     allowTouchMove: true,
 });
@@ -962,7 +968,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 3. Listen for Lightbox Opening
     lightbox.on('open', () => {
         // Send 'pauseVideo' command to the YouTube Iframe
-        bgPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        if(bgPlayer) bgPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
     });
 
     // 4. Listen for Lightbox Closing
@@ -1406,11 +1412,6 @@ window.handleSortClick = function (selectedBtn) {
 
                
                 
-                // warranty
-                let warrantyElement = document.getElementById('cart-warranty');
-                if(warrantyElement) {
-                    document.getElementById('cart-warranty').innerText = formatPrice(data.warranty_sum);
-                }
                 
                 document.getElementById('total-cart-count-top').innerText = data.cart_count;
 
@@ -1434,14 +1435,44 @@ window.handleSortClick = function (selectedBtn) {
 
                 // warranty section
                 const warrantySection = document.getElementById('warranty-section');
-                if (data.warranty_sum > 0) {
+                const warrantyValue = document.getElementById('cart-warranty');
+                const warrantyIcon = document.getElementById('warranty-icon');
+                const warrantyPrefix = document.getElementById('warranty-prefix');
+
+                if (data.has_warranty) {
+
                     if (warrantySection) {
-                        warrantySection.style.display = 'list-item'; // or 'block' depending on your layout
-                    } else {
-                        // optionally create the li dynamically if it doesn't exist
+                        warrantySection.style.display = 'list-item';
                     }
-                } else if (warrantySection) {
-                    warrantySection.style.display = 'none';
+
+                    if (data.warranty_sum > 0) {
+
+                        // PAID WARRANTY
+                        if (warrantyPrefix) warrantyPrefix.style.display = 'inline';
+                        if (warrantyIcon) warrantyIcon.style.display = 'inline';
+
+                        if (warrantyValue) {
+                            warrantyValue.innerText = formatPrice(data.warranty_sum);
+                            warrantyValue.className = "text-[#99a1af]";
+                        }
+
+                    } else {
+
+                        // FREE WARRANTY
+                        if (warrantyPrefix) warrantyPrefix.style.display = 'none';
+                        if (warrantyIcon) warrantyIcon.style.display = 'none';
+
+                        if (warrantyValue) {
+                            warrantyValue.innerText = 'Free';
+                            warrantyValue.className = "text-black uppercase font-bold text-[10px] bg-[#29A706] px-2 py-1 rounded";
+                        }
+                    }
+
+                } else {
+
+                    if (warrantySection) {
+                        warrantySection.style.display = 'none';
+                    }
                 }
                 
             }

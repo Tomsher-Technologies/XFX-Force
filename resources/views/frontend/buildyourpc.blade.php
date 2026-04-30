@@ -190,12 +190,27 @@ $hideFooter = true;
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-3 gap-[5px] xl:gap-4 py-[30px] min-w-0 overflow-x-hidden relative z-[0]" id="products-list">
-                @include('frontend.partials.pc-builder-products-list', ['stocks' => $stocks ?? []])
+                {{-- @include('frontend.partials.pc-builder-products-list', ['stocks' => $stocks ?? []])--}}
             </div>
 
             <!-- Optional: hidden spinner -->
             <div id="products-loader" class="hidden text-center p-4 text-white text-[15px] font-medium">
                 Loading products...
+            </div>
+            <!-- <button id="load-more-btn" onclick="loadMoreProducts()" class="mt-4 px-4 py-2 bg-gray-800 text-white rounded">
+                Load More
+            </button> -->
+            <div class="text-center mt-4">
+                <!-- <button id="load-more-btn" onclick="loadMoreProducts()" class="mt-4 px-4 py-2 bg-gray-800 text-white rounded"
+                    @if(!$stocks->hasMorePages()) style="display:none;" @endif>
+                    Load More
+                </button> -->
+                <button id="load-more-btn"
+                    onclick="loadMoreProducts()"
+                    style="display:none;"
+                    class="mt-4 px-4 py-2 bg-gray-800 text-white rounded">
+                    Load More
+                </button>
             </div>
 
         </section>
@@ -415,7 +430,7 @@ $hideFooter = true;
                         </div>
                     </div>
 
-                    <button onclick="closeAllMobileSystems()" class="w-full bg-[#2A7CFF] py-5 rounded-2xl font-medium text-white text-[14px] uppercase mt-6 pointer-events-auto">
+                    <button onclick="applyMobileFilters()" class="w-full bg-[#2A7CFF] py-5 rounded-2xl font-medium text-white text-[14px] uppercase mt-6 pointer-events-auto">
                         Apply Filters
                     </button>
                 </div>
@@ -429,8 +444,8 @@ $hideFooter = true;
             <div class="relative bg-[#1E2225] rounded-t-[30px] p-8 transform translate-y-full transition-transform duration-300 ease-out border-t border-white/10 pointer-events-auto">
                 <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-6"></div>
                 <h4 class="text-white font-medium text-lg mb-6 text-center">Search your item here</h4>
-                <input type="text" placeholder="Search..." class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none mb-4">
-                <button onclick="closeAllMobileSystems()" class="w-full bg-[#2A7CFF] py-4 rounded-xl font-medium text-white text-[14px] uppercase">Search Now</button>
+                <input type="text" placeholder="Search..." class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none mb-4" id="mobile-search-input">
+                <button onclick="applyMobileSearch()" class="w-full bg-[#2A7CFF] py-4 rounded-xl font-medium text-white text-[14px] uppercase">Search Now</button>
             </div>
         </div>
         <!--//mobile search-->
@@ -440,10 +455,96 @@ $hideFooter = true;
     </main>
 </section>
 
+@php
+    $menus = getMenus();
+@endphp 
+<!--mobile burger menu-->
+    <div id="mobile-menu-overlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <div id="mobile-side-panel" class="fixed top-0 left-0 h-full w-[300px] bg-[#0B0F13] z-[99999] -translate-x-full transition-transform duration-300 ease-in-out border-r border-white/5">
+        <div class="flex flex-col h-full">
+            <div class="p-6 border-b border-white/5 flex items-center justify-between">
+                <div class="logo">
+                    <a href="{{  route('home') }}" title="Home - PC Garage | Custom Gaming PCs & High-End Hardware in UAE">
+                        <img src="{{ uploaded_asset($logo) }}" alt="PC Garage Logo" title="PC Garage Logo" class="w-[200px] white ">
+                    </a>
+                </div>
+                <button onclick="toggleMobileMenu()" class="text-gray-400">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <nav class="flex-grow overflow-y-auto p-4 custom-scrollbar">
+                
+                <ul class="space-y-2">
 
+                    @foreach($menus as $menu)
+                        @if($menu->type === 'normal')
+                            <li>
+                                <a href="{{ getMenuLink($menu) }}"
+                                class="block p-3 text-white uppercase text-sm font-medium hover:bg-white/5 rounded-lg">
+                                    {{ $menu->title }}
+                                </a>
+                            </li>
+                        @endif
+
+                        @if($menu->type === 'mega')
+                            <li class="group">
+
+                                <button onclick="toggleSubMenu('menu-{{ $menu->id }}')"
+                                    class="w-full flex items-center justify-between p-3 text-white uppercase text-sm font-medium hover:bg-white/5 rounded-lg transition-all">
+                                    <a href="{{ getMenuLink($menu) }}">
+                                        {{ $menu->title }}
+                                    </a>
+
+                                    <svg id="caret-{{ $menu->id }}" class="w-4 h-4 transition-transform duration-300"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+
+                                <div id="menu-{{ $menu->id }}" class="hidden overflow-hidden pl-4 mt-2 space-y-4">
+
+                                    @foreach($menu->sections as $section)
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 uppercase mb-3">
+                                                <a href="{{ getMenuLink($section) }}" class="">
+                                                    {{ $section->title }}
+                                                </a>
+                                            </p>
+
+                                            <ul class="grid grid-cols-1 gap-1">
+                                                @foreach($section->items as $item)
+                                                    <li>
+                                                        <a href="{{ getMenuLink($item) }}"
+                                                        class="transition-all duration-[600ms] text-white hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">
+                                                            {{ $item->title }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endforeach
+
+                                </div>
+                            </li>
+                        @endif
+
+                    @endforeach
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <!-- mobile burger menu ends -->
 
 <script>
     let buildData = @json($buildData);
+
+    // filter params
+    let currentCategoryId = null;
+    let currentBrandId = null;
+    let currentModel = "";
+    let currentSearch = "";
+    let currentSort = "";
 
     const trashIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>`;
 
@@ -535,7 +636,14 @@ $hideFooter = true;
 
             console.log("called before selectoption");
             const sort = filterState.sort || "";
-            loadProducts(categoryId, selectedBrandId, model, search, sort);
+
+            // blahh
+            currentCategoryId = categoryId;
+            currentBrandId = selectedBrandId;
+            currentModel = model;
+            currentSearch = search;
+            currentSort = sort;
+            loadProducts(categoryId, selectedBrandId, model, search, sort, 1);
 
             if (type === 'brand') {
                 document.getElementById('model-label').innerText = "All";
@@ -562,7 +670,14 @@ $hideFooter = true;
 
             console.log("called when keyup in product search box");
             const sort = filterState.sort || "";
-            loadProducts(categoryId, brandId, model, search, sort);
+
+            // blahh
+            currentCategoryId = categoryId;
+            currentBrandId = brandId;
+            currentModel = model;
+            currentSearch = search;
+            currentSort = sort;
+            loadProducts(categoryId, brandId, model, search, sort, 1);
         });
 
         function loadModels(brandId, categoryId) {
@@ -622,7 +737,14 @@ $hideFooter = true;
                     const categoryId = activeCategory.dataset.categoryId;
                     console.log("called when sorting option changed");
                     filterState.sort = sort;
-                    loadProducts(categoryId, brandId, model, search, sort);
+
+                    // blahh
+                    currentCategoryId = categoryId;
+                    currentBrandId = brandId;
+                    currentModel = model;
+                    currentSearch = search;
+                    currentSort = sort;
+                    loadProducts(categoryId, brandId, model, search, sort, 1);
                 }
             });
         });
@@ -696,16 +818,20 @@ $hideFooter = true;
     }
 
     // Load products when clicking on category
-    function loadProducts(categoryId, brandId, model = "", search = "", sort = "") {
+    function loadProducts(categoryId, brandId, model = "", search = "", sort = "", page = 1) {
         const productsList = document.getElementById('products-list');
         const loader = document.getElementById('products-loader');
 
-        productsList.innerHTML = '';
+        if (page == 1) {
+            productsList.innerHTML = '';
+        }
+
         loader.classList.remove('hidden');
 
         const url = `/buildyourpc/products/${categoryId}/${brandId}/${model}`
-            + `?search=${encodeURIComponent(search)}&sort=${encodeURIComponent(sort)}`;
-            console.log("Fetching products with URL:", url);
+            + `?search=${encodeURIComponent(search)}`
+            + `&sort=${encodeURIComponent(sort)}`
+            + `&page=${page}`;
 
         fetch(url)
             .then(res => res.json())
@@ -714,16 +840,37 @@ $hideFooter = true;
                 loader.classList.add('hidden');
 
                 if (!data.html || data.html.trim() === '') {
-                    productsList.innerHTML = `
-                        <div class="text-center text-gray-400 py-10">
-                            No Products Found
-                        </div>
-                    `;
+                    if (page == 1) {
+                        productsList.innerHTML = `
+                            <div class="text-center text-gray-400 py-10">
+                                No Products Found
+                            </div>
+                        `;
+                    }
                     return;
                 }
 
-                productsList.innerHTML = data.html;
+                // append instead of replace for pagination
+                if (page == 1) {
+                    productsList.innerHTML = data.html;
+                } else {
+                    productsList.insertAdjacentHTML('beforeend', data.html);
+                }
+
                 viewSelectedPcBuildProducts();
+
+                // store next page
+                window.nextPage = data.next_page;
+
+                // handle Load More button
+                const loadMoreBtn = document.getElementById('load-more-btn');
+                if (loadMoreBtn) {
+                    if (data.next_page) {
+                        loadMoreBtn.style.display = 'inline-block';
+                    } else {
+                        loadMoreBtn.style.display = 'none';
+                    }
+                }
             });
     }
 
@@ -786,10 +933,17 @@ $hideFooter = true;
 
             const search = desktopSearch || mobileSearch;
 
+            // blahh
+            currentCategoryId = this.dataset.categoryId;
+            currentBrandId = document.getElementById('brand-label').dataset.id;
+            currentModel = model;
+            currentSearch = search;
+            currentSort = sort;
+
             loadProducts(
                 this.dataset.categoryId,
                 document.getElementById('brand-label').dataset.id,
-                model, search, sort
+                model, search, sort, 1
             );
 
             updateNavButtons();
@@ -1281,7 +1435,14 @@ $hideFooter = true;
 
             // reload products
             console.log("called when reset filters");
-            loadProducts(categoryId, 0, "", "", "");
+
+            // blahh
+            currentCategoryId = categoryId;
+            currentBrandId = 0;
+            currentModel = "";
+            currentSearch = "";
+            currentSort = "";
+            loadProducts(categoryId, 0, "", "", "", 1);
         }
     });
 
@@ -1453,8 +1614,15 @@ $hideFooter = true;
 
         let categoryId = navItem.dataset.categoryId;
 
-        // your existing logic
-        loadProducts(categoryId);
+        // blahh
+        currentCategoryId = categoryId;
+        currentBrandId = 0;
+        currentModel = "";
+        currentSearch = "";
+        currentSort = "";
+        loadProducts(categoryId, 0, "", "", "", 1);
+
+        // loadProducts(categoryId);
     }
     
     function formatNumberUAE(value) {
@@ -1480,5 +1648,126 @@ $hideFooter = true;
             }, 0)
             : 0;
     }
+
+    function loadMoreProducts() {
+        if (!window.nextPage) return;
+
+        loadProducts(
+            currentCategoryId,
+            currentBrandId,
+            currentModel,
+            currentSearch,
+            currentSort,
+            window.nextPage
+        );
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // get first active category
+        const activeCategory = document.querySelector('.nav-item.active');
+
+        if (activeCategory) {
+            const categoryId = activeCategory.dataset.categoryId;
+
+            currentCategoryId = categoryId;
+            currentBrandId = 0;
+            currentModel = "";
+            currentSearch = "";
+            currentSort = "";
+
+            // THIS LINE FIXES EVERYTHING
+            loadProducts(categoryId, 0, "", "", "", 1);
+        }
+    });
+
+    function selectSort(sortType) {
+
+        // UI highlight
+        document.querySelectorAll('#mobile-sort-options .sort-btn').forEach(btn => {
+            btn.classList.remove('border-[#2A7CFF]', 'text-[#2A7CFF]');
+            btn.classList.add('text-gray-400');
+        });
+
+        event.target.classList.add('border-[#2A7CFF]', 'text-[#2A7CFF]');
+
+        // store sort
+        filterState.sort = sortType;
+    }
+
+    function applyMobileFilters() {
+
+        const activeCategory = document.querySelector('.nav-item.active');
+        if (!activeCategory) return;
+
+        const categoryId = activeCategory.dataset.categoryId;
+
+        const brandId = document.getElementById('mobile-brand').value || 0;
+
+        const model = document.getElementById('mobile-model').value || "";
+
+        const search = document.getElementById('mobile-search-input')?.value || "";
+
+        const sort = filterState.sort || "";
+
+        //  sync desktop labels (IMPORTANT)
+        document.getElementById('brand-label').innerText =
+            document.querySelector('#mobile-brand option:checked').text;
+
+        document.getElementById('brand-label').dataset.id = brandId;
+
+        document.getElementById('model-label').innerText =
+            model ? model : "All";
+
+        //  update global state
+        currentCategoryId = categoryId;
+        currentBrandId = brandId;
+        currentModel = model;
+        currentSearch = search;
+        currentSort = sort;
+
+        // reload products
+        loadProducts(categoryId, brandId, model, search, sort, 1);
+
+        // close panel
+        closeAllMobileSystems();
+    }
+
+    function applyMobileSearch() {
+
+        const search = document.getElementById('mobile-search-input').value || "";
+
+        const activeCategory = document.querySelector('.nav-item.active');
+        if (!activeCategory) return;
+
+        const categoryId = activeCategory.dataset.categoryId;
+
+        const brandId = document.getElementById('brand-label').dataset.id || 0;
+
+        const model = document.getElementById('model-label').innerText === "All"
+            ? ""
+            : document.getElementById('model-label').innerText;
+
+        const sort = filterState.sort || "";
+
+        // Update global state (IMPORTANT)
+        currentCategoryId = categoryId;
+        currentBrandId = brandId;
+        currentModel = model;
+        currentSearch = search;
+        currentSort = sort;
+
+        // Reset to page 1
+        loadProducts(categoryId, brandId, model, search, sort, 1);
+
+        // Close panel
+        closeAllMobileSystems();
+    }
+
+    document.getElementById('mobile-search-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            applyMobileSearch();
+        }
+    });
 </script>
 @endsection

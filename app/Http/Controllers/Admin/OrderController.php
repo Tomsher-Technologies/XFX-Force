@@ -207,6 +207,20 @@ class OrderController extends Controller
             $orderCode     = $order->code;
 
             if ($request->status == "approved") { // Approved
+
+                // STOCK RETURN (same style as delivery cancel restore)
+                $orderDetail = OrderDetail::find($return->order_detail_id);
+
+                if ($orderDetail) {
+
+                    $product_stock = ProductStock::where('id', $orderDetail->product_stock_id)->first();
+
+                    if ($product_stock != null) {
+                        $product_stock->qty += $return->return_qty;
+                        $product_stock->save();
+                    }
+                }
+
         
                 /* ---------- Customer Notification ---------- */
                 $message = "Your return request for Order #{$orderCode} has been approved";
@@ -565,6 +579,13 @@ class OrderController extends Controller
         $hasReturnableItems = false;
 
         foreach ($details as $detail) {
+
+            // Skip non-returnable products
+            if (!$detail->product || $detail->product->return_refund != 1) {
+                continue;
+            }
+
+
             $approvedQty = $detail->returns->where('status', 'approved')->sum('return_qty');
             $pendingQty  = $detail->returns->where('status', 'pending')->sum('return_qty');
             $rejectedQty = $detail->returns->where('status', 'rejected')->sum('return_qty');

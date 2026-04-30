@@ -385,6 +385,7 @@ class CheckoutController
                 'order_id' => $order->id,
                 'product_id' => $data->product_id,
                 'product_stock_id' => $data->product_stock->id,
+                'warranty_id' => $data->warranty_id,
                 'og_price' => $data->price,
                 'tax' => $data->tax,
                 'shipping_cost' => ($request->fulfillment_method == 'pickup') ? 0 : $data->shipping_cost, // Set shipping cost to 0 if pickup is selected
@@ -393,6 +394,7 @@ class CheckoutController
                 'quantity' => $data->quantity,
                 'pc_builder_id' => $data->pc_builder_id,
                 'is_pc_builder' =>  $data->is_pc_builder,
+                'is_returnable' => $data->product->return_refund == 1 ? 1 : 0,
             ];
 
             $productQuantities[$data->product_id] = $data->quantity;
@@ -414,6 +416,7 @@ class CheckoutController
             'offer_discount' => $discount,
             'tax' => $cartSummary['tax'],
             'warranty_amount' => $cartSummary['warranty_sum'],
+            'has_warranty' => $cartSummary['has_warranty'], 
             'shipping_cost' => $shipping,
             'shipping_type' =>  ($request->fulfillment_method == 'pickup') 
                     ? 'pickup' 
