@@ -243,7 +243,7 @@
                                             
                                             <div class="px-6 py-4 border-b border-white/5 flex justify-between items-center">
                                                 <h3 class="text-white text-sm font-sans uppercase">PC Builder Items</h3>
-                                                <span class="text-gray-500 text-xs">5 Products</span>
+                                                <span class="text-gray-500 text-xs">{{ $pcBuilderItems->flatten()->sum('quantity') }} Products</span>
                                             </div>
                                         
                                             
@@ -338,7 +338,7 @@
                                             @if($pcBuilderItems->count() > 0 && $normalItems->count() > 0)
                                                 <div class="px-6 py-4 border-y border-white/5 flex justify-between items-center">
                                                     <h3 class="text-white text-sm font-sans uppercase">Other Items</h3>
-                                                    <span class="text-gray-500 text-xs">5 Products</span>
+                                                    <span class="text-gray-500 text-xs">{{ $normalItems->sum('quantity') }} Products</span>
                                                 </div>
                                             @endif
                                             @foreach($normalItems as $index => $item)

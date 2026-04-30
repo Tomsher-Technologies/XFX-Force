@@ -1183,6 +1183,7 @@ window.handleSortClick = function (selectedBtn) {
             if (response.success) {
                 toastr.success(response.message, 'Success');
                 document.getElementById('total-cart-count-top').innerText = response.totalCartItemsCount;
+                document.getElementById('total-cart-count-bottom').innerText = response.totalCartItemsCount;
                 
             } else {
                 toastr.error(response.message, 'Error');
@@ -1414,6 +1415,7 @@ window.handleSortClick = function (selectedBtn) {
                 
                 
                 document.getElementById('total-cart-count-top').innerText = data.cart_count;
+                document.getElementById('total-cart-count-bottom').innerText = data.cart_count;
 
                 // toggle coupon
                 const couponSection = document.getElementById('coupon-section');
@@ -1985,5 +1987,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.continueGuest = function(){
         document.getElementById('checkout-login-box').style.display = 'none';
+    }
+});
+
+window.toggleCategorySidebar = function(e) {
+    e.stopPropagation();
+
+    const sidebar = document.getElementById('mobile-sidebar');
+
+    sidebar.classList.toggle('-translate-x-full');
+}
+
+
+document.addEventListener('click', function (e) {
+    const sidebar = document.getElementById('mobile-sidebar');
+
+    if (!sidebar.contains(e.target)) {
+        sidebar.classList.add('-translate-x-full');
     }
 });

@@ -20,7 +20,11 @@ $hideFooter = true;
                 </svg>
             </button>
         </div>
-        <aside id="mobile-sidebar" class="fixed xl:static left-[-100%] xl:left-0 col-span-2 bg-[#1C2228] border border-[#1E2529] rounded-[0px] md:rounded-[20px] flex flex-col overflow-hidden shadow-2xl transition-all duration-300 h-screen xl:h-[calc(100vh-30px)] top-0 z-[99999]">
+        <aside id="mobile-sidebar" class="fixed xl:static left-0 -translate-x-full xl:translate-x-0
+    col-span-2 bg-[#1C2228] border border-[#1E2529]
+    rounded-[0px] md:rounded-[20px] flex flex-col overflow-hidden
+    shadow-2xl transition-transform duration-300
+    h-screen xl:h-[calc(100vh-30px)] top-0 z-[99999]">
 
             <div class="p-[30px] border-b border-[#2E363E]">
                 <a href="{{ route('home') }}" class="items-center gap-[20px]">
@@ -325,7 +329,7 @@ $hideFooter = true;
         <!--navigation menu-->
         <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[92%] md:block xl:hidden">
             <div class="bg-[#1E2225]/90 backdrop-blur-lg border border-white/10 rounded-[10px] shadow-2xl grid grid-cols-4 h-[70px]">
-                <button onclick="toggleMobileMenu(event)" class="flex flex-col items-center justify-center gap-1 text-gray-400 border-r border-white/5">
+                <button onclick="toggleCategorySidebar(event)" class="flex flex-col items-center justify-center gap-1 text-gray-400 border-r border-white/5">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M3 12h18M3 6h18M3 18h18" />
                     </svg>

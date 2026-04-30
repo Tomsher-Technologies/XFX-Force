@@ -78,7 +78,7 @@
 
                 <div>
                     <span class="text-white text-[12px] md:text-[14px] font-medium">{{ number_format($rating,1) }}</span>
-                    <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">({{ $totalReviews }} reviews)</span>
+                    <span class="text-gray-400 text-[11px] md:text-[13px] font-medium">({{ $totalReviews }} reviews)</span>
                 </div>
 
             </div>
