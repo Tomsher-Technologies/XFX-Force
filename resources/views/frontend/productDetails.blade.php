@@ -217,7 +217,7 @@
                     {{ number_format($rating, 1) }}
                 </span>
 
-                <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">
+                <span class="text-gray-400 text-[11px] md:text-[13px] font-medium">
                     ({{ $totalReviews }} reviews)
                 </span>
             </a>
@@ -629,10 +629,14 @@
             </div>
         @else
             <!-- Empty State -->
-            <div class="text-center py-8">
-                <h3 class="text-white text-lg font-medium mb-2">
-                    No Reviews Yet
-                </h3>
+            <div class="flex flex-col gap-[15px] justify-center items-center h-full py-8">
+                <!-- <h3 class="text-white text-sm !font-medium mb-2 font-sans"></h3> -->
+                <svg class="text-gray-600" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 8v4m0 4h.01" />
+                </svg>
+                <h2 class="text-[18px] text-gray-400 font-medium text-center">No Reviews Yet</h2>
+                <!-- <p class="text-[14px] text-gray-600 font-medium text-center">Click on any item to view its details</p> -->
             </div>
         @endif
         </section>

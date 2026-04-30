@@ -74,6 +74,10 @@ class CartController extends Controller
         $cartCount = $cartItems->count();
         $warrantySum  = $cartItems->sum('warranty_price');
 
+        $hasWarranty = $cartItems->contains(function ($item) {
+            return !empty($item->warranty_id);
+        });
+
         // coupon discount
         $totalBeforeCouponDicount = $offerSum + $warrantySum;
 
@@ -97,7 +101,7 @@ class CartController extends Controller
         // Total
         $total = $offerSum + $tax + $shipping + $warrantySum - $couponDiscount;
 
-        return view('frontend.cart', compact('cartItems', 'subtotal', 'discountSum', 'cartCount', 'tax', 'shipping', 'total', 'warrantySum', 'pcBuilderItems', 'directCartItems', 'couponCode' , 'couponDiscount'))
+        return view('frontend.cart', compact('cartItems', 'subtotal', 'discountSum', 'cartCount', 'tax', 'shipping', 'total', 'warrantySum', 'pcBuilderItems', 'directCartItems', 'couponCode' , 'couponDiscount', 'hasWarranty'))
             ->with('total', $total);
     }
 
@@ -380,6 +384,10 @@ class CartController extends Controller
         // Total calculation
         $total = $offerSum + $tax + $shipping + $warrantySum - $couponDiscount;
 
+        $hasWarranty = $cartItems->contains(function ($item) {
+            return !empty($item->warranty_id);
+        });
+
         return [
             'status' => true,
             'sub_total'    => $subTotal,
@@ -388,6 +396,7 @@ class CartController extends Controller
             'tax'   => $tax,
             'cart_count'   => $cartCount,
             'warranty_sum' => $warrantySum,
+            'has_warranty' => $hasWarranty, 
             'couponDiscount' => $couponDiscount,
             'total'        => $total,
         ];

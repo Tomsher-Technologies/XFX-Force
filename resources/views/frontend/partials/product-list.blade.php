@@ -107,7 +107,7 @@
                             {{ number_format($rating,1) }}
                             </span>
 
-                            <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">
+                            <span class="text-gray-400 text-[11px] md:text-[13px] font-medium">
                             ({{ $totalReviews }} reviews)
                             </span>
                         </div>
