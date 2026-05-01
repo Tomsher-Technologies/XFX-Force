@@ -45,7 +45,7 @@ class BuildPcController extends Controller
                         ->whereIn('category_id', $categoryIds);
                 })
                 ->latest()
-                ->paginate(12); // ✅ PAGINATION ADDED
+                ->paginate(50);
         }
 
         // User / Guest handling
@@ -167,7 +167,7 @@ class BuildPcController extends Controller
 
         // PAGINATION
         // $stocks = $stocks->get();
-        $stocks = $stocks->paginate(12);
+        $stocks = $stocks->paginate(50);
 
         // $html = view('frontend.partials.pc-builder-products-list', [
         //     'stocks' => $stocks
@@ -473,6 +473,7 @@ class BuildPcController extends Controller
 
     public function resetConfiguration(Request $request)
     {
+        $resetType = $request->input('reset_type', 'full'); // default full
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $guestToken = request()->cookie('guest_token');
         $builderId = $request->builder_id;
@@ -509,8 +510,11 @@ class BuildPcController extends Controller
         }
 
         // Reset configuration
-        /*$builder->build_data = [];
-        $builder->save();*/
+         if ($resetType === 'full') {
+            $builder->build_data = [];
+            $builder->save();
+        }
+
         
         return response()->json([
             'status' => true,

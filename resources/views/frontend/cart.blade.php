@@ -303,7 +303,7 @@
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
         },
-        body: JSON.stringify({ builder_id: builderId })
+        body: JSON.stringify({ builder_id: builderId,  reset_type: 'cart_only' })
     })
     .then(res => res.json())
     .then(data => {
