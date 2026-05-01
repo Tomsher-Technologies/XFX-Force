@@ -2002,6 +2002,8 @@ window.toggleCategorySidebar = function(e) {
 document.addEventListener('click', function (e) {
     const sidebar = document.getElementById('mobile-sidebar');
 
+    if (!sidebar) return; // prevent error
+
     if (!sidebar.contains(e.target)) {
         sidebar.classList.add('-translate-x-full');
     }
