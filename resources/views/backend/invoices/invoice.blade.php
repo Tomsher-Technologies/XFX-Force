@@ -119,10 +119,12 @@
 <body>
     <div class="invoice">
         <div class="invoice-header">
-            @php
-                $logo = get_setting('header_logo');
-            @endphp
+            @if($imagePath && file_exists($imagePath))
             <img width="140" src="{{ $imagePath }}" alt="{{ env('APP_NAME') }}" title="{{ env('APP_NAME') }}" class="invoice-logo">
+            @else
+                {{ env('APP_NAME') }}
+            @endif
+
             <h1>Invoice</h1>
         </div>
 
