@@ -1392,7 +1392,8 @@ $hideFooter = true;
                 type: "POST",
                 data: {
                     builder_id: builderId,
-                    _token: "{{ csrf_token() }}"
+                    _token: "{{ csrf_token() }}",
+                    reset_type: 'full'
                 },
                 success: function (response) {
                     if (response.status) {
