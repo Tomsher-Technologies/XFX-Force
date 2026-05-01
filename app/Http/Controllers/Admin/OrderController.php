@@ -16,9 +16,10 @@ use App\Models\OrderTracking;
 use App\Models\Product;
 use App\Models\ProductStock;
 use App\Models\Review;
+use App\Models\Upload;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 use DB;
 use Illuminate\Http\Request;
 use Mail;
@@ -620,13 +621,19 @@ class OrderController extends Controller
 
         set_time_limit(300);
 
+        $upload = Upload::find(get_setting('default_invoice_logo'));
+
+        $imagePath = $upload && $upload->file_name
+            ? public_path('storage/' . $upload->file_name)
+            : null;
+
         $pdf = Pdf::loadView('backend.invoices.invoice', [
                     'order' => $order,
                     'font_family' => $font_family,
                     'direction' => $direction,
                     'text_align' => $text_align,
                     'not_text_align' => $not_text_align,
-                    'imagePath' => uploaded_asset(get_setting('header_logo'))
+                    'imagePath' => $imagePath
                 ]);
         
         return $pdf->download('order-' . $order->code . '.pdf');
