@@ -512,6 +512,7 @@
     /* FILTER FUNCTION */
     function filterProducts() {
         page = 1;
+        showLoader();
 		document.getElementById('load-more-wrapper').style.display = 'block';
 
 		const categories = Array.from(
@@ -554,6 +555,7 @@
 			})
 			.then(res => res.json())
 			.then(data => {
+                
 
 				const wrapper = document.getElementById('product-list-wrapper');
 
@@ -572,6 +574,7 @@
 					wrapper.innerHTML = data.html;
 					loadMore.style.display = data.hasMore ? 'block' : 'none';
 				}
+                hideLoader();
 				updateProductCount();
 
 				// Scroll
@@ -628,6 +631,7 @@
     /* INITIAL LOAD */
     document.addEventListener('DOMContentLoaded', () => {
         filterProducts();
+        hideLoader();
     });
 
 	// CATEGORY + BRAND CHECKBOX CHANGE (desktop + mobile)
@@ -742,5 +746,13 @@
         document.getElementById('total-product-count').innerText = `${total}`;
     	document.getElementById('category-count').innerText = `${visible}`;
 	}
+
+    function showLoader() {
+        document.getElementById('global-loader').classList.remove('hidden');
+    }
+
+    function hideLoader() {
+        document.getElementById('global-loader').classList.add('hidden');
+    }
 </script>
 @endsection

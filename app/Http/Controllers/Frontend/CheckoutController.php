@@ -99,6 +99,8 @@ class CheckoutController
      */
     public function placeOrder(Request $request)
     {
+        $cartController = new CartController();
+        $cartSummary = $cartController->getCartSummary();
         
         $isGuest = !auth('frontend')->check();
         $billing_shipping_same = $request->same_as_billing ?? null;
@@ -404,7 +406,7 @@ class CheckoutController
         }
 
         OrderDetail::insert($orderItems);
-        $cartSummary = app(CartController::class)->getCartSummary();
+        // $cartSummary = app(CartController::class)->getCartSummary();
 
         // $grand_total = ($sub_total + $cartSummary['tax'] + $cartSummary['shipping']) - ($discount + $total_coupon_discount);
         $shipping = ($request->fulfillment_method == 'pickup') ? 0 : $cartSummary['shipping'];

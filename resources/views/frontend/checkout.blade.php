@@ -758,7 +758,9 @@ function completeYourOrder(e, btn) {
                 }
 
                 if (data.redirect) {
-                    window.location.href = data.redirect;
+                    setTimeout(() => {
+                        window.location.href = data.redirect;
+                    }, 2000); // ⏱ 2 sec delay
                 }
                 return;
             }
