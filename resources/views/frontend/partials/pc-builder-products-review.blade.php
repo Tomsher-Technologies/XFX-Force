@@ -1,4 +1,4 @@
-<div class="sticky top-0 bg-[#1C2228] border border-[#1E2529] p-[15px] md:p-[30px] rounded-[20px] flex flex-col justify-between group transition-all gap-[30px] z-[1]">
+<div class="relative lg:sticky top-0 bg-[#1C2228] border border-[#1E2529] p-[15px] md:p-[30px] rounded-[20px] flex flex-col justify-between group transition-all gap-[30px] z-[1]">
     <div class="flex flex-col md:flex-row justify-between w-full gap-[15px] md:gap-[0px]">
         <div class="flex flex-col gap-[5px] w-full">
             <h2 class="text-white text-[20px] font-medium">Complete Your Order</h2>
@@ -75,7 +75,6 @@
                     <h4 class="text-white text-[15px] mb-[0px]">{{ $item['variant_name'] ?: $item['product_name'] }}</h4>
                 </a>
             </div>
-
             <div class="col-span-6 md:col-span-3 counter-container review-product-item" data-product-id="{{ $item['product_id'] }}" data-stock-id="{{ $item['variant_id'] }}" data-category-id="{{ $item['category_id'] }}" data-stock-qty="{{ $stock->qty }}" data-cart-qty="{{ checkCartQuantityPerVariant($stock->id) }}">
                 <div class="flex flex-row items-center gap-2 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 w-full">
                     <button onclick="updateBuilderItemQty(this,-1,'review')" class="cursor-pointer minus-btn flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all active:scale-90">
@@ -94,7 +93,7 @@
                         </span>
                     </button>
 
-                    <input type="number" value="{{ $item['quantity'] }}" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-medium rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                    <input type="number" value="{{ $item['quantity'] }}" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-medium rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none">
 
                     <button onclick="updateBuilderItemQty(this,1,'review')" class="cursor-pointer flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg transition-all active:scale-90">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -103,8 +102,7 @@
                     </button>
                 </div>
             </div>
-
-            <!-- <div class="col-span-6 md:col-span-2 flex flex-col">
+            <div class="col-span-6 md:col-span-2 flex flex-col hidden">
                 <div class="price w-full flex flex-row items-center gap-[15px]">
                     <h5 class="price flex flex-row text-white text-left text-[15px] m-[0] font-medium align-center items-center gap-[10px]">
                         <svg class="w-[15px]" width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -119,7 +117,7 @@
                     <span class="text-[#898989] font-medium line-through">{{ number_format($item['price']) }}</span>
                 </h6>
                 @endif
-            </div> -->
+            </div>
 
             <div class="col-span-6 md:col-span-3 flex flex-col">
                 <div class="price w-full flex flex-row items-center gap-[15px]">

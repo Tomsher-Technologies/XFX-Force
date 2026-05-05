@@ -20,7 +20,11 @@ $hideFooter = true;
                 </svg>
             </button>
         </div>
-        <aside id="mobile-sidebar" class="fixed xl:static left-[-100%] xl:left-0 col-span-2 bg-[#1C2228] border border-[#1E2529] rounded-[0px] md:rounded-[20px] flex flex-col overflow-hidden shadow-2xl transition-all duration-300 h-screen xl:h-[calc(100vh-30px)] top-0 z-[99999]">
+        <aside id="mobile-sidebar" class="fixed xl:static left-0 -translate-x-full xl:translate-x-0
+    col-span-2 bg-[#1C2228] border border-[#1E2529]
+    rounded-[0px] md:rounded-[20px] flex flex-col overflow-hidden
+    shadow-2xl transition-transform duration-300
+    h-screen xl:h-[calc(100vh-30px)] top-0 z-[99999]">
 
             <div class="p-[30px] border-b border-[#2E363E]">
                 <a href="{{ route('home') }}" class="items-center gap-[20px]">
@@ -34,15 +38,13 @@ $hideFooter = true;
                 </a>
             </div>
 
-            <nav class="flex-grow overflow-y-auto p-[20px] md:p-[30px] no-scrollbar justify-between">
+            <nav class="flex-grow overflow-y-auto p-[15px] md:p-[15px] no-scrollbar justify-between">
                 <input type="hidden" id="pcBuilderId" value="{{ $builder->id ?? '' }}">
                 <div>
                     <div class="space-y-[5px]">
                         @foreach ($builderCategories as $builderCategory)
                         <a href="#" class="relative nav-item text-[15px] flex items-center gap-4 px-4 py-3 rounded-xl text-gray-400 hover:bg-[#252C33] hover:text-white transition-all duration-[600ms] group" data-category-id="{{ $builderCategory->category_id }}" data-min-select="{{ $builderCategory->min_select }}" data-max-select="{{ $builderCategory->max_select }}" data-category-name="{{ $builderCategory->category->name }}">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path class="icon" d="M12.4936 7.50636C12.5936 8.10091 12.7273 9.06545 12.7273 10C12.7273 10.9345 12.5945 11.8991 12.4936 12.4936C11.8991 12.5936 10.9345 12.7273 10 12.7273C9.06545 12.7273 8.10091 12.5945 7.50636 12.4936C7.40636 11.8991 7.27273 10.9345 7.27273 10C7.27273 9.06545 7.40545 8.10091 7.50636 7.50636C8.10091 7.40636 9.06545 7.27273 10 7.27273C10.9345 7.27273 11.8991 7.40545 12.4936 7.50636ZM20 11.8182C20 12.3209 19.5936 12.7273 19.0909 12.7273H18.04C17.9764 13.3845 17.8991 14.0027 17.82 14.5455H18.6364C19.1391 14.5455 19.5455 14.9518 19.5455 15.4545C19.5455 15.9573 19.1391 16.3636 18.6364 16.3636H17.5109C17.4682 16.5809 17.4391 16.7145 17.4336 16.74C17.3582 17.0873 17.0873 17.3582 16.74 17.4336C16.7145 17.4391 16.5809 17.4682 16.3636 17.5109V18.6364C16.3636 19.1391 15.9573 19.5455 15.4545 19.5455C14.9518 19.5455 14.5455 19.1391 14.5455 18.6364V17.82C14.0027 17.8991 13.3845 17.9764 12.7273 18.04V19.0909C12.7273 19.5936 12.3209 20 11.8182 20C11.3155 20 10.9091 19.5936 10.9091 19.0909V18.1627C10.6073 18.1736 10.3036 18.1818 10 18.1818C9.69636 18.1818 9.39273 18.1736 9.09091 18.1627V19.0909C9.09091 19.5936 8.68455 20 8.18182 20C7.67909 20 7.27273 19.5936 7.27273 19.0909V18.04C6.61545 17.9764 5.99727 17.8991 5.45455 17.82V18.6364C5.45455 19.1391 5.04818 19.5455 4.54545 19.5455C4.04273 19.5455 3.63636 19.1391 3.63636 18.6364V17.5109C3.41909 17.4682 3.28545 17.4391 3.26 17.4336C2.91273 17.3582 2.64182 17.0873 2.56636 16.74C2.56091 16.7145 2.53182 16.5809 2.48909 16.3636H1.36364C0.860909 16.3636 0.454545 15.9573 0.454545 15.4545C0.454545 14.9518 0.860909 14.5455 1.36364 14.5455H2.18C2.10091 14.0027 2.02364 13.3845 1.96 12.7273H0.909091C0.406364 12.7273 0 12.3209 0 11.8182C0 11.3155 0.406364 10.9091 0.909091 10.9091H1.83727C1.82636 10.6073 1.81818 10.3036 1.81818 10C1.81818 9.69636 1.82636 9.39273 1.83727 9.09091H0.909091C0.406364 9.09091 0 8.68455 0 8.18182C0 7.67909 0.406364 7.27273 0.909091 7.27273H1.96C2.02364 6.61545 2.10091 5.99727 2.18 5.45455H1.36364C0.860909 5.45455 0.454545 5.04818 0.454545 4.54545C0.454545 4.04273 0.860909 3.63636 1.36364 3.63636H2.48909C2.53182 3.41909 2.56091 3.28545 2.56636 3.26C2.64182 2.91273 2.91273 2.64182 3.26 2.56636C3.28545 2.56091 3.41909 2.53182 3.63636 2.48909V1.36364C3.63636 0.860909 4.04273 0.454545 4.54545 0.454545C5.04818 0.454545 5.45455 0.860909 5.45455 1.36364V2.18C5.99727 2.10091 6.61545 2.02364 7.27273 1.96V0.909091C7.27273 0.406364 7.67909 0 8.18182 0C8.68455 0 9.09091 0.406364 9.09091 0.909091V1.83727C9.39273 1.82636 9.69636 1.81818 10 1.81818C10.3036 1.81818 10.6073 1.82636 10.9091 1.83727V0.909091C10.9091 0.406364 11.3155 0 11.8182 0C12.3209 0 12.7273 0.406364 12.7273 0.909091V1.96C13.3845 2.02364 14.0027 2.10091 14.5455 2.18V1.36364C14.5455 0.860909 14.9518 0.454545 15.4545 0.454545C15.9573 0.454545 16.3636 0.860909 16.3636 1.36364V2.48909C16.5809 2.53182 16.7145 2.56091 16.74 2.56636C17.0873 2.64182 17.3582 2.91273 17.4336 3.26C17.4391 3.28545 17.4682 3.41909 17.5109 3.63636H18.6364C19.1391 3.63636 19.5455 4.04273 19.5455 4.54545C19.5455 5.04818 19.1391 5.45455 18.6364 5.45455H17.82C17.8991 5.99727 17.9764 6.61545 18.04 7.27273H19.0909C19.5936 7.27273 20 7.67909 20 8.18182C20 8.68455 19.5936 9.09091 19.0909 9.09091H18.1627C18.1736 9.39273 18.1818 9.69636 18.1818 10C18.1818 10.3036 18.1736 10.6073 18.1627 10.9091H19.0909C19.5936 10.9091 20 11.3155 20 11.8182ZM14.5455 10C14.5455 8.30546 14.1764 6.60455 14.16 6.53273C14.0836 6.18636 13.8136 5.91636 13.4673 5.84C13.3955 5.82364 11.6945 5.45455 10 5.45455C8.30546 5.45455 6.60455 5.82364 6.53273 5.84C6.18636 5.91636 5.91636 6.18636 5.84 6.53273C5.82364 6.60455 5.45455 8.30546 5.45455 10C5.45455 11.6945 5.82364 13.3955 5.84 13.4673C5.91636 13.8136 6.18636 14.0836 6.53273 14.16C6.60455 14.1764 8.30546 14.5455 10 14.5455C11.6945 14.5455 13.3955 14.1764 13.4673 14.16C13.8136 14.0836 14.0836 13.8136 14.16 13.4673C14.1764 13.3955 14.5455 11.6945 14.5455 10Z" fill="#9F9FA9" />
-                            </svg>
+                            
                             <span>{{ $builderCategory->category->name }}</span>
                             <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-500">
                                    
@@ -190,12 +192,22 @@ $hideFooter = true;
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-3 gap-[5px] xl:gap-4 py-[15px] min-w-0 overflow-x-hidden relative z-[0]" id="products-list">
-                @include('frontend.partials.pc-builder-products-list', ['stocks' => $stocks ?? []])
+                {{-- @include('frontend.partials.pc-builder-products-list', ['stocks' => $stocks ?? []])--}}
             </div>
 
             <!-- Optional: hidden spinner -->
             <div id="products-loader" class="hidden text-center p-4 text-white text-[15px] font-medium">
                 Loading products...
+            </div>
+            
+            <div class="text-center mt-4 text-white">
+                
+                <button id="load-more-btn"
+                    onclick="loadMoreProducts()"
+                    style="display:none;"
+                    class="mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-white/5">
+                    Load More
+                </button>
             </div>
 
         </section>
@@ -310,7 +322,7 @@ $hideFooter = true;
         <!--navigation menu-->
         <div class="fixed bottom-0 left-1/2 -translate-x-1/2 z-[100] w-full md:block xl:hidden">
             <div class="bg-[#1E2225] border border-white/10 hadow-2xl grid grid-cols-4 h-[70px]">
-                <button onclick="toggleMobileMenu(event)" class="flex flex-col items-center justify-center gap-1 text-gray-400 border-r border-white/5">
+                <button onclick="toggleCategorySidebar(event)" class="flex flex-col items-center justify-center gap-1 text-gray-400 border-r border-white/5">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M3 12h18M3 6h18M3 18h18" />
                     </svg>
@@ -415,7 +427,7 @@ $hideFooter = true;
                         </div>
                     </div>
 
-                    <button onclick="closeAllMobileSystems()" class="w-full bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] py-5 rounded-2xl font-medium text-white text-[14px] uppercase mt-6 pointer-events-auto">
+                    <button onclick="applyMobileFilters()" class="w-full bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] py-5 rounded-2xl font-medium text-white text-[14px] uppercase mt-6 pointer-events-auto">
                         Apply Filters
                     </button>
                 </div>
@@ -429,8 +441,8 @@ $hideFooter = true;
             <div class="relative bg-[#1E2225] rounded-t-[30px] p-8 transform translate-y-full transition-transform duration-300 ease-out border-t border-white/10 pointer-events-auto">
                 <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-6"></div>
                 <h4 class="text-white font-medium text-lg mb-6 text-center">Search your item here</h4>
-                <input type="text" placeholder="Search..." class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none mb-4">
-                <button onclick="closeAllMobileSystems()" class="w-full bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] py-4 rounded-xl font-medium text-white text-[14px] uppercase">Search Now</button>
+                <input type="text" placeholder="Search..." class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none mb-4" id="mobile-search-input">
+                <button onclick="applyMobileSearch()" class="w-full bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] py-4 rounded-xl font-medium text-white text-[14px] uppercase">Search Now</button>
             </div>
         </div>
         <!--//mobile search-->
@@ -440,10 +452,96 @@ $hideFooter = true;
     </main>
 </section>
 
+@php
+    $menus = getMenus();
+@endphp 
+<!--mobile burger menu-->
+    <div id="mobile-menu-overlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <div id="mobile-side-panel" class="fixed top-0 left-0 h-full w-[300px] bg-[#0B0F13] z-[99999] -translate-x-full transition-transform duration-300 ease-in-out border-r border-white/5">
+        <div class="flex flex-col h-full">
+            <div class="p-6 border-b border-white/5 flex items-center justify-between">
+                <div class="logo">
+                    <a href="{{  route('home') }}" title="Home - PC Garage | Custom Gaming PCs & High-End Hardware in UAE">
+                        <img src="{{ uploaded_asset($logo) }}" alt="PC Garage Logo" title="PC Garage Logo" class="w-[200px] white ">
+                    </a>
+                </div>
+                <button onclick="toggleMobileMenu()" class="text-gray-400">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <nav class="flex-grow overflow-y-auto p-4 custom-scrollbar">
+                
+                <ul class="space-y-2">
 
+                    @foreach($menus as $menu)
+                        @if($menu->type === 'normal')
+                            <li>
+                                <a href="{{ getMenuLink($menu) }}"
+                                class="block p-3 text-white uppercase text-sm font-medium hover:bg-white/5 rounded-lg">
+                                    {{ $menu->title }}
+                                </a>
+                            </li>
+                        @endif
+
+                        @if($menu->type === 'mega')
+                            <li class="group">
+
+                                <button onclick="toggleSubMenu('menu-{{ $menu->id }}')"
+                                    class="w-full flex items-center justify-between p-3 text-white uppercase text-sm font-medium hover:bg-white/5 rounded-lg transition-all">
+                                    <a href="{{ getMenuLink($menu) }}">
+                                        {{ $menu->title }}
+                                    </a>
+
+                                    <svg id="caret-{{ $menu->id }}" class="w-4 h-4 transition-transform duration-300"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+
+                                <div id="menu-{{ $menu->id }}" class="hidden overflow-hidden pl-4 mt-2 space-y-4">
+
+                                    @foreach($menu->sections as $section)
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 uppercase mb-3">
+                                                <a href="{{ getMenuLink($section) }}" class="">
+                                                    {{ $section->title }}
+                                                </a>
+                                            </p>
+
+                                            <ul class="grid grid-cols-1 gap-1">
+                                                @foreach($section->items as $item)
+                                                    <li>
+                                                        <a href="{{ getMenuLink($item) }}"
+                                                        class="transition-all duration-[600ms] text-white hover:text-[#2A7CFF] hover:pl-[10px] py-[5px] w-full inline-block">
+                                                            {{ $item->title }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endforeach
+
+                                </div>
+                            </li>
+                        @endif
+
+                    @endforeach
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <!-- mobile burger menu ends -->
 
 <script>
     let buildData = @json($buildData);
+
+    // filter params
+    let currentCategoryId = null;
+    let currentBrandId = null;
+    let currentModel = "";
+    let currentSearch = "";
+    let currentSort = "";
 
     const trashIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>`;
 
@@ -535,7 +633,14 @@ $hideFooter = true;
 
             console.log("called before selectoption");
             const sort = filterState.sort || "";
-            loadProducts(categoryId, selectedBrandId, model, search, sort);
+
+            // blahh
+            currentCategoryId = categoryId;
+            currentBrandId = selectedBrandId;
+            currentModel = model;
+            currentSearch = search;
+            currentSort = sort;
+            loadProducts(categoryId, selectedBrandId, model, search, sort, 1);
 
             if (type === 'brand') {
                 document.getElementById('model-label').innerText = "All";
@@ -562,7 +667,14 @@ $hideFooter = true;
 
             console.log("called when keyup in product search box");
             const sort = filterState.sort || "";
-            loadProducts(categoryId, brandId, model, search, sort);
+
+            // blahh
+            currentCategoryId = categoryId;
+            currentBrandId = brandId;
+            currentModel = model;
+            currentSearch = search;
+            currentSort = sort;
+            loadProducts(categoryId, brandId, model, search, sort, 1);
         });
 
         function loadModels(brandId, categoryId) {
@@ -622,7 +734,14 @@ $hideFooter = true;
                     const categoryId = activeCategory.dataset.categoryId;
                     console.log("called when sorting option changed");
                     filterState.sort = sort;
-                    loadProducts(categoryId, brandId, model, search, sort);
+
+                    // blahh
+                    currentCategoryId = categoryId;
+                    currentBrandId = brandId;
+                    currentModel = model;
+                    currentSearch = search;
+                    currentSort = sort;
+                    loadProducts(categoryId, brandId, model, search, sort, 1);
                 }
             });
         });
@@ -696,16 +815,20 @@ $hideFooter = true;
     }
 
     // Load products when clicking on category
-    function loadProducts(categoryId, brandId, model = "", search = "", sort = "") {
+    function loadProducts(categoryId, brandId, model = "", search = "", sort = "", page = 1) {
         const productsList = document.getElementById('products-list');
         const loader = document.getElementById('products-loader');
 
-        productsList.innerHTML = '';
+        if (page == 1) {
+            productsList.innerHTML = '';
+        }
+
         loader.classList.remove('hidden');
 
         const url = `/buildyourpc/products/${categoryId}/${brandId}/${model}`
-            + `?search=${encodeURIComponent(search)}&sort=${encodeURIComponent(sort)}`;
-            console.log("Fetching products with URL:", url);
+            + `?search=${encodeURIComponent(search)}`
+            + `&sort=${encodeURIComponent(sort)}`
+            + `&page=${page}`;
 
         fetch(url)
             .then(res => res.json())
@@ -714,16 +837,37 @@ $hideFooter = true;
                 loader.classList.add('hidden');
 
                 if (!data.html || data.html.trim() === '') {
-                    productsList.innerHTML = `
-                        <div class="text-center text-gray-400 py-10">
-                            No Products Found
-                        </div>
-                    `;
+                    if (page == 1) {
+                        productsList.innerHTML = `
+                            <div class="text-center text-gray-400 py-10">
+                                No Products Found
+                            </div>
+                        `;
+                    }
                     return;
                 }
 
-                productsList.innerHTML = data.html;
+                // append instead of replace for pagination
+                if (page == 1) {
+                    productsList.innerHTML = data.html;
+                } else {
+                    productsList.insertAdjacentHTML('beforeend', data.html);
+                }
+
                 viewSelectedPcBuildProducts();
+
+                // store next page
+                window.nextPage = data.next_page;
+
+                // handle Load More button
+                const loadMoreBtn = document.getElementById('load-more-btn');
+                if (loadMoreBtn) {
+                    if (data.next_page) {
+                        loadMoreBtn.style.display = 'inline-block';
+                    } else {
+                        loadMoreBtn.style.display = 'none';
+                    }
+                }
             });
     }
 
@@ -786,10 +930,17 @@ $hideFooter = true;
 
             const search = desktopSearch || mobileSearch;
 
+            // blahh
+            currentCategoryId = this.dataset.categoryId;
+            currentBrandId = document.getElementById('brand-label').dataset.id;
+            currentModel = model;
+            currentSearch = search;
+            currentSort = sort;
+
             loadProducts(
                 this.dataset.categoryId,
                 document.getElementById('brand-label').dataset.id,
-                model, search, sort
+                model, search, sort, 1
             );
 
             updateNavButtons();
@@ -1234,7 +1385,8 @@ $hideFooter = true;
                 type: "POST",
                 data: {
                     builder_id: builderId,
-                    _token: "{{ csrf_token() }}"
+                    _token: "{{ csrf_token() }}",
+                    reset_type: 'full'
                 },
                 success: function (response) {
                     if (response.status) {
@@ -1281,7 +1433,14 @@ $hideFooter = true;
 
             // reload products
             console.log("called when reset filters");
-            loadProducts(categoryId, 0, "", "", "");
+
+            // blahh
+            currentCategoryId = categoryId;
+            currentBrandId = 0;
+            currentModel = "";
+            currentSearch = "";
+            currentSort = "";
+            loadProducts(categoryId, 0, "", "", "", 1);
         }
     });
 
@@ -1453,8 +1612,15 @@ $hideFooter = true;
 
         let categoryId = navItem.dataset.categoryId;
 
-        // your existing logic
-        loadProducts(categoryId);
+        // blahh
+        currentCategoryId = categoryId;
+        currentBrandId = 0;
+        currentModel = "";
+        currentSearch = "";
+        currentSort = "";
+        loadProducts(categoryId, 0, "", "", "", 1);
+
+        // loadProducts(categoryId);
     }
     
     function formatNumberUAE(value) {
@@ -1480,5 +1646,126 @@ $hideFooter = true;
             }, 0)
             : 0;
     }
+
+    function loadMoreProducts() {
+        if (!window.nextPage) return;
+
+        loadProducts(
+            currentCategoryId,
+            currentBrandId,
+            currentModel,
+            currentSearch,
+            currentSort,
+            window.nextPage
+        );
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // get first active category
+        const activeCategory = document.querySelector('.nav-item.active');
+
+        if (activeCategory) {
+            const categoryId = activeCategory.dataset.categoryId;
+
+            currentCategoryId = categoryId;
+            currentBrandId = 0;
+            currentModel = "";
+            currentSearch = "";
+            currentSort = "";
+
+            // THIS LINE FIXES EVERYTHING
+            loadProducts(categoryId, 0, "", "", "", 1);
+        }
+    });
+
+    function selectSort(sortType) {
+
+        // UI highlight
+        document.querySelectorAll('#mobile-sort-options .sort-btn').forEach(btn => {
+            btn.classList.remove('border-[#2A7CFF]', 'text-[#2A7CFF]');
+            btn.classList.add('text-gray-400');
+        });
+
+        event.target.classList.add('border-[#2A7CFF]', 'text-[#2A7CFF]');
+
+        // store sort
+        filterState.sort = sortType;
+    }
+
+    function applyMobileFilters() {
+
+        const activeCategory = document.querySelector('.nav-item.active');
+        if (!activeCategory) return;
+
+        const categoryId = activeCategory.dataset.categoryId;
+
+        const brandId = document.getElementById('mobile-brand').value || 0;
+
+        const model = document.getElementById('mobile-model').value || "";
+
+        const search = document.getElementById('mobile-search-input')?.value || "";
+
+        const sort = filterState.sort || "";
+
+        //  sync desktop labels (IMPORTANT)
+        document.getElementById('brand-label').innerText =
+            document.querySelector('#mobile-brand option:checked').text;
+
+        document.getElementById('brand-label').dataset.id = brandId;
+
+        document.getElementById('model-label').innerText =
+            model ? model : "All";
+
+        //  update global state
+        currentCategoryId = categoryId;
+        currentBrandId = brandId;
+        currentModel = model;
+        currentSearch = search;
+        currentSort = sort;
+
+        // reload products
+        loadProducts(categoryId, brandId, model, search, sort, 1);
+
+        // close panel
+        closeAllMobileSystems();
+    }
+
+    function applyMobileSearch() {
+
+        const search = document.getElementById('mobile-search-input').value || "";
+
+        const activeCategory = document.querySelector('.nav-item.active');
+        if (!activeCategory) return;
+
+        const categoryId = activeCategory.dataset.categoryId;
+
+        const brandId = document.getElementById('brand-label').dataset.id || 0;
+
+        const model = document.getElementById('model-label').innerText === "All"
+            ? ""
+            : document.getElementById('model-label').innerText;
+
+        const sort = filterState.sort || "";
+
+        // Update global state (IMPORTANT)
+        currentCategoryId = categoryId;
+        currentBrandId = brandId;
+        currentModel = model;
+        currentSearch = search;
+        currentSort = sort;
+
+        // Reset to page 1
+        loadProducts(categoryId, brandId, model, search, sort, 1);
+
+        // Close panel
+        closeAllMobileSystems();
+    }
+
+    document.getElementById('mobile-search-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            applyMobileSearch();
+        }
+    });
 </script>
 @endsection

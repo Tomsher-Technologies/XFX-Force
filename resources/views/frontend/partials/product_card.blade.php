@@ -78,7 +78,7 @@
 
                 <div>
                     <span class="text-white text-[12px] md:text-[14px] font-medium">{{ number_format($rating,1) }}</span>
-                    <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">({{ $totalReviews }} reviews)</span>
+                    <span class="text-gray-400 text-[11px] md:text-[13px] font-medium">({{ $totalReviews }} reviews)</span>
                 </div>
 
             </div>
@@ -97,7 +97,7 @@
                 </h5>
                 
                 
-                <div class="flex justify-center items-center gap-2 px-0 lg:px-4 py-2 align-center {{ ($firstStock->qty == 0 || $cartQty > $firstStock->qty) ? '' : '!hidden' }}" >
+                <div class="flex justify-center items-center gap-2 px-0 lg:px-4 py-2 xl:py-0 align-center {{ ($firstStock->qty == 0 || $cartQty > $firstStock->qty) ? '' : '!hidden' }}" >
                     <span class="relative flex h-2 w-2" >
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-[#c0392b]"></span>

@@ -24,28 +24,31 @@ class BuildPcController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        // Load first category products by default
+        // First category
         $firstCategory = $builderCategories->first();
 
-        $products = [];
+        // Default empty paginator
         $stocks = collect();
 
         if ($firstCategory) {
 
+            // Get category + child categories
             $categoryIds = Category::where('id', $firstCategory->category_id)
                 ->orWhere('parent_id', $firstCategory->category_id)
                 ->pluck('id')
                 ->toArray();
 
+            // FIXED QUERY (no join, uses whereHas)
             $stocks = ProductStock::with(['product.brand', 'product.reviews'])
-                ->join('products', 'products.id', '=', 'product_stocks.product_id')
-                ->where('products.published', 1)
-                ->whereIn('products.category_id', $categoryIds)
-                ->select('product_stocks.*')
+                ->whereHas('product', function ($query) use ($categoryIds) {
+                    $query->where('published', 1)
+                        ->whereIn('category_id', $categoryIds);
+                })
                 ->latest()
-                ->get();
+                ->paginate(50);
         }
 
+        // User / Guest handling
         $user_id = auth('frontend')->check() ? auth('frontend')->user()->id : null;
         $guestToken = request()->cookie('guest_token');
 
@@ -58,8 +61,7 @@ class BuildPcController extends Controller
                 }
             })
             ->first();
-        
-            
+
         $buildData = $builder ? $builder->build_data : [];
 
         $reviewProducts = [];
@@ -90,24 +92,46 @@ class BuildPcController extends Controller
         $search     = $request->search;
         $sort       = $request->sort;
 
-        $stocks = ProductStock::with(['product.brand','product.reviews'])
-            ->join('products', 'products.id', '=', 'product_stocks.product_id')
-            ->where('products.published', 1)
+        // $stocks = ProductStock::with(['product.brand','product.reviews'])
+        //     ->join('products', 'products.id', '=', 'product_stocks.product_id')
+        //     ->where('products.published', 1)
+        //     ->select('product_stocks.*');
+
+        $stocks = ProductStock::with(['product.brand', 'product.reviews'])
+            ->whereHas('product', function ($query) {
+                $query->where('published', 1);
+            })
             ->select('product_stocks.*');
 
         // category filter
+        // if ($categoryId) {
+        //     $categoryIds = Category::where('id', $categoryId)
+        //         ->orWhere('parent_id', $categoryId)
+        //         ->pluck('id')
+        //         ->toArray();
+
+        //     $stocks->whereIn('products.category_id', $categoryIds);
+        // }
+
         if ($categoryId) {
             $categoryIds = Category::where('id', $categoryId)
                 ->orWhere('parent_id', $categoryId)
                 ->pluck('id')
                 ->toArray();
 
-            $stocks->whereIn('products.category_id', $categoryIds);
+            $stocks->whereHas('product', function ($q) use ($categoryIds) {
+                $q->whereIn('category_id', $categoryIds);
+            });
         }
 
         // brand filter
+        // if ($brandId && $brandId != 0) {
+        //     $stocks->where('products.brand_id', $brandId);
+        // }
         if ($brandId && $brandId != 0) {
-            $stocks->where('products.brand_id', $brandId);
+            $stocks->whereHas('product', function ($q) use ($brandId) {
+                $q->where('brand_id', $brandId);
+            });
         }
 
         // model filter
@@ -116,10 +140,19 @@ class BuildPcController extends Controller
         }
 
         // search
+        // if ($search) {
+        //     $stocks->where(function ($query) use ($search) {
+        //         $query->where('product_stocks.stock_title', 'LIKE', "%{$search}%")
+        //             ->orWhere('products.name', 'LIKE', "%{$search}%");
+        //     });
+        // }
+
         if ($search) {
             $stocks->where(function ($query) use ($search) {
                 $query->where('product_stocks.stock_title', 'LIKE', "%{$search}%")
-                    ->orWhere('products.name', 'LIKE', "%{$search}%");
+                    ->orWhereHas('product', function ($q) use ($search) {
+                        $q->where('name', 'LIKE', "%{$search}%");
+                    });
             });
         }
 
@@ -133,15 +166,29 @@ class BuildPcController extends Controller
         }
 
         // PAGINATION
-        $stocks = $stocks->get();
+        // $stocks = $stocks->get();
+        $stocks = $stocks->paginate(50);
 
+        // $html = view('frontend.partials.pc-builder-products-list', [
+        //     'stocks' => $stocks
+        // ])->render();
+
+        // return response()->json([
+        //     'html' => $html,
+        //     // 'hasMore' => $stocks->hasMorePages()
+        // ]);
         $html = view('frontend.partials.pc-builder-products-list', [
             'stocks' => $stocks
         ])->render();
 
+        // return response()->json([
+        //     'html' => $html,
+        //     'next_page' => $stocks->nextPageUrl() ? $stocks->currentPage() + 1 : null,
+        //     'has_more' => $stocks->hasMorePages()
+        // ]);
         return response()->json([
             'html' => $html,
-            // 'hasMore' => $stocks->hasMorePages()
+            'next_page' => $stocks->hasMorePages() ? $stocks->currentPage() + 1 : null,
         ]);
     }
 
@@ -426,6 +473,7 @@ class BuildPcController extends Controller
 
     public function resetConfiguration(Request $request)
     {
+        $resetType = $request->input('reset_type', 'full'); // default full
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $guestToken = request()->cookie('guest_token');
         $builderId = $request->builder_id;
@@ -462,8 +510,11 @@ class BuildPcController extends Controller
         }
 
         // Reset configuration
-        /*$builder->build_data = [];
-        $builder->save();*/
+         if ($resetType === 'full') {
+            $builder->build_data = [];
+            $builder->save();
+        }
+
         
         return response()->json([
             'status' => true,

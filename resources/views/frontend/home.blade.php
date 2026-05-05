@@ -153,6 +153,9 @@
                     </div>
                 @endforeach
             </div>
+
+            
+
         </div>
         <!-- <div class="swiper-pagination !relative mt-[50px]  block xl:hidden m-auto"></div> -->
         <div class="controls relative md:absolute right-[0px] left-[0px] m-auto mt-[30px]mt-[0px] md:top-[-80px] items-center gap-[30px] justify-center md:justify-end hidden xl:flex flex-row">

@@ -184,4 +184,18 @@ class BusinessSettingsController extends Controller
 
         return back();
     }
+
+    public function invoice_settings(Request $request)
+    {
+        BusinessSetting::updateOrCreate([
+            'type' => 'default_invoice_logo'
+        ], [
+            'value' => $request->default_invoice_logo ?? ''
+        ]);
+
+        flash('Settings updated successfully')->success();
+
+        Artisan::call('cache:clear');
+        return back();
+    }
 }

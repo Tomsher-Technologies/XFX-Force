@@ -1057,6 +1057,12 @@ ol.lh18 li{
   opacity: 0;
 }
 
+.swiper-button-next,
+.swiper-button-prev {
+    z-index: 20;
+    pointer-events: auto;
+}
+
 input:checked ~ div svg {
   opacity: 1 !important;
 }

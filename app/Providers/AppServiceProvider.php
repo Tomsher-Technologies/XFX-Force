@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         // Header Categories
-        View::composer('frontend.layouts.header', function ($view) {
+        View::composer(['frontend.layouts.header','frontend.layouts.footer'], function ($view) {
 
             $headerCategories = Category::where('is_active', 1)
                 ->orderBy('name')

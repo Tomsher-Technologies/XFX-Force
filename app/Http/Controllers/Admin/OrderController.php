@@ -16,9 +16,10 @@ use App\Models\OrderTracking;
 use App\Models\Product;
 use App\Models\ProductStock;
 use App\Models\Review;
+use App\Models\Upload;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 use DB;
 use Illuminate\Http\Request;
 use Mail;
@@ -207,6 +208,20 @@ class OrderController extends Controller
             $orderCode     = $order->code;
 
             if ($request->status == "approved") { // Approved
+
+                // STOCK RETURN (same style as delivery cancel restore)
+                $orderDetail = OrderDetail::find($return->order_detail_id);
+
+                if ($orderDetail) {
+
+                    $product_stock = ProductStock::where('id', $orderDetail->product_stock_id)->first();
+
+                    if ($product_stock != null) {
+                        $product_stock->qty += $return->return_qty;
+                        $product_stock->save();
+                    }
+                }
+
         
                 /* ---------- Customer Notification ---------- */
                 $message = "Your return request for Order #{$orderCode} has been approved";
@@ -565,6 +580,13 @@ class OrderController extends Controller
         $hasReturnableItems = false;
 
         foreach ($details as $detail) {
+
+            // Skip non-returnable products
+            if (!$detail->product || $detail->product->return_refund != 1) {
+                continue;
+            }
+
+
             $approvedQty = $detail->returns->where('status', 'approved')->sum('return_qty');
             $pendingQty  = $detail->returns->where('status', 'pending')->sum('return_qty');
             $rejectedQty = $detail->returns->where('status', 'rejected')->sum('return_qty');
@@ -599,13 +621,19 @@ class OrderController extends Controller
 
         set_time_limit(300);
 
+        $upload = Upload::find(get_setting('default_invoice_logo'));
+
+        $imagePath = $upload && $upload->file_name
+            ? public_path('storage/' . $upload->file_name)
+            : null;
+
         $pdf = Pdf::loadView('backend.invoices.invoice', [
                     'order' => $order,
                     'font_family' => $font_family,
                     'direction' => $direction,
                     'text_align' => $text_align,
                     'not_text_align' => $not_text_align,
-                    'imagePath' => uploaded_asset(get_setting('header_logo'))
+                    'imagePath' => $imagePath
                 ]);
         
         return $pdf->download('order-' . $order->code . '.pdf');

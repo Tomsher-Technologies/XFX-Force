@@ -944,7 +944,13 @@ var swiper = new Swiper(".singleprdswiper", {
     speed: 3000,
     freeMode: false,
     parallax: true,
-    navigation: true,
+
+    // FIXED NAVIGATION
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+    },
+
     autoplay: { delay: 5000, disableOnInteraction: false },
     allowTouchMove: true,
 });
@@ -962,7 +968,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 3. Listen for Lightbox Opening
     lightbox.on('open', () => {
         // Send 'pauseVideo' command to the YouTube Iframe
-        bgPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        if(bgPlayer) bgPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
     });
 
     // 4. Listen for Lightbox Closing
@@ -1177,6 +1183,7 @@ window.handleSortClick = function (selectedBtn) {
             if (response.success) {
                 toastr.success(response.message, 'Success');
                 document.getElementById('total-cart-count-top').innerText = response.totalCartItemsCount;
+                document.getElementById('total-cart-count-bottom').innerText = response.totalCartItemsCount;
                 
             } else {
                 toastr.error(response.message, 'Error');
@@ -1406,13 +1413,9 @@ window.handleSortClick = function (selectedBtn) {
 
                
                 
-                // warranty
-                let warrantyElement = document.getElementById('cart-warranty');
-                if(warrantyElement) {
-                    document.getElementById('cart-warranty').innerText = formatPrice(data.warranty_sum);
-                }
                 
                 document.getElementById('total-cart-count-top').innerText = data.cart_count;
+                document.getElementById('total-cart-count-bottom').innerText = data.cart_count;
 
                 // toggle coupon
                 const couponSection = document.getElementById('coupon-section');
@@ -1434,14 +1437,44 @@ window.handleSortClick = function (selectedBtn) {
 
                 // warranty section
                 const warrantySection = document.getElementById('warranty-section');
-                if (data.warranty_sum > 0) {
+                const warrantyValue = document.getElementById('cart-warranty');
+                const warrantyIcon = document.getElementById('warranty-icon');
+                const warrantyPrefix = document.getElementById('warranty-prefix');
+
+                if (data.has_warranty) {
+
                     if (warrantySection) {
-                        warrantySection.style.display = 'list-item'; // or 'block' depending on your layout
-                    } else {
-                        // optionally create the li dynamically if it doesn't exist
+                        warrantySection.style.display = 'list-item';
                     }
-                } else if (warrantySection) {
-                    warrantySection.style.display = 'none';
+
+                    if (data.warranty_sum > 0) {
+
+                        // PAID WARRANTY
+                        if (warrantyPrefix) warrantyPrefix.style.display = 'inline';
+                        if (warrantyIcon) warrantyIcon.style.display = 'inline';
+
+                        if (warrantyValue) {
+                            warrantyValue.innerText = formatPrice(data.warranty_sum);
+                            warrantyValue.className = "text-[#99a1af]";
+                        }
+
+                    } else {
+
+                        // FREE WARRANTY
+                        if (warrantyPrefix) warrantyPrefix.style.display = 'none';
+                        if (warrantyIcon) warrantyIcon.style.display = 'none';
+
+                        if (warrantyValue) {
+                            warrantyValue.innerText = 'Free';
+                            warrantyValue.className = "text-black uppercase font-bold text-[10px] bg-[#29A706] px-2 py-1 rounded";
+                        }
+                    }
+
+                } else {
+
+                    if (warrantySection) {
+                        warrantySection.style.display = 'none';
+                    }
                 }
                 
             }
@@ -1957,23 +1990,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-const switcher = document.getElementById('view-switcher');
-const footer = document.querySelector('footer');
+document.addEventListener('DOMContentLoaded', () => {
+    const switcher = document.getElementById('view-switcher');
+    const footer = document.querySelector('footer');
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            // Hide when footer enters the viewport
-            switcher.style.opacity = '0';
-            switcher.style.pointerEvents = 'none';
-        } else {
-            // Show when footer is not visible
-            switcher.style.opacity = '1';
-            switcher.style.pointerEvents = 'auto';
-        }
-    });
-}, {
-    threshold: 0.1 // Triggers when 10% of the footer is visible
+    // Safety Check: Only run if BOTH elements exist
+    if (switcher && footer) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Hide when footer enters
+                    switcher.style.opacity = '0';
+                    switcher.style.pointerEvents = 'none';
+                    switcher.style.visibility = 'hidden'; // Added for extra safety
+                } else {
+                    // Show when footer is gone
+                    switcher.style.opacity = '1';
+                    switcher.style.pointerEvents = 'auto';
+                    switcher.style.visibility = 'visible';
+                }
+            });
+        }, {
+            threshold: 0.1 
+        });
+
+        observer.observe(footer);
+    } else {
+        console.warn('View Switcher or Footer not found. Observer not started.');
+    }
 });
 
-observer.observe(footer);
+
+
+window.toggleCategorySidebar = function(e) {
+    e.stopPropagation();
+
+    const sidebar = document.getElementById('mobile-sidebar');
+
+    sidebar.classList.toggle('-translate-x-full');
+}
+
+
+document.addEventListener('click', function (e) {
+    const sidebar = document.getElementById('mobile-sidebar');
+
+    if (!sidebar) return; // prevent error
+
+    if (!sidebar.contains(e.target)) {
+        sidebar.classList.add('-translate-x-full');
+    }
+});

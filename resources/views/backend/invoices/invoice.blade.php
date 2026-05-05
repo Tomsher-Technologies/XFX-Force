@@ -119,10 +119,12 @@
 <body>
     <div class="invoice">
         <div class="invoice-header">
-            @php
-                $logo = get_setting('header_logo');
-            @endphp
+            @if($imagePath && file_exists($imagePath))
             <img width="140" src="{{ $imagePath }}" alt="{{ env('APP_NAME') }}" title="{{ env('APP_NAME') }}" class="invoice-logo">
+            @else
+                {{ env('APP_NAME') }}
+            @endif
+
             <h1>Invoice</h1>
         </div>
 
@@ -249,6 +251,18 @@
                         <td class="text-start">
                             <span class="fw-medium">
                                 {{ $orderDetail->product->name }}
+                                @if($orderDetail->warranty)
+                                    <br>
+                                    <small class="text-[#99a1af]">
+                                        Warranty: {{ $orderDetail->warranty->name }}
+
+                                        @if($orderDetail->warranty->price > 0)
+                                            + {{ format_price($orderDetail->warranty->price) }}
+                                        @else
+                                            <span class="badge">FREE</span>
+                                        @endif
+                                    </small>
+                                @endif
                             </span>
                             @if ($orderDetail->variation != null)
                                 @php
@@ -278,22 +292,32 @@
         </table>
 
         <div class="invoice-total">
-            <p><strong>Subtotal:</strong> {{ single_price($order->sub_total) }}</p>
-            <p><strong>VAT:</strong> {{ single_price($order->tax) }}</p>
+            <p><strong>Subtotal:</strong> AED {{ single_price($order->sub_total) }}</p>
+            <p><strong>VAT:</strong> AED {{ single_price($order->tax) }}</p>
             @if ($order->offer_discount != 0)
-                <p><strong>Discount:</strong> {{ single_price($order->offer_discount) }}</p>
+                <p><strong>Discount:</strong> AED {{ single_price($order->offer_discount) }}</p>
             @endif
             
             @if ($order->coupon_discount != 0)
-                <p><strong>Coupon Discount:</strong> {{ single_price($order->coupon_discount) }}</p>
+                <p><strong>Coupon Discount:</strong> AED {{ single_price($order->coupon_discount) }}</p>
             @endif
 
-            @if ($order->warranty_amount != 0)
-                <p><strong>Warranty (Premium Care+):</strong> {{ single_price($order->warranty_amount) }}</p>
+            @if($order->has_warranty)
+                <p>
+                    <strong>Warranty (Premium Care+):</strong> 
+                    @if($order->warranty_amount > 0)
+                        + AED
+                        {{ format_price($order->warranty_amount) }}
+                    @else
+                        <span class="text-black uppercase font-bold text-[10px] bg-[#29A706] px-2 py-1 rounded">
+                            FREE
+                        </span>
+                    @endif
+                </p>
             @endif
             
-            <p><strong>Shipping Charge:</strong> {{ single_price($order->shipping_cost) }}</p>
-            <p><strong>Grand Total:</strong> {{ single_price($order->grand_total) }}</p>
+            <p><strong>Shipping Charge:</strong> AED {{ single_price($order->shipping_cost) }}</p>
+            <p><strong>Grand Total:</strong> AED {{ single_price($order->grand_total) }}</p>
         </div>
     </div>
 </body>

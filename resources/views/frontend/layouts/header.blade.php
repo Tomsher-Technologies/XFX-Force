@@ -58,7 +58,7 @@
                                     <img src="{{ asset('assets/images/caret-down.svg') }}" class="img-fluid" alt="Caret Down Icon">
                                 </a>
 
-                                <div class="mega-menu absolute top-full m-auto left-0 right-0 w-5xl bg-[#ffffff20] backdrop-blur-[100px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.1)] opacity-0 invisible translate-y-[0px] transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:visible group-hover:translate-y-[55px]">
+                                <div class="mega-menu absolute top-full m-auto left-0 right-0 w-5xl bg-[#ffffff20] backdrop-blur-[100px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.1)] opacity-0 invisible translate-y-[0px] transition-all ease-in-out group-hover:opacity-100 group-hover:visible group-hover:translate-y-[55px]">
                                         
                                     <div class="mega-grid w-full mx-auto grid gap-[50px] grid-cols-{{ count($menu->sections) }} gap-[50px]">
 
