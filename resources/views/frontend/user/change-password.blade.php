@@ -88,22 +88,22 @@
                                     <ul class="text-gray-500 text-xs space-y-2">
 
                                         <li class="flex items-center gap-2">
-                                            <div class="w-1.5 h-1.5 bg-[#2A7CFF] rounded-full"></div>
+                                            <div class="w-1.5 h-1.5 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-full"></div>
                                             Use at least <strong>8 characters</strong>.
                                         </li>
 
                                         <li class="flex items-center gap-2">
-                                            <div class="w-1.5 h-1.5 bg-[#2A7CFF] rounded-full"></div>
+                                            <div class="w-1.5 h-1.5 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-full"></div>
                                             Include at least <strong>one uppercase letter (A–Z)</strong>.
                                         </li>
 
                                         <li class="flex items-center gap-2">
-                                            <div class="w-1.5 h-1.5 bg-[#2A7CFF] rounded-full"></div>
+                                            <div class="w-1.5 h-1.5 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-full"></div>
                                             Add at least <strong>one number (0–9)</strong>.
                                         </li>
 
                                         <li class="flex items-center gap-2">
-                                            <div class="w-1.5 h-1.5 bg-[#2A7CFF] rounded-full"></div>
+                                            <div class="w-1.5 h-1.5 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-full"></div>
                                             Include a <strong>special character</strong> like @, $, !, %, *, #, ?, &.
                                         </li>
 
@@ -111,7 +111,7 @@
                                 </div>
 
                                 <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                                    <button type="submit" class="flex-1 bg-[#2A7CFF] text-white font-medium uppercase py-4 rounded-xl cursor-pointer text-[13px] hover:bg-[#1a66e5] transition-all shadow-lg shadow-blue-900/20 active:scale-95">Update Password</button>
+                                    <button type="submit" class="flex-1 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-white font-medium uppercase py-4 rounded-xl cursor-pointer text-[13px] hover:bg-[#1a66e5] transition-all shadow-lg shadow-blue-900/20 active:scale-95">Update Password</button>
                                     <a href="{{ route('update-password') }}" class="flex-1 bg-transparent border border-[#282B34] text-gray-500 font-medium text-center cursor-pointer uppercase py-4 rounded-xl text-[13px] hover:bg-white/5 transition-all">Cancel</a>
                                 </div>
                             </form>

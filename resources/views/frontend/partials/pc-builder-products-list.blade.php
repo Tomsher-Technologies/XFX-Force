@@ -97,7 +97,7 @@
                 @endif
             </h5>
             <div class="counter-container w-full"  data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id = "{{ $product->category_id }}" data-stock-qty="{{ $stock->qty }}" data-cart-qty="{{ checkCartQuantityPerVariant($stock->id) }}">
-                <button onclick="selectProduct(this)" class="action-btn w-full text-center text-white uppercase text-[13px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] bg-transparent group-hover:bg-[#2A7CFF] hover:border-[#2A7CFF] transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id = "{{ $product->category_id }}">
+                <button onclick="selectProduct(this)" class="action-btn w-full text-center text-white uppercase text-[13px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] bg-transparent group-hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:border-[#2A7CFF] transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id = "{{ $product->category_id }}">
                     Select
                 </button>
 
@@ -112,7 +112,7 @@
 
                     <input type="number" value="1" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-medium rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none">
 
-                    <button onclick="updateBuilderItemQty(this, 1); event.stopPropagation();" class="cursor-pointer flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg transition-all active:scale-90">
+                    <button onclick="updateBuilderItemQty(this, 1); event.stopPropagation();" class="cursor-pointer flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg transition-all active:scale-90">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
                         </svg>

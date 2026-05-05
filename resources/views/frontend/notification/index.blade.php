@@ -103,7 +103,7 @@
                                                 <div>
                                                     <div class="flex items-center gap-2 mb-0.5 md:mb-1">
                                                         @if($isUnread)
-                                                        <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-[#2A7CFF] rounded-full"></span>
+                                                        <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-full"></span>
                                                         @endif
                                                         <h4 class="text-white font-medium text-[14px] md:text-lg leading-tight">
                                                             @php

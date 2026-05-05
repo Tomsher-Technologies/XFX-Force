@@ -104,7 +104,7 @@
                     <p class="text-center text-[15px] text-gray-500 py-[15px]">Didn't get the code? <button type="button" class="cursor-pointer text-[#2A7CFF] hover:underline font-medium">Resend</button></p>
                 </div> --}}
 
-                <button type="submit" class="cursor-pointer transition-all duration-[600ms] w-full bg-[#2A7CFF] py-4 rounded-xl font-medium text-white text-[14px] uppercase hover:bg-[#1A6BFF] transition-all shadow-lg shadow-[#2A7CFF]/20 active:scale-[0.98]">
+                <button type="submit" class="cursor-pointer transition-all duration-[600ms] w-full bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] py-4 rounded-xl font-medium text-white text-[14px] uppercase hover:bg-[#1A6BFF] transition-all shadow-lg shadow-[#2A7CFF]/20 active:scale-[0.98]">
                     Update Password
                 </button>
             </form>

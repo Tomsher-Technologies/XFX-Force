@@ -85,7 +85,7 @@
                                     </div>
 
                                     <div class="w-full md:w-fit gap-[15px]">
-                                        <a href="{{ route('orders.show', base64_encode($order->id)) }}" class="block w-full text-center bg-[#252C33] hover:bg-[#2A7CFF] text-white text-[13px] tracking-[0.5px] uppercase font-medium px-8 py-4 rounded-xl transition-all">
+                                        <a href="{{ route('orders.show', base64_encode($order->id)) }}" class="block w-full text-center bg-[#252C33] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-white text-[13px] tracking-[0.5px] uppercase font-medium px-8 py-4 rounded-xl transition-all">
                                             View Details
                                         </a>
                                     </div>
