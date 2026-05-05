@@ -101,7 +101,7 @@
                                             </span>
                                         </button>
                                         <input type="number" value="{{ $item->quantity }}" readonly class="qty-input w-full h-full text-center border-none bg-[#282B34] text-white font-medium focus:outline-none text-[15px] p-[10px] rounded-lg">
-                                        <button onclick="updateMultiQty(this, 1)" class="w-full h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg transition-all active:scale-90">
+                                        <button onclick="updateMultiQty(this, 1)" class="w-full h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg transition-all active:scale-90">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 4v16m8-8H4" />
                                             </svg>
@@ -139,7 +139,7 @@
                 <div class="sticky top-[180px] w-full bg-black/30 backdrop-blur-[60px] p-[20px] md:p-[30px] rounded-[20px] mb-[10px]">
                     <h2 class="text-white text-center md:text-left text-[20px] uppercase mb-[20px] pb-[20px] border-b border-[#282B34]">Order Summary</h2>
                     <form>
-                        <div class="w-full md:max-w-sm md:max-w-screen-xl">
+                        <div class="w-full">
                             <label for="coupon" class="block text-sm font-medium text-gray-400 mb-[10px]">Discount code / Promo code</label>
                             <div class="relative group">
                                 <input type="text" id="coupon_code" placeholder="PROMO2026" class="w-full bg-[#282B34] border border-gray-800 text-white text-sm rounded-xl px-4 py-4 pr-24 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all placeholder-gray-600" value="{{ $couponCode ?? '' }}" />
@@ -148,7 +148,7 @@
                                 <button onclick="applyCouponCode()" 
                                     type="button" 
                                     id="apply_coupon"
-                                    class="cursor-pointer absolute right-2 top-2 bottom-2 bg-[#2a7cff] hover:bg-blue-700 text-white text-xs font-bold px-5 rounded-lg transition-all active:scale-95 {{ $couponCode ? 'hidden' : '' }}">
+                                    class="cursor-pointer absolute right-2 top-2 bottom-2 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:bg-blue-700 text-white text-xs font-bold px-5 rounded-lg transition-all active:scale-95 {{ $couponCode ? 'hidden' : '' }}">
                                     APPLY
                                 </button>
 
@@ -261,7 +261,7 @@
                             </div>
                         </li>
                     </ul>
-                    <a href="{{ route('checkout') }}" class="mt-[20px] w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">{{ trans('messages.proceed_to_checkout') }}</a>
+                    <a href="{{ route('checkout') }}" class="mt-[20px] w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">{{ trans('messages.proceed_to_checkout') }}</a>
                 </div>
                 <!--//categories filter-->
             </div>

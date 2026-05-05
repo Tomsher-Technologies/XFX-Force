@@ -21,11 +21,11 @@
  @if(empty(auth('frontend')->user()))
  <div id="checkout-login-box" class="checkout-login-box px-[16px] md:px-[30px] xl:px-[140px] pt-[30px]">
     <div class="flex gap-2 text-white">
-        <a href="{{ route('login', ['checkout' => 1]) }}" class="mt-[0px] flex flex-row justify-center align-center items-center text-center text-black uppercase text-[13px] font-medium px-6 py-3 rounded-xl bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">
+        <a href="{{ route('login', ['checkout' => 1]) }}" class="mt-[0px] flex flex-row justify-center align-center items-center text-center text-black uppercase text-[13px] font-medium px-6 py-3 rounded-xl bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">
             Login
         </a>
 
-        <button type="button" onclick="continueGuest()" class="mt-[0px] flex flex-row justify-center align-center items-center text-center text-black uppercase text-[13px] font-medium px-6 py-3 rounded-xl bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">
+        <button type="button" onclick="continueGuest()" class="mt-[0px] flex flex-row justify-center align-center items-center text-center text-black uppercase text-[13px] font-medium px-6 py-3 rounded-xl bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">
             Continue as Guest
         </button>
     </div>
@@ -44,7 +44,7 @@
                     <div class="flex flex-col min-h-screen bg-black/30 backdrop-blur-[60px] p-[20px] md:p-[40px] rounded-[20px] mb-[10px] text-white gap-[50px]">
                         <section>
                             <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3">
-                                <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">1</span> Billing Information
+                                <span class="w-8 h-8 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-full flex items-center justify-center text-sm">1</span> Billing Information
                             </h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 @php
@@ -110,19 +110,19 @@
 
                         <section class="w-full">
                             <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3 font-medium text-white">
-                                <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">2</span> Fulfillment Information
+                                <span class="w-8 h-8 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-full flex items-center justify-center text-sm">2</span> Fulfillment Information
                             </h2>
 
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
                                 <label class="cursor-pointer group">
                                     <input type="radio" name="fulfillment_method" value="delivery" id="delivery-choice" checked class="peer hidden">
-                                    <div class="px-6 py-3 rounded-xl border-2 border-gray-800 bg-[#161B22] peer-checked:border-[#2A7CFF] peer-checked:bg-[#2A7CFF]/5 transition-all text-center">
+                                    <div class="px-6 py-3 rounded-xl border-2 border-gray-800 bg-[#161B22] peer-checked:border-[#2A7CFF] peer-checked:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/5 transition-all text-center">
                                         <span class="block text-white font-medium uppercase text-[13px]">Delivery</span>
                                     </div>
                                 </label>
                                 <label class="cursor-pointer group">
                                     <input type="radio" name="fulfillment_method" value="pickup" id="pickup-choice" class="peer hidden">
-                                    <div class="px-6 py-3 rounded-xl border-2 border-gray-800 bg-[#161B22] peer-checked:border-[#2A7CFF] peer-checked:bg-[#2A7CFF]/5 transition-all text-center">
+                                    <div class="px-6 py-3 rounded-xl border-2 border-gray-800 bg-[#161B22] peer-checked:border-[#2A7CFF] peer-checked:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/5 transition-all text-center">
                                         <span class="block text-white font-medium uppercase text-[13px]">Store Pickup</span>
                                     </div>
                                 </label>
@@ -133,7 +133,7 @@
                                     <label class="flex items-center gap-3 cursor-pointer group w-fit">
                                         <div class="relative">
                                             <input type="checkbox" id="billing-toggle" checked class="peer hidden" name="same_as_billing">
-                                            <div class="w-6 h-6 border-2 border-gray-700 rounded-md peer-checked:bg-[#2A7CFF] peer-checked:border-[#2A7CFF] transition-all flex items-center justify-center">
+                                            <div class="w-6 h-6 border-2 border-gray-700 rounded-md peer-checked:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] peer-checked:border-[#2A7CFF] transition-all flex items-center justify-center">
                                                 <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
                                                     <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
                                                     <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
@@ -147,7 +147,7 @@
                                 <input type="hidden" name="is_guest" value="{{ auth('frontend')->check() ? 0 : 1 }}">
                                 <div id="address-list-container" class="hidden space-y-4">
                                     <h2 class="shipping-heading flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3 font-medium text-white">
-                                        <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">3</span> 
+                                        <span class="w-8 h-8 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-full flex items-center justify-center text-sm">3</span> 
                                         Shipping Information
                                     </h2>
                                     @if(!auth('frontend')->check())
@@ -232,7 +232,7 @@
 
                             <div id="pickup-section" class="hidden animate-fade-in">
                                 <div class="p-3 xl:p-6 bg-[#161B22] border border-gray-800 rounded-xl flex items-center gap-4">
-                                    <div class="p-3 bg-[#2A7CFF]/10 rounded-lg">
+                                    <div class="p-3 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10 rounded-lg">
                                         <svg class="w-6 h-6 text-[#2A7CFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -248,7 +248,7 @@
 
                         <section>
                             <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3">
-                                <span class="w-8 h-8 bg-[#2A7CFF] rounded-full flex items-center justify-center text-sm">4</span> Payment Methods
+                                <span class="w-8 h-8 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-full flex items-center justify-center text-sm">4</span> Payment Methods
                             </h2>
                             <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-0 xl:mb-8">
 
@@ -303,7 +303,7 @@
                         </div>
                         <div class="flex-1">
                             <h4 class="text-white text-[13px] leading-[20px] font-medium line-clamp-2 cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}</h4>
-                            <p class="text-[10px] text-[#ffffff50] text-center xl:text-left">  
+                            <p class="text-[10px] text-[#ffffff50] text-left">  
                                 @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
                                     <span class="text-gray-400 text-sm">
                                         
@@ -429,7 +429,7 @@
                             </div>
                         </li>
                     </ul>
-                    <a href="javascript:void(0)" onclick="completeYourOrder(event, this)" class="mt-[0px] w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">Place Your Order</a>
+                    <a href="javascript:void(0)" onclick="completeYourOrder(event, this)" class="mt-[0px] w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-[#1447e6] hover:text-white cursor-pointer">Place Your Order</a>
                 </div>
                 <!--//categories filter-->
             </div>
@@ -466,7 +466,7 @@
 
                         <div id="map" class="w-full h-full"></div>
 
-                        <button type="button" onclick="getCurrentLocation()" class="absolute cursor-pointer bottom-3 right-3 bg-[#2A7CFF] p-3 rounded-full shadow-lg hover:bg-blue-600 transition-all active:scale-95 z-10">
+                        <button type="button" onclick="getCurrentLocation()" class="absolute cursor-pointer bottom-3 right-3 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] p-3 rounded-full shadow-lg hover:bg-blue-600 transition-all active:scale-95 z-10">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -589,7 +589,7 @@
 
                             <input type="checkbox" name="default" value="1" class="sr-only peer">
 
-                            <div class="w-11 h-6 bg-gray-800 rounded-full peer-checked:bg-[#2A7CFF] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full">
+                            <div class="w-11 h-6 bg-gray-800 rounded-full peer-checked:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full">
                             </div>
 
                         </label>
@@ -600,7 +600,7 @@
                     <div class="flex flex-col md:flex-row gap-3 mt-8">
 
                         <button type="submit"
-                            class="flex-1 bg-[#2A7CFF] text-white font-medium uppercase py-4 rounded-xl text-[14px] hover:bg-[#1447e6]">
+                            class="flex-1 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-white font-medium uppercase py-4 rounded-xl text-[14px] hover:bg-[#1447e6]">
                             Save Address
                         </button>
 

@@ -485,13 +485,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Activate clicked button
             btn.classList.remove('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
-            btn.classList.add('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+            btn.classList.add('active', 'border-1', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'text-white', 'font-medium');
 
             // Deactivate siblings
             const siblings = btn.parentElement.querySelectorAll('.variant-btn');
             siblings.forEach(function (sibling) {
                 if (sibling !== btn) {
-                    sibling.classList.remove('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+                    sibling.classList.remove('active', 'border-1', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'text-white', 'font-medium');
                     sibling.classList.add('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
                 }
             });
@@ -501,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const btnIndex = parseInt(button.dataset.attrIndex);
                 if (btnIndex > clickedIndex) {
                     button.disabled = true;
-                    button.classList.remove('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+                    button.classList.remove('active', 'border-1', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'text-white', 'font-medium');
                     button.classList.add('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
                     button.style.opacity = '0.3';
                     button.style.cursor = 'not-allowed';
@@ -533,7 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             if (!hasActive && buttons.length > 0) {
                                 const firstBtn = buttons[0];
-                                firstBtn.classList.add('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+                                firstBtn.classList.add('active', 'border-1', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'text-white', 'font-medium');
                                 firstBtn.classList.remove('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
                             }
 
@@ -1246,14 +1246,14 @@ window.handleSortClick = function (selectedBtn) {
                 if(minusBtn) minusBtn.classList.add('hidden');
                 if(trashBtn) trashBtn.classList.remove('hidden');
                 decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
-                decrementBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+                decrementBtn.classList.remove('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
 
             } else if (currentVal > 1) {
                 trashBtn.classList.add('hidden');
                 minusBtn.classList.remove('hidden');
 
                 decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
-                decrementBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+                decrementBtn.classList.add('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
             }
         }
     });
@@ -1361,13 +1361,13 @@ window.handleSortClick = function (selectedBtn) {
             trashBtn.classList.remove('hidden');
 
             decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
-            decrementBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+            decrementBtn.classList.remove('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
         } else {
             trashBtn.classList.add('hidden');
             minusBtn.classList.remove('hidden');
 
             decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
-            decrementBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+            decrementBtn.classList.add('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
         }
     }
 
@@ -1956,3 +1956,24 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('checkout-login-box').style.display = 'none';
     }
 });
+
+const switcher = document.getElementById('view-switcher');
+const footer = document.querySelector('footer');
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            // Hide when footer enters the viewport
+            switcher.style.opacity = '0';
+            switcher.style.pointerEvents = 'none';
+        } else {
+            // Show when footer is not visible
+            switcher.style.opacity = '1';
+            switcher.style.pointerEvents = 'auto';
+        }
+    });
+}, {
+    threshold: 0.1 // Triggers when 10% of the footer is visible
+});
+
+observer.observe(footer);

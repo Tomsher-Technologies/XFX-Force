@@ -153,7 +153,7 @@
                     </div>
 
                     <div class="md:col-span-1 p-4 pt-2 md:pt-[30px] md:px-[30px] flex flex-col justify-between items-start md:items-end">
-                        <div class="price flex flex-row md:flex-col items-center md:items-end gap-3 w-full justify-between md:justify-start">
+                        <div class="price flex flex-row md:flex-col items-center md:items-end gap-3 w-full justify-start">
                             <h5 class="price flex flex-row text-[#2A7CFF] text-[18px] md:text-[28px] m-0 font-bold items-center gap-1">
                                 <img src="{{ asset('assets/images/aed.svg') }}" class="w-4 h-4 md:w-[22px] md:h-[22px]" alt="AED">
                                 {{ $firstStock->offer_price ?? $firstStock->price }}

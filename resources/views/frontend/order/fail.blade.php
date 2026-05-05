@@ -23,7 +23,7 @@
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="{{ route('checkout') }}" class="flex-1 bg-[#2A7CFF] text-white text-center px-5 py-3 rounded-xl font-medium uppercase text-[13px] hover:bg-white hover:text-black transition-all duration-300">
+                            <a href="{{ route('checkout') }}" class="flex-1 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-white text-center px-5 py-3 rounded-xl font-medium uppercase text-[13px] hover:bg-white hover:text-black transition-all duration-300">
                                 Try Again
                             </a>
                             <a href="contact.html" class="flex-1 border border-white/10 text-white text-center px-5 py-3 rounded-xl font-medium uppercase text-[13px] hover:bg-white/5 transition-all">

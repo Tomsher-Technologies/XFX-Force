@@ -43,8 +43,7 @@ Log::info($_REQUEST);
 <!--product listing-->
 <section class="bg-[#0F161B]">
 
-	<!-- Mobile filter dialog -->
-
+<!-- Mobile filter dialog -->
   <el-dialog>
     <dialog id="mobile-filters" class="m-0 overflow-hidden p-0 backdrop:bg-transparent xl:hidden">
       <el-dialog-backdrop class="fixed inset-0 bg-black/50 backdrop-blur-[10px] transition-opacity duration-300 ease-linear data-[closed]:opacity-0"></el-dialog-backdrop>
@@ -96,7 +95,7 @@ Log::info($_REQUEST);
 									</svg>
 								</span>
 							</button>
-							<el-disclosure id="filter-section-categories" hidden class="pt-6 [&:not([hidden])]:block border-t border-[#282B34] pb-[20px]">
+							<el-disclosure id="filter-section-categories" hidden class="pt-6 [&:not([hidden])]:block border-t border-transparent xl:border-[#282B34] pb-[20px]">
 
 								<div class="w-full">
 									<div class="space-y-4">
@@ -192,7 +191,7 @@ Log::info($_REQUEST);
 									</svg>
 								</span>
 							</button>
-							<el-disclosure id="filter-section-price" hidden class="pt-6 [&:not([hidden])]:block border-t border-[#282B34] pb-[30px]">
+							<el-disclosure id="filter-section-price" hidden class="pt-6 [&:not([hidden])]:block border-t border-transparent xl:border-[#282B34] pb-[30px]">
 								<div class="w-full price-filter">
 									<div class="flex justify-between items-center mb-8 gap-[20px] align-center">
 										<div class="w-full">
@@ -237,7 +236,7 @@ Log::info($_REQUEST);
 									</svg>
 								</span>
 							</button>
-							<el-disclosure id="filter-section-brand" hidden class="pt-6 [&:not([hidden])]:block border-t border-[#282B34] pb-[20px]">
+							<el-disclosure id="filter-section-brand" hidden class="pt-6 [&:not([hidden])]:block border-t border-transparent xl:border-[#282B34] pb-[20px]">
 
 								<div class="w-full">
 									<div id="brand-grid" class="space-y-4">
@@ -302,7 +301,7 @@ Log::info($_REQUEST);
 			<div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 
 				<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[0px] w-full">
-					<h1 class="text-[30px] md:text-[50px] text-white font-bold text-center xl:text-left uppercase w-full">
+					<h1 class="text-[30px] 2xl:text-[50px] text-white font-bold text-center xl:text-left uppercase w-full">
 						{{ $page_content['listing_title'] ?? 'All Products' }} 
 					</h1>
 					<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[15px] w-full">

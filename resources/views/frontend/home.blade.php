@@ -91,7 +91,7 @@
 
                                 <a href="{{ $url }}"
                                 @if($slider->link_type === 'external') target="_blank" @endif
-                                class="btn btn-cta !rounded-full !text-[#000000] !text-[15px] !uppercase !px-[30px] !py-[10px] !bg-white font-medium">
+                                class="btn btn-cta !rounded-full !text-[#ffffff] !text-[15px] !uppercase !px-[30px] !py-[10px] !bg-white font-medium">
                                 {{ $slider->btn_text ?? 'START BUILDING' }}
                                 </a>
                             </div>
@@ -124,7 +124,7 @@
                 <div class="content relative z-[1] flex flex-col items-center justify-between xl:justify-end h-full w-full">
                     <h2 class="text-[25px] text-white capitalize font-bold text-center">{{ $banner->title }}</h2>
                     <p class="text-[15px] text-[#ffffff] text-center">{{ $banner->sub_title }}</p>
-                    <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[10px] bg-white font-medium mt-[20px] transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white" title="">{{ $banner->btn_text }}</a>
+                    <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[10px] bg-white font-medium mt-[20px] transition-all duration-[600ms] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white" title="">{{ $banner->btn_text }}</a>
                 </div>
             </div>
         @endforeach
@@ -235,8 +235,7 @@
                                     </ul>
                                 </div>
                                 @if($product && $firstStock)
-                                <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}"
-                                    class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">shop
+                                <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white">shop
                                     now</a>
                                     @endif
                             </div>
@@ -294,7 +293,7 @@
                                 </div>
                                 @if($product && $firstStock)
                                 <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}"
-                                    class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">shop
+                                    class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white">shop
                                     now</a>
                                     @endif
                             </div>
@@ -605,7 +604,7 @@
             <img src="{{ get_product_image($product->thumbnail_img) }}" class="relative object-center object-fit top-0 left-0 transition-all duration-[600ms] group-hover:scale-110" alt="{{ $product->name }}" title="{{ $product->name }}">
             <div class="content flex flex-col xl:flex-row items-end justify-end xl:justify-between gap-[20px] xl:gap-[30px] relative z-[1] w-full h-fit bg-[#0b0f13] p-[30px]">
                 <h6 class="text-white text-[20px] font-medium w-full xl:w-[50%] text-center xl:text-left line-clamp-2">{{ $product->name }}</h6>
-                <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full xl:w-fit text-center text-black text-[13px] xl:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[10px] rounded-full transition-all duration-[600ms] group-hover:bg-[#2A7CFF] group-hover:text-white">Shop Now</a>
+                <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full xl:w-fit text-center text-black text-[13px] xl:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[10px] rounded-full transition-all duration-[600ms] group-hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] group-hover:text-white">Shop Now</a>
             </div>
         </div>
         @endforeach
@@ -696,7 +695,7 @@
                                             <h6 class="text-white text-[20px] md:text-[25px] font-medium">{{$testimonial->name}}</h6>
                                             <p class="text-white text-[15px] font-normal">{{$testimonial->sub_title}}</p>
                                         </div>
-                                        <button class="bg-[#ffffff30] border-hidden rounded-full p-[10px] flex align-center items-center justify-center h-[50px] w-[50px] transition-all duration-[600ms] group-hover:bg-[#2a7cff]"><img src="{{ asset('assets/images/play.svg') }}" alt="Play Button" class="w-[10px] h-[10px]"></button>
+                                        <button class="bg-[#ffffff30] border-hidden rounded-full p-[10px] flex align-center items-center justify-center h-[50px] w-[50px] transition-all duration-[600ms] group-hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]"><img src="{{ asset('assets/images/play.svg') }}" alt="Play Button" class="w-[10px] h-[10px]"></button>
                                     </div>
                                 </a>
                             </div>
@@ -782,7 +781,7 @@
                             
                             <div class="flex flex-col gap-10">
                                 <div style="color:rgb(255 255 255) !important;" class="text-white text-[15px] xl:text-[18px] font-normal leading-[30px] xl:leading-[35px] text-center xl:text-left">{!! $footer['footer_content'] !!}</div>
-                                <a href="{{$footer['footer_button_link']}}" class="w-full md:w-fit m-auto xl:m-0 h-fit text-center text-black uppercase text-[13px] md:text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">{{$footer['footer_button_text']}}</a>
+                                <a href="{{$footer['footer_button_link']}}" class="w-full md:w-fit m-auto xl:m-0 h-fit text-center text-black uppercase text-[13px] md:text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white">{{$footer['footer_button_text']}}</a>
                             </div>
                         </div>
                     </div>
