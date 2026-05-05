@@ -71,7 +71,7 @@ class CartController extends Controller
         $subtotal  = $cartItems->sum('subtotal');
         $offerSum  = $cartItems->sum('offerSum');
         $discountSum = $subtotal - $offerSum;
-        $cartCount = $cartItems->count();
+        $cartCount = $cartItems->sum('quantity');
         $warrantySum  = $cartItems->sum('warranty_price');
 
         $hasWarranty = $cartItems->contains(function ($item) {
@@ -94,7 +94,10 @@ class CartController extends Controller
         $totalBeforeShippingPriceApplied = $totalBeforeTax + $tax;
         $shipping = ($totalBeforeShippingPriceApplied > 0) ? (get_setting('default_shipping_amount') ?? 0) : 0;
         $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
-        if ($totalBeforeShippingPriceApplied >= $freeShippingMinAmount) {
+
+        $freeShippingStatus = get_setting('free_shipping_status') ?? 0;
+
+        if ($freeShippingStatus && $totalBeforeShippingPriceApplied >= $freeShippingMinAmount) {
             $shipping = 0;
         }
 
@@ -377,7 +380,9 @@ class CartController extends Controller
         $shipping = ($totalBeforeShippingPriceApplied > 0) ? (get_setting('default_shipping_amount') ?? 0) : 0;
         $freeShippingMinAmount = get_setting('free_shipping_min_amount') ?? 0;
 
-        if ($totalBeforeShippingPriceApplied >= $freeShippingMinAmount) {
+        $freeShippingStatus = get_setting('free_shipping_status') ?? 0;
+
+        if ($freeShippingStatus && $totalBeforeShippingPriceApplied >= $freeShippingMinAmount) {
             $shipping = 0;
         }
 

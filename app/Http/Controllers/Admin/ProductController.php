@@ -527,10 +527,26 @@ class ProductController extends Controller
         $product->discount_type     = $request->discount_type;
         $product->unit_price        = $request->has('price') ? $request->price : 0;
 
-        $tags = array();
-        if (isset($request->tags[0]) && $request->tags[0] != null) {
-            foreach (json_decode($request->tags[0]) as $key => $tag) {
-                array_push($tags, $tag->value);
+        // $tags = array();
+        // if (isset($request->tags[0]) && $request->tags[0] != null) {
+        //     foreach (json_decode($request->tags[0]) as $key => $tag) {
+        //         array_push($tags, $tag->value);
+        //     }
+        // }
+
+        $tags = [];
+
+        if ($request->filled('tags') && isset($request->tags[0])) {
+
+            $decodedTags = json_decode($request->tags[0]);
+
+            if (is_array($decodedTags) || is_object($decodedTags)) {
+
+                foreach ($decodedTags as $tag) {
+                    if (isset($tag->value)) {
+                        $tags[] = $tag->value;
+                    }
+                }
             }
         }
 
@@ -604,12 +620,27 @@ class ProductController extends Controller
         $seo                        = ProductSeo::firstOrNew(['lang' => $request->lang, 'product_id' => $product->id]);
         $seo->meta_title            = $request->meta_title ?? $product->name;
         $seo->meta_description      = $request->meta_description;
-        $keywords = array();
-        if (isset($request->meta_keywords[0]) && $request->meta_keywords[0] != null) {
-            foreach (json_decode($request->meta_keywords[0]) as $key => $keyword) {
-                array_push($keywords, $keyword->value);
+        // $keywords = array();
+        // if (isset($request->meta_keywords[0]) && $request->meta_keywords[0] != null) {
+        //     foreach (json_decode($request->meta_keywords[0]) as $key => $keyword) {
+        //         array_push($keywords, $keyword->value);
+        //     }
+        // }
+
+        $keywords = [];
+
+        $metaInput = $request->meta_keywords[0] ?? null;
+
+        $decodedKeywords = json_decode($metaInput);
+
+        if (!empty($decodedKeywords) && is_iterable($decodedKeywords)) {
+            foreach ($decodedKeywords as $keyword) {
+                if (isset($keyword->value)) {
+                    $keywords[] = $keyword->value;
+                }
             }
         }
+
         $seo->meta_keywords         = implode(',', $keywords);
         $seo->og_title              = $request->og_title ?? $product->name;
         $seo->og_description        = $request->og_description;

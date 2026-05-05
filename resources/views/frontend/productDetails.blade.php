@@ -156,10 +156,21 @@
                 xl:text-left tracking-[0px] variant-title mt-[15px]">
                 {{ $firstStock->stock_title ?? $product->name }}
             </h1>
+
             <p class="text-[12px] text-[#ffffff50] text-center xl:text-left py-1">
-                @if($product->brand) {{ $product->brand->name }}  @endif
-                @if($firstStock->model) | {{ $firstStock->model }} @endif
-                @if($firstStock->sku) | {{ $firstStock->sku }} @endif
+                @if($product->brand)
+                    <span class="text-white/70">Brand:</span> {{ $product->brand->name }}
+                @endif
+
+                @if($firstStock->model)
+                    <span class="mx-1">|</span>
+                    <span class="text-white/70">Model:</span> {{ $firstStock->model }}
+                @endif
+
+                @if($firstStock->sku)
+                    <span class="mx-1">|</span>
+                    <span class="text-white/70">SKU:</span> {{ $firstStock->sku }}
+                @endif
             </p>
 
 
@@ -365,7 +376,7 @@
                         </span>
                     </div>
                 </a>
-                <a href="{{ route('buildyourpc') }}" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30]">
+                <a href="javascript:void(0)" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30] cursor-default">
                     <div class="h-[47px] w-[47px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/return-policy.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
                         <h4 class="text-white text-[18px] mb-[0px]">Return Policy</h4>
@@ -381,7 +392,7 @@
                         </span>
                     </div>
                 </a>
-                <a href="#" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30]">
+                <a href="{{ route('contact') }}" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30]">
                     <div class="h-[50px] w-[50px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/need-help.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
                         <h4 class="text-white text-[18px] mb-[0px]">Need help?</h4>
@@ -437,6 +448,8 @@
         $defaultTab = 'services';
     } elseif($productTabs->isNotEmpty()) {
         $defaultTab = 'tab-0';
+    } else {
+        $defaultTab = 'reviews';
     }
     @endphp
 
@@ -457,7 +470,7 @@
                 <a href="javascript:void(0)" @click="activeTab='specs'" :class="activeTab === 'specs' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Specifications</a>
             @endif
             @if($productWarrantis->isNotEmpty())
-                <a href="javascript:void(0)" @click="activeTab='services'" :class="activeTab === 'services' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Services</a>
+                <a href="javascript:void(0)" @click="activeTab='services'" :class="activeTab === 'services' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Warranty</a>
             @endif
             @if($productTabs->isNotEmpty())
                 @foreach($productTabs as $tab)

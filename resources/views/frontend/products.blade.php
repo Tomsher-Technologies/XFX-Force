@@ -17,7 +17,7 @@ Log::info($_REQUEST);
 	<div class="swiper cateswiper relative">
 		<div class="swiper-wrapper">
 			@php
-				$categoryList = !empty($categorySlider) && count($categorySlider) ? $categorySlider : $categories;
+				$categoryList = !empty($categorySlider) && count($categorySlider) ? $categorySlider : $categories->where('parent_id', 0);
 			@endphp
 
 			@foreach ($categoryList as $category)
@@ -562,7 +562,8 @@ Log::info($_REQUEST);
 
 		page = 1;
 		// document.getElementById('load-more-wrapper').style.display = 'block';
-		document.getElementById('product-loader').classList.remove('hidden');
+		// document.getElementById('product-loader').classList.remove('hidden');
+		showLoader();
 
 		const categories = Array.from(
 			document.querySelectorAll('input[name="categories[]"]:checked')
@@ -605,7 +606,8 @@ Log::info($_REQUEST);
 			})
 			.then(res => res.json())
 			.then(data => {
-				document.getElementById('product-loader').classList.add('hidden');
+				// document.getElementById('product-loader').classList.add('hidden');
+				
 				const wrapper = document.getElementById('product-list-wrapper');
 				
 				// Show / Hide load more
@@ -623,6 +625,9 @@ Log::info($_REQUEST);
 					wrapper.innerHTML = data.html;
 					loadMore.style.display = data.hasMore ? 'block' : 'none';
 				}
+
+				hideLoader();
+				
 				updateProductCount();
 
 				// Scroll
@@ -633,51 +638,6 @@ Log::info($_REQUEST);
 			})
 			.catch(err => console.error('Filter products error:', err));
 	}
-
-	/* CLEAR FILTER */
-	// document.addEventListener('DOMContentLoaded', () => {
-	// 	const clearBtn = document.getElementById('clear-filters');
-	// 	if (!clearBtn) return;
-
-	// 	clearBtn.addEventListener('click', () => {
-	// 		// Reset sliders and inputs
-	// 		const minSlider = document.querySelector('.range-min');
-	// 		const maxSlider = document.querySelector('.range-max');
-	// 		const minInput = document.querySelector('.min-price');
-	// 		const maxInput = document.querySelector('.max-price');
-	// 		if (minSlider && maxSlider && minInput && maxInput) {
-	// 			minSlider.value = 0;
-	// 			maxSlider.value = maxSlider.max;
-	// 			minInput.value = 0;
-	// 			maxInput.value = maxSlider.max;
-	// 		}
-
-	// 		// updateProgress(0, parseInt(maxSlider.max));
-	// 		 updateProgress(0, maxVal);
-
-	// 		// Uncheck all categories and brands
-	// 		document.querySelectorAll('input[name="categories[]"], input[name="brands[]"]').forEach(cb => cb.checked = false);
-	// 		selectedBrands = [];
-
-	// 		// Reset sort and view if desired
-	// 		currentSort = "newest";
-	// 		currentView = "gridview";
-
-	// 		filterProducts();
-	// 	});
-	// });
-
-	// function updateProgress(minVal, maxVal) {
-
-	// 	const progress = document.querySelector('.slider-progress');
-	// 	const maxPrice = 300000;
-	// 	const minPercent = (minVal / maxPrice) * 100;
-	// 	const maxPercent = 100 - (maxVal / maxPrice) * 100;
-		
-
-	// 	progress.style.left = minPercent + "%";
-	// 	progress.style.right = maxPercent + "%";
-	// }
 
 	document.addEventListener('DOMContentLoaded', () => {
 		const clearBtn = document.getElementById('clear-filters');
@@ -758,6 +718,7 @@ Log::info($_REQUEST);
 
 	document.addEventListener('DOMContentLoaded', () => {
 		filterProducts();
+		hideLoader();
 	});
 
 	// checkbox checked function in filter
@@ -858,5 +819,12 @@ Log::info($_REQUEST);
 		countEl.innerText = `Items 1-${visible} of ${total}`;
 	}
 
+	function showLoader() {
+		document.getElementById('global-loader').classList.remove('hidden');
+	}
+
+	function hideLoader() {
+		document.getElementById('global-loader').classList.add('hidden');
+	}
 </script>
 @endsection

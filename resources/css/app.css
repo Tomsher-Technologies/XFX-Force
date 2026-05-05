@@ -1128,6 +1128,10 @@ h1.about-title, h3.about-title{
 
 [x-cloak] { display: none !important; }
 
+.swal2-container {
+    z-index: 100000 !important;
+}
+
 /*===================================*/
 
 @media (min-width: 320px) and (max-width: 1280px) {
