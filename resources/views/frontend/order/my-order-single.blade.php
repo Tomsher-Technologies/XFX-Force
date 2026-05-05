@@ -59,7 +59,7 @@
 
                                 @if($canReturn)
                                 <div class="w-full xl:w-fit flex flex-col gap-2 flex-1">
-                                    <button id="openReturnBtn" class="bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all text-[13px] font-medium uppercase tracking-wider">
+                                    <button id="openReturnBtn" class="bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] transition-all text-[13px] font-medium uppercase tracking-wider">
                                         Return Order
                                     </button>
                                     <p class="text-[10px] text-gray-500 italic text-center lg:text-left">
@@ -69,7 +69,7 @@
                                 </div>
                                 @endif
 
-                                <button class="w-full cursor-pointer flex-1 bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all text-[13px] font-medium flex items-center justify-center gap-2 uppercase tracking-wider"  onclick="window.location ='{{ route('order-invoice.download', $order->id) }}'">
+                                <button class="w-full cursor-pointer flex-1 bg-[#282B34] border border-white/5 text-white px-6 py-4 rounded-xl hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] transition-all text-[13px] font-medium flex items-center justify-center gap-2 uppercase tracking-wider"  onclick="window.location ='{{ route('order-invoice.download', $order->id) }}'">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                     </svg>
@@ -173,7 +173,7 @@
                                     <div class="relative">
                                         <!-- Progress Line -->
                                         <div class="absolute top-0 md:top-5 left-[6%] md:left-[2%] md:w-[95%] md:h-[2px] w-[2px] h-[95%] bg-[#282B34]"></div>
-                                        <div class="absolute top-0 md:top-5 left-[6%] md:left-[2%] w-[2px] h-[95%] md:w-[95%] md:h-[2px] bg-[#2A7CFF]"
+                                        <div class="absolute top-0 md:top-5 left-[6%] md:left-[2%] w-[2px] h-[95%] md:w-[95%] md:h-[2px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]"
                                             style="@media (max-width: 767px) { height: {{ ($currentIndex / (count($steps)-1)) * 100 }}%; }
                                                     @media (min-width: 768px) { width: {{ ($currentIndex / (count($steps)-1)) * 100 }}%; height: 100%; }">
                                         </div>
@@ -188,7 +188,7 @@
                                                 <div class="flex flex-row md:flex-col items-start md:items-center gap-4 md:gap-2 {{ $isPending ? 'opacity-30' : '' }}">
                                                     <!-- Icon -->
                                                     <div class="w-10 h-10 rounded-full flex items-center justify-center z-10 border-4 border-[#1C2228]
-                                                            {{ $isCompleted ? 'bg-green-500' : ($isCurrent ? 'bg-[#2A7CFF]' : 'bg-[#282B34]') }}">
+                                                            {{ $isCompleted ? 'bg-green-500' : ($isCurrent ? 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]' : 'bg-[#282B34]') }}">
 
                                                         @if($isCompleted)
                                                         ✔
@@ -287,7 +287,7 @@
                                                         <p class="text-gray-500 text-xs mt-1 text-center md:text-left cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                             {{ $item->product_stock->stock_title  ?? '' }}
                                                         </p>
-                                                        <p class="text-[10px] text-[#ffffff50] text-center xl:text-left"> 
+                                                        <p class="text-[10px] text-[#ffffff50] text-center md:text-left"> 
                                                             @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
                                                                 <span class="text-gray-400 text-sm">
                                                                     
@@ -397,7 +397,7 @@
                                                             @endif
                                                         </p>
 
-                                                        <div class="flex items-center justify-center md:justify-start my-2">
+                                                        <div class="flex flex-col items-center md:items-start justify-center md:justify-start my-2">
                                                             @if($totalPendingQty > 0)
                                                                 <button onclick="openStatusModal()" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-yellow-500/5 border border-yellow-500/20 rounded-full hover:bg-yellow-500 transition-all duration-[600ms] group/btn">
                                                                     <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
@@ -490,7 +490,7 @@
                                                     @if(!in_array($item->product->id, $userReviews) && $order->delivery_status == 'delivered')
                                                     <div class="w-[250px] flex justify-center">
                                                         <button onclick="openReviewModal({{ $index }})"
-                                                        class="px-4 py-2 text-xs border border-[#2A7CFF] text-[#2A7CFF] rounded-lg hover:bg-[#2A7CFF] hover:text-white">
+                                                        class="px-4 py-2 text-xs border border-[#2A7CFF] text-[#2A7CFF] rounded-lg hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white">
                                                         Add Review
                                                         </button>
                                                     </div>
@@ -562,7 +562,7 @@
                                                                     </div>
                                                                     <textarea name="comment" rows="4" placeholder="Share your experience..." class="w-full bg-white/5 border border-white/10 rounded-[10px] p-4 text-white text-sm focus:border-blue-500 outline-none resize-none" required></textarea>
                                                                     
-                                                                    <button type="submit" class="w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer">
+                                                                    <button type="submit" class="w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-600 text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white cursor-pointer">
                                                                         Submit Review
                                                                     </button>
                                                                 </form>
@@ -806,7 +806,7 @@
                     <label class="group flex items-center gap-5 bg-[#0f161b] p-4 rounded-[15px] border border-white/5 cursor-pointer hover:border-[#2A7CFF]/30 transition-all">
                         <label class="relative flex items-center justify-center cursor-pointer">
                             <input type="checkbox" class="return-checkbox peer hidden" data-detail-id="{{ $detail->id }}" data-max-qty="{{ $detail->quantity }}">
-                            <div class="w-6 h-6 border-2 border-gray-700 rounded-md peer-checked:bg-[#2A7CFF] peer-checked:border-[#2A7CFF] transition-all flex items-center justify-center">
+                            <div class="w-6 h-6 border-2 border-gray-700 rounded-md peer-checked:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] peer-checked:border-[#2A7CFF] transition-all flex items-center justify-center">
                                 <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none size-3.5 stroke-white opacity-0 transition-opacity">
                                     <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                 </svg>
@@ -855,7 +855,7 @@
                 <button id="cancelModalBtn" class="flex w-full cursor-pointer items-center justify-center gap-3 px-6 py-4 rounded-xl border border-[#2E363E] text-gray-400 font-medium uppercase text-[13px] hover:bg-[#252C33] hover:text-white transition-all duration-300 group">
                     Cancel
                 </button>
-                <button class="w-full flex py-4 rounded-xl bg-[#2A7CFF] text-center justify-center text-white hover:bg-[#1d69e4] shadow-lg shadow-[#2A7CFF]/20 transition-all text-sm font-medium uppercase cursor-pointer" type="submit">
+                <button class="w-full flex py-4 rounded-xl bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-center justify-center text-white hover:bg-[#1d69e4] shadow-lg shadow-[#2A7CFF]/20 transition-all text-sm font-medium uppercase cursor-pointer" type="submit">
                     Submit
                 </button>
             </div>
@@ -1060,13 +1060,13 @@
 
                 // Reset all buttons in this group
                 siblingButtons.forEach(s => {
-                    s.classList.remove('active', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'border-1');
+                    s.classList.remove('active', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'border-1');
                     s.classList.add('border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'border');
                     s.classList.remove('text-white', 'font-bold');
                 });
 
                 // Set active state for clicked button
-                btn.classList.add('active', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'border-1');
+                btn.classList.add('active', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'border-1');
                 btn.classList.remove('border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'border');
                 btn.classList.add('text-white', 'font-bold');
 

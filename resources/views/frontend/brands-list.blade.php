@@ -22,7 +22,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </span>
-                    <input type="text" id="brand-search" placeholder="Search your brand here" class="w-full bg-transparent text-white text-sm py-4 !focus:outline-none !outline-none border-none placeholder:text-gray-600">
+                    <input type="text" id="brand-search" placeholder="Search your brand here" class="w-full bg-transparent text-white text-sm py-4 !focus:outline-none !outline-none border-none placeholder:text-gray-600 !ring-0">
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
         <div id="brand-grid" class="grid grid-cols-2 md:grid-cols-4 divide-x-1 divide-[#1E2529]">
             @foreach($brands as $brand)
                 <div class="brand-item w-full cursor-pointer group p-4 transition-all flex items-center min-h-[200px] border border-[#1E2529] hover:bg-[#1E2529]/30 group" data-name="{{ $brand->name }}'" onclick="window.location='{{ route('shop.brand', $brand->slug) }}'">
-                    <img src="{{ $brand->logo ? Storage::url($brand->logo) : asset('assets/img/placeholder.jpg') }}" class="m-auto opacity-[0.5] group-hover:opacity-[1] transition-all duration-600 w-[55%] grayscale group-hover:grayscale-0 transition duration-[600ms]" title="{{ $brand->name }}" alt="{{ $brand->name }}">
+                    <img src="{{ $brand->logo ? Storage::url($brand->logo) : asset('assets/img/placeholder.jpg') }}" class="m-auto opacity-[0.5] group-hover:opacity-[1] transition-all duration-600 w-[55%] transition duration-[600ms]" title="{{ $brand->name }}" alt="{{ $brand->name }}">
                 </div>
             @endforeach
             

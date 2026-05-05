@@ -175,9 +175,7 @@
             @endphp
 
             <!-- rating -->
-            <a href="javascript:void(0)" 
-            onclick="window.dispatchEvent(new CustomEvent('open-reviews-tab'));" 
-            class="flex items-center gap-[8px] my-2 justify-center xl:justify-start">
+            <a class="flex items-center gap-[8px] my-2 justify-center xl:justify-start">
 
                 <div class="flex items-center gap-[2px]">
 
@@ -268,7 +266,7 @@
 
                                     // Active logic: exact match with selected SKU
                                     $isActive = isset($selectedLevelValues[$attrId]) && $selectedLevelValues[$attrId] == $valueId
-                                                ? 'active border-1 border-[#2A7CFF] bg-[#2A7CFF]/10 text-white font-medium'
+                                                ? 'active border-1 border-[#2A7CFF] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10 text-white font-medium'
                                                 : '';
 
                                     $btnClass = $isEnabled
@@ -318,7 +316,7 @@
                             </span>
                         </button>
                         <input type="number" value="{{ $cartQty }}" readonly class="qty-input w-full h-full text-center bg-[#282B34] text-white font-medium focus:outline-none text-[15px] p-[10px] rounded-lg border border-none">
-                        <button onclick="updateMultiQty(this, 1)" class="w-full h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg transition-all active:scale-90">
+                        <button onclick="updateMultiQty(this, 1)" class="w-full h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg transition-all active:scale-90">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 4v16m8-8H4" />
                             </svg>
@@ -327,11 +325,11 @@
                     <!--//counter-->
                     
                     <!-- Add to cart button -->
-                    <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[20px] py-[10px] rounded-[10px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer {{ ($cartQty == 0 && $cartQty < $firstStock->qty) ? '' : 'hidden' }}"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
+                    <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[20px] py-[10px] rounded-[10px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-600 text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white cursor-pointer {{ ($cartQty == 0 && $cartQty < $firstStock->qty) ? '' : 'hidden' }}"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
                         
                     
                     <!-- Buy now button -->
-                    <button onclick="buyNow(this)" class="buy-now w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[20px] py-[10px] rounded-[10px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer {{ ($cartQty < $firstStock->qty) ? '' : 'hidden' }}">Buy Now</button>
+                    <button onclick="buyNow(this)" class="buy-now w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[20px] py-[10px] rounded-[10px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-600 text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white cursor-pointer {{ ($cartQty < $firstStock->qty) ? '' : 'hidden' }}">Buy Now</button>
 
                     <!-- Wishlist button -->
                     

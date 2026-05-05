@@ -52,7 +52,7 @@
 
                 @for ($page = $startPage; $page <= $endPage; $page++)
                     @if ($page == $currentPage)
-                        <span aria-current="page" class="inline-flex h-10 min-w-[40px] items-center justify-center rounded-xl border border-[#2A7CFF] bg-[#2A7CFF] px-3 py-2 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(42,124,255,0.15)] sm:min-w-[42px] sm:px-4">
+                        <span aria-current="page" class="inline-flex h-10 min-w-[40px] items-center justify-center rounded-xl border border-[#2A7CFF] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] px-3 py-2 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(42,124,255,0.15)] sm:min-w-[42px] sm:px-4">
                             {{ $page }}
                         </span>
                     @else

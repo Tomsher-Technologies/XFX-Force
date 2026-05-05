@@ -86,7 +86,7 @@
                 $firstStock = $product->stocks->first();
                 $cartQty = \App\Models\Cart::where('product_stock_id', $prodData['stock_id'])->sum('quantity');
             @endphp
-            <div class="flex flex-row justify-between items-center">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center">
                 <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[18px] leading-[20px] m-[0] font-bold align-center items-center gap-[5px]">
                     <svg width="15px" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 13"><path d="M1.3 0v.1q.5.4.6 1.3v3.2H.7L0 4.2v.7l.3.5.6.4H2v1.3H.4l-.3-.2-.1-.1v.7q.3.7 1 1h1v1.3l-.1 1.9q-.2.8-.5 1.2H8a7 7 0 0 0 2.2-.9h.2l.3-.2.1-.1a5 5 0 0 0 2-3.2h1.8l.3.2q.1.3.1-.2v-.3l-.1-.3q-.3-.6-.7-.7H13V5.8h1.4q.3 0 .5.2l.1.1v-.8q-.3-.5-.7-.7l-.9-.1h-.6v-.3A6 6 0 0 0 10.2 1l-.1-.1-.7-.3q-1-.4-2-.5H1.2m5 .7 1.2.1a4 4 0 0 1 2.7 2.4l.3 1v.2l.1.1H3.9v-4h2.4m4.4 5.2V7H4V6h6.8m-.1 2.6-.1.5-.7 1.5a4 4 0 0 1-2 1.5l-1.3.3H4v-4h6.7" fill="#2a7cff"/></svg>
                     
@@ -97,7 +97,7 @@
                 </h5>
                 
                 
-                <div class="flex justify-center items-center gap-2 px-4 py-2 align-center {{ ($firstStock->qty == 0 || $cartQty > $firstStock->qty) ? '' : '!hidden' }}" >
+                <div class="flex justify-center items-center gap-2 px-0 lg:px-4 py-2 xl:py-0 align-center {{ ($firstStock->qty == 0 || $cartQty > $firstStock->qty) ? '' : '!hidden' }}" >
                     <span class="relative flex h-2 w-2" >
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-[#c0392b]"></span>
@@ -105,8 +105,7 @@
                     <span class="text-[#e74c3c] text-[10px] font-medium uppercase tracking-wider">Out of Stock</span>
                 </div>
             </div>
-            <a href="{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}"
-                class="prd-card-btn w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hidden md:block">View Details</a>
+            <a href="{{ $stock ? route('product.details', ['slug' => $product->slug, 'sku' => $stock->sku]) : '#' }}" class="prd-card-btn w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hidden md:block">View Details</a>
         </div>
 
     </div>

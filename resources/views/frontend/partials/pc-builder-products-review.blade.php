@@ -1,4 +1,4 @@
-<div class="sticky top-0 bg-[#1C2228] border border-[#1E2529] p-[15px] md:p-[30px] rounded-[20px] flex flex-col justify-between group transition-all gap-[30px] z-[1]">
+<div class="relative lg:sticky top-0 bg-[#1C2228] border border-[#1E2529] p-[15px] md:p-[30px] rounded-[20px] flex flex-col justify-between group transition-all gap-[30px] z-[1]">
     <div class="flex flex-col md:flex-row justify-between w-full gap-[15px] md:gap-[0px]">
         <div class="flex flex-col gap-[5px] w-full">
             <h2 class="text-white text-[20px] font-medium">Complete Your Order</h2>
@@ -14,7 +14,7 @@
         </div>
     </div>
 </div>
-<div class="p-[30px] min-w-0 overflow-x-hidden relative z-[0] bg-[#1C2228] rounded-[20px] mt-[30px]">
+<div class="p-[30px] min-w-0 overflow-x-hidden relative z-[0] bg-[#1C2228] rounded-[20px] mt-[15px]">
     <div class="flex flex-col gap-[5px] w-full">
         <h2 class="text-white text-[20px] font-medium">Selected Items</h2>
         <p class="text-gray-500 text-[15px]">Review your selected items</p>
@@ -95,7 +95,7 @@
 
                     <input type="number" value="{{ $item['quantity'] }}" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-medium rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none">
 
-                    <button onclick="updateBuilderItemQty(this,1,'review')" class="cursor-pointer flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg transition-all active:scale-90">
+                    <button onclick="updateBuilderItemQty(this,1,'review')" class="cursor-pointer flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg transition-all active:scale-90">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
                         </svg>
@@ -118,7 +118,8 @@
                 </h6>
                 @endif
             </div>
-            <div class="col-span-6 md:col-span-2 flex flex-col">
+
+            <div class="col-span-6 md:col-span-3 flex flex-col">
                 <div class="price w-full flex flex-row items-center gap-[15px]">
                     <h5 class="price flex flex-row text-white text-left text-[15px] m-[0] font-medium align-center items-center gap-[10px]">
                         <svg class="w-[15px]" width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -128,6 +129,7 @@
                     </h5>
                 </div>
             </div>
+
             <div class="col-span-12 md:col-span-1 flex justify-end w-full">
                 <button onclick="editBuilderCategory(this)" data-category-id="{{ $item['category_id'] }}" class="flex w-full md:w-fit cursor-pointer items-center justify-center gap-3 px-4 py-4 rounded-xl border border-[#2E363E] text-gray-400 font-medium uppercase text-[13px] hover:bg-[#252C33] hover:text-white transition-all duration-300 group" fdprocessedid="x22w2b">
                     <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">

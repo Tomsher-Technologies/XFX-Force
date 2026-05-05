@@ -8,7 +8,7 @@ $hideFooter = true;
 @endphp
 
 
-<section class="m-[16px] xl:m-0 bg-[#0F161B] h-screen p-[0px] xl:p-[15px] flex flex-col overflow-x-hidden">
+<section class="m-[16px] xl:m-0 bg-[#0F161B] h-full xl:h-screen p-[0px] xl:p-[15px] flex flex-col overflow-x-hidden">
     <main class="grid grid-cols-1 xl:grid-cols-12 h-full xl:h-[calc(100vh-15px)] overflow-y-auto rounded-[20px] custom-scrollbar">
 
         <!--left sidebar-->
@@ -104,7 +104,7 @@ $hideFooter = true;
                             </svg>
                             <span>Previous</span>
                         </button>
-                        <button id="next-btn" onclick="handleNextStep()" class="flex w-full md:w-fit cursor-pointer items-center justify-center gap-3 px-5 py-3 rounded-xl bg-[#2A7CFF] text-white font-medium uppercase text-[13px] hover:bg-[#3E81FF] transition-all duration-[600ms] group">
+                        <button id="next-btn" onclick="handleNextStep()" class="flex w-full md:w-fit cursor-pointer items-center justify-center gap-3 px-5 py-3 rounded-xl bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-white font-medium uppercase text-[13px] hover:bg-[#3E81FF] transition-all duration-[600ms] group">
                             <span>Next</span>
                             <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M7.293 6.707C7.29346 6.96961 7.24201 7.22972 7.14162 7.47238C7.04122 7.71505 6.89386 7.93547 6.708 8.121L1.414 13.414L0 12L5.293 6.707L0 1.414L1.414 -9.53674e-07L6.707 5.293C6.89304 5.47845 7.04059 5.69884 7.14115 5.9415C7.24172 6.18417 7.29333 6.44432 7.293 6.707Z" fill="white" />
@@ -134,11 +134,11 @@ $hideFooter = true;
                         <div id="brand-menu" class="hidden absolute top-[70px] left-0 w-64 bg-[#1C2228] border border-[#1E2529] rounded-xl shadow-2xl z-50 p-2">
                             <a href="javascript:void(0)" 
                             onclick="selectOption('brand', 'All', '0')" 
-                            class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">
+                            class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg text-sm">
                             All Brands
                             </a>
                             @foreach ($brands as $brand)
-                                <a href="javascript:void(0)" onclick="selectOption('brand', '{{ $brand->name }}', '{{ $brand->id }}')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm transition-all">{{ $brand->name }}</a>
+                                <a href="javascript:void(0)" onclick="selectOption('brand', '{{ $brand->name }}', '{{ $brand->id }}')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg text-sm transition-all">{{ $brand->name }}</a>
                             @endforeach
                         </div>
                     </div>
@@ -152,8 +152,8 @@ $hideFooter = true;
                         </button>
 
                         <div id="model-menu" class="hidden absolute top-[70px] left-0 w-64 bg-[#1C2228] border border-[#1E2529] rounded-xl shadow-2xl z-50 p-2">
-                            <!-- <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4090')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">RTX 4090</a>
-                            <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4080')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">RTX 4080</a> -->
+                            <!-- <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4090')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg text-sm">RTX 4090</a>
+                            <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4080')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg text-sm">RTX 4080</a> -->
                         </div>
                     </div>
 
@@ -214,7 +214,7 @@ $hideFooter = true;
         <!--//middle section-->
 
         <!--middle section (review)-->
-        <section class="hidden col-span-7 h-[calc(100vh-30px)] md:h-full xl:h-[calc(100vh-30px)] overflow-y-auto no-scrollbar overflow-x-hidden px-[0px] xl:px-[15px] pb-[30px] xl:pb-0" id="products-review-page">
+        <section class="hidden col-span-7 h-[calc(100vh-30px)] md:h-full xl:h-[calc(100vh-60px)] overflow-y-auto no-scrollbar overflow-x-hidden px-[0px] xl:px-[15px] pb-[15px] xl:pb-0" id="products-review-page">
         
             @include('frontend.partials.pc-builder-products-review', ['reviewProducts' => $reviewProducts['products'] ?? []])
         </section>
@@ -245,7 +245,7 @@ $hideFooter = true;
         <!--//right sidebar-->
 
         <!--summary right sidebar-->
-        <aside id="summary-sidebar" class="hidden relative xl:fixed mb-[100px] pointer-events-none transition-all duration-300 xl:translate-y-0 xl:opacity-100 xl:pointer-events-auto xl:relative xl:inset-0 xl:z-auto xl:col-span-3 bg-[#1C2228] border border-[#1E2529] rounded-[20px] flex flex-col shadow-2xl h-fit overflow-hidden">
+        <aside id="summary-sidebar" class="hidden relative xl:fixed mb-[100px] transition-all duration-300 xl:translate-y-0 xl:opacity-100 xl:pointer-events-auto xl:relative xl:inset-0 xl:z-auto xl:col-span-3 bg-[#1C2228] border border-[#1E2529] rounded-[20px] flex flex-col shadow-2xl h-fit overflow-hidden">
             <div class="flex flex-row justify-between items-center p-[20px] md:p-[30px] border-b border-[#2E363E] flex-shrink-0">
                 <div>
                     <h2 class="text-white text-[20px] leading-[30px] font-medium">Summary</h2>
@@ -320,8 +320,8 @@ $hideFooter = true;
 
         <!--mobile navigation-->
         <!--navigation menu-->
-        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[92%] md:block xl:hidden">
-            <div class="bg-[#1E2225]/90 backdrop-blur-lg border border-white/10 rounded-[10px] shadow-2xl grid grid-cols-4 h-[70px]">
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 z-[100] w-full md:block xl:hidden">
+            <div class="bg-[#1E2225] border border-white/10 hadow-2xl grid grid-cols-4 h-[70px]">
                 <button onclick="toggleCategorySidebar(event)" class="flex flex-col items-center justify-center gap-1 text-gray-400 border-r border-white/5">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M3 12h18M3 6h18M3 18h18" />
@@ -427,7 +427,7 @@ $hideFooter = true;
                         </div>
                     </div>
 
-                    <button onclick="applyMobileFilters()" class="w-full bg-[#2A7CFF] py-5 rounded-2xl font-medium text-white text-[14px] uppercase mt-6 pointer-events-auto">
+                    <button onclick="applyMobileFilters()" class="w-full bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] py-5 rounded-2xl font-medium text-white text-[14px] uppercase mt-6 pointer-events-auto">
                         Apply Filters
                     </button>
                 </div>
@@ -442,7 +442,7 @@ $hideFooter = true;
                 <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-6"></div>
                 <h4 class="text-white font-medium text-lg mb-6 text-center">Search your item here</h4>
                 <input type="text" placeholder="Search..." class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none mb-4" id="mobile-search-input">
-                <button onclick="applyMobileSearch()" class="w-full bg-[#2A7CFF] py-4 rounded-xl font-medium text-white text-[14px] uppercase">Search Now</button>
+                <button onclick="applyMobileSearch()" class="w-full bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] py-4 rounded-xl font-medium text-white text-[14px] uppercase">Search Now</button>
             </div>
         </div>
         <!--//mobile search-->
@@ -689,7 +689,7 @@ $hideFooter = true;
 
                     let html = `<a href="javascript:void(0)" 
                         onclick="selectOption('model', 'All')"
-                        class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">
+                        class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg text-sm">
                         All Models
                     </a>`;
 
@@ -697,7 +697,7 @@ $hideFooter = true;
                         html += `
                             <a href="javascript:void(0)" 
                             onclick="selectOption('model', '${model}', '${brandId}')"
-                            class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg text-sm">
+                            class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg text-sm">
                                 ${model}
                             </a>`;
                     });
