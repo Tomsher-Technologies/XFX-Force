@@ -652,6 +652,7 @@ $hideFooter = true;
         }
 
         // product search text
+        let productSearchController = null;
         document.getElementById('product-search').addEventListener('keyup', function () {
             const search = this.value;
             const brandId = document.getElementById('brand-label').dataset.id || 0;
@@ -674,7 +675,25 @@ $hideFooter = true;
             currentModel = model;
             currentSearch = search;
             currentSort = sort;
-            loadProducts(categoryId, brandId, model, search, sort, 1);
+            
+            // cancel previous request
+            if (productSearchController) {
+                productSearchController.abort();
+            }
+
+            // create new controller
+            productSearchController = new AbortController();
+
+            loadProducts(
+                categoryId,
+                brandId,
+                model,
+                search,
+                sort,
+                1,
+                productSearchController.signal
+            );
+            // loadProducts(categoryId, brandId, model, search, sort, 1);
         });
 
         function loadModels(brandId, categoryId) {
@@ -815,9 +834,11 @@ $hideFooter = true;
     }
 
     // Load products when clicking on category
-    function loadProducts(categoryId, brandId, model = "", search = "", sort = "", page = 1) {
+    function loadProducts(categoryId, brandId, model = "", search = "", sort = "", page = 1, signal = null) {
         const productsList = document.getElementById('products-list');
         const loader = document.getElementById('products-loader');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        loadMoreBtn.style.display = 'none';
 
         if (page == 1) {
             productsList.innerHTML = '';
@@ -830,7 +851,7 @@ $hideFooter = true;
             + `&sort=${encodeURIComponent(sort)}`
             + `&page=${page}`;
 
-        fetch(url)
+        fetch(url,{ signal })
             .then(res => res.json())
             .then(data => {
 
@@ -860,7 +881,6 @@ $hideFooter = true;
                 window.nextPage = data.next_page;
 
                 // handle Load More button
-                const loadMoreBtn = document.getElementById('load-more-btn');
                 if (loadMoreBtn) {
                     if (data.next_page) {
                         loadMoreBtn.style.display = 'inline-block';

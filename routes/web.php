@@ -127,3 +127,7 @@ Route::group(['middleware' => ['auth:frontend']], function () {
 
     Route::post('/review/store', [ReviewController::class, 'store'])->name('reviews.save');
 });
+
+Route::fallback(function () {
+    return response()->view('frontend.errors.404', [], 404);
+});
