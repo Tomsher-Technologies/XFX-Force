@@ -151,7 +151,7 @@ $hideFooter = true;
                             </svg>
                         </button>
 
-                        <div id="model-menu" class="hidden absolute top-[70px] left-0 w-64 bg-[#1C2228] border border-[#1E2529] rounded-xl shadow-2xl z-50 p-2">
+                        <div id="model-menu" class="hidden absolute top-[70px] left-0 w-64 h-80 overflow-y-auto bg-[#1C2228] border border-[#1E2529] rounded-xl shadow-2xl z-50 p-2">
                             <!-- <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4090')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg text-sm">RTX 4090</a>
                             <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4080')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg text-sm">RTX 4080</a> -->
                         </div>
@@ -170,7 +170,7 @@ $hideFooter = true;
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                                 <path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M2 14h4m4-6h4m4 8h4" />
                             </svg>
-                            Sort by
+                            Sort
                         </button>
 
                         <div id="mega-menu" class="hidden absolute top-[70px] right-0 w-auto bg-[#1C2228] border border-[#1E2529] rounded-[20px] shadow-2xl z-50 p-8">
