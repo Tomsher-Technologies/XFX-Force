@@ -46,6 +46,7 @@
     <main class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px]">
         <div class="flex flex-col xl:grid xl:grid-cols-4 xl:gap-[50px]">
             <div>
+
                 <div id="filter-wrapper">
                     <form class="hidden xl:block">
                         <button id="clear-filters" 
@@ -82,7 +83,7 @@
                                                 </svg>
                                             </span>
                                             
-                                            <input type="text" id="category-search" placeholder="Search Category" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
+                                            <input type="text" id="category-search" placeholder="Search Category" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[10px] outline-none transition-all border-none">
                                         </div>
                                         @endif
 
@@ -97,7 +98,7 @@
                                                             type="checkbox" 
                                                             name="categories[]" 
                                                             value="{{ $category->id }}" 
-                                                            class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" 
+                                                            class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200" 
                                                             id="filter-category-{{ $category->id }}"
                                                             checked
                                                             data-child-ids="{{ $category->childs->pluck('id')->implode(',') }}"
@@ -128,7 +129,7 @@
                                                 <div class="flex gap-[10px] items-center category-item" data-name="{{ $child->category_translations->first()->name ?? $child->name }}" style="padding-left: {{ $padding }}px;">
                                                     <div class="flex h-5 shrink-0 items-center">
                                                         <div class="group grid size-4 grid-cols-1 w-full">
-                                                            <input type="checkbox" name="categories[]" value="{{ $child->id }}" class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-category-{{ $child->id }}" checked>
+                                                            <input type="checkbox" name="categories[]" value="{{ $child->id }}" class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200" id="filter-category-{{ $child->id }}" checked>
                                                         </div>
                                                     </div>
                                                     <label for="filter-category-{{ $child->id }}" class="relative top-[5px] text-[15px] text-white">
@@ -142,7 +143,7 @@
                                             <div class="flex gap-[15px] items-center category-item" data-name="{{ $category->name }}">
                                                 <div class="flex h-5 shrink-0 items-center">
                                                     <div class="group grid size-4 grid-cols-1 w-full">
-                                                        <input type="checkbox" name="categories[]" value="{{ $category->id }}" class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-category-{{ $category->id }}" checked style="pointer-events: none;">
+                                                        <input type="checkbox" name="categories[]" value="{{ $category->id }}" class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200" id="filter-category-{{ $category->id }}" checked style="pointer-events: none;">
                                                     </div>
                                                 </div>
                                                 <label for="filter-category-{{ $category->id }}" class="relative top-[5px] text-[15px] text-white">
@@ -176,14 +177,14 @@
                                     <div class="flex justify-between items-center mb-8 gap-[20px] align-center">
                                         <div class="w-full">
                                             <span class="text-gray-400 text-xs block mb-2">Min</span>
-                                            <div class="bg-[#282B34] rounded-[10px] border border-white/5 w-full price-input-box">
+                                            <div class="bg-[#282B34] rounded-[10px] w-full price-input-box">
                                                 <input type="number" class="min-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none border-0" value="0" min="0" max="300000" step="100">
                                             </div>
                                         </div>
                                         <div class="h-[1px] w-4 bg-gray-600"></div>
                                         <div class="w-full">
                                             <span class="text-gray-400 text-xs block mb-2 text-right">Max</span>
-                                            <div class="bg-[#282B34] rounded-[10px] border border-white/5 text-right w-full price-input-box">
+                                            <div class="bg-[#282B34] rounded-[10px] w-full price-input-box">
                                                 <input type="number" class="max-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none text-right border-0" value="300000" min="0" max="300000" step="100">
                                             </div>
                                         </div>
@@ -222,7 +223,7 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                                 </svg>
                                             </span>
-                                            <input type="text" id="brand-search" placeholder="Search brands (e.g. Nvidia)" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
+                                            <input type="text" id="brand-search" placeholder="Search brands (e.g. Nvidia)" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[10px] outline-none transition-all border-none">
                                         </div>
                                     
                                         @if(!empty($brands))
@@ -230,7 +231,7 @@
                                         <div class="flex gap-[15px] align-center items-center brand-item" data-name="{{$brand->name}}">
                                             <div class="flex h-5 shrink-0 items-center">
                                                 <div class="group grid size-4 grid-cols-1 w-full">
-                                                    <input id="filter-brand-{{ $brand->id }}" type="checkbox" name="brands[]" value="{{$brand->id}}" class="h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7] indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
+                                                    <input id="filter-brand-{{ $brand->id }}" type="checkbox" name="brands[]" value="{{$brand->id}}" class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200" />
                                                     <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
                                                         <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
                                                         <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
@@ -285,7 +286,7 @@
                       @endif
                     </span>
                     <div class="flex flex-col xl:flex-row items-center gap-[15px] xl:gap-[20px] justify-end w-full">
-                        <el-dropdown class="relative block text-left w-full xl:w-[230px]">
+                        <el-dropdown class="relative block text-left w-full">
                             <button class="group flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white !w-full">
                                 <span class="mr-[10px] text-[14px] text-[#898989]">Sort by:
                                     @switch($sort)

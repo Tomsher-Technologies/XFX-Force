@@ -464,7 +464,7 @@
         })
      ">
     <nav class="sticky top-[79px] md:top-[148px] z-50 w-full border-b border-gray-800 bg-[#0F151D] backdrop-blur-md">
-        <div class="max-w-6xl mx-auto flex overflow-x-auto no-scrollbar whitespace-nowrap px-4 justify-start md:justify-center" id="tabs-section">
+        <div class="w-full flex overflow-x-auto no-scrollbar whitespace-nowrap px-4 justify-start md:justify-center" id="tabs-section">
             @if(!empty($cleanOverview))
                 <a href="javascript:void(0)" @click="activeTab='overview'" :class="activeTab === 'overview' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Overview</a>
             @endif
