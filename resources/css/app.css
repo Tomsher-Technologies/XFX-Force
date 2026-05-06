@@ -122,15 +122,28 @@ h3 {
 }
 
 
-.swiper-button-next,
-.swiper-container-rtl .swiper-button-prev {
+.swiper-button-next-new, .swiper-button-next-pop {
   left: auto;
   background-image: url("public/assets/images/arrow-right.svg");
+  background-repeat: no-repeat !important;
+  background-position: center center;
 }
-.swiper-button-prev,
-.swiper-container-rtl .swiper-button-next {
+.swiper-button-prev-new, .swiper-button-prev-pop {
   right: auto;
   background-image: url("public/assets/images/arrow-left.svg");
+  background-repeat: no-repeat !important;
+  background-position: center center;
+}
+
+.swiper-pagination-horizontal.swiper-pagination-bullets.swiper-pagination-bullets-dynamic{
+    left: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    bottom: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    padding: 0;
 }
 
 /* landing banner */
@@ -1128,6 +1141,12 @@ h1.about-title, h3.about-title{
 
 [x-cloak] { display: none !important; }
 
+/* Force buttons to stay active */
+.swiper-button-disabled {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
 .swal2-container {
     z-index: 100000 !important;
 }
