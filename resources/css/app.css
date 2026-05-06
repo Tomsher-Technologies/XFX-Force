@@ -124,13 +124,13 @@ h3 {
 
 .swiper-button-next-new, .swiper-button-next-pop {
   left: auto;
-  background-image: url("public/assets/images/arrow-right.svg");
+  background-image: url("../../public/assets/images/arrow-right.svg");
   background-repeat: no-repeat !important;
   background-position: center center;
 }
 .swiper-button-prev-new, .swiper-button-prev-pop {
   right: auto;
-  background-image: url("public/assets/images/arrow-left.svg");
+  background-image: url("../../public/assets/images/arrow-left.svg");
   background-repeat: no-repeat !important;
   background-position: center center;
 }
