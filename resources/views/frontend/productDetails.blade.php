@@ -239,6 +239,7 @@
             
 
             <!--varients-->
+            @if($groupedAttributes->isNotEmpty())
             <div class="flex flex-col gap-[30px] md:gap-6 text-center md:text-left border-t md:border-t-0 border-[#ffffff30] mt-[30px] md:mt-[0px] py-[30px] md:py-[0px]">
                 @foreach($groupedAttributes as $attributeName => $attrRows)                
                     @php
@@ -300,6 +301,7 @@
                     </div>
                 @endforeach
             </div>
+            @endif
             <!--//varients-->
             <div id="price-btn-block" class="flex flex-col md:flex-row gap-[30px] border-y border-[#ffffff30] py-[30px] w-full justify-between flex-end items-center md:items-end">
                 <div>
@@ -521,9 +523,6 @@
         @if($productWarrantis->isNotEmpty())
          <section x-show="activeTab === 'services'" x-transition class="tab-panel" id="services" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px]">
             <div class="mt-[40px]">
-                <div class="title flex flex-row gap-[20px] w-full mb-[20px]">
-                    <h5 class="text-[15px] text-[#636671] uppercase"> Warranty</h5>
-                </div>
                 <div class="value w-full">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                         @foreach ($productWarrantis as $warranty)
