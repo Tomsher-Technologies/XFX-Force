@@ -154,7 +154,7 @@
                                                 
                                                 <p class="text-gray-500 text-xs mt-1">{{ $item->product_stock->stock_title ?? '' }}</p>
 
-                                                <p class="text-[10px] text-[#ffffff50] text-center xl:text-left"> 
+                                                <p class="text-[10px] text-[#ffffff50] text-left"> 
                                                     @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
                                                         <span class="text-gray-400 text-sm">
                                                             

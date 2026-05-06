@@ -4,9 +4,9 @@
 
 @section('content')
 
-<section class="bg-[#0F161B] w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[100px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px]">
+<section class="bg-[#0F161B] w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px]">
     <div class="text-white">
-        <div class="w-full mx-auto flex flex-col xl:flex-row gap-[20px] md:gap-[50px] border-t border-[#252b31] pt-0 xl:pt-[80px]">
+        <div class="w-full mx-auto flex flex-col xl:flex-row gap-[20px] md:gap-[50px] border-0 xl:border-t border-[#252b31] pt-0 xl:pt-[80px]">
             
             @include('frontend.layouts.sidebar')
 
@@ -14,8 +14,8 @@
                     <div>
                         <div class="flex flex-row justify-between items-center mb-10 pb-[30px] gap-4 border-b border-[#252B31]">
                             <div class="w-full">
-                                <h2 class="text-[18px] md:text-[20px] font-medium mb-1 md:mb-2 text-white uppercase">Notifications</h2>
-                                <p class="text-gray-500 text-[12px] md:text-base">Stay updated with your order status and exclusive tech deals.</p>
+                                <h2 class="text-[18px] md:text-[20px] font-medium mb-1 md:mb-2 text-white uppercase text-center xl:text-left">Notifications</h2>
+                                <p class="text-gray-500 text-[12px] md:text-base text-center xl:text-left">Stay updated with your order status and exclusive tech deals.</p>
                             </div>
                             <div class="flex-shrink-0">
                                 <!-- <button class="text-[10px] md:text-[12px] text-gray-400 hover:text-white transition-colors uppercase tracking-wider cursor-pointer font-bold">Mark all as read</button> -->
@@ -160,7 +160,7 @@
                         </div>
                     </div>
                     @if($notifications->hasPages())
-                        <div class="mt-8 md:mt-10">
+                        <div class="mt-8 md:mt-10 w-full flex justify-center text-center">
                             {{ $notifications->links('vendor.pagination.frontend-dark') }}
                         </div>
                     @endif

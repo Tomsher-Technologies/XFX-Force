@@ -7,7 +7,7 @@
     <!--inner banner-->
     <section class="px-[16px] md:px-[140px] pt-[80px] md:pt-[150px] pb-[0px] relative">
         <div class="section-title mb-[0px] relative border-t border-[#ffffff30] pt-[50px]">
-            <h3 class="w-full text-[40px] md:text-[50px] text-white capitalize font-bold text-center uppercase flex flex-col md:flex-row flex-start justify-center md:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">shop: {{ $brand->name }}<span class="text-[18px] text-[#2A7CFF] top-[6px] tracking-[0px] relative font-sans h-[0px]" id="total-product-count">{{ $products->count() }}</span></h3>
+            <h3 class="w-full text-[40px] md:text-[50px] text-white font-bold text-center uppercase flex flex-col md:flex-row flex-start justify-center md:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">shop: {{ $brand->name }}<span class="text-[18px] text-[#2A7CFF] top-[6px] tracking-[0px] relative font-sans h-[0px]" id="total-product-count">{{ $products->count() }}</span></h3>
         </div>
         <input type="hidden" id="current-brand-id" value="{{ $brand->slug }}">
     </section>
@@ -43,9 +43,10 @@
   </el-dialog>
   <!--//Mobile filter dialog -->
 
-    <main class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] xl:py-[80px]">
+    <main class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px]">
         <div class="flex flex-col xl:grid xl:grid-cols-4 xl:gap-[50px]">
             <div>
+
                 <div id="filter-wrapper">
                     <form class="hidden xl:block">
                         <button id="clear-filters" 
@@ -80,7 +81,7 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                                 </svg>
                                             </span>
-                                            <input type="text" id="category-search" placeholder="Search Category" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[15px] outline-none transition-all">
+                                            <input type="text" id="category-search" placeholder="Search Category" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[10px] outline-none transition-all border-none">
                                         </div>
                                         
 
@@ -109,7 +110,7 @@
                                                         type="checkbox" 
                                                         name="categories[]" 
                                                         value="{{ $category->id }}" 
-                                                        class="category-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]"
+                                                        class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
                                                         data-child-ids="{{ implode(',', $childIds) }}"
                                                     />
                                                 </div>
@@ -173,14 +174,14 @@
                                     <div class="flex justify-between items-center mb-8 gap-[20px] align-center">
                                         <div class="w-full">
                                             <span class="text-gray-400 text-xs block mb-2">Min</span>
-                                            <div class="bg-[#282B34] rounded-[10px] border border-white/5 w-full price-input-box">
+                                            <div class="bg-[#282B34] rounded-[10px] w-full price-input-box price-input-box">
                                                 <input type="number" class="min-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none border-0" value="0" min="0" max="300000" step="100">
                                             </div>
                                         </div>
                                         <div class="h-[1px] w-4 bg-gray-600"></div>
                                         <div class="w-full">
                                             <span class="text-gray-400 text-xs block mb-2 text-right">Max</span>
-                                            <div class="bg-[#282B34] rounded-[10px] border border-white/5 text-right w-full price-input-box">
+                                            <div class="bg-[#282B34] rounded-[10px] w-full price-input-box price-input-box">
                                                 <input type="number" class="max-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none text-right border-0" value="300000" min="0" max="300000" step="100">
                                             </div>
                                         </div>
@@ -216,7 +217,7 @@
                                         <div class="flex gap-[15px] items-center brand-item" data-name="{{ $brand->name }}">
                                             <div class="flex h-5 shrink-0 items-center">
                                                 <div class="group grid size-4 grid-cols-1 w-full">
-                                                    <input id="filter-brand-{{ $brand->id }}" type="checkbox" name="brands[]" value="{{ $brand->id }}" class="brand-checkbox h-[25px] w-[25px] col-start-1 row-start-1 appearance-none rounded border border-[#5F6370] bg-[#282B34] checked:border-indigo-600 checked:bg-[#2161C7]" id="filter-brand-{{ $brand->id }}" checked style="pointer-events: none;"> 
+                                                    <input id="filter-brand-{{ $brand->id }}" type="checkbox" name="brands[]" value="{{ $brand->id }}" class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200" id="filter-brand-{{ $brand->id }}" checked style="pointer-events: none;"> 
                                                 </div>
                                             </div>
                                             <label for="filter-brand-{{ $brand->id }}" class="relative top-[5px] text-[15px] text-white">
@@ -241,12 +242,12 @@
 
                 <!--promotion banners-->
 				@if(!empty($banners))
-				<div class="swiper promobnrswiper relative">
+				<div class="!hidden xl:!block swiper promobnrswiper relative">
                     <div class="swiper-wrapper">
 						@foreach($banners as $banner)
 						<div class="swiper-slide" data-swiper-autoplay="8000">
                             <a href="{{ getBannerUrl($banner) }}">
-								<img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" title="{{ $banner->title }}">
+								<img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full" alt="{{ $banner->title }}" title="{{ $banner->title }}">
 							</a>
                         </div>
 						@endforeach
@@ -259,7 +260,7 @@
 
             <div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
 
-                <div class="flex flex-col md:flex-row items-center justify-between gap-[15px] md:gap-[0px] w-full">
+                <div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[0px] w-full">
                     <span class="text-[#898989] text-[14px] w-full text-center md:text-left"  id="product-count"  data-per-page="{{ $products->perPage() }}" data-total="{{ $products->total() }}">
                         @if($products->count() > 0)
                             Items 1-{{ $products->count() }} of {{ $products->count() }}
@@ -267,9 +268,9 @@
                             Items 0 of 0
                         @endif
                     </span>
-                    <div class="flex flex-col md:flex-row items-center gap-[15px] md:gap-[30px] w-full justify-end">
-                        <el-dropdown class="relative inline-block text-left">
-                            <button class="group inline-flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white min-w-[230px]">
+                    <div class="flex flex-col xl:flex-row items-center gap-[15px] xl:gap-[20px] justify-end w-full">
+                        <el-dropdown class="relative block text-left w-full">
+                            <button class="group flex border border-[#282B34] rounded-[10px] p-[20px] justify-between text-sm font-medium text-white !w-full">
                                 <span class="mr-[10px] text-[14px] text-[#898989]">Sort by:
                                     @switch($sort)
                                     @case('oldest') Oldest @break
@@ -326,7 +327,7 @@
                         <div class="loader"></div>
                     </div>
                     <div class="text-center mt-4 text-white" id="load-more-wrapper">
-                        <button id="load-more-btn" class="mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hidden md:block hover:bg-white/5" title="Click to View More Products">
+                        <button id="load-more-btn" class="mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white md:block hover:bg-white/5" title="Click to View More Products">
                         Load More
                         </button>
                     </div>
