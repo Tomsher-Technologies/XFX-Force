@@ -540,8 +540,12 @@ let currentView = "gridview";
         input.addEventListener('change', filterProducts);
     });
 
-    // ======== INITIAL LOAD ========
-    filterProducts();
+    
+    /* INITIAL LOAD */
+    document.addEventListener('DOMContentLoaded', () => {
+        filterProducts();
+        hideLoader();
+    });
 
 // });
 
@@ -549,6 +553,7 @@ let page = 1;
 /* FILTER FUNCTION */
     function filterProducts() {
         // page = 1;
+        showLoader();
 		document.getElementById('load-more-wrapper').style.display = 'block';
 
 		const categories = Array.from(
@@ -609,6 +614,8 @@ let page = 1;
 					wrapper.innerHTML = data.html;
 					loadMore.style.display = data.hasMore ? 'block' : 'none';
 				}
+
+                hideLoader();
 				updateProductCount();
 
 				// Scroll
@@ -698,5 +705,13 @@ let page = 1;
 		countEl.innerText = `Items 1-${visible} of ${total}`;
         document.getElementById('total-product-count').innerText = `${total}`;
 	}
+
+    function showLoader() {
+        document.getElementById('global-loader').classList.remove('hidden');
+    }
+
+    function hideLoader() {
+        document.getElementById('global-loader').classList.add('hidden');
+    }
 </script>
 @endsection

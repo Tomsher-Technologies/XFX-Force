@@ -273,7 +273,7 @@
                                                     $totalReturnedPrice += $returnedPrice;
                                                 @endphp
                                             
-                                                <a href="javascript:void(0)" class="px-6 py-4 flex flex-col md:flex-row items-center md:items-start gap-6 group mt-0">
+                                                <a href="javascript:void(0)" class="px-6 py-4 flex flex-col md:flex-row items-center md:items-start gap-6 group mt-0 cursor-default">
                                                     <!-- Image -->
                                                     <div class="w-20 h-20 bg-white rounded-[5px] border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
                                                         <img src="{{ $image }}" class="w-full h-full object-cover cursor-pointer" alt="{{ $item->product_stock->stock_title  ?? '' }}" title="{{ $item->product_stock->stock_title  ?? '' }}" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
@@ -634,8 +634,8 @@
                                             @endphp
                                             <h4 class="text-white font-medium mb-1 w-full text-center md:text-left">{{ $billingAddress?->name }}</h4>
                                             <p class="text-gray-500 text-sm leading-relaxed w-full text-center md:text-left">
-                                                {{ $billingAddress?->address }} <br>
-                                                {{ $billingAddress?->city }}
+                                               {{ $billingAddress?->name }}, {{ $billingAddress?->address }}, {{ $billingAddress?->city }}, {{ $billingAddress?->state }}, {{ $billingAddress?->country }}, , {{ $billingAddress?->phone }}
+
                                             </p>
                                         </div>
                                     </div>
@@ -852,7 +852,7 @@
         
 
             <div class="p-6 bg-[#1C2228] flex gap-3">
-                <button id="cancelModalBtn" class="flex w-full cursor-pointer items-center justify-center gap-3 px-6 py-4 rounded-xl border border-[#2E363E] text-gray-400 font-medium uppercase text-[13px] hover:bg-[#252C33] hover:text-white transition-all duration-300 group">
+                <button id="cancelModalBtn" class="flex w-full cursor-pointer items-center justify-center gap-3 px-6 py-4 rounded-xl border border-[#2E363E] text-gray-400 font-medium uppercase text-[13px] hover:bg-[#252C33] hover:text-white transition-all duration-300 group" type="button">
                     Cancel
                 </button>
                 <button class="w-full flex py-4 rounded-xl bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-center justify-center text-white hover:bg-[#1d69e4] shadow-lg shadow-[#2A7CFF]/20 transition-all text-sm font-medium uppercase cursor-pointer" type="submit">

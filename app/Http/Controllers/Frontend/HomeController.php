@@ -86,6 +86,11 @@ class HomeController extends Controller
                 ->whereIn('id', $page_content['categories'])
                 ->where('is_active', 1)
                 ->get();
+        } else {
+            $categories = Category::with('iconImage')
+                ->where('is_active', 1)
+                ->where('parent_id', 0)
+                ->get();
         }
 
         // Fetch featured products
