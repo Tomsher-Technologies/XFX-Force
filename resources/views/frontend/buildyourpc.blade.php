@@ -1411,6 +1411,7 @@ $hideFooter = true;
         // make first item active
         if (navItems.length > 0) {
             navItems[0].classList.add('active');
+            navItems[0].click();
         }
                 
     }
