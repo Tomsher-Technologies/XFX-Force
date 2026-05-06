@@ -96,9 +96,16 @@
                 <span class="text-[#898989] font-medium line-through">{{ number_format($stock->price, 2) }}</span>
                 @endif
             </h5>
-            <div class="counter-container w-full"  data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id = "{{ $product->category_id }}" data-stock-qty="{{ $stock->qty }}" data-cart-qty="{{ checkCartQuantityPerVariant($stock->id) }}">
-                <button onclick="selectProduct(this)" class="action-btn w-full text-center text-white uppercase text-[13px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] bg-transparent group-hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:border-[#2A7CFF] transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id = "{{ $product->category_id }}">
-                    Select
+            <div class="counter-container w-full"  data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id="{{ $product->category->getRootCategory()->id }}" data-stock-qty="{{ $stock->qty }}" data-cart-qty="{{ checkCartQuantityPerVariant($stock->id) }}">
+                <button onclick="selectProduct(this)" class="action-btn w-full text-center text-white uppercase text-[13px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] bg-transparent group-hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:border-[#2A7CFF] transition-all duration-300 cursor-pointer flex gap-[20px] justify-center" data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id="{{ $product->category->getRootCategory()->id }}">
+                    <!-- Select -->
+                     <span class="btn-loader hidden">
+                        <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none"/>
+                        </svg>
+                    </span>
+                    <span class="btn-text">Select</span>
+                    
                 </button>
 
                 <div class="counter-wrapper hidden items-center gap-2 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 w-full">

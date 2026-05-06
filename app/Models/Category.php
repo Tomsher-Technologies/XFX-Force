@@ -98,4 +98,14 @@ class Category extends Model
         return $this->hasOne(Upload::class, 'id', 'icon');
     }
 
+    public function getRootCategory()
+    {
+        $category = $this;
+
+        while ($category && $category->parent_id != 0) {
+            $category = $category->parentCategory;
+        }
+
+        return $category;
+    }
 }

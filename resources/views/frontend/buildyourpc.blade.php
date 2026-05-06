@@ -144,7 +144,7 @@ $hideFooter = true;
                     </div>
 
                     <div class="relative h-full border-r border-[#2E3239] min-w-[180px]">
-                        <button onclick="toggleDropdown('model-menu')" class="flex items-center px-6 w-full h-full hover:bg-[#252C33] transition-colors" id="model-btn">
+                        <button onclick="toggleDropdown('model-menu')" class="flex items-center px-6 w-full h-full hover:bg-[#252C33] transition-colors opacity-50 cursor-not-allowed" id="model-btn" disabled>
                             <span class="text-gray-400 text-[14px]">Model: <b id="model-label" class="text-white ml-1 font-medium text-[14px]">All</b></span>
                             <svg class="ml-auto text-gray-500" width="12" height="12" viewBox="0 0 12 12" fill="none">
                                 <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" />
@@ -152,8 +152,7 @@ $hideFooter = true;
                         </button>
 
                         <div id="model-menu" class="hidden absolute top-[70px] left-0 w-64 h-80 overflow-y-auto bg-[#1C2228] border border-[#1E2529] rounded-xl shadow-2xl z-50 p-2">
-                            <!-- <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4090')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg text-sm">RTX 4090</a>
-                            <a href="javascript:void(0)" onclick="selectOption('model', 'RTX 4080')" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg text-sm">RTX 4080</a> -->
+                            
                         </div>
                     </div>
 
@@ -320,7 +319,7 @@ $hideFooter = true;
 
         <!--mobile navigation-->
         <!--navigation menu-->
-        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 z-[100] w-full md:block xl:hidden">
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 z-[100] w-full md:block xl:hidden" id="bottom-nav-bar">
             <div class="bg-[#1E2225] border border-white/10 hadow-2xl grid grid-cols-4 h-[70px]">
                 <button onclick="toggleCategorySidebar(event)" class="flex flex-col items-center justify-center gap-1 text-gray-400 border-r border-white/5">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -393,9 +392,9 @@ $hideFooter = true;
 
                         <div class="relative flex items-center">
                             <select 
-                            id="mobile-model"
+                            id="mobile-model" disabled
                             onchange="selectOption('model', this.value)"
-                            class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white"
+                            class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white opacity-50 cursor-not-allowed"
                             >
                             <option value="">All</option>
                             </select>
@@ -691,14 +690,24 @@ $hideFooter = true;
                 search,
                 sort,
                 1,
-                productSearchController.signal
+                // productSearchController.signal
             );
             // loadProducts(categoryId, brandId, model, search, sort, 1);
         });
 
         function loadModels(brandId, categoryId) {
-            if(brandId == 0) {
-                document.getElementById('model-menu').innerHTML = '';
+            const desktopMenu = document.getElementById('model-menu');
+            const mobileDropdown = document.getElementById('mobile-model');
+
+            if (brandId == 0) {
+                if (desktopMenu) desktopMenu.innerHTML = '';
+
+                // reset mobile dropdown
+                if (mobileDropdown) {
+                    mobileDropdown.innerHTML = `<option value="">All</option>`;
+                    mobileDropdown.disabled = true;
+                }
+                disableModelDropdown();
                 return;
             }
 
@@ -706,6 +715,11 @@ $hideFooter = true;
                 .then(res => res.json())
                 .then(models => {
 
+                    if (!models || models.length === 0) {
+                        disableModelDropdown(); // handles both desktop + mobile
+                        return;
+                    }
+                    // desktop
                     let html = `<a href="javascript:void(0)" 
                         onclick="selectOption('model', 'All')"
                         class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg text-sm">
@@ -721,7 +735,22 @@ $hideFooter = true;
                             </a>`;
                     });
 
-                    document.getElementById('model-menu').innerHTML = html;
+                    // document.getElementById('model-menu').innerHTML = html;
+                    if (desktopMenu) desktopMenu.innerHTML = html;
+
+                    // mobile
+                    if (mobileDropdown) {
+                        let options = `<option value="">All</option>`;
+
+                        models.forEach(model => {
+                            options += `<option value="${model}">${model}</option>`;
+                        });
+
+                        mobileDropdown.innerHTML = options;
+                        mobileDropdown.disabled = false; // enable after load
+                    }
+                    // enable dropdown now
+                    enableModelDropdown();
                 });
         }
 
@@ -762,6 +791,8 @@ $hideFooter = true;
                     currentSort = sort;
                     loadProducts(categoryId, brandId, model, search, sort, 1);
                 }
+
+                document.getElementById('mega-menu').classList.add('hidden');
             });
         });
 
@@ -833,8 +864,16 @@ $hideFooter = true;
         document.querySelector('.category-sub-heading').innerText = categoryName;
     }
 
+    let currentController = null;
     // Load products when clicking on category
-    function loadProducts(categoryId, brandId, model = "", search = "", sort = "", page = 1, signal = null) {
+    function loadProducts(categoryId, brandId, model = "", search = "", sort = "", page = 1) {
+        if (currentController) {
+            currentController.abort();
+        }
+
+        currentController = new AbortController();
+        const signal = currentController.signal;
+    
         const productsList = document.getElementById('products-list');
         const loader = document.getElementById('products-loader');
         const loadMoreBtn = document.getElementById('load-more-btn');
@@ -888,6 +927,14 @@ $hideFooter = true;
                         loadMoreBtn.style.display = 'none';
                     }
                 }
+            })
+            .catch(err => {
+                if (err.name === 'AbortError') {
+                    // ignore expected cancel
+                    return;
+                }
+
+                console.error('Fetch error:', err);
             });
     }
 
@@ -1140,14 +1187,21 @@ $hideFooter = true;
     }
 
     // Select product from the list and add to the build
-    function selectProduct(buttonElement, qty = 1) {
-        const categoryId = buttonElement.dataset.categoryId;
-        const categoryName = buttonElement.closest('.product-card')
-            .querySelector('.category-name')?.innerText || 'this category';
+    let isSelectingProduct = false;
 
-        if (!canSelectProduct()) {
-            return;
-        }
+    function selectProduct(buttonElement, qty = 1) {
+
+        // prevent fast multiple clicks
+        if (isSelectingProduct) return;
+
+        const categoryId = buttonElement.dataset.categoryId;
+
+        if (!canSelectProduct()) return;
+
+        isSelectingProduct = true;
+
+        // show loader immediately
+        setButtonLoading(buttonElement, true);
 
         const container = buttonElement.closest('.counter-container');
         const counter = container.querySelector('.counter-wrapper');
@@ -1156,37 +1210,57 @@ $hideFooter = true;
         const variantId = buttonElement.dataset.stockId;
         const builderId = document.getElementById('pcBuilderId').value;
 
-        
+        savePcBuilder(productId, variantId, categoryId, builderId, qty)
+            .then(() => {
 
-        savePcBuilder(productId, variantId, categoryId, builderId, qty);
-        buttonElement.classList.add('hidden');
-        counter.classList.add('flex');
-        counter.classList.remove('hidden');
-        updateAfterRemove(categoryId);
-        getBuildItemTotal();
+                // switch UI after success
+                buttonElement.classList.add('hidden');
+
+                counter.classList.remove('hidden');
+                counter.classList.add('flex');
+
+                updateAfterRemove(categoryId);
+                // getBuildItemTotal();
+                return getBuildItemTotal().then(() => {
+                    return new Promise(resolve => requestAnimationFrame(resolve));
+                });
+            })
+            .catch(() => {
+                showWarning("Failed to add product");
+            })
+            .finally(() => {
+                // unlock + reset button (important if error happens)
+                setButtonLoading(buttonElement, false);
+                isSelectingProduct = false;
+            });
     }
 
     // save the selected products to the database and update the build summary
-    function savePcBuilder(productId, variantId, categoryId, builderId, qty, callback = null){
-        fetch(`/buildyourpc/savePcBuilder?productId=${productId}&variantId=${variantId}&categoryId=${categoryId}&builder_id=${builderId}&qty=${qty}`)
+    function savePcBuilder(productId, variantId, categoryId, builderId, qty, callback = null) {
+        return fetch(`/buildyourpc/savePcBuilder?productId=${productId}&variantId=${variantId}&categoryId=${categoryId}&builder_id=${builderId}&qty=${qty}`)
             .then(response => response.json())
             .then(data => {
                 if (data.status) {
                     buildData = data.build_data;
-                    window.buildData = buildData; // update global variable
+                    window.buildData = buildData;
+
                     if (!builderId && data.builder_id) {
                         document.getElementById('pcBuilderId').value = data.builder_id;
                     }
+
                     viewSelectedPcBuildProducts();
                     checkAllCategoriesCompleted();
 
                     if (callback) callback(data.build_data);
+
+                    return data; // important
                 } else {
-                    console.error("Failed to save product");
+                    throw new Error("Failed to save product");
                 }
             })
             .catch(error => {
                 console.error("Error:", error);
+                throw error; // so .catch() in caller works
             });
     }
 
@@ -1282,6 +1356,7 @@ $hideFooter = true;
             .then(data => {
                 console.log(data);
                 document.getElementById('products-list-page').classList.add('hidden');
+                document.getElementById('bottom-nav-bar').classList.add('!hidden'); //hide bottom bar for review page
                 document.getElementById('products-review-page').classList.remove('hidden');
                 document.getElementById('products-review-page').innerHTML = data.html;
 
@@ -1324,6 +1399,7 @@ $hideFooter = true;
     function backToConfiguration() {
         document.getElementById('products-review-page').classList.add('hidden');
         document.getElementById('products-list-page').classList.remove('hidden');
+        document.getElementById('bottom-nav-bar').classList.remove('!hidden'); //show bottom bar for list page
         document.getElementById('summary-sidebar').classList.add('hidden');
         document.getElementById('details-sidebar').classList.remove('hidden');
 
@@ -1486,6 +1562,7 @@ $hideFooter = true;
     document.addEventListener('DOMContentLoaded', function () {
         const tabs = document.querySelectorAll('.nav-item');
         toggleNavigationButtons(0, tabs.length);
+        disableModelDropdown();
     });
 
     function showDefaultView() {
@@ -1594,8 +1671,8 @@ $hideFooter = true;
                     if (reviewItem) reviewItem.remove();
 
                     input.value = 0;
-                    counterWrapper.classList.add('hidden');
-                    counterWrapper.classList.remove('flex');
+                    if(counterWrapper) counterWrapper.classList.add('hidden');
+                    if(counterWrapper) counterWrapper.classList.remove('flex');
                     actionBtn.classList.remove('hidden');
 
                     updateNavButtons();
@@ -1623,6 +1700,7 @@ $hideFooter = true;
             updateNavButtons();
         });
         getBuildItemTotal();
+        proceedToOrder();
     }
 
     function onCategoryClick(navItem) {
@@ -1647,16 +1725,29 @@ $hideFooter = true;
         return Number(value).toLocaleString('en-AE');
     }
 
+    // function getBuildItemTotal() {
+    //     fetch('/buildyourpc/getBuildData')
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             console.log(data);
+    //             document.getElementById('total_price_with_tax_left').innerText = parseFloat(data.total_with_tax).toLocaleString('en-AE', {
+    //                 minimumFractionDigits: 2,
+    //                 maximumFractionDigits: 2
+    //             });
+    //             setButtonLoading(buttonElement, false);
+    //         })
+    // }
+
     function getBuildItemTotal() {
-        fetch('/buildyourpc/getBuildData')
+        return fetch('/buildyourpc/getBuildData')
             .then(res => res.json())
             .then(data => {
-                console.log(data);
-                document.getElementById('total_price_with_tax_left').innerText = parseFloat(data.total_with_tax).toLocaleString('en-AE', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            })
+                document.getElementById('total_price_with_tax_left').innerText =
+                    parseFloat(data.total_with_tax).toLocaleString('en-AE', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+            });
     }
 
     function getSelectedCount(categoryId) {
@@ -1787,5 +1878,63 @@ $hideFooter = true;
             applyMobileSearch();
         }
     });
+
+    function disableModelDropdown() {
+        /* ---------- DESKTOP ---------- */
+        const btn = document.getElementById('model-btn');
+        const menu = document.getElementById('model-menu');
+
+        if (btn) {
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        if (menu) {
+            menu.classList.add('hidden');
+            menu.innerHTML = '';
+        }
+
+        /* ---------- MOBILE ---------- */
+        const mobile = document.getElementById('mobile-model');
+
+        if (mobile) {
+            mobile.disabled = true;
+            mobile.classList.add('opacity-50', 'cursor-not-allowed');
+            mobile.innerHTML = `<option value="">All</option>`;
+        }
+    }
+
+    function enableModelDropdown() {
+        /* ---------- DESKTOP ---------- */
+        const btn = document.getElementById('model-btn');
+
+        if (btn) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        /* ---------- MOBILE ---------- */
+        const mobile = document.getElementById('mobile-model');
+
+        if (mobile) {
+            mobile.disabled = false;
+            mobile.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
+    function setButtonLoading(button, isLoading) {
+        const text = button.querySelector('.btn-text');
+        const loader = button.querySelector('.btn-loader');
+
+        if (isLoading) {
+            button.disabled = true;
+            text.innerText = "Adding...";
+            loader.classList.remove('hidden');
+        } else {
+            button.disabled = false;
+            text.innerText = "Select";
+            loader.classList.add('hidden');
+        }
+    }
 </script>
 @endsection
