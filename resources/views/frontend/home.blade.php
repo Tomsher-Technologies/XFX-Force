@@ -17,17 +17,17 @@
                     @if($slider->slider_type == 'image')
                         <picture class="h-full">
                             @if($slider->mobileImage)
-                                <source media="(max-width: 600px)" srcset="{{ $slider->mobileImage ? Storage::url($slider->mobileImage->file_name) : '' }}">
+                                <source media="(max-width: 600px)" srcset="{{ $slider->mobileImage ? Storage::url($slider->mobileImage->file_name) : asset('assets/images/placeholder.png') }}">
                             @endif
 
                             @if($slider->mainImage)
-                                <img src="{{ $slider->mainImage ? Storage::url($slider->mainImage->file_name) : '' }}" class="object-cover w-full h-full object-top" alt="{{ $slider->title }}">
+                                <img src="{{ $slider->mainImage ? Storage::url($slider->mainImage->file_name) : asset('assets/images/placeholder.png') }}" class="object-cover w-full h-full object-top" alt="{{ $slider->title }}">
                             @endif
                         </picture>
                     @elseif($slider->slider_type == 'video')
 
                         <video playsinline webkit-playsinline muted autoplay loop>
-                            <source src="{{ $slider->mainVideo ? Storage::url($slider->mainVideo->file_name) : '' }}" type="video/mp4" />
+                            <source src="{{ $slider->mainVideo ? Storage::url($slider->mainVideo->file_name) : asset('assets/images/placeholder.png') }}" type="video/mp4" />
                         </video>
                     @endif
 
@@ -120,7 +120,7 @@
         @foreach($banners as $banner)
 
             <div class="seg-card rounded-[20px] items-center flex flex-col gap-[20px] justify-between xl:justify-end p-[20px] md:p-[30px] relative overflow-hidden min-h-auto xl:min-h-[450px] bg-black">
-                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" class="relative xl:absolute object-cover object-top w-full h-full bottom-0 left-0 rounded-[10px]">
+                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : asset('assets/images/placeholder.png') }}" alt="{{ $banner->title }}" class="relative xl:absolute object-cover object-top w-full h-full bottom-0 left-0 rounded-[10px]">
                 <div class="content relative z-[1] flex flex-col items-center justify-between xl:justify-end h-full w-full">
                     <h2 class="text-[25px] text-white capitalize font-bold text-center">{{ $banner->title }}</h2>
                     <p class="text-[15px] text-[#ffffff] text-center">{{ $banner->sub_title }}</p>
@@ -157,7 +157,7 @@
                     <div class="swiper-slide" data-swiper-autoplay="8000">
                         <a href="{{ route('shop.category', $category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
                             <div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[75px] lg:h-[80px] xl:h-[95px] w-[75px] lg:w-[80px] xl:w-[95px] overflow-hidden">
-                                <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
+                                <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : asset('assets/images/placeholder.png') }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
                             </div>
                             <h4 class="text-white text-center font-medium text-[12px] xl:text-[16px] capitalize">{{ ucfirst($category->name) }}</h4>
                         </a>
@@ -578,7 +578,7 @@
             @foreach($middleBanners as $banner)
             <div class="swiper-slide" data-swiper-autoplay="8000">
                 <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif>
-                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full rounded-[20px]" alt="{{ $banner->name}}">
+                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : asset('assets/images/placeholder.png') }}" class="w-full h-full rounded-[20px]" alt="{{ $banner->name}}">
                 </a>
             </div>
             @endforeach
@@ -730,7 +730,7 @@
             @foreach($middleFullBanners as $banner)
             <div class="swiper-slide" data-swiper-autoplay="8000">
                 <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif>
-                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full rounded-[20px]" alt="{{ $banner->name }}">
+                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : asset('assets/images/placeholder.png') }}" class="w-full h-full rounded-[20px]" alt="{{ $banner->name }}">
                 </a>
             </div>
             @endforeach
