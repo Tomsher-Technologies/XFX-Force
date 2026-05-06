@@ -1673,10 +1673,18 @@ $hideFooter = true;
                     input.value = 0;
                     if(counterWrapper) counterWrapper.classList.add('hidden');
                     if(counterWrapper) counterWrapper.classList.remove('flex');
-                    actionBtn.classList.remove('hidden');
+                    if(actionBtn) actionBtn.classList.remove('hidden');
 
                     updateNavButtons();
-                    getBuildItemTotal();
+                    // getBuildItemTotal();
+                    const isValid = validateMinSelection();
+                    if (isValid && source =='review') {
+                        proceedToOrder();
+                    }
+                    
+                    return getBuildItemTotal().then(() => {
+                        return new Promise(resolve => requestAnimationFrame(resolve));
+                    });
                 });
 
             });
@@ -1699,11 +1707,14 @@ $hideFooter = true;
             buildData = freshBuildData; // keep synced
             updateNavButtons();
         });
-        getBuildItemTotal();
+        // getBuildItemTotal();
         const isValid = validateMinSelection();
         if (isValid && source =='review') {
             proceedToOrder();
         }
+        return getBuildItemTotal().then(() => {
+            return new Promise(resolve => requestAnimationFrame(resolve));
+        });
     }
 
     function onCategoryClick(navItem) {
@@ -1727,19 +1738,6 @@ $hideFooter = true;
     function formatNumberUAE(value) {
         return Number(value).toLocaleString('en-AE');
     }
-
-    // function getBuildItemTotal() {
-    //     fetch('/buildyourpc/getBuildData')
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             console.log(data);
-    //             document.getElementById('total_price_with_tax_left').innerText = parseFloat(data.total_with_tax).toLocaleString('en-AE', {
-    //                 minimumFractionDigits: 2,
-    //                 maximumFractionDigits: 2
-    //             });
-    //             setButtonLoading(buttonElement, false);
-    //         })
-    // }
 
     function getBuildItemTotal() {
         return fetch('/buildyourpc/getBuildData')
