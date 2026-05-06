@@ -122,13 +122,13 @@ h3 {
 }
 
 
-.swiper-button-next-new, .swiper-button-next-pop {
+.swiper-button-next-new, .swiper-button-next-pop, .swiper-button-next-bstdeals, .swiper-button-next-gphic {
   left: auto;
   background-image: url("../../public/assets/images/arrow-right.svg");
   background-repeat: no-repeat !important;
   background-position: center center;
 }
-.swiper-button-prev-new, .swiper-button-prev-pop {
+.swiper-button-prev-new, .swiper-button-prev-pop, .swiper-button-prev-bstdeals, .swiper-button-prev-gphic {
   right: auto;
   background-image: url("../../public/assets/images/arrow-left.svg");
   background-repeat: no-repeat !important;
