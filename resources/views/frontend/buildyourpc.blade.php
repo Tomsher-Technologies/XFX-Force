@@ -1365,7 +1365,7 @@ $hideFooter = true;
                 document.querySelectorAll('.nav-item').forEach(cat=>{
                     cat.classList.add('pointer-events-none');
                     cat.classList.remove('active');
-                }); // disable category navigation in review page
+                });
 
                 
                 document.getElementById('summary-total-price').innerText =
@@ -1700,10 +1700,10 @@ $hideFooter = true;
             updateNavButtons();
         });
         getBuildItemTotal();
-        // const isValid = validateMinSelection();
-        // if (isValid) {
-        //     proceedToOrder();
-        // }
+        const isValid = validateMinSelection();
+        if (isValid && source =='review') {
+            proceedToOrder();
+        }
     }
 
     function onCategoryClick(navItem) {
