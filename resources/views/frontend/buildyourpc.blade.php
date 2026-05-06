@@ -1700,10 +1700,10 @@ $hideFooter = true;
             updateNavButtons();
         });
         getBuildItemTotal();
-        const isValid = validateMinSelection();
-        if (isValid) {
-            proceedToOrder();
-        }
+        // const isValid = validateMinSelection();
+        // if (isValid) {
+        //     proceedToOrder();
+        // }
     }
 
     function onCategoryClick(navItem) {
