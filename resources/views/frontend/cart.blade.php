@@ -43,7 +43,7 @@
                     <div class="cart-box">
                         <div class="product-cart-item flex flex-col md:col-col md:grid md:grid-cols-12 gap-[20px] xl:gap-[50px] w-full bg-black/30 backdrop-blur-[60px] p-[20px] md:p-[30px] rounded-[20px]">
                             <div class="col-span-7 flex flex-col md:flex-row gap-[20px] md:gap-[30px]">
-                                <div class="product-img h-[100px] md:h-[100px] w-full md:w-[145px] relative z-[1] bg-white rounded-[5px] overflow-hidden items-center justify-center flex">
+                                <div class="product-img h-[100px] md:h-[100px] w-full md:w-[145px] relative z-[1] bg-white rounded-[5px] overflow-hidden items-center justify-center flex shrink-0">
                                     <a href="{{ route('product.details' ,[$item->product->slug, $item->product_stock->sku]) }}" class="absolute">
                                         <img src="{{ $image }}" class="object-cover object-center w-auto md:w-full h-[150px] md:h-fit" alt="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}" title="{{ $item->product_stock->stock_title ?? $item->product->name ?? '' }}">
                                     </a>

@@ -11,7 +11,7 @@
             <div class="cart-box">
                 <div class="product-cart-item flex flex-col md:col-col md:grid md:grid-cols-12 gap-[20px] xl:gap-[50px] w-full py-[30px]">
                     <div class="col-span-7 flex flex-col md:flex-row gap-[20px] md:gap-[30px]">
-                        <div class="product-img h-[150px] md:h-[100px] w-full md:w-[145px] relative z-[1] bg-white rounded-[5px] overflow-hidden items-center justify-center flex">
+                        <div class="product-img h-[150px] md:h-[100px] w-full md:w-[145px] relative z-[1] bg-white rounded-[5px] overflow-hidden items-center justify-center flex shrink-0">
                             @php
                                 $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
