@@ -754,6 +754,7 @@
             </div>
             <!-- Home Footer section ends -->
 
+            @include('backend.inc.page_seo', ['settings' => $settings])
             <div class="text-right mb-2">
                 <button type="submit" class="btn btn-info btn-sm">Update</button>
             </div>
