@@ -52,7 +52,7 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 Route::get('/password/reset/{email}/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
 Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index']);
 Route::get('/product/{slug}/{sku?}', [ProductController::class, 'productDetails'])
     ->middleware('nocache')
     ->name('product.details');
