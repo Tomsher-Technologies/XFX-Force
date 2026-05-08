@@ -8,10 +8,6 @@
     <meta name="robots" content="noindex, nofollow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="preconnect" href="https://pcgarage.me/" />
     <link rel="dns-prefetch" href="https://pcgarage.me/" />
-  
-    <!-- Page Title -->
-    <title>PC Garage | @yield('title', 'Default Site Title')</title>
-    <!-- //Page Title -->
 
      {!! SEO::generate() !!}
     <?php
