@@ -654,6 +654,7 @@
 </div>
 <!--//specification-->
 
+@if($relatedProducts->isNotEmpty())
 <!--related products-->
 <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] md:py-[100px] relative">
     <div class="section-title mb-[30px] relative flex flex-col xl:flex-row items-center xl:items-end justify-between">
@@ -691,4 +692,5 @@
     </div>
 </section>
 <!--//related products-->
+@endif
 @endsection

@@ -608,15 +608,15 @@
 
                                             </div>
                                             @endforeach
-                                            @include('backend.products.partials.product-specification',['namePrefix' => 'variant[0]'])
+                                            <!-- @include('backend.products.partials.product-specification',['namePrefix' => 'variant[0]']) -->
 
-                                            <!-- <div class="text-right mt-2">
+                                            <div class="text-right mt-2">
                                                 <button type="button"
                                                         class="btn btn-success btn-xs add-spec"
                                                         data-name-prefix="variant[0]">
                                                     Add More
                                                 </button>
-                                            </div> -->
+                                            </div>
                                         </div>
                                     </div>
                                     <hr>
@@ -804,8 +804,14 @@
                                                 </div>
 
                                             @endforeach
-                                            @include('backend.products.partials.product-specification',['namePrefix' => "variants[$index]"])
-
+                                            <!-- @include('backend.products.partials.product-specification',['namePrefix' => "variants[$index]"]) -->
+                                            <div class="text-right mt-2">
+                                                <button type="button"
+                                                        class="btn btn-success btn-xs add-spec"
+                                                        data-name-prefix="variants[$index]">
+                                                    Add More
+                                                </button>
+                                            </div>
                                             </div>
                                             </div>
                                             <hr>
