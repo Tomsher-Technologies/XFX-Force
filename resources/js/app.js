@@ -992,6 +992,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+        document.querySelectorAll('.productswiper-related').forEach(el => {
+            new Swiper(el, {
+                slidesPerView: 2,
+                spaceBetween: 5,
+                grabCursor: true,
+                observer: true, 
+                observeParents: true,
+                observeSlideChildren: true,
+                speed: 3000,
+                autoplay: { delay: 3000, disableOnInteraction: false },
+                allowTouchMove: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    prevEl: ".swiper-button-prev-related",
+                    nextEl: ".swiper-button-next-related",
+                },
+                breakpoints: {
+                    640: { slidesPerView: 3, spaceBetween: 5},
+                    768: { slidesPerView: 2, spaceBetween: 15 },
+                    1024: { slidesPerView: 3, spaceBetween: 15 },
+                    1280: { slidesPerView: 4, spaceBetween: 15 },
+                    1300: { slidesPerView: 4, spaceBetween: 15 },
+                    1366: { slidesPerView: 4, spaceBetween: 15 },
+                    1400: { slidesPerView: 5, spaceBetween: 15 },
+                }
+            });
+        });
     };
 
     initAllSwipers();
@@ -1313,25 +1343,19 @@ window.closeAllMobileSystems = function() {
     document.body.style.overflow = 'auto';
 }
 
-window.togglePassword = function(buttonElement) {
-    // Find the relative container (the 'group' div)
-    const container = buttonElement.closest(".relative");
-    const input = container.querySelector("input");
-    const eyeIcon = container.querySelector(".eye-icon");
-    const eyeOffIcon = container.querySelector(".eye-off-icon");
+function togglePassword(btn) {
+    const input = btn.closest('div').querySelector('input'); // Adjust selector to your structure
+    const eye = btn.querySelector('.eye-icon');
+    const eyeOff = btn.querySelector('.eye-off-icon');
 
-    const isPassword = input.type === "password";
-
-    // Toggle Type
-    input.type = isPassword ? "text" : "password";
-
-    // Toggle Icons
-    if (isPassword) {
-        eyeIcon.classList.add("hidden");
-        eyeOffIcon.classList.remove("hidden");
+    if (input.type === 'password') {
+        input.type = 'text';
+        eye.style.display = 'none';
+        eyeOff.style.display = 'block';
     } else {
-        eyeIcon.classList.remove("hidden");
-        eyeOffIcon.classList.add("hidden");
+        input.type = 'password';
+        eye.style.display = 'block';
+        eyeOff.style.display = 'none';
     }
 }
 

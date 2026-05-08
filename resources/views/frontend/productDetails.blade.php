@@ -463,8 +463,8 @@
             });
         })
      ">
-    <nav class="sticky top-[79px] md:top-[148px] z-50 w-full border-b border-gray-800 bg-[#0F151D] backdrop-blur-md">
-        <div class="w-full flex overflow-x-auto no-scrollbar whitespace-nowrap px-4 justify-start md:justify-center" id="tabs-section">
+    <nav class="w-full border-b border-gray-800 bg-[#0F151D] backdrop-blur-md">
+        <div class="w-full flex overflow-x-auto no-scrollbar whitespace-nowrap px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] justify-start xl:justify-center" id="tabs-section">
             @if(!empty($cleanOverview))
                 <a href="javascript:void(0)" @click="activeTab='overview'" :class="activeTab === 'overview' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Overview</a>
             @endif
@@ -660,7 +660,7 @@
         <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center uppercase text-center xl:text-left leading-[40px] xl:leading-[50px] m-[0] mb-[30px] xl:mb-[0px]">Related Products</h3>
     </div>
     <div class="relative group">
-        <div class="swiper productswiper relative overflow-x-hidden">
+        <div class="swiper productswiper-related relative overflow-x-hidden">
             <div class="swiper-wrapper">
                 @foreach($relatedProducts as $product)
                     @php
@@ -682,11 +682,13 @@
                 </div>
                 @endforeach
             </div>
-        </div>
-        <div class="swiper-pagination !relative flex flex-start mt-[50px] hidden xl:block"></div>
-        <div class="controls relative xl:!absolute right-[0px] m-auto mt-[30px] xl:mt-[0px] xl:top-[-80px] flex items-center gap-[30px] justify-center xl:justify-end">
-            <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
-            <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
+            <div class="block flex-row w-full relative mt-[30px]">
+                <!-- <div class="swiper-pagination !relative mt-0 m-auto w-full hidden xl:block justify-start opacity-0"></div> -->
+                <div class="controls relative right-[0px] left-[0px] m-auto mt-[30px] xl:mt-0 flex flex-row items-center gap-[10px] justify-center xl:justify-end">
+                    <div class="swiper-button-prev-related !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                    <div class="swiper-button-next-related !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
