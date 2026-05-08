@@ -39,7 +39,7 @@ class HomeController extends Controller
         OpenGraph::setUrl(URL::full());
         OpenGraph::addProperty('locale', 'en_US');
         OpenGraph::addProperty('type', $model['og_type'] ?? 'website');
-        OpenGraph::addImage(uploaded_asset(get_setting('header_logo')) ?? URL::to(asset('assets/img/logo.png')));
+        OpenGraph::addImage(uploaded_asset(get_setting('default_invoice_logo')) ?? URL::to(asset('assets/img/logo.png')));
 
         JsonLd::setTitle($model['title']);
         JsonLd::setDescription($model['meta_description']);
@@ -56,6 +56,18 @@ class HomeController extends Controller
     {
         $page = Page::where('slug', 'home')->first();
         $page_content = $page ? json_decode($page->data, true) : [];
+
+        $seoContents = [
+            'title' => $page_content['meta_title'] ?? '',
+            'meta_description' => $page_content['meta_description'] ?? '',
+            'keywords' => $page_content['keywords'] ?? '',
+            'og_title' => $page_content['og_title'] ?? '',
+            'og_description' => $page_content['og_description'] ?? '',
+            'twitter_title' => $page_content['twitter_title'] ?? '',
+            'twitter_description' => $page_content['twitter_description'] ?? '',
+        ];
+
+        $this->loadSEO($seoContents);
 
         // Fetch the sliders data
         $slider_ids = $page_content['home_slider'] ?? [];

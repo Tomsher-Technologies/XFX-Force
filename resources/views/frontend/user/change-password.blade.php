@@ -49,8 +49,16 @@
                                     <div class="relative">
                                         <input type="password" id="new_password" name="new_password" autocomplete="new-password"  oninput="checkStrength(this.value)" class="w-full bg-[#0B0F13] border border-[#282B34] rounded-xl p-4 text-white outline-none focus:border-[#2A7CFF] transition-all pr-12 text-sm md:text-base" placeholder="Min. 8 characters">
                                         <button type="button" onclick="togglePassword(this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-white transition-colors cursor-pointer p-1">
-                                            <svg class="eye-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                            <svg class="eye-off-icon w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88L4.222 4.222m15.556 15.556L14.121 14.121M21.543 12C20.268 7.943 16.478 5 12 5c-1.123 0-2.185.187-3.175.532m6.175 6.175l3.535 3.536" /></svg>
+                                            <!-- Show Icon (Visible by default) -->
+                                            <svg class="eye-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                            
+                                            <!-- Hide Icon (Hidden by default using inline style to prevent flickering) -->
+                                            <svg class="eye-off-icon w-5 h-5" style="display: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88L4.222 4.222m15.556 15.556L14.121 14.121M21.543 12C20.268 7.943 16.478 5 12 5c-1.123 0-2.185.187-3.175.532m6.175 6.175l3.535 3.536" />
+                                            </svg>
                                         </button>
                                     </div>
                                     <div class="flex gap-1.5 mt-4 px-1">
@@ -71,8 +79,16 @@
                                     <div class="relative">
                                         <input type="password" id="new_password_confirmation" name="new_password_confirmation" autocomplete="new-password" class="w-full bg-[#0B0F13] border border-[#282B34] rounded-xl p-4 text-white outline-none focus:border-[#2A7CFF] transition-all pr-12 text-sm md:text-base" placeholder="Repeat new password">
                                         <button type="button" onclick="togglePassword(this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-white transition-colors cursor-pointer p-1">
-                                            <svg class="eye-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                            <svg class="eye-off-icon w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88L4.222 4.222m15.556 15.556L14.121 14.121M21.543 12C20.268 7.943 16.478 5 12 5c-1.123 0-2.185.187-3.175.532m6.175 6.175l3.535 3.536" /></svg>
+                                            <!-- Show Icon -->
+                                            <svg class="eye-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                            
+                                            <!-- Hide Icon (Use inline style to prevent the flash/overlap) -->
+                                            <svg class="eye-off-icon w-5 h-5" style="display: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88L4.222 4.222m15.556 15.556L14.121 14.121M21.543 12C20.268 7.943 16.478 5 12 5c-1.123 0-2.185.187-3.175.532m6.175 6.175l3.535 3.536" />
+                                            </svg>
                                         </button>
                                     </div>
                                     @error('new_password_confirmation')

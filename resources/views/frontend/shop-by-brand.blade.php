@@ -5,9 +5,9 @@
 
 
     <!--inner banner-->
-    <section class="px-[16px] md:px-[140px] pt-[80px] md:pt-[150px] pb-[0px] relative">
-        <div class="section-title mb-[0px] relative border-t border-[#ffffff30] pt-[50px]">
-            <h3 class="w-full text-[40px] md:text-[50px] text-white font-bold text-center uppercase flex flex-col md:flex-row flex-start justify-center md:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">shop: {{ $brand->name }}<span class="text-[18px] text-[#2A7CFF] top-[6px] tracking-[0px] relative font-sans h-[0px]" id="total-product-count">{{ $products->count() }}</span></h3>
+    <section class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[0px] relative">
+        <div class="section-title mb-[0px] relative border-t border-[#ffffff30] pt-[30px] xl:pt-[50px]">
+            <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center xl:text-left uppercase flex flex-col md:flex-row flex-start justify-center xl:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">shop: {{ $brand->name }}<span class="text-[18px] text-[#2A7CFF] top-[6px] tracking-[0px] relative font-sans h-[0px]" id="total-product-count">{{ $products->count() }}</span></h3>
         </div>
         <input type="hidden" id="current-brand-id" value="{{ $brand->slug }}">
     </section>
