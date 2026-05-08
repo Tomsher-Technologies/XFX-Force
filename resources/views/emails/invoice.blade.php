@@ -74,7 +74,7 @@
 <body>
     <div>
         @php
-            $logo = get_setting('header_logo');
+            $logo = get_setting('default_invoice_logo');
         @endphp
         <div style="background: #dce4e978;padding: 1.5rem;">
             <table>
