@@ -347,7 +347,13 @@ class ProductController extends Controller
             // includes normal cart + pc builder
             $totalReservedQty = Cart::where('product_stock_id', $selectedStock->id)
                 ->where('status', 'pending')
-                ->sum('quantity');
+                ->where(function($query) use ($guestToken, $user_id) {
+                    if ($user_id) {
+                        $query->where('user_id', $user_id);
+                    } else {
+                        $query->where('temp_user_id', $guestToken);
+                    }
+                })->sum('quantity');
         }
 
         $stockId = $selectedStock ? $selectedStock->id : null;
