@@ -98,8 +98,22 @@
                             </div>
                             <div class="col-span-5">
                                 <div class="flex flex-col md:flex-row gap-[15px] align-center items-center h-full">
+                                    @php
+                                        $totalReservedQty = \App\Models\Cart::where('product_stock_id', $item->product_stock_id)
+                                                ->where('status', 'pending')
+                                                ->sum('quantity');
+
+                                        $remainingQty = 0;
+
+                                        if ($item->product_stock) {
+                                            $remainingQty = max(
+                                                $item->product_stock->qty - $totalReservedQty,
+                                                0
+                                            );
+                                        }
+                                    @endphp 
                                     <!--counter-->
-                                    <div class="product-item flex items-center gap-4 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 shadow-inner w-full" data-cart-id="{{ $item->id }}" data-product-id="{{ $item->product_id }}" data-variant-id="{{ $item->product_stock_id }}">
+                                    <div class="product-item flex items-center gap-4 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 shadow-inner w-full" data-cart-id="{{ $item->id }}" data-product-id="{{ $item->product_id }}" data-variant-id="{{ $item->product_stock_id }}"  data-remaining-qty="{{ $remainingQty }}">
                                         <button onclick="updateMultiQty(this, -1)" class="decrement-btn w-full h-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all active:scale-90">
                                             <span class="icon-wrapper">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 minus-btn" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 12H4" /></svg>

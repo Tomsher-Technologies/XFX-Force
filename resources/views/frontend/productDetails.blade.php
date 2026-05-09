@@ -318,9 +318,9 @@
                 </div>
 
                 <!-- When item exist-->
-                <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block  {{ ($cartQty < $firstStock->qty) ? '' : 'hidden' }}">
+                <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block  {{ ($remainingQty > 0) ? '' : 'hidden' }}">
                     <!--counter-->
-                    <div class="counter-wrapper product-item flex items-center gap-4 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 shadow-inner w-full {{ ($cartQty > 0 && $cartQty < $firstStock->qty) ? '' : 'hidden' }}" data-variant-id="{{ $firstStock->id }}" data-cart-id="{{ $cartId }}">
+                    <div class="counter-wrapper product-item flex items-center gap-4 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 shadow-inner w-full {{ ($cartQty > 0 && $remainingQty > 0) ? '' : 'hidden' }}" data-variant-id="{{ $firstStock->id }}" data-cart-id="{{ $cartId }}" data-remaining-qty="{{ $remainingQty }}">
                         <button onclick="updateMultiQty(this, -1)" class="decrement-btn w-full h-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all active:scale-90">
                             <span class="icon-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 minus-btn" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 12H4" /></svg>
@@ -338,11 +338,11 @@
                     <!--//counter-->
                     
                     <!-- Add to cart button -->
-                    <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[20px] py-[10px] rounded-[10px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-600 text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white cursor-pointer {{ ($cartQty == 0 && $cartQty < $firstStock->qty) ? '' : 'hidden' }}"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
+                    <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[20px] py-[10px] rounded-[10px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-600 text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white cursor-pointer {{ ($cartQty == 0 && $remainingQty > 0) ? '' : 'hidden' }}" data-variant-id="{{ $firstStock->id }}"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
                         
                     
                     <!-- Buy now button -->
-                    <button onclick="buyNow(this)" class="buy-now w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[20px] py-[10px] rounded-[10px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-600 text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white cursor-pointer {{ ($cartQty < $firstStock->qty) ? '' : 'hidden' }}">Buy Now</button>
+                    <button onclick="buyNow(this)" class="buy-now w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[20px] py-[10px] rounded-[10px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-600 text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white cursor-pointer {{ ($remainingQty > 0) ? '' : 'hidden' }}">Buy Now</button>
 
                     <!-- Wishlist button -->
                     
@@ -350,7 +350,7 @@
                 <!-- When item exist -->
 
                 <!--when the item is out of stock-->
-                <div class="button-group flex flex-col xl:grid xl:grid-cols-2 gap-[15px] h-fit w-full md:w-fit out-of-stock-block {{ ($firstStock->qty == 0 || $cartQty > $firstStock->qty) ? '' : '!hidden' }}">
+                <div class="button-group flex flex-col xl:grid xl:grid-cols-2 gap-[15px] h-fit w-full md:w-fit out-of-stock-block {{ ($remainingQty <= 0) ? '' : '!hidden' }}">
                     <div class="flex justify-center items-center gap-2 px-4 py-2 bg-[#c0392b20] border border-[#c0392b50] rounded-[15px] w-full h-full mx-auto md:mx-0 align-center">
                         <span class="relative flex h-2 w-2">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>

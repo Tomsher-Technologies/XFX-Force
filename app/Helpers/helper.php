@@ -918,28 +918,19 @@ if (!function_exists('sendNotification')) {
 if (!function_exists('checkCartQuantityPerVariant')) {
     function checkCartQuantityPerVariant(int $stockId)
     {
-        $userId = (!empty(auth('frontend')->user())) 
-            ? auth('frontend')->user()->id 
-            : null;
-
+        $userId = auth('frontend')->user()?->id;
         $guestToken = request()->cookie('guest_token');
 
-        $cartItem = \App\Models\Cart::where('product_stock_id', $stockId)
+        return \App\Models\Cart::where('product_stock_id', $stockId)
+            ->where('status', 'pending')
             ->where(function ($query) use ($guestToken, $userId) {
-
                 if ($userId) {
-                    // Logged-in user
                     $query->where('user_id', $userId);
                 } else {
-                    // Guest user
                     $query->where('temp_user_id', $guestToken);
                 }
-
             })
-            ->where('status', 'pending')
-            ->first();
-
-        return $cartItem ? $cartItem->quantity : 0;
+            ->sum('quantity'); //  FIX: use sum, not first()
     }
 }
 

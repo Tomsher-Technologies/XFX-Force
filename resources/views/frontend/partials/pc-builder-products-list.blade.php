@@ -97,7 +97,7 @@
                 @endif
             </h5>
             <div class="counter-container w-full"  data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id="{{ $product->category->getRootCategory()->id }}" data-stock-qty="{{ $stock->qty }}" data-cart-qty="{{ checkCartQuantityPerVariant($stock->id) }}">
-                <button onclick="selectProduct(this)" class="action-btn w-full text-center text-white uppercase text-[13px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] bg-transparent group-hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:border-[#2A7CFF] transition-all duration-300 cursor-pointer flex gap-[20px] justify-center" data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id="{{ $product->category->getRootCategory()->id }}">
+                <button onclick="selectProduct(this)" class="action-btn w-full text-center text-white uppercase text-[13px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] bg-transparent group-hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:border-[#2A7CFF] transition-all duration-300 cursor-pointer flex gap-[20px] justify-center" data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id="{{ $product->category->getRootCategory()->id }}" data-stock-qty="{{ $stock->qty }}" data-cart-qty="{{ checkCartQuantityPerVariant($stock->id) }}">
                     <!-- Select -->
                      <span class="btn-loader hidden">
                         <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24">

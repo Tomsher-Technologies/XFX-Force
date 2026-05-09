@@ -616,7 +616,19 @@
                                                 
                                                 <h4 class="text-white font-medium mb-1 w-full text-center md:text-left">{{ $shippingAddress?->name }}</h4>
                                                 <p class="text-gray-500 text-sm leading-relaxed w-full text-center md:text-left">
-                                                    {{ $shippingAddress?->name }}, {{ $shippingAddress?->address }}, {{ $shippingAddress?->city }}, {{ $shippingAddress?->state }}, {{ $shippingAddress?->country }}, , {{ $shippingAddress?->phone }}
+                                                    
+                                                    @php
+                                                        $shippingParts = array_filter([
+                                                            $shippingAddress?->name,
+                                                            $shippingAddress?->address,
+                                                            $shippingAddress?->city,
+                                                            $shippingAddress?->state,
+                                                            $shippingAddress?->country,
+                                                            $shippingAddress?->phone,
+                                                        ]);
+                                                    @endphp
+
+                                                    {{ implode(', ', $shippingParts) }}
                                                 </p>
                                             @endif
                                         </div>
@@ -634,7 +646,18 @@
                                             @endphp
                                             <h4 class="text-white font-medium mb-1 w-full text-center md:text-left">{{ $billingAddress?->name }}</h4>
                                             <p class="text-gray-500 text-sm leading-relaxed w-full text-center md:text-left">
-                                               {{ $billingAddress?->name }}, {{ $billingAddress?->address }}, {{ $billingAddress?->city }}, {{ $billingAddress?->state }}, {{ $billingAddress?->country }}, , {{ $billingAddress?->phone }}
+                                                @php
+                                                $billingParts = array_filter([
+                                                    $billingAddress?->name,
+                                                    $billingAddress?->address,
+                                                    $billingAddress?->city,
+                                                    $billingAddress?->state,
+                                                    $billingAddress?->country,
+                                                    $billingAddress?->phone,
+                                                ]);
+                                                @endphp
+
+                                                {{ implode(', ', $billingParts) }}
 
                                             </p>
                                         </div>

@@ -1433,6 +1433,13 @@ window.handleSortClick = function (selectedBtn) {
 
 
     async function addToCart(productId, variantId, quantity, mode="set") {
+
+        const addToCartBtn = document.querySelector(
+                    `.add-to-cart[data-variant-id="${variantId}"]`
+        );
+        const counterWrapper = document.querySelector(
+            `.counter-wrapper[data-variant-id="${variantId}"]`
+        );
         try {
             const res = await fetch(`/addProductToCart?productId=${productId}&variantId=${variantId}&quantity=${quantity}&mode=${mode}`);
             const response = await res.json();
@@ -1456,22 +1463,54 @@ window.handleSortClick = function (selectedBtn) {
                 if(outStockBlocks) outStockBlocks.forEach(el => el.classList.add('!hidden'));
                 if(addCartBlocks) addCartBlocks.forEach(el => el.classList.remove('!hidden'));
 
-                const addToCartBtn = document.querySelector(".add-to-cart");
-                const counterWrapper = document.querySelector(".counter-wrapper");
+                // const addToCartBtn = document.querySelector(".add-to-cart");
+                
                 if(!counterWrapper){
                     // location.reload();
                 }
 
-                if(response.cartQty > 0){
+                // if(response.cartQty > 0){
+                //     if (addToCartBtn) addToCartBtn.classList.add('hidden');
+                //     if (counterWrapper) counterWrapper.classList.remove('hidden');
+                //     const qtyInput = counterWrapper?.querySelector('.qty-input');
+                //     if (qtyInput) qtyInput.value = response.cartQty;
+                //     if (counterWrapper) updateQtyIcons(counterWrapper, response.cartQty);
+                    
+                //     if (counterWrapper) counterWrapper.dataset.cartId = response.cartId;
+
+                // }else{
+                //     if (addToCartBtn) addToCartBtn.classList.remove('hidden');
+                //     if (counterWrapper) counterWrapper.classList.add('hidden');
+                // }
+
+                if (response.cartQty > 0) {
+
                     if (addToCartBtn) addToCartBtn.classList.add('hidden');
                     if (counterWrapper) counterWrapper.classList.remove('hidden');
+
                     const qtyInput = counterWrapper?.querySelector('.qty-input');
                     if (qtyInput) qtyInput.value = response.cartQty;
-                    if (counterWrapper) updateQtyIcons(counterWrapper, response.cartQty);
 
-                }else{
+                    updateQtyIcons(counterWrapper, response.cartQty);
+
+                    if (counterWrapper) {
+                        counterWrapper.dataset.cartId = response.cartId;
+                        counterWrapper.dataset.remainingQty = response.availableQty;
+                    }
+
+                } else {
+
+                    // FULL RESET STATE (IMPORTANT FIX)
                     if (addToCartBtn) addToCartBtn.classList.remove('hidden');
                     if (counterWrapper) counterWrapper.classList.add('hidden');
+
+                    const qtyInput = counterWrapper?.querySelector('.qty-input');
+                    if (qtyInput) qtyInput.value = 0;
+
+                    if (counterWrapper) {
+                        counterWrapper.dataset.cartId = "";
+                        counterWrapper.dataset.remainingQty = response.availableQty;
+                    }
                 }
             }
             return response; // return the full response
@@ -1526,22 +1565,24 @@ window.handleSortClick = function (selectedBtn) {
     window.updateMultiQty = async function (btn, change) {
         // Find the container for THIS specific product
         const container = btn.closest('.product-item');
-        const input = container.querySelector('.qty-input');
-        const iconWrapper = container.querySelector('.icon-wrapper');
-        const minusBtn = iconWrapper.querySelector('.minus-btn');
-        const trashBtn = iconWrapper.querySelector('.trash-btn');
-        const decrementBtn = container.querySelector('.decrement-btn');
-        const productId = container.dataset.productId;
-        const variantId = container.dataset.variantId;
-        const cartId = container.dataset.cartId;
+        const input = container?.querySelector('.qty-input');
+        const iconWrapper = container?.querySelector('.icon-wrapper');
+        const minusBtn = iconWrapper?.querySelector('.minus-btn');
+        const trashBtn = iconWrapper?.querySelector('.trash-btn');
+        const decrementBtn = container?.querySelector('.decrement-btn');
+        const productId = container?.dataset.productId;
+        const variantId = container?.dataset.variantId;
+        const cartId = container?.dataset.cartId;
         const cartItemBox = btn.closest('.product-cart-item');
         const cartPrice = cartItemBox ? cartItemBox.querySelector('.cart_price') : null;
         const cartOfferPrice = cartItemBox ? cartItemBox.querySelector('.cart_offer_price') : null;
         const addCartBtn = document.querySelector(".add-to-cart");
         const outStockBlocks = document.querySelectorAll('.out-of-stock-block');
         const addCartBlocks = document.querySelectorAll('.add-to-cart-block');
-        
+        const availableQty = parseInt(container.dataset.remainingQty);
+       
         let currentVal = parseInt(input.value);
+       
 
         // DELETE LOGIC: If qty is 1 and user clicks minus
         if (currentVal === 1 && change === -1) {
@@ -1567,14 +1608,15 @@ window.handleSortClick = function (selectedBtn) {
                         if(cartItemBox){
                             cartItemBox.remove();
                         }
-                        container.remove();
+                        // container.remove();
+                        if(container) container.classList.add("hidden");
                         if(addCartBtn) addCartBtn.classList.remove("hidden");
                         toastr.success(response.message, 'Success');
                         updateCartSummary();
                         // $("#price-btn-block").load(location.href + " #price-btn-block>*", "");
                         $("#main-cart-section").load(location.href + " #main-cart-section>*", "", function () {
                             document.querySelectorAll('.product-item').forEach(container => {
-                                const input = container.querySelector('.qty-input');
+                                const input = container?.querySelector('.qty-input');
                                 const qty = parseInt(input.value) || 1;
                                 updateQtyIcons(container, qty);
                             });
@@ -1590,10 +1632,18 @@ window.handleSortClick = function (selectedBtn) {
         }
         
         let newVal = currentVal + change;
+
         if (newVal < 1) newVal = 1;
+
+        // STOP BEFORE API CALL
+        if (change === 1 && availableQty <= 0) {
+            toastr.error(`No more items available`);
+            return;
+        }
 
         const response = await addToCart(productId, variantId, newVal, 'set');
         if (response.success) {
+            container.dataset.remainingQty = response.availableQty;
             input.value = newVal;
             updateCartSummary();
 
@@ -1615,23 +1665,23 @@ window.handleSortClick = function (selectedBtn) {
 
 
     window.updateQtyIcons = function(container, qty) {
-        const iconWrapper = container.querySelector('.icon-wrapper');
-        const minusBtn = iconWrapper.querySelector('.minus-btn');
-        const trashBtn = iconWrapper.querySelector('.trash-btn');
-        const decrementBtn = container.querySelector('.decrement-btn');
+        const iconWrapper = container?.querySelector('.icon-wrapper');
+        const minusBtn = iconWrapper?.querySelector('.minus-btn');
+        const trashBtn = iconWrapper?.querySelector('.trash-btn');
+        const decrementBtn = container?.querySelector('.decrement-btn');
 
         if (qty <= 1) {
-            minusBtn.classList.add('hidden');
-            trashBtn.classList.remove('hidden');
+            minusBtn?.classList.add('hidden');
+            trashBtn?.classList.remove('hidden');
 
-            decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
-            decrementBtn.classList.remove('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
+            decrementBtn?.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
+            decrementBtn?.classList.remove('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
         } else {
-            trashBtn.classList.add('hidden');
-            minusBtn.classList.remove('hidden');
+            trashBtn?.classList.add('hidden');
+            minusBtn?.classList.remove('hidden');
 
-            decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
-            decrementBtn.classList.add('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
+            decrementBtn?.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
+            decrementBtn?.classList.add('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
         }
     }
 

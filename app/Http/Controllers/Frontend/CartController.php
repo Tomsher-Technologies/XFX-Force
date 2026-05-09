@@ -134,6 +134,7 @@ class CartController extends Controller
                     $query->where('temp_user_id', $guestToken);
                 }
             })
+            ->where('is_pc_builder', 0)
             ->where('status', 'pending')
             ->first();
 
@@ -216,6 +217,17 @@ class CartController extends Controller
             'totalCartItemsCount' => $this->getCount(),
             'price' => format_price($stock->price * $newQty),
             'offerPrice' => format_price($stock->offer_price * $newQty),
+            'cartId' => $cartItem ? $cartItem->id : Cart::where('product_stock_id', $variantId)
+                ->where('status', 'pending')
+                ->where('is_pc_builder', 0)
+                ->where(function ($q) use ($userId, $guestToken) {
+                    if ($userId) {
+                        $q->where('user_id', $userId);
+                    } else {
+                        $q->where('temp_user_id', $guestToken);
+                    }
+                })
+                ->value('id')
         ]);
     }
 

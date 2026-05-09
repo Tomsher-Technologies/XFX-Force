@@ -198,4 +198,18 @@ class BusinessSettingsController extends Controller
         Artisan::call('cache:clear');
         return back();
     }
+
+    public function seo_og_image_settings(Request $request)
+    {
+        BusinessSetting::updateOrCreate([
+            'type' => 'default_seo_og_image'
+        ], [
+            'value' => $request->default_seo_og_image ?? ''
+        ]);
+
+        flash('Settings updated successfully')->success();
+
+        Artisan::call('cache:clear');
+        return back();
+    }
 }

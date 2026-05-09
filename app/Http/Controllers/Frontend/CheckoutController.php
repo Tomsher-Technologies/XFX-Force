@@ -439,20 +439,7 @@ class CheckoutController
 
         reduceProductQuantity($productQuantities);
 
-        /* ---------------- Update PC Builder ---------------- */
-
-        $pcBuilderIds = $carts->where('is_pc_builder', 1)
-                            ->pluck('pc_builder_id')
-                            ->filter()
-                            ->unique();
-
-        if($pcBuilderIds->count()) {
-
-            PcBuilderSetup::whereIn('id', $pcBuilderIds)
-                ->update([
-                    'is_ordered' => 1
-                ]);
-        }
+        
 
         
 
@@ -473,6 +460,19 @@ class CheckoutController
         );
         /* ---------------- Clear Cart ---------------- */
         Cart::where('user_id', $user_id)->delete();
+
+        /* ---------------- Delete PC Builder ---------------- */
+
+        $pcBuilderIds = $carts->where('is_pc_builder', 1)
+                            ->pluck('pc_builder_id')
+                            ->filter()
+                            ->unique();
+
+        if($pcBuilderIds->count()) {
+
+            PcBuilderSetup::whereIn('id', $pcBuilderIds)
+                ->delete();
+        }
 
         return response()->json([
             'status' => true,
