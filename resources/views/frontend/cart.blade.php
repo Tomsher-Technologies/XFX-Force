@@ -101,7 +101,13 @@
                                     @php
                                         $totalReservedQty = \App\Models\Cart::where('product_stock_id', $item->product_stock_id)
                                                 ->where('status', 'pending')
-                                                ->sum('quantity');
+                                                ->where(function($query) use ($guestToken, $user_id) {
+                                                    if ($user_id) {
+                                                        $query->where('user_id', $user_id);
+                                                    } else {
+                                                        $query->where('temp_user_id', $guestToken);
+                                                    }
+                                                })->sum('quantity');
 
                                         $remainingQty = 0;
 
