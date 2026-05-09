@@ -12,7 +12,7 @@
     "src": "public/assets/images/arrow-right.svg"
   },
   "resources/css/app.css": {
-    "file": "assets/app-1c2cd6bd.css",
+    "file": "assets/app-c27e5970.css",
     "isEntry": true,
     "src": "resources/css/app.css"
   },
@@ -24,7 +24,7 @@
     "css": [
       "assets/app-64efd51c.css"
     ],
-    "file": "assets/app-4ab9e365.js",
+    "file": "assets/app-6418135a.js",
     "isEntry": true,
     "src": "resources/js/app.js"
   }
