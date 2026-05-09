@@ -99,6 +99,13 @@
                             <div class="col-span-5">
                                 <div class="flex flex-col md:flex-row gap-[15px] align-center items-center h-full">
                                     @php
+                                    $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+                                    $guestToken = request()->cookie('guest_token');
+
+                                    if (!$guestToken) {
+                                        $guestToken = uniqid('guest_', true);
+                                        cookie()->queue('guest_token', $guestToken, 60 * 24 * 14); // 14 days
+                                    }
                                         $totalReservedQty = \App\Models\Cart::where('product_stock_id', $item->product_stock_id)
                                                 ->where('status', 'pending')
                                                 ->where(function($query) use ($guestToken, $user_id) {
