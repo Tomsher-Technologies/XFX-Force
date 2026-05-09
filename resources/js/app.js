@@ -570,11 +570,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(response => {
                 if (response.success) {
-                    if (response.data.image && swiperInstance) {
+                    // if (response.data.image && swiperInstance) {
                         const newUrl = `/product/${response.data.slug}/${response.data.variant_sku}`;
                         // window.history.replaceState({}, '', newUrl);
                         window.location.href = "/product/" +response.data.slug + "/" +response.data.variant_sku;
-                    }
+                    // }
 
                     const mainPrice = document.querySelector('.price span.main-price');
                     if(mainPrice) mainPrice.textContent = response.data.price;
