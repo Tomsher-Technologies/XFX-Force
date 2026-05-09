@@ -36,7 +36,18 @@
                                             @php 
                                                 $shippingAddress = json_decode($order->shipping_address);
                                             @endphp
-                                            {{ $shippingAddress?->name }}, {{ $shippingAddress?->address }}, {{ $shippingAddress?->city }}, {{ $shippingAddress?->state }}, {{ $shippingAddress?->country }}, , {{ $shippingAddress?->phone }}
+                                            @php
+                                                $shippingParts = array_filter([
+                                                    $shippingAddress?->name,
+                                                    $shippingAddress?->address,
+                                                    $shippingAddress?->city,
+                                                    $shippingAddress?->state,
+                                                    $shippingAddress?->country,
+                                                    $shippingAddress?->phone,
+                                                ]);
+                                            @endphp
+
+                                            {{ implode(', ', $shippingParts) }}
                                         </p>
                                     @endif
                                 </div>

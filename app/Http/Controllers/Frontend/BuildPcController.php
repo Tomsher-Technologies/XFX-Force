@@ -448,6 +448,23 @@ class BuildPcController extends Controller
 
                 if (!$variant) continue;
 
+                $cartQty = Cart::where('product_stock_id', $item['variant_id'])
+                    ->where('status', 'pending')
+                    ->sum('quantity');
+
+                $builderQty = collect($buildData)
+                    ->flatten(1)
+                    ->where('variant_id', $item['variant_id'])
+                    ->sum('quantity');
+
+                $availableQty = $variant->qty - $cartQty;
+
+                if ($item['quantity'] > $availableQty) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Stock changed for {$variant->stock_title}. Only {$availableQty} item available."
+                    ]);
+                }
                 Cart::create([
                     'user_id' => $userId,
                     'temp_user_id' => $userId ? null : $guestToken,
@@ -478,17 +495,19 @@ class BuildPcController extends Controller
         $guestToken = request()->cookie('guest_token');
         $builderId = $request->builder_id;
 
-        Cart::where('pc_builder_id', $builderId)
-            ->where(function($query) use ($guestToken, $user_id) {
-                if($user_id) {
-                    // Logged-in user
-                    $query->where('user_id', $user_id);
-                } else {
-                    // Guest user
-                    $query->where('temp_user_id', $guestToken);
-                }
-            })
-            ->delete();
+        if ($resetType === 'full') {
+            Cart::where('pc_builder_id', $builderId)
+                ->where(function($query) use ($guestToken, $user_id) {
+                    if($user_id) {
+                        // Logged-in user
+                        $query->where('user_id', $user_id);
+                    } else {
+                        // Guest user
+                        $query->where('temp_user_id', $guestToken);
+                    }
+                })
+                ->delete();
+        }
 
         $builder = PcBuilderSetup::where('id', $builderId)
             ->where(function($query) use ($guestToken, $user_id) {

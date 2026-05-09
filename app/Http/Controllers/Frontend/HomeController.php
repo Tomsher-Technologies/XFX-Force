@@ -24,7 +24,7 @@ use Mail;
 
 class HomeController extends Controller
 {
-     public function loadSEO($model)
+    public function loadSEO($model)
     {
         SEOTools::setTitle($model['title']);
         OpenGraph::setTitle($model['title']);
@@ -39,7 +39,7 @@ class HomeController extends Controller
         OpenGraph::setUrl(URL::full());
         OpenGraph::addProperty('locale', 'en_US');
         OpenGraph::addProperty('type', $model['og_type'] ?? 'website');
-        OpenGraph::addImage(uploaded_asset(get_setting('default_invoice_logo')) ?? URL::to(asset('assets/img/logo.png')));
+        OpenGraph::addImage(uploaded_asset(get_setting('default_seo_og_image')) ?? URL::to(asset('assets/img/logo.png')));
 
         JsonLd::setTitle($model['title']);
         JsonLd::setDescription($model['meta_description']);
