@@ -409,6 +409,13 @@ class BuildPcController extends Controller
 
                 $cartQty = Cart::where('product_stock_id', $item['variant_id'])
                     ->where('status', 'pending')
+                    ->where(function($query) use ($guestToken, $user_id) {
+                        if ($user_id) {
+                            $query->where('user_id', $user_id);
+                        } else {
+                            $query->where('temp_user_id', $guestToken);
+                        }
+                    })
                     ->sum('quantity');
 
                 $builderQty = collect($buildData)
