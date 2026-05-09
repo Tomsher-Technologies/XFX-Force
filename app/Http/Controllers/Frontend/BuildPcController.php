@@ -92,26 +92,11 @@ class BuildPcController extends Controller
         $search     = $request->search;
         $sort       = $request->sort;
 
-        // $stocks = ProductStock::with(['product.brand','product.reviews'])
-        //     ->join('products', 'products.id', '=', 'product_stocks.product_id')
-        //     ->where('products.published', 1)
-        //     ->select('product_stocks.*');
-
         $stocks = ProductStock::with(['product.brand', 'product.reviews'])
             ->whereHas('product', function ($query) {
                 $query->where('published', 1);
             })
             ->select('product_stocks.*');
-
-        // category filter
-        // if ($categoryId) {
-        //     $categoryIds = Category::where('id', $categoryId)
-        //         ->orWhere('parent_id', $categoryId)
-        //         ->pluck('id')
-        //         ->toArray();
-
-        //     $stocks->whereIn('products.category_id', $categoryIds);
-        // }
 
         if ($categoryId) {
             $categoryIds = Category::where('id', $categoryId)
@@ -123,11 +108,6 @@ class BuildPcController extends Controller
                 $q->whereIn('category_id', $categoryIds);
             });
         }
-
-        // brand filter
-        // if ($brandId && $brandId != 0) {
-        //     $stocks->where('products.brand_id', $brandId);
-        // }
         if ($brandId && $brandId != 0) {
             $stocks->whereHas('product', function ($q) use ($brandId) {
                 $q->where('brand_id', $brandId);
@@ -139,13 +119,6 @@ class BuildPcController extends Controller
             $stocks->where('product_stocks.model', $modelName);
         }
 
-        // search
-        // if ($search) {
-        //     $stocks->where(function ($query) use ($search) {
-        //         $query->where('product_stocks.stock_title', 'LIKE', "%{$search}%")
-        //             ->orWhere('products.name', 'LIKE', "%{$search}%");
-        //     });
-        // }
 
         if ($search) {
             $stocks->where(function ($query) use ($search) {
@@ -166,26 +139,12 @@ class BuildPcController extends Controller
         }
 
         // PAGINATION
-        // $stocks = $stocks->get();
         $stocks = $stocks->paginate(50);
 
-        // $html = view('frontend.partials.pc-builder-products-list', [
-        //     'stocks' => $stocks
-        // ])->render();
-
-        // return response()->json([
-        //     'html' => $html,
-        //     // 'hasMore' => $stocks->hasMorePages()
-        // ]);
         $html = view('frontend.partials.pc-builder-products-list', [
             'stocks' => $stocks
         ])->render();
 
-        // return response()->json([
-        //     'html' => $html,
-        //     'next_page' => $stocks->nextPageUrl() ? $stocks->currentPage() + 1 : null,
-        //     'has_more' => $stocks->hasMorePages()
-        // ]);
         return response()->json([
             'html' => $html,
             'next_page' => $stocks->hasMorePages() ? $stocks->currentPage() + 1 : null,
