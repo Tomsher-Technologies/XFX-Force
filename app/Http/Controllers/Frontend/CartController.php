@@ -171,13 +171,28 @@ class CartController extends Controller
             ]);
         }
 
+        $builderReservedQty = Cart::where('product_stock_id', $variantId)
+            ->where('is_pc_builder', 1)
+            ->where('status', 'pending')
+            ->where(function ($query) use ($guestToken, $userId) {
+                if ($userId) {
+                    $query->where('user_id', $userId);
+                } else {
+                    $query->where('temp_user_id', $guestToken);
+                }
+            })
+            ->sum('quantity');
+
+            $availableStock = max(0, $stock->qty - $builderReservedQty);
+
         // Stock validation (only when increasing)
         if ($newQty > $stock->qty && $newQty > $currentCartQty) {
             return response()->json([
                 'success' => false,
                 'message' => "Only {$stock->qty} item(s) available.",
                 'cartQty' => $currentCartQty,
-                'availableQty' => max(0, $stock->qty - $currentCartQty)
+                // 'availableQty' => max(0, $stock->qty - $currentCartQty)
+                'availableQty' => max(0, $availableStock - $currentCartQty)
             ]);
         }
 
@@ -213,7 +228,7 @@ class CartController extends Controller
             'success' => true,
             'message' => $message,
             'cartQty' => $newQty,
-            'availableQty' => max(0, $stock->qty - $newQty),
+            'availableQty' => max(0, $availableStock - $newQty),
             'totalCartItemsCount' => $this->getCount(),
             'price' => format_price($stock->price * $newQty),
             'offerPrice' => format_price($stock->offer_price * $newQty),

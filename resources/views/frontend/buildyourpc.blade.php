@@ -1664,8 +1664,8 @@ $hideFooter = true;
         // ---------- stock validation ----------
         const stockQty = parseInt(container.dataset.stockQty) || 0;
         const cartQty = parseInt(container.dataset.cartQty) || 0;
-        const availableQty = stockQty - cartQty;
 
+        const availableQty = stockQty - cartQty + currentVal;
         if (newVal > availableQty) {
             toastr.warning(`Only ${availableQty} item(s) available`);
             return;
