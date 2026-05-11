@@ -923,6 +923,7 @@ if (!function_exists('checkCartQuantityPerVariant')) {
 
         return \App\Models\Cart::where('product_stock_id', $stockId)
             ->where('status', 'pending')
+            ->where('is_pc_builder', 0)
             ->where(function ($query) use ($guestToken, $userId) {
                 if ($userId) {
                     $query->where('user_id', $userId);

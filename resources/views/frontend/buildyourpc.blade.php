@@ -1647,9 +1647,23 @@ $hideFooter = true;
         const nextTotal = currentTotal - currentItemQty + newVal;
 
         // ---------- MAX validation ----------
-        if (change > 0 && nextTotal > maxLimit) {
-            toastr.warning(`Maximum ${maxLimit} items allowed in ${categoryName}`);
-            return;
+        if (change > 0) {
+
+            // ---------- stock validation ----------
+            const stockQty = parseInt(container.dataset.stockQty) || 0;
+            const cartQty = parseInt(container.dataset.cartQty) || 0
+            
+            const addedQty = newVal + cartQty;
+            if (stockQty < addedQty) {
+                toastr.warning(`Item out of stock`);
+                return;
+            }
+
+            // Max validation
+            if(nextTotal > maxLimit) {
+                toastr.warning(`Maximum ${maxLimit} items allowed in ${categoryName}`);
+                return;
+            }
         }
 
         // ---------- MIN validation ----------
@@ -1659,16 +1673,6 @@ $hideFooter = true;
             if (newVal > 0) {
                 return;
             }
-        }
-
-        // ---------- stock validation ----------
-        const stockQty = parseInt(container.dataset.stockQty) || 0;
-        const cartQty = parseInt(container.dataset.cartQty) || 0;
-
-        const availableQty = stockQty - cartQty + currentVal;
-        if (newVal > availableQty) {
-            toastr.warning(`Only ${availableQty} item(s) available`);
-            return;
         }
 
         // ---------- DELETE ----------
