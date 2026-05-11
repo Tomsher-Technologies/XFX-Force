@@ -1469,19 +1469,7 @@ window.handleSortClick = function (selectedBtn) {
                     // location.reload();
                 }
 
-                // if(response.cartQty > 0){
-                //     if (addToCartBtn) addToCartBtn.classList.add('hidden');
-                //     if (counterWrapper) counterWrapper.classList.remove('hidden');
-                //     const qtyInput = counterWrapper?.querySelector('.qty-input');
-                //     if (qtyInput) qtyInput.value = response.cartQty;
-                //     if (counterWrapper) updateQtyIcons(counterWrapper, response.cartQty);
-                    
-                //     if (counterWrapper) counterWrapper.dataset.cartId = response.cartId;
-
-                // }else{
-                //     if (addToCartBtn) addToCartBtn.classList.remove('hidden');
-                //     if (counterWrapper) counterWrapper.classList.add('hidden');
-                // }
+                
 
                 if (response.cartQty > 0) {
 
