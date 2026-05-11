@@ -45,7 +45,7 @@ class BuildPcController extends Controller
                         ->whereIn('category_id', $categoryIds);
                 })
                 ->latest()
-                ->paginate(50);
+                ->paginate(30);
         }
 
         // User / Guest handling
@@ -139,7 +139,7 @@ class BuildPcController extends Controller
         }
 
         // PAGINATION
-        $stocks = $stocks->paginate(50);
+        $stocks = $stocks->paginate(30);
 
         $html = view('frontend.partials.pc-builder-products-list', [
             'stocks' => $stocks
@@ -364,94 +364,100 @@ class BuildPcController extends Controller
 
     public function placePcBuilderOrder(Request $request)
     {
-        $userId = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
+        DB::beginTransaction();
 
-        $guestToken = request()->cookie('guest_token');
+        try {
 
-        if(!$guestToken){
-            $guestToken = uniqid('guest_', true);
-            cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
-        }
+            $userId = auth('frontend')->user()->id ?? null;
+            $guestToken = request()->cookie('guest_token');
 
+            if (!$guestToken) {
+                $guestToken = uniqid('guest_', true);
+                cookie()->queue('guest_token', $guestToken, 60 * 24 * 14);
+            }
 
-        $builderId = $request->builder_id;
-        $builder = PcBuilderSetup::find($builderId);
+            $builderId = $request->builder_id;
+            $builder = PcBuilderSetup::find($builderId);
 
-        if (!$builder) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Builder not found'
-            ]);
-        }
-
-        $buildData = $builder->build_data;
-        $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        // Remove old builder cart items
-        Cart::where('pc_builder_id', $builderId)
-            ->where(function($query) use ($guestToken, $user_id) {
-                    if($user_id) {
-                        // Logged-in user
-                        $query->where('user_id', $user_id);
-                    } else {
-                        // Guest user
-                        $query->where('temp_user_id', $guestToken);
-                    }
-                })
-            ->delete();
-
-        foreach ($buildData as $categoryId => $products) {
-
-            foreach ($products as $item) {
-
-                $variant = ProductStock::find($item['variant_id']);
-
-                if (!$variant) continue;
-
-                $cartQty = Cart::where('product_stock_id', $item['variant_id'])
-                    ->where('status', 'pending')
-                    ->where(function($query) use ($guestToken, $user_id) {
-                        if ($user_id) {
-                            $query->where('user_id', $user_id);
-                        } else {
-                            $query->where('temp_user_id', $guestToken);
-                        }
-                    })
-                    ->sum('quantity');
-
-                $builderQty = collect($buildData)
-                    ->flatten(1)
-                    ->where('variant_id', $item['variant_id'])
-                    ->sum('quantity');
-
-                $availableQty = $variant->qty - $cartQty;
-
-                if ($item['quantity'] > $availableQty) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => "Stock changed for {$variant->stock_title}. Only {$availableQty} item available."
-                    ]);
-                }
-                Cart::create([
-                    'user_id' => $userId,
-                    'temp_user_id' => $userId ? null : $guestToken,
-                    'product_id' => $item['product_id'],
-                    'product_stock_id' => $item['variant_id'],
-                    'quantity' => $item['quantity'],
-                    'price' => $variant->price ?? 0,
-                    'offer_price' => $variant->offer_price ?? 0,
-                    'offer_tag' => $variant->offer_tag ?? null,
-                    'shipping_cost' => 0,
-                    'status' => 'pending',
-                    'pc_builder_id' => $builderId,
-                    'is_pc_builder' => 1                
+            if (!$builder) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Builder not found'
                 ]);
             }
+
+            $buildData = $builder->build_data;
+
+            Cart::where('pc_builder_id', $builderId)
+                ->where(function ($query) use ($guestToken, $userId) {
+                    $userId
+                        ? $query->where('user_id', $userId)
+                        : $query->where('temp_user_id', $guestToken);
+                })
+                ->delete();
+
+            foreach ($buildData as $products) {
+
+                foreach ($products as $item) {
+
+                    $variant = ProductStock::find($item['variant_id']);
+                    if (!$variant) continue;
+
+                    $cartQty = Cart::where('product_stock_id', $item['variant_id'])
+                        ->where('status', 'pending')
+                        ->where(function ($query) use ($guestToken, $userId) {
+                            $userId
+                                ? $query->where('user_id', $userId)
+                                : $query->where('temp_user_id', $guestToken);
+                        })
+                        ->sum('quantity');
+
+                    $availableQty = $variant->qty - $cartQty;
+
+                    if ($item['quantity'] > $availableQty) {
+
+                        DB::rollBack();
+
+                        return response()->json([
+                            'status' => false,
+                            'message' => "Stock changed for " . ($variant->stock_title ?: $variant->product->name) .
+                                        ". Only {$availableQty} item available."
+                        ]);
+                    }
+
+                    Cart::create([
+                        'user_id' => $userId,
+                        'temp_user_id' => $userId ? null : $guestToken,
+                        'product_id' => $item['product_id'],
+                        'product_stock_id' => $item['variant_id'],
+                        'quantity' => $item['quantity'],
+                        'price' => $variant->price ?? 0,
+                        'offer_price' => $variant->offer_price ?? 0,
+                        'offer_tag' => $variant->offer_tag ?? null,
+                        'shipping_cost' => 0,
+                        'status' => 'pending',
+                        'pc_builder_id' => $builderId,
+                        'is_pc_builder' => 1
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Products added to cart'
+            ]);
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
         }
-        
-        return response()->json([
-            'status' => true,
-            'message' => 'Products added to cart'
-        ]);
     }
 
     public function resetConfiguration(Request $request)
