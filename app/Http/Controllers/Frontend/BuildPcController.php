@@ -413,15 +413,21 @@ class BuildPcController extends Controller
                         ->sum('quantity');
 
                     $availableQty = $variant->qty - $cartQty;
+                    $itemName = $variant->stock_title ?: $variant->product->name;
 
-                    if ($item['quantity'] > $availableQty) {
-
+                    if ($availableQty <= 0) {
                         DB::rollBack();
-
                         return response()->json([
                             'status' => false,
-                            'message' => "Stock changed for " . ($variant->stock_title ?: $variant->product->name) .
-                                        ". Only {$availableQty} item available."
+                            'message' => "Item {$itemName} is out of stock."
+                        ]);
+                    }
+
+                    if ($item['quantity'] > $availableQty) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status' => false,
+                            'message' => "Stock changed for {$itemName}. Only {$availableQty} item available."
                         ]);
                     }
 
@@ -528,7 +534,13 @@ class BuildPcController extends Controller
         }
 
         if ($categoryId) {
-            $query->where('p.category_id', $categoryId);
+
+            // get selected category + children
+            $categoryIds = Category::where('id', $categoryId)
+                ->orWhere('parent_id', $categoryId)
+                ->pluck('id');
+
+            $query->whereIn('p.category_id', $categoryIds);
         }
 
         $query->whereNotNull('ps.model')

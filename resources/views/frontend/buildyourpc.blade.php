@@ -153,7 +153,7 @@ $hideFooter = true;
                             </svg>
                         </button>
 
-                        <div id="model-menu" class="hidden absolute top-[70px] left-0 w-64 h-80 overflow-y-auto bg-[#1C2228] border border-[#1E2529] rounded-xl shadow-2xl z-50 p-2">
+                        <div id="model-menu" class="hidden absolute top-[70px] left-0 w-64 max-h-80 overflow-y-auto bg-[#1C2228] border border-[#1E2529] rounded-xl shadow-2xl z-50 p-2">
                             
                         </div>
                     </div>
@@ -413,15 +413,15 @@ $hideFooter = true;
                         <label class="text-gray-500 text-[12px] font-medium uppercase mb-3 block">Sort Results By</label>
                         <div id="mobile-sort-options" class="grid grid-cols-2 gap-3">
                             <button 
-                            onclick="selectSort('price_low_high')" 
-                            class="sort-btn py-3 px-2 bg-[#0B0F13] border border-[#2A7CFF] text-[#2A7CFF] rounded-xl text-[13px] font-medium transition-all active:scale-95"
+                                onclick="selectSort(this, 'price_low_high')" 
+                                class="sort-btn py-3 px-2 bg-[#0B0F13] border border-white/5 text-gray-400 rounded-xl text-[13px] font-medium hover:border-white/20 transition-all active:scale-95"
                             >
                             Price: Low-High
                             </button>
 
                             <button 
-                            onclick="selectSort('price_high_low')" 
-                            class="sort-btn py-3 px-2 bg-[#0B0F13] border border-white/5 text-gray-400 rounded-xl text-[13px] font-medium hover:border-white/20 transition-all active:scale-95"
+                                onclick="selectSort(this, 'price_high_low')" 
+                                class="sort-btn py-3 px-2 bg-[#0B0F13] border border-white/5 text-gray-400 rounded-xl text-[13px] font-medium hover:border-white/20 transition-all active:scale-95"
                             >
                             Price: High-Low
                             </button>
@@ -1430,6 +1430,7 @@ $hideFooter = true;
         if (navItems.length > 0) {
             navItems[0].classList.add('active');
             navItems[0].click();
+            onCategoryClick(navItems[0])
         }
                 
     }
@@ -1708,7 +1709,8 @@ $hideFooter = true;
                         if (isValid) {
                             proceedToOrder();
                         } else {
-                            backToConfiguration();
+                            // backToConfiguration();
+                            editBuilderCategory(container);
                         }
                     }
 
@@ -1827,15 +1829,32 @@ $hideFooter = true;
         }
     });
 
-    function selectSort(sortType) {
-
-        // UI highlight
+    function selectSort(button, sortType) {
+        // remove active styles
         document.querySelectorAll('#mobile-sort-options .sort-btn').forEach(btn => {
-            btn.classList.remove('border-[#2A7CFF]', 'text-[#2A7CFF]');
-            btn.classList.add('text-gray-400');
+
+            btn.classList.remove(
+                'border-[#2A7CFF]',
+                'text-[#2A7CFF]'
+            );
+
+            btn.classList.add(
+                'border-white/5',
+                'text-gray-400'
+            );
         });
 
-        event.target.classList.add('border-[#2A7CFF]', 'text-[#2A7CFF]');
+        // add active styles
+        button.classList.remove(
+            'border-white/5',
+            'text-gray-400',
+            'hover:border-white/20'
+        );
+
+        button.classList.add(
+            'border-[#2A7CFF]',
+            'text-[#2A7CFF]'
+        );
 
         // store sort
         filterState.sort = sortType;
