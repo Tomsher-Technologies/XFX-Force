@@ -400,9 +400,55 @@ let currentView = "gridview";
 			progress.style.right = maxPercent + "%";
 		}
 
-		function inputChanged() {
-			let minVal = parseInt(minInput.value) || 0;
-			let maxVal = parseInt(maxInput.value) || maxPrice;
+		function inputChanged(e) {
+
+			const isMin = e.target.classList.contains('min-price');
+			const isMax = e.target.classList.contains('max-price');
+
+			let minVal = minInput.value.trim();
+			let maxVal = maxInput.value.trim();
+
+			// allow empty typing state
+			if (minVal === '' || maxVal === '') {
+				return;
+			}
+
+			minVal = parseInt(minVal);
+			maxVal = parseInt(maxVal);
+
+			if (isNaN(minVal)) minVal = 0;
+			if (isNaN(maxVal)) maxVal = maxPrice;
+
+			minVal = Math.max(0, Math.min(minVal, maxPrice));
+			maxVal = Math.max(0, Math.min(maxVal, maxPrice));
+
+			minInput.value = minVal;
+			maxInput.value = maxVal;
+
+			// optional: prevent crossing
+			if (minVal > maxVal) {
+				if (isMin) {
+					maxVal = minVal;
+				} else {
+					minVal = maxVal;
+				}
+			}
+
+			minSlider.value = minVal;
+			maxSlider.value = maxVal;
+
+			updateProgress(minVal, maxVal);
+
+			filterProducts();
+		}
+
+		function normalizeInputs() {
+
+			let minVal = parseInt(minInput.value);
+			let maxVal = parseInt(maxInput.value);
+
+			if (isNaN(minVal)) minVal = 0;
+			if (isNaN(maxVal)) maxVal = maxPrice;
 
 			minVal = Math.max(0, Math.min(minVal, maxPrice));
 			maxVal = Math.max(0, Math.min(maxVal, maxPrice));
@@ -414,6 +460,7 @@ let currentView = "gridview";
 			maxSlider.value = maxVal;
 
 			updateProgress(minVal, maxVal);
+
 			filterProducts();
 		}
 
@@ -433,6 +480,9 @@ let currentView = "gridview";
 
 		minInput.addEventListener('input', inputChanged);
 		maxInput.addEventListener('input', inputChanged);
+
+        minInput.addEventListener('blur', normalizeInputs);
+		maxInput.addEventListener('blur', normalizeInputs);
 
 		updateProgress(parseInt(minSlider.value), parseInt(maxSlider.value));
 	}

@@ -83,8 +83,24 @@
 
             </div>
             @php
+            $user_id = auth('frontend')->check() ? auth('frontend')->user()->id : '';
+            $guestToken = request()->cookie('guest_token');
+
+                if (!$guestToken) {
+                    $guestToken = uniqid('guest_', true);
+                    cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
+                }
                 $firstStock = $product->stocks->first();
-                $cartQty = \App\Models\Cart::where('product_stock_id', $prodData['stock_id'])->sum('quantity');
+                $cartQty = \App\Models\Cart::where('product_stock_id', $prodData['stock_id'])
+                ->where('status', 'pending')
+                ->where(function($query) use ($guestToken, $user_id) {
+                    if ($user_id) {
+                        $query->where('user_id', $user_id);
+                    } else {
+                        $query->where('temp_user_id', $guestToken);
+                    }
+                })
+                ->sum('quantity');
             @endphp
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center">
                 <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[18px] leading-[20px] m-[0] font-bold align-center items-center gap-[5px]">
@@ -96,8 +112,10 @@
                     @endif
                 </h5>
                 
-                
-                <div class="flex justify-center items-center gap-2 px-0 lg:px-4 py-2 xl:py-0 align-center {{ ($firstStock->qty == 0 || $cartQty > $firstStock->qty) ? '' : '!hidden' }}" >
+                @php
+                    $remainingQty = $firstStock->qty - $cartQty;
+                @endphp
+                <div class="flex justify-center items-center gap-2 px-0 lg:px-4 py-2 xl:py-0 align-center  {{ ($remainingQty <= 0) ? '' : '!hidden' }}" >
                     <span class="relative flex h-2 w-2" >
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-[#c0392b]"></span>
