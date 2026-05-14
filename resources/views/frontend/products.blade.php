@@ -195,18 +195,14 @@ Log::info($_REQUEST);
 								<div class="w-full price-filter">
 									<div class="flex justify-between items-center mb-8 gap-[20px] align-center">
 										<div class="w-full">
-											<span class="text-gray-400 text-xs block mb-[5px]">Min</span>
+											<span class="text-gray-400 text-xs block mb-[10px]">Min</span>
 											<div class="bg-[#282B34] rounded-[10px] w-full price-input-box">
 												<input type="number" class="min-price w-full bg-transparent font-medium text-[14px] !text-white focus:outline-none border-none" value="0" min="0" max="300000" step="100">
 											</div>
 										</div>
-										<div>
-											<span class="text-gray-400 text-xs block mb-2">&nbsp;</span>
-											<div class="h-[1px] w-4 bg-gray-600"></div>
-										</div>
 										
 										<div class="w-full">
-											<span class="text-gray-400 text-xs block mb-[5px] text-right">Max</span>
+											<span class="text-gray-400 text-xs block mb-[10px] text-right">Max</span>
 											<div class="bg-[#282B34] rounded-[10px] text-right w-full price-input-box">
 												<input type="number" class="max-price w-full !text-white bg-transparent font-medium text-[14px] focus:outline-none text-right !border-none" value="300000" min="0" max="300000" step="100">
 											</div>
