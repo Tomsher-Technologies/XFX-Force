@@ -17,6 +17,9 @@
                 @if(isset($checkout))
                 <input type="hidden" name="checkout" value="true">
                 @endif
+                @if(isset($buildyourpc))
+                <input type="hidden" name="buildyourpc" value="true">
+                @endif
                 <div>
                     <label class="text-gray-500 text-[12px] font-medium uppercase mb-1 block tracking-wider">
                         Email Address <span class="text-red-600">*</span>

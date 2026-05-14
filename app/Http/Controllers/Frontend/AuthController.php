@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Cart;
+use App\Models\PcBuilderSetup;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -90,10 +93,12 @@ class AuthController extends Controller
     {
         $lang = getActiveLanguage();
         $checkout = $request->checkout;
+        $buildyourpc = $request->buildyourpc;
 
         return view('auth.login',[
             'lang' => $lang,
-            'checkout' => $checkout
+            'checkout' => $checkout,
+            'buildyourpc' => $buildyourpc,
         ]);
     }
 
@@ -115,6 +120,47 @@ class AuthController extends Controller
                     return redirect()->route('checkout')
                         ->with('success', 'Login successful! Continue checkout.');
                 }
+
+                // Redirect to buildyourpc page if coming from buildyourpc page.
+                if ($request->buildyourpc) {
+
+                    $userId = Auth::guard('frontend')->id();
+                    $guestToken = request()->cookie('guest_token');
+
+                    Log::debug("Guest token: " . $guestToken);
+
+                    // 1. Get existing user builder (BEFORE deleting)
+                    $oldBuilder = PcBuilderSetup::where('user_id', $userId)->first();
+
+                    Log::debug("Old builder: " . print_r($oldBuilder, true));
+
+                    // 2. Remove PC builder cart items linked to OLD builder
+                    if ($oldBuilder) {
+                        Cart::where('user_id', $userId)
+                            ->where('is_pc_builder', 1)
+                            ->where('pc_builder_id', $oldBuilder->id)
+                            ->delete();
+                    }
+
+                    // 3. Delete old builder
+                    PcBuilderSetup::where('user_id', $userId)->delete();
+
+                    // 4. Get guest builder
+                    $guestBuilder = PcBuilderSetup::where('temp_user_id', $guestToken)->first();
+
+                    Log::debug("Guest builder: " . print_r($guestBuilder, true));
+
+                    // 5. Transfer guest builder to user
+                    if ($guestBuilder) {
+                        $guestBuilder->update([
+                            'user_id' => $userId,
+                            'temp_user_id' => null
+                        ]);
+                    }
+
+                    return redirect()->route('buildyourpc')
+                        ->with('success', 'Login successful! Continue configuring your PC.');
+                }
                 
                 return redirect()->route('home')->with('success', 'Login successful! Welcome back.'); // Redirect to home for customers
             } else {
@@ -130,6 +176,13 @@ class AuthController extends Controller
                 ])->withErrors(['password' => 'Invalid credentials'])->withInput();
         }
 
+        if ($request->has('buildyourpc')) {
+            return redirect()->route('login', [
+                    'buildyourpc' => 1
+                ])->withErrors([
+                    'password' => 'Invalid credentials'
+                ])->withInput();
+        }
         return redirect()->route('login')->withErrors(['password' => 'Invalid credentials'])->withInput();
     }
 
