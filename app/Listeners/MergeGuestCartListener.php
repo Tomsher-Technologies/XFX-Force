@@ -13,7 +13,7 @@ class MergeGuestCartListener
         $user_id = auth('frontend')->check() ? auth('frontend')->user()->id : null;
         $guestToken = request()->cookie('guest_token');
 
-        if (!$guestToken) {
+        if (!$guestToken || !$user_id) {
             return;
         }
 
@@ -45,39 +45,6 @@ class MergeGuestCartListener
             }
         }
 
-        // Pc builder management 
-        $builder = PcBuilderSetup::where('temp_user_id', $guestToken)
-            ->where('is_ordered', false)
-            ->first();
-
-        if ($builder) {
-
-            $existingBuilder = PcBuilderSetup::where('user_id', $user_id)
-                ->where('is_ordered', false)
-                ->first();
-
-            if ($existingBuilder) {
-
-                // merge build_data safely
-                $existingBuilder->build_data = array_merge(
-                    $existingBuilder->build_data ?? [],
-                    $builder->build_data ?? []
-                );
-
-                $existingBuilder->save();
-
-                $builder->delete();
-
-            } else {
-
-                $builder->update([
-                    'user_id' => $user_id,
-                    'temp_user_id' => null
-                ]);
-            }
-        }
-
-        // remove guest cookie after merge
         cookie()->queue(cookie()->forget('guest_token'));
     }
 }
