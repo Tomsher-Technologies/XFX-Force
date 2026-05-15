@@ -54,7 +54,7 @@
                                 <div>
                                     <p class="text-[12px] font-medium text-gray-400 uppercase mb-1">Payment Method</p>
                                     <p class="text-white leading-relaxed">
-                                        {{ ($order->payment_type == 'cash_on_delivery') ? 'Cash on Delivery' :  'Debit / Credit Card' }}<br>
+                                        {{ ($order->payment_type == 'cod') ? 'Cash on Delivery' :  'Debit / Credit Card' }}<br>
                                         <span class="text-[#2A7CFF] text-sm italic">
                                             Expected by {{ \Carbon\Carbon::parse($order->estimated_delivery)->format('F j, Y') }}
 

@@ -90,6 +90,8 @@ Route::post('/pc-builder/delete', [BuildPcController::class, 'deletePcBuilder'])
 
 
 Route::post('/checkout/placeOrder', [CheckoutController::class, 'placeOrder']);
+Route::get('/stripe/success', [CheckoutController::class, 'stripeSuccess'])->name('stripe.success');
+Route::get('/stripe/cancel', [CheckoutController::class, 'stripeCancel'])->name('stripe.cancel');
 
 Route::get('/order-success/{id}', [OrderController::class, 'success'])->middleware('nocache')->name('order.success');
 Route::get('/order-fail', [OrderController::class, 'fail'])->name('order.fail');

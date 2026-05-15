@@ -24,7 +24,7 @@
                         <div class="flex flex-col xl:flex-row justify-between items-center text-center xl:text-left xl:items-start gap-6 w-full">
                             <div class="w-full">
                                 <h2 class="text-[20px] font-medium uppercase text-white mb-1 text-center xl:text-left">Order #{{ $order->code }}</h2>
-                                <p class="text-gray-500 text-sm">Placed on {{ \Carbon\Carbon::parse($order->created_at)->format('F d, Y') }} •  Payment Method: {{ ($order->payment_type == 'cash_on_delivery') ? 'Cash on Delivery' : 'Debit / Credit Card' }}
+                                <p class="text-gray-500 text-sm">Placed on {{ \Carbon\Carbon::parse($order->created_at)->format('F d, Y') }} •  Payment Method: {{ ($order->payment_type == 'cod') ? 'Cash on Delivery' : 'Debit / Credit Card' }}
                                     • {{ $order->orderDetails->count() }} Items Total </p>
                                     
                             </div>

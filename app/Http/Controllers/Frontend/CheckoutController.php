@@ -27,6 +27,8 @@ use App\Mail\EmailManager;
 use App\Models\PcBuilderSetup;
 use Illuminate\Support\Facades\Validator;
 use Mail;
+use Stripe\Stripe;
+use Stripe\Checkout\Session as StripeSession;
 
 class CheckoutController
 {
@@ -101,6 +103,7 @@ class CheckoutController
     {
         $cartController = new CartController();
         $cartSummary = $cartController->getCartSummary();
+        $paymentType = $request->pay ?? 'cod'; // DEFAULT COD
         
         $isGuest = !auth('frontend')->check();
         $billing_shipping_same = $request->same_as_billing ?? null;
@@ -339,8 +342,8 @@ class CheckoutController
             'shipping_type' => 'free_shipping',
             'shipping_cost' => 0,
             'delivery_status' => 'pending',
-            'payment_type' => $request->pay ?? '',
-            'payment_status' => 'un_paid',
+            'payment_type' => $paymentType,
+            'payment_status' => 'unpaid',
             'grand_total' => 0,
             'tax' => 0,
             'warranty_amount' => 0,
@@ -349,7 +352,8 @@ class CheckoutController
             'coupon_discount' => 0,
             'code' => date('Ymd-His') . rand(10, 99),
             'date' => strtotime('now'),
-            'delivery_viewed' => 0
+            'delivery_viewed' => 0,
+            'order_success' => ($paymentType === 'cod') ? 1 : 0,
         ]);
 
         /* ---------------- Tracking ---------------- */
@@ -437,48 +441,139 @@ class CheckoutController
             ]);
         }
 
-        reduceProductQuantity($productQuantities);
+        /* =========================================================
+        CASE 1: COD → FULL PROCESS HERE
+        ========================================================= */
 
+        // dd($paymentType);
+        if ($paymentType === 'cod') {
+
+            reduceProductQuantity($productQuantities);
         
+            // Send mail to customer and admin when order placed.
+            NotificationUtility::sendOrderPlacedNotification($order);
 
-        
+            // Notify admin
+            User::where('user_type', 'admin')->get()
+                ->each(fn($admin) => $admin->notify(new NewOrderNotification($order)));
 
-        // Send mail to customer and admin when order placed.
-        NotificationUtility::sendOrderPlacedNotification($order);
+            // Notify Customer
+            $message = "Your order #{$order->code} has been placed successfully";
+            sendNotification(
+                $order->user,
+                $message,
+                $order,
+                'order_placed'
+            );
 
-        // Notify admin
-        User::where('user_type', 'admin')->get()
-            ->each(fn($admin) => $admin->notify(new NewOrderNotification($order)));
+            /* ---------------- Clear Cart ---------------- */
+            Cart::where('user_id', $user_id)->delete();
 
-        // Notify Customer
-        $message = "Your order #{$order->code} has been placed successfully";
-        sendNotification(
-            $order->user,
-            $message,
-            $order,
-            'order_placed'
-        );
-        /* ---------------- Clear Cart ---------------- */
-        Cart::where('user_id', $user_id)->delete();
+            /* ---------------- Delete PC Builder ---------------- */
+            $pcBuilderIds = $carts->where('is_pc_builder', 1)
+                                ->pluck('pc_builder_id')
+                                ->filter()
+                                ->unique();
 
-        /* ---------------- Delete PC Builder ---------------- */
+            if($pcBuilderIds->count()) {
+                PcBuilderSetup::whereIn('id', $pcBuilderIds)
+                    ->delete();
+            }
 
-        $pcBuilderIds = $carts->where('is_pc_builder', 1)
-                            ->pluck('pc_builder_id')
-                            ->filter()
-                            ->unique();
-
-        if($pcBuilderIds->count()) {
-
-            PcBuilderSetup::whereIn('id', $pcBuilderIds)
-                ->delete();
+            return response()->json([
+                'status' => true,
+                'errors' => '',
+                'redirect' => route('order.success', base64_encode($order->id)),
+            ]);
         }
+
+        /* =========================================================
+        CASE 2: STRIPE (NO STOCK / CART / NOTIFICATION YET)
+        ========================================================= */
+
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $session = StripeSession::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'aed',
+                    'product_data' => [
+                        'name' => 'Order #' . $order->code,
+                    ],
+                    'unit_amount' => intval($grand_total * 100),
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => route('stripe.success') . '?order_id=' . $order->id,
+            'cancel_url' => route('stripe.cancel') . '?order_id=' . $order->id,
+        ]);
+
+        $order->update([
+            'transaction_id' => $session->id,
+            'payment_status' => 'pending',
+        ]);
 
         return response()->json([
             'status' => true,
-            'errors' => '',
-            'redirect' => route('order.success', base64_encode($order->id)), // route('order.success', (string)$order->id)
+            'redirect' => $session->url
         ]);
+
+
+    }
+
+    public function stripeSuccess(Request $request)
+    {
+        $order = Order::find($request->order_id);
+
+        if (!$order) return redirect()->route('order.fail');
+
+        /* STOCK REDUCTION (ONLY AFTER PAYMENT) */
+        $items = OrderDetail::where('order_id', $order->id)->get();
+
+        $productQuantities = [];
+
+        foreach ($items as $item) {
+            $productQuantities[$item->product_id] = $item->quantity;
+        }
+
+        reduceProductQuantity($productQuantities);
+
+        /* CART CLEAR */
+        Cart::where('user_id', $order->user_id)->delete();
+
+        /* PC BUILDER DELETE */
+        $carts = Cart::where('user_id', $order->user_id)->get();
+
+        $pcBuilderIds = $carts->where('is_pc_builder', 1)
+            ->pluck('pc_builder_id')
+            ->filter()
+            ->unique();
+
+        if ($pcBuilderIds->count()) {
+            PcBuilderSetup::whereIn('id', $pcBuilderIds)->delete();
+        }
+
+        $order->update([
+            'payment_status' => 'paid',
+            'order_success' => 1
+        ]);
+
+        NotificationUtility::sendOrderPlacedNotification($order);
+
+        return redirect()->route('order.success', base64_encode($order->id));
+    }
+
+    public function stripeCancel(Request $request)
+    {
+        $order = Order::find($request->order_id);
+
+        if ($order) {
+            $order->delete();
+        }
+
+        return redirect()->route('order.fail');
     }
    
     /**

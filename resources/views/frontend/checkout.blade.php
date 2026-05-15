@@ -254,7 +254,7 @@
 
                                 <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
                                     <div class="flex items-center gap-3">
-                                        <input type="radio" name="pay" checked class="accent-[#2A7CFF]" value="cash_on_delivery">
+                                        <input type="radio" name="pay" checked class="accent-[#2A7CFF]" value="cod">
                                         <span>Cash On Delivery</span>
                                     </div>
                                 </label>
