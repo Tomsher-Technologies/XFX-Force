@@ -90,7 +90,8 @@ class OrderController extends Controller
         $sort_search = null;
         $delivery_status = null;
 
-        $orders = Order::orderBy('id', 'desc');
+        $orders = Order::where('order_success', 1)
+            ->orderBy('id', 'desc');
         if ($request->has('search')) {
             $sort_search = $request->search;
             $orders = $orders->where('code', 'like', '%' . $sort_search . '%');
@@ -173,7 +174,10 @@ class OrderController extends Controller
     public function myOrders()
     {
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
-        $orders = Order::where('user_id', $user_id)->latest()->get();
+        $orders = Order::where('user_id', $user_id)
+            ->where('order_success', 1)
+            ->latest()
+            ->get();
         return view('frontend.order.my-orders', compact('orders'));
     }
 
