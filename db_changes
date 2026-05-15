@@ -451,3 +451,6 @@ ALTER TABLE order_details
 ADD CONSTRAINT fk_order_details_warranty 
 FOREIGN KEY (warranty_id) REFERENCES product_warranties(id) 
 ON DELETE SET NULL;
+
+ALTER TABLE orders ADD order_success TINYINT(1) DEFAULT 0 AFTER delivery_status;
+ALTER TABLE orders ADD transaction_id VARCHAR(255) NULL AFTER payment_status;

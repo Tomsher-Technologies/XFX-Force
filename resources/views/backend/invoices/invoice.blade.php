@@ -133,7 +133,7 @@
                 <strong>Invoice Number:</strong> {{ $order->code }} <br>
                 <hr style="border: 0.5px solid #eee">
                 <strong>Payment Method:</strong> 
-                @if($order->payment_type == 'cash_on_delivery')
+                @if($order->payment_type == 'cod')
                     Cash on Delivery
                 @else
                     Debit / Credit Card
