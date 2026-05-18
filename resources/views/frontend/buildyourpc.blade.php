@@ -221,6 +221,16 @@ $hideFooter = true;
         </section>
         <!--//middle section (review)-->
 
+        <!--empty section-->
+        <section class="col-span-7 h-[calc(100vh-30px)] md:h-full xl:h-[calc(100vh-60px)] overflow-y-auto no-scrollbar overflow-x-hidden px-[0px] xl:px-[15px] pb-[15px] xl:pb-0" id="empty-page">
+           Loading...
+        </section>
+        <!--//empty section-->
+
+        <div id="page-loader" class="fixed inset-0 bg-black/80 z-[999999] flex items-center justify-center">
+            <div class="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+        </div>
+
         <!--right sidebar-->
         <div id="details-overlay" onclick="showDefaultView()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[140] opacity-0 pointer-events-none transition-opacity duration-300 xl:hidden"></div>
         <aside id="details-sidebar" class=" fixed inset-x-4 inset-y-10 z-[150] translate-y-full opacity-0 pointer-events-none transition-all duration-300 xl:translate-y-0 xl:opacity-100 xl:pointer-events-auto xl:relative xl:inset-0 xl:z-auto xl:col-span-3 bg-[#1C2228] border border-[#1E2529] rounded-[20px] flex flex-col shadow-2xl h-[calc(100vh-80px)] xl:h-[calc(100vh-30px)] overflow-hidden">
@@ -1335,6 +1345,11 @@ $hideFooter = true;
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+
+        document.getElementById('products-list-page').classList.add('hidden');
+        document.getElementById('products-review-page').classList.add('hidden');
+        document.getElementById('empty-page').classList.hidden('hidden');
+
         viewSelectedPcBuildProducts();
         setTimeout(() => {
             const isValid = validateMinSelection();
@@ -1343,9 +1358,12 @@ $hideFooter = true;
             } else {
                 backToConfiguration();
             }
-            // updateCategoryCheckIcons();
+
             checkAllCategoriesCompleted();
             updateNavButtons();
+
+            // hide loader after everything ready
+            document.getElementById('page-loader').classList.add('hidden');
 
         }, 300);
     });

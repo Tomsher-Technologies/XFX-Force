@@ -260,8 +260,25 @@ class BuildPcController extends Controller
 
         $defaultVat = get_setting('default_vat') ?? 0;
 
-        foreach ($buildData as $categoryId => $products) {
-            $category = Category::find($categoryId);
+        $settings = PcBuilderCategorySetting::with('category')
+            ->orderBy('sort_order', 'asc')
+            ->get();
+            
+        foreach ($settings as $setting) {
+
+            $category = $setting->category;
+
+            if (!$category) {
+                continue;
+            }
+
+            $categoryId = $category->id;
+
+            if (!isset($buildData[$categoryId])) {
+                continue;
+            }
+
+            $products = $buildData[$categoryId];
 
             foreach ($products as $item) {
                 $product = Product::find($item['product_id']);

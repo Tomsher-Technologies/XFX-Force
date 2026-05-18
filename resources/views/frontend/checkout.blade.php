@@ -830,17 +830,23 @@ function completeYourOrder(e, btn) {
 
             // business failure
             if (data.status === false) {
-                if (data.errors) {
+
+                // show stock errors
+                if (data.errors && data.errors.length > 0) {
                     data.errors.forEach(msg => toastr.error(msg));
-                } else {
-                    toastr.error(data.message || 'Order failed');
+                }
+
+                // show general message (price changed etc.)
+                if (data.message) {
+                    toastr.error(data.message);
                 }
 
                 if (data.redirect) {
                     setTimeout(() => {
                         window.location.href = data.redirect;
-                    }, 2000); // ⏱ 2 sec delay
+                    }, 4000); // increased delay
                 }
+
                 return;
             }
 
