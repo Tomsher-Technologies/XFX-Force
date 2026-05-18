@@ -563,6 +563,10 @@ strong {
     }
 }
 
+.pc-loading * {
+    transition: none !important;
+}
+
 /* Modal Backdrop Animation */
 #returnModal {
     transition: opacity 0.3s ease, visibility 0.3s ease;

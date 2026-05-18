@@ -34,6 +34,7 @@ class CheckoutController
 {
     public function index()
     {
+        Cart::updateCartPricesWithLatestPrices();
         $cartController = new CartController();
         $cartData = $cartController->getCartSummary();
 
@@ -278,6 +279,7 @@ class CheckoutController
 
         /* ---------------- Stock Validation ---------------- */
         $stockErrors = [];
+        $priceChanged = false;
 
         foreach ($carts as $cartItem) {
 
@@ -291,12 +293,20 @@ class CheckoutController
             if ($stock->qty < $cartItem->quantity) {
                 $stockErrors[] = $stock->product->name . " is out of stock.";
             }
+
+            if ( (float) $cartItem->offer_price != (float) $stock->offer_price) {
+                $priceChanged = true;
+            }
         }
 
-        if (!empty($stockErrors)) {
+        if (!empty($stockErrors) || $priceChanged ) {
+            $message = $priceChanged
+            ? 'Your items price has changed. Please review your cart.'
+            : 'Some items are out of stock';
+
             return response()->json([
                 'status' => false,
-                'message' => 'Some items are out of stock',
+                'message' => $message,
                 'errors' => $stockErrors,
                 'redirect' => route('cart')
             ]);
