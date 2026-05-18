@@ -222,7 +222,7 @@ $hideFooter = true;
         <!--//middle section (review)-->
 
         <!--empty section-->
-        <section class="col-span-7 h-[calc(100vh-30px)] md:h-full xl:h-[calc(100vh-60px)] overflow-y-auto no-scrollbar overflow-x-hidden px-[0px] xl:px-[15px] pb-[15px] xl:pb-0" id="empty-page">
+        <section class="hidden col-span-7 h-[calc(100vh-30px)] md:h-full xl:h-[calc(100vh-60px)] overflow-y-auto no-scrollbar overflow-x-hidden px-[0px] xl:px-[15px] pb-[15px] xl:pb-0" id="empty-page">
            Loading...
         </section>
         <!--//empty section-->
@@ -1348,7 +1348,7 @@ $hideFooter = true;
 
         document.getElementById('products-list-page').classList.add('hidden');
         document.getElementById('products-review-page').classList.add('hidden');
-        document.getElementById('empty-page').classList.hidden('hidden');
+        document.getElementById('empty-page').classList.remove('hidden');
 
         viewSelectedPcBuildProducts();
         setTimeout(() => {
@@ -1362,9 +1362,7 @@ $hideFooter = true;
             checkAllCategoriesCompleted();
             updateNavButtons();
 
-            // hide loader after everything ready
-            document.getElementById('page-loader').classList.add('hidden');
-
+            
         }, 300);
     });
 
@@ -1399,6 +1397,10 @@ $hideFooter = true;
 
                 document.getElementById('details-sidebar').classList.add('hidden');
                 document.getElementById('summary-sidebar').classList.remove('hidden');
+
+                document.getElementById('page-loader')?.classList.add('hidden');
+                document.getElementById('empty-page').classList.add('hidden');
+
                 document.querySelectorAll('.nav-item').forEach(cat=>{
                     cat.classList.add('pointer-events-none');
                     cat.classList.remove('active');
@@ -1439,6 +1441,9 @@ $hideFooter = true;
         document.getElementById('bottom-nav-bar').classList.remove('!hidden'); //show bottom bar for list page
         document.getElementById('summary-sidebar').classList.add('hidden');
         document.getElementById('details-sidebar').classList.remove('hidden');
+
+        document.getElementById('page-loader')?.classList.add('hidden');
+        document.getElementById('empty-page').classList.add('hidden');
 
         document.querySelectorAll('.nav-item').forEach(cat=>{
             cat.classList.remove('pointer-events-none');

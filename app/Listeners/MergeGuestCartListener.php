@@ -30,6 +30,7 @@ class MergeGuestCartListener
                 ->where('product_id', $cart->product_id)
                 ->where('product_stock_id', $cart->product_stock_id)
                 ->where('status', 'pending')
+                ->where('is_pc_builder', 0)
                 ->first();
 
             if ($existing) {
