@@ -1316,8 +1316,8 @@ window.closeAllMobileSystems = function() {
     // 1. Reset Sidebar
     const sidebar = document.getElementById('mobile-sidebar');
     if (sidebar) {
-        sidebar.classList.add('left-[-100%]');
-        sidebar.classList.remove('left-0');
+        // sidebar.classList.add('-left-[100%]');
+        // sidebar.classList.remove('left-0');
     }
 
     // 2. Reset Main Overlay
@@ -2207,12 +2207,32 @@ const filter = document.getElementById('filter-wrapper');
 const desktop = document.getElementById('desktop-filter');
 const mobile = document.getElementById('mobile-filter');
 
+// function moveFilter() {
+//     if (window.innerWidth < 1300) {
+//         if(mobile) mobile.appendChild(filter);
+//         // filter.querySelector('form').classList.remove('hidden');
+//     } else {
+//         if(desktop) desktop.appendChild(filter);
+//     }
+// }
+
 function moveFilter() {
+
+    filter.classList.remove('is-mobile', 'is-desktop');
+
     if (window.innerWidth < 1300) {
-        if(mobile) mobile.appendChild(filter);
-        // filter.querySelector('form').classList.remove('hidden');
+
+        if (mobile) {
+            mobile.appendChild(filter);
+            filter.classList.add('is-mobile');
+        }
+
     } else {
-        if(desktop) desktop.appendChild(filter);
+
+        if (desktop) {
+            desktop.appendChild(filter);
+            filter.classList.add('is-desktop');
+        }
     }
 }
 

@@ -619,8 +619,14 @@ Log::info($_REQUEST);
 			document.querySelectorAll('input[name="brands[]"]:checked')
 		).map(el => el.value);
 
-		const visibleFilter = [...document.querySelectorAll('.price-filter')]
-			.find(el => el.offsetParent !== null);
+		// const visibleFilter = [...document.querySelectorAll('.price-filter')]
+		// 	.find(el => el.offsetParent !== null);
+
+		const activeFilterWrapper = document.querySelector(
+			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
+		);
+
+		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
 
 		const min_price = parseInt(
 			visibleFilter?.querySelector('.min-price')?.value
