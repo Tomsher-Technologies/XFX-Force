@@ -175,14 +175,14 @@
                                         <div class="w-full">
                                             <span class="text-gray-400 text-xs block mb-[10px]">Min</span>
                                             <div class="bg-[#282B34] rounded-[10px] w-full price-input-box price-input-box">
-                                                <input type="number" class="min-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none border-0" value="0" min="0" max="300000" step="100">
+                                                <input type="number" class="min-price w-full !text-white bg-transparent font-medium text-[14px] focus:outline-none border-0" value="0" min="0" max="300000" step="100">
                                             </div>
                                         </div>
                                         
                                         <div class="w-full">
                                             <span class="text-gray-400 text-xs block mb-[10px] text-right">Max</span>
                                             <div class="bg-[#282B34] rounded-[10px] w-full price-input-box price-input-box">
-                                                <input type="number" class="max-price w-full text-white bg-transparent font-medium text-[14px] focus:outline-none text-right border-0" value="300000" min="0" max="300000" step="100">
+                                                <input type="number" class="max-price w-full !text-white bg-transparent font-medium text-[14px] focus:outline-none text-right border-0" value="300000" min="0" max="300000" step="100">
                                             </div>
                                         </div>
                                     </div>
@@ -615,8 +615,14 @@ let page = 1;
 			document.querySelectorAll('input[name="brands[]"]:checked')
 		).map(el => el.value);
 
-		const visibleFilter = [...document.querySelectorAll('.price-filter')]
-			.find(el => el.offsetParent !== null);
+		// const visibleFilter = [...document.querySelectorAll('.price-filter')]
+		// 	.find(el => el.offsetParent !== null);
+
+        const activeFilterWrapper = document.querySelector(
+			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
+		);
+
+		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
 
 		const min_price = parseInt(
 			visibleFilter?.querySelector('.min-price')?.value

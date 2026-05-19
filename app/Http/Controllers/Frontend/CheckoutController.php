@@ -301,7 +301,7 @@ class CheckoutController
 
         if (!empty($stockErrors) || $priceChanged ) {
             $message = $priceChanged
-            ? 'Your items price has changed. Please review your cart.'
+            ? 'The item prices have changed. Please review your cart.'
             : 'Some items are out of stock';
 
             return response()->json([
