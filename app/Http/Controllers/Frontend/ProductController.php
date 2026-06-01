@@ -110,6 +110,9 @@ class ProductController extends Controller
 
             $product_query  = Product::wherePublished(1);
             $categoryData = null;
+            if($request->filled('condition')) {
+                $product_query->where('condition', $request->condition);
+            }
             if ($category) {
                 $categoryData = Category::whereHas('category_translations', function ($query) use ($category) {
                     $query->where('slug', $category);
@@ -495,6 +498,10 @@ class ProductController extends Controller
         // Filters
         if ($request->filled('categories')) {
             $products->whereIn('products.category_id', $request->categories);
+        }
+
+        if($request->filled('condition')) {
+            $products->where('products.condition', $request->condition);
         }
 
         if ($request->filled('brands')) {
