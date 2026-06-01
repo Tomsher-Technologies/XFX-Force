@@ -4,9 +4,9 @@
 @section('content')
 
 <!--my orders-->
-    <section class="bg-[#0F161B] w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[100px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px]">
+    <section class="bg-[#0F161B] w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px]">
        <div class="text-white">
-            <div class="w-full mx-auto flex flex-col xl:flex-row gap-[20px] md:gap-[50px] border-t border-[#252b31] pt-0 xl:pt-[80px]">
+            <div class="w-full mx-auto flex flex-col xl:flex-row gap-[20px] md:gap-[50px] border-0 xl:border-t border-[#252b31] pt-0 xl:pt-[80px]">
                 
                 @include('frontend.layouts.sidebar')
 
@@ -85,7 +85,7 @@
                                     </div>
 
                                     <div class="w-full md:w-fit gap-[15px]">
-                                        <a href="{{ route('orders.show', base64_encode($order->id)) }}" class="block w-full text-center bg-[#252C33] hover:bg-[#2A7CFF] text-white text-[13px] tracking-[0.5px] uppercase font-medium px-8 py-4 rounded-xl transition-all">
+                                        <a href="{{ route('orders.show', base64_encode($order->id)) }}" class="block w-full text-center bg-[#252C33] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-white text-[13px] tracking-[0.5px] uppercase font-medium px-8 py-4 rounded-xl transition-all">
                                             View Details
                                         </a>
                                     </div>

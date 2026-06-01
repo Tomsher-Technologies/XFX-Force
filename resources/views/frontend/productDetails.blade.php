@@ -156,10 +156,21 @@
                 xl:text-left tracking-[0px] variant-title mt-[15px]">
                 {{ $firstStock->stock_title ?? $product->name }}
             </h1>
+
             <p class="text-[12px] text-[#ffffff50] text-center xl:text-left py-1">
-                @if($product->brand) {{ $product->brand->name }}  @endif
-                @if($firstStock->model) | {{ $firstStock->model }} @endif
-                @if($firstStock->sku) | {{ $firstStock->sku }} @endif
+                @if($product->brand)
+                    <span class="text-white/70">Brand:</span> {{ $product->brand->name }}
+                @endif
+
+                @if($firstStock->model)
+                    <span class="mx-1">|</span>
+                    <span class="text-white/70">Model:</span> {{ $firstStock->model }}
+                @endif
+
+                @if($firstStock->sku)
+                    <span class="mx-1">|</span>
+                    <span class="text-white/70">SKU:</span> {{ $firstStock->sku }}
+                @endif
             </p>
 
 
@@ -175,9 +186,7 @@
             @endphp
 
             <!-- rating -->
-            <a href="javascript:void(0)" 
-            onclick="window.dispatchEvent(new CustomEvent('open-reviews-tab'));" 
-            class="flex items-center gap-[8px] my-2 justify-center xl:justify-start">
+            <a class="flex items-center gap-[8px] my-2 justify-center xl:justify-start">
 
                 <div class="flex items-center gap-[2px]">
 
@@ -217,7 +226,7 @@
                     {{ number_format($rating, 1) }}
                 </span>
 
-                <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">
+                <span class="text-gray-400 text-[11px] md:text-[13px] font-medium">
                     ({{ $totalReviews }} reviews)
                 </span>
             </a>
@@ -230,6 +239,7 @@
             
 
             <!--varients-->
+            @if($groupedAttributes->isNotEmpty())
             <div class="flex flex-col gap-[30px] md:gap-6 text-center md:text-left border-t md:border-t-0 border-[#ffffff30] mt-[30px] md:mt-[0px] py-[30px] md:py-[0px]">
                 @foreach($groupedAttributes as $attributeName => $attrRows)                
                     @php
@@ -268,7 +278,7 @@
 
                                     // Active logic: exact match with selected SKU
                                     $isActive = isset($selectedLevelValues[$attrId]) && $selectedLevelValues[$attrId] == $valueId
-                                                ? 'active border-1 border-[#2A7CFF] bg-[#2A7CFF]/10 text-white font-medium'
+                                                ? 'active border-1 border-[#2A7CFF] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10 text-white font-medium'
                                                 : '';
 
                                     $btnClass = $isEnabled
@@ -291,6 +301,7 @@
                     </div>
                 @endforeach
             </div>
+            @endif
             <!--//varients-->
             <div id="price-btn-block" class="flex flex-col md:flex-row gap-[30px] border-y border-[#ffffff30] py-[30px] w-full justify-between flex-end items-center md:items-end">
                 <div>
@@ -307,9 +318,9 @@
                 </div>
 
                 <!-- When item exist-->
-                <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block  {{ ($cartQty < $firstStock->qty) ? '' : 'hidden' }}">
+                <div class="button-group flex flex-col md:grid grid-cols-2 gap-[15px] h-fit w-full md:w-fit add-to-cart-block  {{ ($remainingQty > 0) ? '' : 'hidden' }}">
                     <!--counter-->
-                    <div class="counter-wrapper product-item flex items-center gap-4 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 shadow-inner w-full {{ ($cartQty > 0 && $cartQty < $firstStock->qty) ? '' : 'hidden' }}" data-variant-id="{{ $firstStock->id }}" data-cart-id="{{ $cartId }}">
+                    <div class="counter-wrapper product-item flex items-center gap-4 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 shadow-inner w-full {{ ($cartQty > 0 && $remainingQty > 0) ? '' : 'hidden' }}" data-variant-id="{{ $firstStock->id }}" data-cart-id="{{ $cartId }}" data-remaining-qty="{{ $remainingQty }}">
                         <button onclick="updateMultiQty(this, -1)" class="decrement-btn w-full h-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all active:scale-90">
                             <span class="icon-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 minus-btn" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 12H4" /></svg>
@@ -317,8 +328,8 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 trash-btn" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                             </span>
                         </button>
-                        <input type="number" value="{{ $cartQty }}" readonly class="qty-input w-full h-full text-center bg-[#282B34] text-white font-medium focus:outline-none text-[15px] p-[10px] rounded-lg">
-                        <button onclick="updateMultiQty(this, 1)" class="w-full h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg transition-all active:scale-90">
+                        <input type="number" value="{{ $cartQty }}" readonly class="qty-input w-full h-full text-center bg-[#282B34] text-white font-medium focus:outline-none text-[15px] p-[10px] rounded-lg border border-none">
+                        <button onclick="updateMultiQty(this, 1)" class="w-full h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg transition-all active:scale-90">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 4v16m8-8H4" />
                             </svg>
@@ -327,11 +338,11 @@
                     <!--//counter-->
                     
                     <!-- Add to cart button -->
-                    <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer {{ ($cartQty == 0 && $cartQty < $firstStock->qty) ? '' : 'hidden' }}"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
+                    <button class="add-to-cart w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[20px] py-[10px] rounded-[10px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-600 text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white cursor-pointer {{ ($cartQty == 0 && $remainingQty > 0) ? '' : 'hidden' }}" data-variant-id="{{ $firstStock->id }}"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Add to cart</button>
                         
                     
                     <!-- Buy now button -->
-                    <button onclick="buyNow(this)" class="buy-now w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] bg-[#2A7CFF] border border-[#282B34] transition-all duration-600 text-white hover:bg-[#2A7CFF] hover:text-white cursor-pointer {{ ($cartQty < $firstStock->qty) ? '' : 'hidden' }}"><img src="{{ asset('assets/images/cart.svg') }}" alt="" title="" class="mr-[15px]">Buy Now</button>
+                    <button onclick="buyNow(this)" class="buy-now w-full flex flex-row justify-center align-center items-center text-center text-black uppercase text-[14px] font-medium px-[20px] py-[10px] rounded-[10px] bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] border border-[#282B34] transition-all duration-600 text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white cursor-pointer {{ ($remainingQty > 0) ? '' : 'hidden' }}">Buy Now</button>
 
                     <!-- Wishlist button -->
                     
@@ -339,7 +350,7 @@
                 <!-- When item exist -->
 
                 <!--when the item is out of stock-->
-                <div class="button-group flex flex-col xl:grid xl:grid-cols-2 gap-[15px] h-fit w-full md:w-fit out-of-stock-block   {{ ($cartQty === $firstStock->qty && $firstStock->qty == 0) ? '' : '!hidden' }}">
+                <div class="button-group flex flex-col xl:grid xl:grid-cols-2 gap-[15px] h-fit w-full md:w-fit out-of-stock-block {{ ($remainingQty <= 0) ? '' : '!hidden' }}">
                     <div class="flex justify-center items-center gap-2 px-4 py-2 bg-[#c0392b20] border border-[#c0392b50] rounded-[15px] w-full h-full mx-auto md:mx-0 align-center">
                         <span class="relative flex h-2 w-2">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -367,7 +378,7 @@
                         </span>
                     </div>
                 </a>
-                <a href="{{ route('buildyourpc') }}" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30]">
+                <a href="javascript:void(0)" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30] cursor-default">
                     <div class="h-[47px] w-[47px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/return-policy.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
                         <h4 class="text-white text-[18px] mb-[0px]">Return Policy</h4>
@@ -383,7 +394,7 @@
                         </span>
                     </div>
                 </a>
-                <a href="#" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30]">
+                <a href="{{ route('contact') }}" class="flex flex-row gap-[15px] items-center py-[20px] md:py-[0px] border-b md:border-hidden border-[#ffffff30]">
                     <div class="h-[50px] w-[50px] rounded-full border border-[#ffffff30] p-[15px]"><img src="{{ asset('assets/images/need-help.svg')}}" alt="" title=""></div>
                     <div class="flex flex-col">
                         <h4 class="text-white text-[18px] mb-[0px]">Need help?</h4>
@@ -420,11 +431,18 @@
     $productTabs = $product->tabs;
 
     $productWarrantis = $product->warranties;
-    $overviewContent = $selectedStock->stock_description ?? $product->description;
+
+    $stockDesc = trim(strip_tags($selectedStock->stock_description ?? ''));
+    $productDesc = trim(strip_tags($product->description ?? ''));
+
+    $overviewContent = $stockDesc !== '' ? $selectedStock->stock_description : $product->description;
+
+    $cleanOverview = trim(strip_tags($overviewContent));
+
 
     $defaultTab = null;
 
-    if(!empty($overviewContent)) {
+    if(!empty($cleanOverview)) {
         $defaultTab = 'overview';
     } elseif($productSpecifications->isNotEmpty()) {
         $defaultTab = 'specs';
@@ -432,6 +450,8 @@
         $defaultTab = 'services';
     } elseif($productTabs->isNotEmpty()) {
         $defaultTab = 'tab-0';
+    } else {
+        $defaultTab = 'reviews';
     }
     @endphp
 
@@ -443,16 +463,16 @@
             });
         })
      ">
-    <nav class="sticky top-[79px] md:top-[148px] z-50 w-full border-b border-gray-800 bg-[#0F151D] backdrop-blur-md">
-        <div class="max-w-6xl mx-auto flex overflow-x-auto no-scrollbar whitespace-nowrap px-4 justify-start md:justify-center" id="tabs-section">
-            @if(!empty($overviewContent))
+    <nav class="w-full border-b border-gray-800 bg-[#0F151D] backdrop-blur-md">
+        <div class="w-full flex overflow-x-auto no-scrollbar whitespace-nowrap px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] justify-start xl:justify-center" id="tabs-section">
+            @if(!empty($cleanOverview))
                 <a href="javascript:void(0)" @click="activeTab='overview'" :class="activeTab === 'overview' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Overview</a>
             @endif
             @if($productSpecifications->isNotEmpty())
                 <a href="javascript:void(0)" @click="activeTab='specs'" :class="activeTab === 'specs' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Specifications</a>
             @endif
             @if($productWarrantis->isNotEmpty())
-                <a href="javascript:void(0)" @click="activeTab='services'" :class="activeTab === 'services' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Services</a>
+                <a href="javascript:void(0)" @click="activeTab='services'" :class="activeTab === 'services' ? 'active': ''" class="cursor-pointer spy-link px-[30px] py-[20px] uppercase text-[13px] tracking-[1px] font-medium border-b-2 border-transparent transition-all hover:text-white">Warranty</a>
             @endif
             @if($productTabs->isNotEmpty())
                 @foreach($productTabs as $tab)
@@ -468,7 +488,7 @@
         <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-        @if(!empty($overviewContent))
+        @if(!empty($cleanOverview))
         <section x-show="activeTab === 'overview'" x-transition class="tab-panel" id="overview" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px] md:py-[100px]">
             <div class="mt-[30px]">
                 <div class="text-[15px] md:text-[18px] text-justify leading-[30px] text-[#ffffff50]">{!! $overviewContent !!}</div>
@@ -485,13 +505,13 @@
                         @foreach ($specifications as $specification)
                         <li class="bg-[#282B3450] flex flex-row px-[15px] rounded-[5px] py-[15px] justify-between gap-[15px] md:gap-[0px]">
                             <div class="title flex flex-row gap-[20px] w-full">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path class="icon" d="M12.4936 7.50636C12.5936 8.10091 12.7273 9.06545 12.7273 10C12.7273 10.9345 12.5945 11.8991 12.4936 12.4936C11.8991 12.5936 10.9345 12.7273 10 12.7273C9.06545 12.7273 8.10091 12.5945 7.50636 12.4936C7.40636 11.8991 7.27273 10.9345 7.27273 10C7.27273 9.06545 7.40545 8.10091 7.50636 7.50636C8.10091 7.40636 9.06545 7.27273 10 7.27273C10.9345 7.27273 11.8991 7.40545 12.4936 7.50636ZM20 11.8182C20 12.3209 19.5936 12.7273 19.0909 12.7273H18.04C17.9764 13.3845 17.8991 14.0027 17.82 14.5455H18.6364C19.1391 14.5455 19.5455 14.9518 19.5455 15.4545C19.5455 15.9573 19.1391 16.3636 18.6364 16.3636H17.5109C17.4682 16.5809 17.4391 16.7145 17.4336 16.74C17.3582 17.0873 17.0873 17.3582 16.74 17.4336C16.7145 17.4391 16.5809 17.4682 16.3636 17.5109V18.6364C16.3636 19.1391 15.9573 19.5455 15.4545 19.5455C14.9518 19.5455 14.5455 19.1391 14.5455 18.6364V17.82C14.0027 17.8991 13.3845 17.9764 12.7273 18.04V19.0909C12.7273 19.5936 12.3209 20 11.8182 20C11.3155 20 10.9091 19.5936 10.9091 19.0909V18.1627C10.6073 18.1736 10.3036 18.1818 10 18.1818C9.69636 18.1818 9.39273 18.1736 9.09091 18.1627V19.0909C9.09091 19.5936 8.68455 20 8.18182 20C7.67909 20 7.27273 19.5936 7.27273 19.0909V18.04C6.61545 17.9764 5.99727 17.8991 5.45455 17.82V18.6364C5.45455 19.1391 5.04818 19.5455 4.54545 19.5455C4.04273 19.5455 3.63636 19.1391 3.63636 18.6364V17.5109C3.41909 17.4682 3.28545 17.4391 3.26 17.4336C2.91273 17.3582 2.64182 17.0873 2.56636 16.74C2.56091 16.7145 2.53182 16.5809 2.48909 16.3636H1.36364C0.860909 16.3636 0.454545 15.9573 0.454545 15.4545C0.454545 14.9518 0.860909 14.5455 1.36364 14.5455H2.18C2.10091 14.0027 2.02364 13.3845 1.96 12.7273H0.909091C0.406364 12.7273 0 12.3209 0 11.8182C0 11.3155 0.406364 10.9091 0.909091 10.9091H1.83727C1.82636 10.6073 1.81818 10.3036 1.81818 10C1.81818 9.69636 1.82636 9.39273 1.83727 9.09091H0.909091C0.406364 9.09091 0 8.68455 0 8.18182C0 7.67909 0.406364 7.27273 0.909091 7.27273H1.96C2.02364 6.61545 2.10091 5.99727 2.18 5.45455H1.36364C0.860909 5.45455 0.454545 5.04818 0.454545 4.54545C0.454545 4.04273 0.860909 3.63636 1.36364 3.63636H2.48909C2.53182 3.41909 2.56091 3.28545 2.56636 3.26C2.64182 2.91273 2.91273 2.64182 3.26 2.56636C3.28545 2.56091 3.41909 2.53182 3.63636 2.48909V1.36364C3.63636 0.860909 4.04273 0.454545 4.54545 0.454545C5.04818 0.454545 5.45455 0.860909 5.45455 1.36364V2.18C5.99727 2.10091 6.61545 2.02364 7.27273 1.96V0.909091C7.27273 0.406364 7.67909 0 8.18182 0C8.68455 0 9.09091 0.406364 9.09091 0.909091V1.83727C9.39273 1.82636 9.69636 1.81818 10 1.81818C10.3036 1.81818 10.6073 1.82636 10.9091 1.83727V0.909091C10.9091 0.406364 11.3155 0 11.8182 0C12.3209 0 12.7273 0.406364 12.7273 0.909091V1.96C13.3845 2.02364 14.0027 2.10091 14.5455 2.18V1.36364C14.5455 0.860909 14.9518 0.454545 15.4545 0.454545C15.9573 0.454545 16.3636 0.860909 16.3636 1.36364V2.48909C16.5809 2.53182 16.7145 2.56091 16.74 2.56636C17.0873 2.64182 17.3582 2.91273 17.4336 3.26C17.4391 3.28545 17.4682 3.41909 17.5109 3.63636H18.6364C19.1391 3.63636 19.5455 4.04273 19.5455 4.54545C19.5455 5.04818 19.1391 5.45455 18.6364 5.45455H17.82C17.8991 5.99727 17.9764 6.61545 18.04 7.27273H19.0909C19.5936 7.27273 20 7.67909 20 8.18182C20 8.68455 19.5936 9.09091 19.0909 9.09091H18.1627C18.1736 9.39273 18.1818 9.69636 18.1818 10C18.1818 10.3036 18.1736 10.6073 18.1627 10.9091H19.0909C19.5936 10.9091 20 11.3155 20 11.8182ZM14.5455 10C14.5455 8.30546 14.1764 6.60455 14.16 6.53273C14.0836 6.18636 13.8136 5.91636 13.4673 5.84C13.3955 5.82364 11.6945 5.45455 10 5.45455C8.30546 5.45455 6.60455 5.82364 6.53273 5.84C6.18636 5.91636 5.91636 6.18636 5.84 6.53273C5.82364 6.60455 5.45455 8.30546 5.45455 10C5.45455 11.6945 5.82364 13.3955 5.84 13.4673C5.91636 13.8136 6.18636 14.0836 6.53273 14.16C6.60455 14.1764 8.30546 14.5455 10 14.5455C11.6945 14.5455 13.3955 14.1764 13.4673 14.16C13.8136 14.0836 14.0836 13.8136 14.16 13.4673C14.1764 13.3955 14.5455 11.6945 14.5455 10Z" fill="#9F9FA9"></path>
+                                <svg class="!size-[18px]" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path class="icon" d="M12.4936 7.50636C12.5936 8.10091 12.7273 9.06545 12.7273 10C12.7273 10.9345 12.5945 11.8991 12.4936 12.4936C11.8991 12.5936 10.9345 12.7273 10 12.7273C9.06545 12.7273 8.10091 12.5945 7.50636 12.4936C7.40636 11.8991 7.27273 10.9345 7.27273 10C7.27273 9.06545 7.40545 8.10091 7.50636 7.50636C8.10091 7.40636 9.06545 7.27273 10 7.27273C10.9345 7.27273 11.8991 7.40545 12.4936 7.50636ZM20 11.8182C20 12.3209 19.5936 12.7273 19.0909 12.7273H18.04C17.9764 13.3845 17.8991 14.0027 17.82 14.5455H18.6364C19.1391 14.5455 19.5455 14.9518 19.5455 15.4545C19.5455 15.9573 19.1391 16.3636 18.6364 16.3636H17.5109C17.4682 16.5809 17.4391 16.7145 17.4336 16.74C17.3582 17.0873 17.0873 17.3582 16.74 17.4336C16.7145 17.4391 16.5809 17.4682 16.3636 17.5109V18.6364C16.3636 19.1391 15.9573 19.5455 15.4545 19.5455C14.9518 19.5455 14.5455 19.1391 14.5455 18.6364V17.82C14.0027 17.8991 13.3845 17.9764 12.7273 18.04V19.0909C12.7273 19.5936 12.3209 20 11.8182 20C11.3155 20 10.9091 19.5936 10.9091 19.0909V18.1627C10.6073 18.1736 10.3036 18.1818 10 18.1818C9.69636 18.1818 9.39273 18.1736 9.09091 18.1627V19.0909C9.09091 19.5936 8.68455 20 8.18182 20C7.67909 20 7.27273 19.5936 7.27273 19.0909V18.04C6.61545 17.9764 5.99727 17.8991 5.45455 17.82V18.6364C5.45455 19.1391 5.04818 19.5455 4.54545 19.5455C4.04273 19.5455 3.63636 19.1391 3.63636 18.6364V17.5109C3.41909 17.4682 3.28545 17.4391 3.26 17.4336C2.91273 17.3582 2.64182 17.0873 2.56636 16.74C2.56091 16.7145 2.53182 16.5809 2.48909 16.3636H1.36364C0.860909 16.3636 0.454545 15.9573 0.454545 15.4545C0.454545 14.9518 0.860909 14.5455 1.36364 14.5455H2.18C2.10091 14.0027 2.02364 13.3845 1.96 12.7273H0.909091C0.406364 12.7273 0 12.3209 0 11.8182C0 11.3155 0.406364 10.9091 0.909091 10.9091H1.83727C1.82636 10.6073 1.81818 10.3036 1.81818 10C1.81818 9.69636 1.82636 9.39273 1.83727 9.09091H0.909091C0.406364 9.09091 0 8.68455 0 8.18182C0 7.67909 0.406364 7.27273 0.909091 7.27273H1.96C2.02364 6.61545 2.10091 5.99727 2.18 5.45455H1.36364C0.860909 5.45455 0.454545 5.04818 0.454545 4.54545C0.454545 4.04273 0.860909 3.63636 1.36364 3.63636H2.48909C2.53182 3.41909 2.56091 3.28545 2.56636 3.26C2.64182 2.91273 2.91273 2.64182 3.26 2.56636C3.28545 2.56091 3.41909 2.53182 3.63636 2.48909V1.36364C3.63636 0.860909 4.04273 0.454545 4.54545 0.454545C5.04818 0.454545 5.45455 0.860909 5.45455 1.36364V2.18C5.99727 2.10091 6.61545 2.02364 7.27273 1.96V0.909091C7.27273 0.406364 7.67909 0 8.18182 0C8.68455 0 9.09091 0.406364 9.09091 0.909091V1.83727C9.39273 1.82636 9.69636 1.81818 10 1.81818C10.3036 1.81818 10.6073 1.82636 10.9091 1.83727V0.909091C10.9091 0.406364 11.3155 0 11.8182 0C12.3209 0 12.7273 0.406364 12.7273 0.909091V1.96C13.3845 2.02364 14.0027 2.10091 14.5455 2.18V1.36364C14.5455 0.860909 14.9518 0.454545 15.4545 0.454545C15.9573 0.454545 16.3636 0.860909 16.3636 1.36364V2.48909C16.5809 2.53182 16.7145 2.56091 16.74 2.56636C17.0873 2.64182 17.3582 2.91273 17.4336 3.26C17.4391 3.28545 17.4682 3.41909 17.5109 3.63636H18.6364C19.1391 3.63636 19.5455 4.04273 19.5455 4.54545C19.5455 5.04818 19.1391 5.45455 18.6364 5.45455H17.82C17.8991 5.99727 17.9764 6.61545 18.04 7.27273H19.0909C19.5936 7.27273 20 7.67909 20 8.18182C20 8.68455 19.5936 9.09091 19.0909 9.09091H18.1627C18.1736 9.39273 18.1818 9.69636 18.1818 10C18.1818 10.3036 18.1736 10.6073 18.1627 10.9091H19.0909C19.5936 10.9091 20 11.3155 20 11.8182ZM14.5455 10C14.5455 8.30546 14.1764 6.60455 14.16 6.53273C14.0836 6.18636 13.8136 5.91636 13.4673 5.84C13.3955 5.82364 11.6945 5.45455 10 5.45455C8.30546 5.45455 6.60455 5.82364 6.53273 5.84C6.18636 5.91636 5.91636 6.18636 5.84 6.53273C5.82364 6.60455 5.45455 8.30546 5.45455 10C5.45455 11.6945 5.82364 13.3955 5.84 13.4673C5.91636 13.8136 6.18636 14.0836 6.53273 14.16C6.60455 14.1764 8.30546 14.5455 10 14.5455C11.6945 14.5455 13.3955 14.1764 13.4673 14.16C13.8136 14.0836 14.0836 13.8136 14.16 13.4673C14.1764 13.3955 14.5455 11.6945 14.5455 10Z" fill="#9F9FA9"></path>
                                 </svg>
-                                <h5 class="text-[14px] md:text-[15px] text-[#636671] uppercase">{{ $specification['title'] }}</h5>
+                                <h5 class="text-[13px] md:text-[15px] text-[#636671] uppercase w-full">{{ $specification['title'] }}</h5>
                             </div>
                             <div class="value w-full">
-                                <h6 class="text-[14px] md:text-[15px] text-[#C4C4C4] text-left">{{ $specification['value'] }}</h6>
+                                <h6 class="text-[13px] md:text-[15px] text-[#C4C4C4] text-left">{{ $specification['value'] }}</h6>
                             </div>
                         </li>
                         @endforeach
@@ -503,9 +523,6 @@
         @if($productWarrantis->isNotEmpty())
          <section x-show="activeTab === 'services'" x-transition class="tab-panel" id="services" class="content-section scroll-mt-[130px] md:scroll-mt-[200px] py-[50px]">
             <div class="mt-[40px]">
-                <div class="title flex flex-row gap-[20px] w-full mb-[20px]">
-                    <h5 class="text-[15px] text-[#636671] uppercase"> Warranty</h5>
-                </div>
                 <div class="value w-full">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                         @foreach ($productWarrantis as $warranty)
@@ -622,10 +639,14 @@
             </div>
         @else
             <!-- Empty State -->
-            <div class="text-center py-8">
-                <h3 class="text-white text-lg font-medium mb-2">
-                    No Reviews Yet
-                </h3>
+            <div class="flex flex-col gap-[15px] justify-center items-center h-full py-8">
+                <!-- <h3 class="text-white text-sm !font-medium mb-2 font-sans"></h3> -->
+                <svg class="text-gray-600" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 8v4m0 4h.01" />
+                </svg>
+                <h2 class="text-[18px] text-gray-400 font-medium text-center">No Reviews Yet</h2>
+                <!-- <p class="text-[14px] text-gray-600 font-medium text-center">Click on any item to view its details</p> -->
             </div>
         @endif
         </section>
@@ -633,13 +654,14 @@
 </div>
 <!--//specification-->
 
+@if($relatedProducts->isNotEmpty())
 <!--related products-->
 <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] md:py-[100px] relative">
     <div class="section-title mb-[30px] relative flex flex-col xl:flex-row items-center xl:items-end justify-between">
         <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center uppercase text-center xl:text-left leading-[40px] xl:leading-[50px] m-[0] mb-[30px] xl:mb-[0px]">Related Products</h3>
     </div>
     <div class="relative group">
-        <div class="swiper productswiper relative overflow-x-hidden">
+        <div class="swiper productswiper-related relative overflow-x-hidden">
             <div class="swiper-wrapper">
                 @foreach($relatedProducts as $product)
                     @php
@@ -661,13 +683,16 @@
                 </div>
                 @endforeach
             </div>
-        </div>
-        <div class="swiper-pagination !relative flex flex-start mt-[50px] hidden xl:block"></div>
-        <div class="controls relative xl:!absolute right-[0px] m-auto mt-[30px] xl:mt-[0px] xl:top-[-80px] flex items-center gap-[30px] justify-center xl:justify-end">
-            <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
-            <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
+            <div class="block flex-row w-full relative mt-[30px]">
+                <!-- <div class="swiper-pagination !relative mt-0 m-auto w-full hidden xl:block justify-start opacity-0"></div> -->
+                <div class="controls relative right-[0px] left-[0px] m-auto mt-[30px] xl:mt-0 flex flex-row items-center gap-[10px] justify-center xl:justify-end">
+                    <div class="swiper-button-prev-related !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                    <div class="swiper-button-next-related !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 <!--//related products-->
+@endif
 @endsection

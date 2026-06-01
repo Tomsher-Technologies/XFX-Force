@@ -49,7 +49,7 @@ class ProductController extends Controller
         $query = null;
         $seller_id = null;
         $sort_search = null;
-        $products = Product::orderBy('created_at', 'asc');
+        $products = Product::orderBy('created_at', 'desc');
         $category = ($request->has('category')) ? $request->category : '';
 
         if ($request->type != null) {
@@ -366,21 +366,39 @@ class ProductController extends Controller
                 $stock->stock_title = $variantData['stock_title'] ?? '';
 
 
-                if(isset($variantData['variant_images']) && $request->hasFile("variants.$index.variant_images")){
+                if (isset($variantData['variant_images']) && $request->hasFile("variants.$index.variant_images")) {
+
                     $stock_images_gallery = [];
 
-                    foreach($request->file("variants.$index.variant_images") as $key => $file){
-                        $stock_images_gallery[] = ImageHelper::downloadAndResizeImage(
-                            'sub_product', 
-                            $file, 
-                            $product->sku, 
-                            true,
-                            $key + 1
-                        );
+                    $files = $request->file("variants.$index.variant_images");
+
+                    if (is_array($files)) {
+
+                        foreach ($files as $fileIndex => $file) {
+
+                            if (!$file || !$file->isValid()) continue;
+
+                            // 🔥 STRONG UNIQUE COUNT (prevents collisions)
+                            $uniqueCount = $index . '_' . $fileIndex . '_' . uniqid();
+
+                            $savedPath = ImageHelper::downloadAndResizeImage(
+                                'sub_product',
+                                $file,
+                                $stock->sku . '_' . $uniqueCount,
+                                false,
+                                $fileIndex + 1
+                            );
+
+                            $stock_images_gallery[] = $savedPath;
+                        }
                     }
 
-                    // Option 1: Save as comma-separated string (quick)
-                    $stock->image = implode(',', $stock_images_gallery);
+                    // 🔥 HARD CLEAN (remove duplicates safely)
+                    $stock_images_gallery = array_values(array_unique(array_filter($stock_images_gallery)));
+
+                    $stock->image = !empty($stock_images_gallery)
+                        ? implode(',', $stock_images_gallery)
+                        : null;
                 }
 
                 $offertag = '';
@@ -509,10 +527,26 @@ class ProductController extends Controller
         $product->discount_type     = $request->discount_type;
         $product->unit_price        = $request->has('price') ? $request->price : 0;
 
-        $tags = array();
-        if (isset($request->tags[0]) && $request->tags[0] != null) {
-            foreach (json_decode($request->tags[0]) as $key => $tag) {
-                array_push($tags, $tag->value);
+        // $tags = array();
+        // if (isset($request->tags[0]) && $request->tags[0] != null) {
+        //     foreach (json_decode($request->tags[0]) as $key => $tag) {
+        //         array_push($tags, $tag->value);
+        //     }
+        // }
+
+        $tags = [];
+
+        if ($request->filled('tags') && isset($request->tags[0])) {
+
+            $decodedTags = json_decode($request->tags[0]);
+
+            if (is_array($decodedTags) || is_object($decodedTags)) {
+
+                foreach ($decodedTags as $tag) {
+                    if (isset($tag->value)) {
+                        $tags[] = $tag->value;
+                    }
+                }
             }
         }
 
@@ -586,12 +620,27 @@ class ProductController extends Controller
         $seo                        = ProductSeo::firstOrNew(['lang' => $request->lang, 'product_id' => $product->id]);
         $seo->meta_title            = $request->meta_title ?? $product->name;
         $seo->meta_description      = $request->meta_description;
-        $keywords = array();
-        if (isset($request->meta_keywords[0]) && $request->meta_keywords[0] != null) {
-            foreach (json_decode($request->meta_keywords[0]) as $key => $keyword) {
-                array_push($keywords, $keyword->value);
+        // $keywords = array();
+        // if (isset($request->meta_keywords[0]) && $request->meta_keywords[0] != null) {
+        //     foreach (json_decode($request->meta_keywords[0]) as $key => $keyword) {
+        //         array_push($keywords, $keyword->value);
+        //     }
+        // }
+
+        $keywords = [];
+
+        $metaInput = $request->meta_keywords[0] ?? null;
+
+        $decodedKeywords = json_decode($metaInput);
+
+        if (!empty($decodedKeywords) && is_iterable($decodedKeywords)) {
+            foreach ($decodedKeywords as $keyword) {
+                if (isset($keyword->value)) {
+                    $keywords[] = $keyword->value;
+                }
             }
         }
+
         $seo->meta_keywords         = implode(',', $keywords);
         $seo->og_title              = $request->og_title ?? $product->name;
         $seo->og_description        = $request->og_description;
@@ -599,9 +648,9 @@ class ProductController extends Controller
         $seo->twitter_description   = $request->twitter_description;
         $seo->save();
 
+        ProductTabs::where('product_id', $product->id)->delete();
         //save product tabs
         if ($request->has('tabs')) {
-            ProductTabs::where('product_id', $product->id)->delete();
             foreach ($request->tabs as $tab) {
                 if ($tab['tab_heading'] != '' && $tab['tab_description'] != '') {
                     $p_tab = $product->tabs()->create([
@@ -613,9 +662,10 @@ class ProductController extends Controller
             }
         }
 
+        ProductWarranty::where('product_id', $product->id)->delete();
         // saving warranty
         if ($request->has('extended_warranty')) {
-            ProductWarranty::where('product_id', $product->id)->delete();
+            
             foreach ($request->extended_warranty as $warranty) {
                 if (!empty($warranty['warranty_title']) && !empty($warranty['warranty_months'])) {
                     $product->warranties()->create([
@@ -750,24 +800,42 @@ class ProductController extends Controller
                 $stock->model = $variantData['model'] ?? '';
                 $stock->stock_title = $variantData['stock_title'] ?? '';
                 
-                if($request->hasFile("variants.$index.variant_images")) {
-                    // Existing images
-                    $old_stock_gallery = $stock->image ? explode(',', $stock->image) : [];
+                if ($request->hasFile("variants.$index.variant_images")) {
 
-                    // New uploaded images
+                    // Clean existing images safely
+                    $old_stock_gallery = array_values(array_filter(
+                        $stock->image ? explode(',', $stock->image) : []
+                    ));
+
                     $new_stock_gallery = [];
-                    foreach($request->file("variants.$index.variant_images") as $key => $file){
-                        $new_stock_gallery[] = ImageHelper::downloadAndResizeImage(
-                            'sub_product',
-                            $file,
-                            $product->sku,
-                            true
-                        );
+
+                    $files = $request->file("variants.$index.variant_images");
+
+                    if (is_array($files)) {
+                        foreach ($files as $fileIndex => $file) {
+
+                            if (!$file || !$file->isValid()) continue;
+
+                            $uniqueKey = $stock->sku . '_' . $index . '_' . $fileIndex . '_' . uniqid();
+
+                            $new_stock_gallery[] = ImageHelper::downloadAndResizeImage(
+                                'sub_product',
+                                $file,
+                                $uniqueKey,
+                                false,
+                                $fileIndex + 1
+                            );
+                        }
                     }
 
-                    // Only append new images to existing DB values
-                    $stock->image = implode(',', array_merge($old_stock_gallery, $new_stock_gallery));
+                    // Merge + HARD CLEAN
+                    $merged = array_values(array_unique(array_filter(
+                        array_merge($old_stock_gallery, $new_stock_gallery)
+                    )));
+
+                    $stock->image = !empty($merged) ? implode(',', $merged) : null;
                 }
+
                 $offertag = '';
                 $productOrgPrice = $variantData['price'];
                 $discountPrice = $productOrgPrice;
@@ -1005,5 +1073,23 @@ class ProductController extends Controller
         } else {
             return 0;
         }
+    }
+
+    public function checkSku(Request $request)
+    {
+        $sku = $request->sku;
+
+        $query = ProductStock::where('sku', $sku);
+
+        // ignore current variant
+        if ($request->stock_id) {
+            $query->where('id', '!=', $request->stock_id);
+        }
+
+        $exists = $query->exists();
+        
+        return response()->json([
+            'exists' => $exists
+        ]);
     }
 }

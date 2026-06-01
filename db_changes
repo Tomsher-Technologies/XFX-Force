@@ -436,4 +436,21 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 
 -- ALTER TABLE `reviews` CHANGE `rating` `rating` DECIMAL(2,1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `orders` ADD `pickup_location` TEXT NULL DEFAULT NULL AFTER `shipping_type`;
+-- ALTER TABLE `orders` ADD `pickup_location` TEXT NULL DEFAULT NULL AFTER `shipping_type`;
+
+ALTER TABLE `order_details`
+ADD `is_returnable` TINYINT(1) NOT NULL DEFAULT 0
+AFTER `return_expiry_date`;
+
+ALTER TABLE orders 
+ADD COLUMN has_warranty TINYINT(1) NOT NULL DEFAULT 0 AFTER warranty_amount;
+ALTER TABLE order_details 
+ADD COLUMN warranty_id BIGINT UNSIGNED NULL AFTER product_stock_id;
+
+ALTER TABLE order_details 
+ADD CONSTRAINT fk_order_details_warranty 
+FOREIGN KEY (warranty_id) REFERENCES product_warranties(id) 
+ON DELETE SET NULL;
+
+ALTER TABLE orders ADD order_success TINYINT(1) DEFAULT 0 AFTER delivery_status;
+ALTER TABLE orders ADD transaction_id VARCHAR(255) NULL AFTER payment_status;

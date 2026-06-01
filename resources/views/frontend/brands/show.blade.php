@@ -5,14 +5,14 @@
 
     <!--about banner intro-->
     <section
-        class="min-h-screen relative justify-between w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px] border-b-1 border-gray-800 xl:border-none">
+        class="min-h-screen relative justify-between w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px] border-b border-gray-800 xl:border-none">
 
         <img src="{{ uploaded_asset($details['image1'] ?? '') }}" alt="" title=""
             class="absolute left-0 top-0 w-full h-full object-cover object-center z-[-1]">
 
         <!--breadcrumb-->
         <div>
-            <nav class="flex text-gray-400 py-[15px] md:py-[30px] border-t-1 border-[#ffffff30] w-full"
+            <nav class="flex text-gray-400 py-[15px] md:py-[30px] border-t border-[#ffffff30] w-full"
                 aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3 flex-wrap">
                     <li class="inline-flex items-center">
@@ -60,7 +60,7 @@
 
     <!--about-->
     <section
-        class="h-full xl:min-h-screen relative flex flex-col bg-black justify-start xl:justify-between w-full px-[16px] md:px-[30px] xl:px-[250px] py-[40px] xl:py-[100px] border-b-1 border-gray-800 xl:border-none">
+        class="h-full xl:min-h-screen relative flex flex-col bg-black justify-start xl:justify-between w-full px-[16px] md:px-[30px] xl:px-[250px] py-[40px] xl:py-[100px] border-b border-gray-800 xl:border-none">
 
         <img src="{{ uploaded_asset($details['image2'] ?? '') }}" alt="" title=""
             class="hidden xl:block absolute left-0 top-0 w-full h-full object-contain object-center z-[0]">

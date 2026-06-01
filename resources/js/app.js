@@ -340,8 +340,44 @@ window.selectWarranty = async function (selectedElement) {
                 // find warranty name from the selected element
                 console.log(selectedElement.dataset);
                 const warrantyName = selectedElement.dataset.warrantyname || 'Warranty'; 
-                warrantyLink.innerHTML = `<i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i> Warranty: ${warrantyName}`;
+                const warrantyPrice = selectedElement.dataset.warrantyprice || 0;
+
+                warrantyLink.classList.remove(
+                    'xl:text-left',
+                    'py-[5px]',
+                    'justify-center',
+                    'md:justify-start'
+                );
+
+                warrantyLink.classList.add(
+                    'md:text-left',
+                    'p-[15px]',
+                    'bg-[#1A202A]',
+                    'rounded-full',
+                    'justify-between'
+                );
+
+
+                warrantyLink.innerHTML = `
+                    ${warrantyName} (${warrantyPrice > 0 ? warrantyPrice : 'FREE'})
+                    <span>✕</span>
+                `
             } else {
+                warrantyLink.classList.remove(
+                    'md:text-left',
+                    'p-[15px]',
+                    'bg-[#1A202A]',
+                    'rounded-full',
+                    'justify-between'
+                );
+
+                warrantyLink.classList.add(
+                    'xl:text-left',
+                    'py-[5px]',
+                    'justify-center',
+                    'md:justify-start'
+                );
+
                 warrantyLink.innerHTML = `<i class="h-[20px] w-[20px] rounded-full block bg-[#262B35] flex flex-center items-center text-center justify-center text-[14px] tracking-[1px] cursor-pointer">+</i> Choose Your Warranty Plan`;
             }
         }
@@ -449,13 +485,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Activate clicked button
             btn.classList.remove('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
-            btn.classList.add('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+            btn.classList.add('active', 'border-1', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'text-white', 'font-medium');
 
             // Deactivate siblings
             const siblings = btn.parentElement.querySelectorAll('.variant-btn');
             siblings.forEach(function (sibling) {
                 if (sibling !== btn) {
-                    sibling.classList.remove('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+                    sibling.classList.remove('active', 'border-1', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'text-white', 'font-medium');
                     sibling.classList.add('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
                 }
             });
@@ -465,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const btnIndex = parseInt(button.dataset.attrIndex);
                 if (btnIndex > clickedIndex) {
                     button.disabled = true;
-                    button.classList.remove('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+                    button.classList.remove('active', 'border-1', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'text-white', 'font-medium');
                     button.classList.add('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
                     button.style.opacity = '0.3';
                     button.style.cursor = 'not-allowed';
@@ -497,7 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             if (!hasActive && buttons.length > 0) {
                                 const firstBtn = buttons[0];
-                                firstBtn.classList.add('active', 'border-1', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'text-white', 'font-medium');
+                                firstBtn.classList.add('active', 'border-1', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'text-white', 'font-medium');
                                 firstBtn.classList.remove('border', 'border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'hover:border-[#ffffff30]');
                             }
 
@@ -534,11 +570,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(response => {
                 if (response.success) {
-                    if (response.data.image && swiperInstance) {
+                    // if (response.data.image && swiperInstance) {
                         const newUrl = `/product/${response.data.slug}/${response.data.variant_sku}`;
                         // window.history.replaceState({}, '', newUrl);
                         window.location.href = "/product/" +response.data.slug + "/" +response.data.variant_sku;
-                    }
+                    // }
 
                     const mainPrice = document.querySelector('.price span.main-price');
                     if(mainPrice) mainPrice.textContent = response.data.price;
@@ -669,65 +705,328 @@ var swiper = new Swiper(".cateswiper", {
     },
 });
 
-var swiper = new Swiper(".gamepcswiper", {
-    slidesPerView: 4,
-    spaceBetween: 15,
-    grabCursor: true,
-    pagination: {
-        el: ".swiper-pagination",
-        dynamicBullets: true,
-    },
-    loop: true,
-    speed: 5000,
-    freeMode: false,
-    parallax: true,
-    navigation: {
-        prevEl: ".swiper-button-prev",
-        nextEl: ".swiper-button-next",
-    },
-    autoplay: { delay: 3000, disableOnInteraction: false },
-    allowTouchMove: true,
-    breakpoints: {
-        320: { slidesPerView: 1, spaceBetween: 15 },
-        640: { slidesPerView: 2, spaceBetween: 15 },
-        768: { slidesPerView: 2, spaceBetween: 15 },
-        1024: { slidesPerView: 3, spaceBetween: 15 },
-        1280: { slidesPerView: 3, spaceBetween: 15 },
-        1300: { slidesPerView: 3, spaceBetween: 15 },
-        1366: { slidesPerView: 3, spaceBetween: 15 },
-        1400: { slidesPerView: 4, spaceBetween: 15 },
-    },
+// var swiper = new Swiper(".gamepcswiper", {
+//     slidesPerView: 4,
+//     spaceBetween: 15,
+//     grabCursor: true,
+//     observer: true, 
+//     observeParents: true,
+//     observeSlideChildren: true,
+//     pagination: {
+//         el: ".swiper-pagination",
+//         dynamicBullets: true,
+//     },
+//     loop: true,
+//     speed: 5000,
+//     freeMode: false,
+//     parallax: true,
+//     navigation: {
+//         prevEl: ".swiper-button-prev",
+//         nextEl: ".swiper-button-next",
+//     },
+//     autoplay: { delay: 3000, disableOnInteraction: false },
+//     allowTouchMove: true,
+//     breakpoints: {
+//         320: { slidesPerView: 1, spaceBetween: 15 },
+//         640: { slidesPerView: 2, spaceBetween: 15 },
+//         768: { slidesPerView: 2, spaceBetween: 15 },
+//         1024: { slidesPerView: 3, spaceBetween: 15 },
+//         1280: { slidesPerView: 3, spaceBetween: 15 },
+//         1300: { slidesPerView: 3, spaceBetween: 15 },
+//         1366: { slidesPerView: 3, spaceBetween: 15 },
+//         1400: { slidesPerView: 4, spaceBetween: 15 },
+//     },
+// });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all swipers on page load
+    const initAllSwipers = () => {
+        document.querySelectorAll('.gamepcswiper-new').forEach(el => {
+            new Swiper(el, {
+                slidesPerView: 4,
+                spaceBetween: 15,
+                loop: true,
+                grabCursor: true,
+                observer: true, 
+                observeParents: true,
+                observeSlideChildren: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    prevEl: ".swiper-button-prev-new",
+                    nextEl: ".swiper-button-next-new",
+                },
+                breakpoints: {
+                    320: { slidesPerView: 1, spaceBetween: 15 },
+                    640: { slidesPerView: 2, spaceBetween: 15 },
+                    768: { slidesPerView: 2, spaceBetween: 15 },
+                    1024: { slidesPerView: 3, spaceBetween: 15 },
+                    1280: { slidesPerView: 3, spaceBetween: 15 },
+                    1300: { slidesPerView: 3, spaceBetween: 15 },
+                    1366: { slidesPerView: 3, spaceBetween: 15 },
+                    1400: { slidesPerView: 4, spaceBetween: 15 },
+                }
+            });
+        });
+
+        document.querySelectorAll('.gamepcswiper-pop').forEach(el => {
+            new Swiper(el, {
+                slidesPerView: 4,
+                spaceBetween: 15,
+                loop: true,
+                grabCursor: true,
+                observer: true, 
+                observeParents: true,
+                observeSlideChildren: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    prevEl: ".swiper-button-prev-pop",
+                    nextEl: ".swiper-button-next-pop",
+                },
+                breakpoints: {
+                    320: { slidesPerView: 1, spaceBetween: 15 },
+                    640: { slidesPerView: 2, spaceBetween: 15 },
+                    768: { slidesPerView: 2, spaceBetween: 15 },
+                    1024: { slidesPerView: 3, spaceBetween: 15 },
+                    1280: { slidesPerView: 3, spaceBetween: 15 },
+                    1300: { slidesPerView: 3, spaceBetween: 15 },
+                    1366: { slidesPerView: 3, spaceBetween: 15 },
+                    1400: { slidesPerView: 4, spaceBetween: 15 },
+                }
+            });
+        });
+
+    };
+
+    initAllSwipers();
 });
 
-var swiper = new Swiper(".productswiper", {
-    slidesPerView: 2,
-    spaceBetween: 15,
-    grabCursor: true,
-    pagination: {
-        el: ".swiper-pagination",
-        dynamicBullets: true,
-    },
-    dots: true,
-    loop: true,
-    speed: 5000,
-    freeMode: false,
-    parallax: true,
-    navigation: {
-        prevEl: ".swiper-button-prev",
-        nextEl: ".swiper-button-next",
-    },
-    autoplay: { delay: 3000, disableOnInteraction: false },
-    allowTouchMove: true,
-    breakpoints: {
-        640: { slidesPerView: 1.1, spaceBetween: 15, centeredSlides: true },
-        768: { slidesPerView: 2, spaceBetween: 15 },
-        1024: { slidesPerView: 3, spaceBetween: 15 },
-        1280: { slidesPerView: 4, spaceBetween: 15 },
-        1300: { slidesPerView: 4, spaceBetween: 15 },
-        1366: { slidesPerView: 4, spaceBetween: 15 },
-        1400: { slidesPerView: 5, spaceBetween: 15 },
-    },
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all swipers on page load
+    const initAllSwipers = () => {
+        document.querySelectorAll('.productswiper-up-new').forEach(el => {
+            new Swiper(el, {
+                slidesPerView: 2,
+                spaceBetween: 5,
+                grabCursor: true,
+                observer: true, 
+                observeParents: true,
+                observeSlideChildren: true,
+                speed: 3000,
+                autoplay: { delay: 3000, disableOnInteraction: false },
+                allowTouchMove: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    prevEl: ".swiper-button-prev-new",
+                    nextEl: ".swiper-button-next-new",
+                },
+                breakpoints: {
+                    640: { slidesPerView: 3, spaceBetween: 5},
+                    768: { slidesPerView: 2, spaceBetween: 15 },
+                    1024: { slidesPerView: 3, spaceBetween: 15 },
+                    1280: { slidesPerView: 4, spaceBetween: 15 },
+                    1300: { slidesPerView: 4, spaceBetween: 15 },
+                    1366: { slidesPerView: 4, spaceBetween: 15 },
+                    1400: { slidesPerView: 5, spaceBetween: 15 },
+                }
+            });
+        });
+        document.querySelectorAll('.productswiper-up-pop').forEach(el => {
+            new Swiper(el, {
+                slidesPerView: 2,
+                spaceBetween: 5,
+                grabCursor: true,
+                observer: true, 
+                observeParents: true,
+                observeSlideChildren: true,
+                speed: 3000,
+                autoplay: { delay: 3000, disableOnInteraction: false },
+                allowTouchMove: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    prevEl: ".swiper-button-prev-pop",
+                    nextEl: ".swiper-button-next-pop",
+                },
+                breakpoints: {
+                    640: { slidesPerView: 3, spaceBetween: 5},
+                    768: { slidesPerView: 2, spaceBetween: 15 },
+                    1024: { slidesPerView: 3, spaceBetween: 15 },
+                    1280: { slidesPerView: 4, spaceBetween: 15 },
+                    1300: { slidesPerView: 4, spaceBetween: 15 },
+                    1366: { slidesPerView: 4, spaceBetween: 15 },
+                    1400: { slidesPerView: 5, spaceBetween: 15 },
+                }
+            });
+        });
+        document.querySelectorAll('.productswiper-ftr-new').forEach(el => {
+            new Swiper(el, {
+                slidesPerView: 2,
+                spaceBetween: 5,
+                grabCursor: true,
+                observer: true, 
+                observeParents: true,
+                observeSlideChildren: true,
+                speed: 3000,
+                autoplay: { delay: 3000, disableOnInteraction: false },
+                allowTouchMove: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    prevEl: ".swiper-button-prev-new",
+                    nextEl: ".swiper-button-next-new",
+                },
+                breakpoints: {
+                    640: { slidesPerView: 3, spaceBetween: 5},
+                    768: { slidesPerView: 2, spaceBetween: 15 },
+                    1024: { slidesPerView: 3, spaceBetween: 15 },
+                    1280: { slidesPerView: 4, spaceBetween: 15 },
+                    1300: { slidesPerView: 4, spaceBetween: 15 },
+                    1366: { slidesPerView: 4, spaceBetween: 15 },
+                    1400: { slidesPerView: 5, spaceBetween: 15 },
+                }
+            });
+        });
+        document.querySelectorAll('.productswiper-ftr-pop').forEach(el => {
+            new Swiper(el, {
+                slidesPerView: 2,
+                spaceBetween: 5,
+                grabCursor: true,
+                observer: true, 
+                observeParents: true,
+                observeSlideChildren: true,
+                speed: 3000,
+                autoplay: { delay: 3000, disableOnInteraction: false },
+                allowTouchMove: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    prevEl: ".swiper-button-prev-pop",
+                    nextEl: ".swiper-button-next-pop",
+                },
+                breakpoints: {
+                    640: { slidesPerView: 3, spaceBetween: 5},
+                    768: { slidesPerView: 2, spaceBetween: 15 },
+                    1024: { slidesPerView: 3, spaceBetween: 15 },
+                    1280: { slidesPerView: 4, spaceBetween: 15 },
+                    1300: { slidesPerView: 4, spaceBetween: 15 },
+                    1366: { slidesPerView: 4, spaceBetween: 15 },
+                    1400: { slidesPerView: 5, spaceBetween: 15 },
+                }
+            });
+        });
+        document.querySelectorAll('.productswiper-bstdeals').forEach(el => {
+            new Swiper(el, {
+                slidesPerView: 2,
+                spaceBetween: 5,
+                grabCursor: true,
+                observer: true, 
+                observeParents: true,
+                observeSlideChildren: true,
+                speed: 3000,
+                autoplay: { delay: 3000, disableOnInteraction: false },
+                allowTouchMove: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    prevEl: ".swiper-button-prev-bstdeals",
+                    nextEl: ".swiper-button-next-bstdeals",
+                },
+                breakpoints: {
+                    640: { slidesPerView: 3, spaceBetween: 5},
+                    768: { slidesPerView: 2, spaceBetween: 15 },
+                    1024: { slidesPerView: 3, spaceBetween: 15 },
+                    1280: { slidesPerView: 4, spaceBetween: 15 },
+                    1300: { slidesPerView: 4, spaceBetween: 15 },
+                    1366: { slidesPerView: 4, spaceBetween: 15 },
+                    1400: { slidesPerView: 5, spaceBetween: 15 },
+                }
+            });
+        });
+        document.querySelectorAll('.productswiper-gphic').forEach(el => {
+            new Swiper(el, {
+                slidesPerView: 2,
+                spaceBetween: 5,
+                grabCursor: true,
+                observer: true, 
+                observeParents: true,
+                observeSlideChildren: true,
+                speed: 3000,
+                autoplay: { delay: 3000, disableOnInteraction: false },
+                allowTouchMove: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    prevEl: ".swiper-button-prev-gphic",
+                    nextEl: ".swiper-button-next-gphic",
+                },
+                breakpoints: {
+                    640: { slidesPerView: 3, spaceBetween: 5},
+                    768: { slidesPerView: 2, spaceBetween: 15 },
+                    1024: { slidesPerView: 3, spaceBetween: 15 },
+                    1280: { slidesPerView: 4, spaceBetween: 15 },
+                    1300: { slidesPerView: 4, spaceBetween: 15 },
+                    1366: { slidesPerView: 4, spaceBetween: 15 },
+                    1400: { slidesPerView: 5, spaceBetween: 15 },
+                }
+            });
+        });
+        document.querySelectorAll('.productswiper-related').forEach(el => {
+            new Swiper(el, {
+                slidesPerView: 2,
+                spaceBetween: 5,
+                grabCursor: true,
+                observer: true, 
+                observeParents: true,
+                observeSlideChildren: true,
+                speed: 3000,
+                autoplay: { delay: 3000, disableOnInteraction: false },
+                allowTouchMove: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    prevEl: ".swiper-button-prev-related",
+                    nextEl: ".swiper-button-next-related",
+                },
+                breakpoints: {
+                    640: { slidesPerView: 3, spaceBetween: 5},
+                    768: { slidesPerView: 2, spaceBetween: 15 },
+                    1024: { slidesPerView: 3, spaceBetween: 15 },
+                    1280: { slidesPerView: 4, spaceBetween: 15 },
+                    1300: { slidesPerView: 4, spaceBetween: 15 },
+                    1366: { slidesPerView: 4, spaceBetween: 15 },
+                    1400: { slidesPerView: 5, spaceBetween: 15 },
+                }
+            });
+        });
+    };
+
+    initAllSwipers();
 });
+
 
 var swiper = new Swiper(".equipmentswiper", {
     slidesPerView: 4,
@@ -908,7 +1207,13 @@ var swiper = new Swiper(".singleprdswiper", {
     speed: 3000,
     freeMode: false,
     parallax: true,
-    navigation: true,
+
+    // FIXED NAVIGATION
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+    },
+
     autoplay: { delay: 5000, disableOnInteraction: false },
     allowTouchMove: true,
 });
@@ -926,7 +1231,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 3. Listen for Lightbox Opening
     lightbox.on('open', () => {
         // Send 'pauseVideo' command to the YouTube Iframe
-        bgPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        if(bgPlayer) bgPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
     });
 
     // 4. Listen for Lightbox Closing
@@ -1011,8 +1316,8 @@ window.closeAllMobileSystems = function() {
     // 1. Reset Sidebar
     const sidebar = document.getElementById('mobile-sidebar');
     if (sidebar) {
-        sidebar.classList.add('left-[-100%]');
-        sidebar.classList.remove('left-0');
+        // sidebar.classList.add('-left-[100%]');
+        // sidebar.classList.remove('left-0');
     }
 
     // 2. Reset Main Overlay
@@ -1038,25 +1343,19 @@ window.closeAllMobileSystems = function() {
     document.body.style.overflow = 'auto';
 }
 
-window.togglePassword = function(buttonElement) {
-    // Find the relative container (the 'group' div)
-    const container = buttonElement.closest(".relative");
-    const input = container.querySelector("input");
-    const eyeIcon = container.querySelector(".eye-icon");
-    const eyeOffIcon = container.querySelector(".eye-off-icon");
+function togglePassword(btn) {
+    const input = btn.closest('div').querySelector('input'); // Adjust selector to your structure
+    const eye = btn.querySelector('.eye-icon');
+    const eyeOff = btn.querySelector('.eye-off-icon');
 
-    const isPassword = input.type === "password";
-
-    // Toggle Type
-    input.type = isPassword ? "text" : "password";
-
-    // Toggle Icons
-    if (isPassword) {
-        eyeIcon.classList.add("hidden");
-        eyeOffIcon.classList.remove("hidden");
+    if (input.type === 'password') {
+        input.type = 'text';
+        eye.style.display = 'none';
+        eyeOff.style.display = 'block';
     } else {
-        eyeIcon.classList.remove("hidden");
-        eyeOffIcon.classList.add("hidden");
+        input.type = 'password';
+        eye.style.display = 'block';
+        eyeOff.style.display = 'none';
     }
 }
 
@@ -1134,6 +1433,13 @@ window.handleSortClick = function (selectedBtn) {
 
 
     async function addToCart(productId, variantId, quantity, mode="set") {
+
+        const addToCartBtn = document.querySelector(
+                    `.add-to-cart[data-variant-id="${variantId}"]`
+        );
+        const counterWrapper = document.querySelector(
+            `.counter-wrapper[data-variant-id="${variantId}"]`
+        );
         try {
             const res = await fetch(`/addProductToCart?productId=${productId}&variantId=${variantId}&quantity=${quantity}&mode=${mode}`);
             const response = await res.json();
@@ -1141,6 +1447,7 @@ window.handleSortClick = function (selectedBtn) {
             if (response.success) {
                 toastr.success(response.message, 'Success');
                 document.getElementById('total-cart-count-top').innerText = response.totalCartItemsCount;
+                document.getElementById('total-cart-count-bottom').innerText = response.totalCartItemsCount;
                 
             } else {
                 toastr.error(response.message, 'Error');
@@ -1156,22 +1463,42 @@ window.handleSortClick = function (selectedBtn) {
                 if(outStockBlocks) outStockBlocks.forEach(el => el.classList.add('!hidden'));
                 if(addCartBlocks) addCartBlocks.forEach(el => el.classList.remove('!hidden'));
 
-                const addToCartBtn = document.querySelector(".add-to-cart");
-                const counterWrapper = document.querySelector(".counter-wrapper");
+                // const addToCartBtn = document.querySelector(".add-to-cart");
+                
                 if(!counterWrapper){
-                    location.reload();
+                    // location.reload();
                 }
 
-                if(response.cartQty > 0){
+                
+
+                if (response.cartQty > 0) {
+
                     if (addToCartBtn) addToCartBtn.classList.add('hidden');
                     if (counterWrapper) counterWrapper.classList.remove('hidden');
+
                     const qtyInput = counterWrapper?.querySelector('.qty-input');
                     if (qtyInput) qtyInput.value = response.cartQty;
-                    if (counterWrapper) updateQtyIcons(counterWrapper, response.cartQty);
 
-                }else{
+                    updateQtyIcons(counterWrapper, response.cartQty);
+
+                    if (counterWrapper) {
+                        counterWrapper.dataset.cartId = response.cartId;
+                        counterWrapper.dataset.remainingQty = response.availableQty;
+                    }
+
+                } else {
+
+                    // FULL RESET STATE (IMPORTANT FIX)
                     if (addToCartBtn) addToCartBtn.classList.remove('hidden');
                     if (counterWrapper) counterWrapper.classList.add('hidden');
+
+                    const qtyInput = counterWrapper?.querySelector('.qty-input');
+                    if (qtyInput) qtyInput.value = 0;
+
+                    if (counterWrapper) {
+                        counterWrapper.dataset.cartId = "";
+                        counterWrapper.dataset.remainingQty = response.availableQty;
+                    }
                 }
             }
             return response; // return the full response
@@ -1210,14 +1537,14 @@ window.handleSortClick = function (selectedBtn) {
                 if(minusBtn) minusBtn.classList.add('hidden');
                 if(trashBtn) trashBtn.classList.remove('hidden');
                 decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
-                decrementBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+                decrementBtn.classList.remove('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
 
             } else if (currentVal > 1) {
                 trashBtn.classList.add('hidden');
                 minusBtn.classList.remove('hidden');
 
                 decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
-                decrementBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+                decrementBtn.classList.add('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
             }
         }
     });
@@ -1226,22 +1553,24 @@ window.handleSortClick = function (selectedBtn) {
     window.updateMultiQty = async function (btn, change) {
         // Find the container for THIS specific product
         const container = btn.closest('.product-item');
-        const input = container.querySelector('.qty-input');
-        const iconWrapper = container.querySelector('.icon-wrapper');
-        const minusBtn = iconWrapper.querySelector('.minus-btn');
-        const trashBtn = iconWrapper.querySelector('.trash-btn');
-        const decrementBtn = container.querySelector('.decrement-btn');
-        const productId = container.dataset.productId;
-        const variantId = container.dataset.variantId;
-        const cartId = container.dataset.cartId;
+        const input = container?.querySelector('.qty-input');
+        const iconWrapper = container?.querySelector('.icon-wrapper');
+        const minusBtn = iconWrapper?.querySelector('.minus-btn');
+        const trashBtn = iconWrapper?.querySelector('.trash-btn');
+        const decrementBtn = container?.querySelector('.decrement-btn');
+        const productId = container?.dataset.productId;
+        const variantId = container?.dataset.variantId;
+        const cartId = container?.dataset.cartId;
         const cartItemBox = btn.closest('.product-cart-item');
         const cartPrice = cartItemBox ? cartItemBox.querySelector('.cart_price') : null;
         const cartOfferPrice = cartItemBox ? cartItemBox.querySelector('.cart_offer_price') : null;
         const addCartBtn = document.querySelector(".add-to-cart");
         const outStockBlocks = document.querySelectorAll('.out-of-stock-block');
         const addCartBlocks = document.querySelectorAll('.add-to-cart-block');
-        
+        const availableQty = parseInt(container.dataset.remainingQty);
+       
         let currentVal = parseInt(input.value);
+       
 
         // DELETE LOGIC: If qty is 1 and user clicks minus
         if (currentVal === 1 && change === -1) {
@@ -1267,14 +1596,15 @@ window.handleSortClick = function (selectedBtn) {
                         if(cartItemBox){
                             cartItemBox.remove();
                         }
-                        container.remove();
+                        // container.remove();
+                        if(container) container.classList.add("hidden");
                         if(addCartBtn) addCartBtn.classList.remove("hidden");
                         toastr.success(response.message, 'Success');
                         updateCartSummary();
                         // $("#price-btn-block").load(location.href + " #price-btn-block>*", "");
                         $("#main-cart-section").load(location.href + " #main-cart-section>*", "", function () {
                             document.querySelectorAll('.product-item').forEach(container => {
-                                const input = container.querySelector('.qty-input');
+                                const input = container?.querySelector('.qty-input');
                                 const qty = parseInt(input.value) || 1;
                                 updateQtyIcons(container, qty);
                             });
@@ -1290,10 +1620,18 @@ window.handleSortClick = function (selectedBtn) {
         }
         
         let newVal = currentVal + change;
+
         if (newVal < 1) newVal = 1;
+
+        // STOP BEFORE API CALL
+        if (change === 1 && availableQty <= 0) {
+            toastr.error(`No more items available`);
+            return;
+        }
 
         const response = await addToCart(productId, variantId, newVal, 'set');
         if (response.success) {
+            container.dataset.remainingQty = response.availableQty;
             input.value = newVal;
             updateCartSummary();
 
@@ -1315,23 +1653,23 @@ window.handleSortClick = function (selectedBtn) {
 
 
     window.updateQtyIcons = function(container, qty) {
-        const iconWrapper = container.querySelector('.icon-wrapper');
-        const minusBtn = iconWrapper.querySelector('.minus-btn');
-        const trashBtn = iconWrapper.querySelector('.trash-btn');
-        const decrementBtn = container.querySelector('.decrement-btn');
+        const iconWrapper = container?.querySelector('.icon-wrapper');
+        const minusBtn = iconWrapper?.querySelector('.minus-btn');
+        const trashBtn = iconWrapper?.querySelector('.trash-btn');
+        const decrementBtn = container?.querySelector('.decrement-btn');
 
         if (qty <= 1) {
-            minusBtn.classList.add('hidden');
-            trashBtn.classList.remove('hidden');
+            minusBtn?.classList.add('hidden');
+            trashBtn?.classList.remove('hidden');
 
-            decrementBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
-            decrementBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+            decrementBtn?.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
+            decrementBtn?.classList.remove('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
         } else {
-            trashBtn.classList.add('hidden');
-            minusBtn.classList.remove('hidden');
+            trashBtn?.classList.add('hidden');
+            minusBtn?.classList.remove('hidden');
 
-            decrementBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
-            decrementBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+            decrementBtn?.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
+            decrementBtn?.classList.add('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
         }
     }
 
@@ -1345,31 +1683,93 @@ window.handleSortClick = function (selectedBtn) {
                 if(document.getElementById('cart-tax')) document.getElementById('cart-tax').innerText = formatPrice(data.tax);
                 if(document.getElementById('cart-total')) document.getElementById('cart-total').innerText = formatPrice(data.total);
                 if(document.getElementById('cart-count')) document.getElementById('cart-count').innerText =  `(${data.cart_count || 0})`;
+
+                // shipping section 
                 let shippingElement = document.getElementById('cart-shipping');
-                if(shippingElement){
-                document.getElementById('cart-shipping').innerText = formatPrice(data.shipping);
+                let freeShippingEl = document.getElementById("free_shipping");
+                let notFreeShippingEl = document.getElementById("not_free_shipping");
+
+                if (data.shipping > 0) {
+
+                    // paid shipping
+                    if (freeShippingEl) freeShippingEl.style.display = 'none';
+                    if (notFreeShippingEl) notFreeShippingEl.style.display = 'inline-flex';
+
+                } else {
+
+                    // free shipping
+                    if (freeShippingEl) freeShippingEl.style.display = 'inline-block';
+                    if (notFreeShippingEl) notFreeShippingEl.style.display = 'none';
                 }
+
+                if (shippingElement) {
+                    shippingElement.innerText = formatPrice(data.shipping);
+                }
+
+               
                 
-                let warrantyElement = document.getElementById('cart-warranty');
-                if(warrantyElement) {
-                    document.getElementById('cart-warranty').innerText = formatPrice(data.warranty_sum);
-                }
                 
                 document.getElementById('total-cart-count-top').innerText = data.cart_count;
+                document.getElementById('total-cart-count-bottom').innerText = data.cart_count;
+
+                // toggle coupon
+                const couponSection = document.getElementById('coupon-section');
+                if (data.couponDiscount > 0) {
+                    if (couponSection) {
+                        couponSection.style.display = 'list-item'; // or 'block' depending on your layout
+                        
+                    } else {
+                        // optionally create the li dynamically if it doesn't exist
+                    }
+                } else if (couponSection) {
+                    couponSection.style.display = 'none';
+                }
+
                 let couponDiscountElement = document.getElementById('coupon_discount');
                 if(couponDiscountElement) {
                 document.getElementById('coupon_discount').innerHTML = formatPrice(data.couponDiscount);
                 }
 
+                // warranty section
                 const warrantySection = document.getElementById('warranty-section');
-                if (data.warranty_sum > 0) {
+                const warrantyValue = document.getElementById('cart-warranty');
+                const warrantyIcon = document.getElementById('warranty-icon');
+                const warrantyPrefix = document.getElementById('warranty-prefix');
+
+                if (data.has_warranty) {
+
                     if (warrantySection) {
-                        warrantySection.style.display = 'list-item'; // or 'block' depending on your layout
-                    } else {
-                        // optionally create the li dynamically if it doesn't exist
+                        warrantySection.style.display = 'list-item';
                     }
-                } else if (warrantySection) {
-                    warrantySection.style.display = 'none';
+
+                    if (data.warranty_sum > 0) {
+
+                        // PAID WARRANTY
+                        if (warrantyPrefix) warrantyPrefix.style.display = 'inline';
+                        if (warrantyIcon) warrantyIcon.style.display = 'inline';
+
+                        if (warrantyValue) {
+                            warrantyValue.innerText = formatPrice(data.warranty_sum);
+                            warrantyValue.className = "text-[#99a1af]";
+                        }
+
+                    } else {
+
+                        // FREE WARRANTY
+                        if (warrantyPrefix) warrantyPrefix.style.display = 'none';
+                        if (warrantyIcon) warrantyIcon.style.display = 'none';
+
+                        if (warrantyValue) {
+                            warrantyValue.innerText = 'Free';
+                            warrantyValue.className = "text-black uppercase font-bold text-[10px] bg-[#29A706] px-2 py-1 rounded";
+                        }
+                    }
+
+                } else {
+
+                    if (warrantySection) {
+                        warrantySection.style.display = 'none';
+                    }
                 }
                 
             }
@@ -1807,12 +2207,32 @@ const filter = document.getElementById('filter-wrapper');
 const desktop = document.getElementById('desktop-filter');
 const mobile = document.getElementById('mobile-filter');
 
+// function moveFilter() {
+//     if (window.innerWidth < 1300) {
+//         if(mobile) mobile.appendChild(filter);
+//         // filter.querySelector('form').classList.remove('hidden');
+//     } else {
+//         if(desktop) desktop.appendChild(filter);
+//     }
+// }
+
 function moveFilter() {
-    if (window.innerWidth < 1024) {
-        if(mobile) mobile.appendChild(filter);
-        // filter.querySelector('form').classList.remove('hidden');
+
+    filter.classList.remove('is-mobile', 'is-desktop');
+
+    if (window.innerWidth < 1300) {
+
+        if (mobile) {
+            mobile.appendChild(filter);
+            filter.classList.add('is-mobile');
+        }
+
     } else {
-        if(desktop) desktop.appendChild(filter);
+
+        if (desktop) {
+            desktop.appendChild(filter);
+            filter.classList.add('is-desktop');
+        }
     }
 }
 
@@ -1838,7 +2258,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filterForm.querySelectorAll('.category-box, .price-box, .brand-box').forEach(box => {
                 // Remove classes from the box itself
                 box.classList.remove('bg-black/30', 'backdrop-blur-[60px]', 'px-[30px]', 'py-[15px]', 'rounded-[20px]', 'mb-[10px]');
-                box.classList.add('border-t', 'border-gray-200', 'px-4', 'py-6');
+                box.classList.add('border-t', 'border-gray-700', 'px-4', 'py-6');
 
                 // Remove classes from the button inside the box
                 const button = box.querySelector('button');
@@ -1846,8 +2266,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     button.classList.remove('py-3'); 
                     const span = button.querySelector('span');
                     if (span) {
-                        span.classList.remove('text-white', 'font-bold'); // add the classes you want to remove
-                        span.classList.add('text-gray-900');
+                        span.classList.remove('text-white', 'font-medium'); // add the classes you want to remove
+                        span.classList.add('text-white');
                     }
                 }
 
@@ -1882,5 +2302,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.continueGuest = function(){
         document.getElementById('checkout-login-box').style.display = 'none';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const switcher = document.getElementById('view-switcher');
+    const footer = document.querySelector('footer');
+
+    // Safety Check: Only run if BOTH elements exist
+    if (switcher && footer) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Hide when footer enters
+                    switcher.style.opacity = '0';
+                    switcher.style.pointerEvents = 'none';
+                    switcher.style.visibility = 'hidden'; // Added for extra safety
+                } else {
+                    // Show when footer is gone
+                    switcher.style.opacity = '1';
+                    switcher.style.pointerEvents = 'auto';
+                    switcher.style.visibility = 'visible';
+                }
+            });
+        }, {
+            threshold: 0.1 
+        });
+
+        observer.observe(footer);
+    } else {
+        console.warn('View Switcher or Footer not found. Observer not started.');
+    }
+});
+
+
+
+window.toggleCategorySidebar = function(e) {
+    e.stopPropagation();
+
+    const sidebar = document.getElementById('mobile-sidebar');
+
+    sidebar.classList.toggle('-translate-x-full');
+}
+
+
+document.addEventListener('click', function (e) {
+    const sidebar = document.getElementById('mobile-sidebar');
+
+    if (!sidebar) return; // prevent error
+
+    if (!sidebar.contains(e.target)) {
+        sidebar.classList.add('-translate-x-full');
     }
 });

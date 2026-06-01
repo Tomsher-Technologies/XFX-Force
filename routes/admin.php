@@ -232,6 +232,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/configuration/vat', [BusinessSettingsController::class, 'vat_settings'])->name('configuration.vat_settings');
     Route::post('/configuration/pickup', [BusinessSettingsController::class, 'pickup_settings'])->name('configuration.pickup_settings');
     Route::post('/configuration/delivery', [BusinessSettingsController::class, 'delivery_settings'])->name('configuration.delivery_settings');
+    Route::post('/configuration/invoice', [BusinessSettingsController::class, 'invoice_settings'])->name('configuration.invoice_settings');
+    Route::post('/configuration/seo-og', [BusinessSettingsController::class, 'seo_og_image_settings'])->name('configuration.seo_og_image_settings');
 
     //Reports
     Route::get('/stock_report', [ReportController::class, 'stock_report'])->name('stock_report.index');
@@ -291,3 +293,6 @@ Route::get('/env-check', function () {
         'php_binary' => PHP_BINARY,
     ];
 });
+
+Route::post('/products/check-sku', [ProductController::class, 'checkSku'])
+    ->name('products.check.sku');

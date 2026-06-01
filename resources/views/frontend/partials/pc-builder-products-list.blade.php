@@ -1,10 +1,12 @@
-@foreach($products as $product)
-@if($product->stocks->isNotEmpty())
-@foreach($product->stocks as $stock)
-@if($stock->qty > 0)
+@foreach($stocks as $stock)
+    @php 
+        $product = $stock->product; 
+    @endphp
+
+    @if($stock->qty > 0)
 <div>
-    <article onclick="viewProductDetails({{ $stock->id }})" class="group product-card w-full relative border border-transparent rounded-[20px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-variant-id = "{{ $stock->id }}" data-category-id="{{ $product->category_id }}">
-        <div class="group product-img h-[130px] md:h-[150px] w-full relative z-[1] bg-white" >
+    <article class="group product-card w-full relative border border-transparent rounded-[10px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-variant-id = "{{ $stock->id }}" data-category-id="{{ $product->category_id }}">
+        <div class="group product-img h-[130px] md:h-[150px] w-full relative z-[1] bg-white" onclick="viewProductDetails({{ $stock->id }})" >
             @php
                 $image = asset('assets/img/placeholder.jpg'); // default placeholder
 
@@ -31,7 +33,7 @@
             @endif
         </div>
         <div class="product-content p-[15px] md:p-[20px] flex flex-col gap-[10px] md:gap-[15px] z-[1] w-full">
-            <h4 class="text-white text-[13px] md:text-[18px] leading-[20px] md:leading-[25px] font-medium line-clamp-2 h-[50px] cursor-pointer">
+            <h4 class="text-white text-[13px] md:text-[18px] leading-[20px] md:leading-[25px] font-medium line-clamp-2 h-[40px] md:h-[50px] cursor-pointer" onclick="viewProductDetails({{ $stock->id }})">
                {{ $stock->stock_title ?? $product->name }}
             </h4>
 
@@ -46,7 +48,7 @@
                 $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
             @endphp
 
-            <div class="flex items-center gap-[8px] -mt-2">
+            <div class="flex flex-col sm:flex-row gap-[2px] -mt-2">
                 <div class="flex items-center gap-[2px]">
                     {{-- Full Stars --}}
                     @for ($i = 0; $i < $fullStars; $i++)
@@ -79,25 +81,31 @@
                     @endfor
                 </div>
 
-                <span class="text-white text-[12px] md:text-[14px] font-medium">
-                {{ number_format($rating,1) }}
-                </span>
+                <div>
+                    <span class="text-white text-[12px] md:text-[14px] font-medium">{{ number_format($rating,1) }}</span>
+                    <span class="text-gray-400 text-[11px] md:text-[13px] font-medium">({{ $totalReviews }} reviews)</span>
+                </div>
 
-                <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">
-                ({{ $totalReviews }} reviews)
-                </span>
+
             </div>
             <!--//ratings-->
 
-            <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[15px] leading-[20px] m-[0] font-bold align-center items-center gap-[10px]">
+            <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[15px] leading-[20px] m-[0] font-medium align-center items-center gap-[10px]">
                 <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]" alt="AED" title="Symbol of AED">{{ number_format($stock->offer_price, 2) }} 
                 @if(filled($stock->offer_tag))
                 <span class="text-[#898989] font-medium line-through">{{ number_format($stock->price, 2) }}</span>
                 @endif
             </h5>
-            <div class="counter-container w-full hidden xl:block"  data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id = "{{ $product->category_id }}" data-stock-qty="{{ $stock->qty }}" data-cart-qty="{{ checkCartQuantityPerVariant($stock->id) }}">
-                <button onclick="selectProduct(this)" class="action-btn w-full text-center text-white uppercase text-[13px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] bg-transparent group-hover:bg-[#2A7CFF] hover:border-[#2A7CFF] transition-all duration-300 cursor-pointer" data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id = "{{ $product->category_id }}">
-                    Select
+            <div class="counter-container w-full"  data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id="{{ $product->category->getRootCategory()->id }}" data-stock-qty="{{ $stock->qty }}" data-cart-qty="{{ checkCartQuantityPerVariant($stock->id) }}">
+                <button onclick="selectProduct(this)" class="action-btn w-full text-center text-white uppercase text-[13px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] bg-transparent group-hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:border-[#2A7CFF] transition-all duration-300 cursor-pointer flex gap-[20px] justify-center" data-product-id = "{{ $product->id }}" data-stock-id = "{{ $stock->id }}" data-category-id="{{ $product->category->getRootCategory()->id }}" data-stock-qty="{{ $stock->qty }}" data-cart-qty="{{ checkCartQuantityPerVariant($stock->id) }}">
+                    <!-- Select -->
+                     <span class="btn-loader hidden">
+                        <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none"/>
+                        </svg>
+                    </span>
+                    <span class="btn-text">Select</span>
+                    
                 </button>
 
                 <div class="counter-wrapper hidden items-center gap-2 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 w-full">
@@ -109,9 +117,9 @@
                         </span>
                     </button>
 
-                    <input type="number" value="1" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-bold rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                    <input type="number" value="1" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-medium rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none">
 
-                    <button onclick="updateBuilderItemQty(this, 1); event.stopPropagation();" class="cursor-pointer flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg transition-all active:scale-90">
+                    <button onclick="updateBuilderItemQty(this, 1); event.stopPropagation();" class="cursor-pointer flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-lg transition-all active:scale-90">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
                         </svg>
@@ -121,7 +129,5 @@
         </div>
     </article>
 </div>
-@endif
-@endforeach
 @endif
 @endforeach

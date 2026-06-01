@@ -74,7 +74,7 @@
 <body>
     <div>
         @php
-            $logo = get_setting('header_logo');
+            $logo = get_setting('default_invoice_logo');
         @endphp
         <div style="background: #dce4e978;padding: 1.5rem;">
             <table>
@@ -210,7 +210,7 @@
                             VAT
                         </th>
                         <td class="currency">
-                            {{ single_price($order->orderDetails->sum('tax')) }}
+                            {{ single_price($order->tax) }}
                         </td>
                     </tr>
 
@@ -229,6 +229,13 @@
                         <tr class="border-bottom">
                             <th class="gry-color text-left">Coupon Code</th>
                             <td class="currency">{{ $order->coupon_code }}</td>
+                        </tr>
+                    @endif
+
+                    @if ($order->warranty_amount)
+                        <tr class="border-bottom">
+                            <th class="gry-color text-left">Warranty Amount</th>
+                            <td class="currency">{{ single_price($order->warranty_amount) }}</td>
                         </tr>
                     @endif
 

@@ -4,9 +4,9 @@
 
 @section('content')
 
-<section class="bg-[#0F161B] w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[100px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px]">
+<section class="bg-[#0F161B] w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px]">
     <div class="text-white">
-        <div class="w-full mx-auto flex flex-col xl:flex-row gap-[20px] md:gap-[50px] border-t border-[#252b31] pt-0 xl:pt-[80px]">
+        <div class="w-full mx-auto flex flex-col xl:flex-row gap-[20px] md:gap-[50px] border-t-none xl:border-t border-[#252b31] pt-0 xl:pt-[80px]">
             
             @include('frontend.layouts.sidebar')
 
@@ -17,7 +17,7 @@
                             <h2 class="text-[20px] font-medium mb-1 text-white uppercase">Account Details</h2>
                             <p class="text-gray-500">Manage your personal information and security.</p>
                         </div>
-                        <button onclick="toggleEditMode()" class="hidden md:flex bg-[#252B31] border border-white/5 px-6 py-3 rounded-xl hover:bg-[#2A7CFF] hover:border-[#2A7CFF] transition-all items-center gap-2 font-medium cursor-pointer text-xs text-white whitespace-nowrap uppercase">
+                        <button onclick="toggleEditMode()" class="hidden md:flex bg-[#252B31] border border-white/5 px-6 py-3 rounded-xl hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:border-[#2A7CFF] transition-all items-center gap-2 font-medium cursor-pointer text-xs text-white whitespace-nowrap uppercase">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                             <span class="edit-text-sync">Edit Profile</span>
                         </button>
@@ -60,12 +60,12 @@
 
                             <div class="md:col-span-2 flex flex-col gap-4 mt-4">
                                 <div id="save-button-container" class="hidden">
-                                    <button type="submit" class="w-full md:w-fit md:ml-auto bg-[#2A7CFF] hover:bg-[#1A6BFF] text-white font-medium py-4 px-10 rounded-xl transition-all shadow-lg shadow-[#2A7CFF]/20 uppercase text-[14px] cursor-pointer active:scale-95 flex justify-center items-center">
+                                    <button type="submit" class="w-full md:w-fit md:ml-auto bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:bg-[#1A6BFF] text-white font-medium py-4 px-10 rounded-xl transition-all shadow-lg shadow-[#2A7CFF]/20 uppercase text-[14px] cursor-pointer active:scale-95 flex justify-center items-center">
                                         Update Profile
                                     </button>
                                 </div>
 
-                                <button type="button" onclick="toggleEditMode()" class="md:hidden w-full bg-[#252B31] border border-white/5 px-6 py-4 rounded-xl hover:bg-[#2A7CFF] transition-all flex items-center justify-center gap-2 font-medium cursor-pointer text-sm text-white">
+                                <button type="button" onclick="toggleEditMode()" class="md:hidden w-full bg-[#252B31] border border-white/5 px-6 py-4 rounded-xl hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] transition-all flex items-center justify-center gap-2 font-medium cursor-pointer text-sm text-white">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                     <span class="edit-text-sync">EDIT PROFILE</span>
                                 </button>

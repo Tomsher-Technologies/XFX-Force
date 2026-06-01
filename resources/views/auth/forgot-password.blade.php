@@ -21,7 +21,7 @@
                     <input type="email" name="email" id="email" placeholder="Enter your registered email.." class="w-full bg-[#0B0F13] border border-white/5 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] transition-all placeholder:text-gray-700">
                 </div>
 
-                <button type="submit" id="resetButton"  class="cursor-pointer l duration-[600ms] w-full bg-[#2A7CFF] py-4 rounded-xl font-medium text-white flex items-center justify-center text-[14px] uppercase hover:bg-[#1A6BFF] transition-all shadow-lg shadow-[#2A7CFF]/20 active:scale-[0.98]">
+                <button type="submit" id="resetButton"  class="cursor-pointer l duration-[600ms] w-full bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] py-4 rounded-xl font-medium text-white flex items-center justify-center text-[14px] uppercase hover:bg-[#1A6BFF] transition-all shadow-lg shadow-[#2A7CFF]/20 active:scale-[0.98]">
                     <span id="resetText">Reset</span>
                     <svg id="loadingSpinner" class="hidden w-5 h-5 ml-2 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

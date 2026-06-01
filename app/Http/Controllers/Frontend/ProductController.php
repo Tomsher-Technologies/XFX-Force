@@ -61,7 +61,7 @@ class ProductController extends Controller
         OpenGraph::setUrl(URL::full());
         OpenGraph::addProperty('locale', 'en_US');
         OpenGraph::addProperty('type', $model['og_type'] ?? 'website');
-        OpenGraph::addImage(uploaded_asset(get_setting('header_logo')) ?? URL::to(asset('assets/img/logo.png')));
+        OpenGraph::addImage(uploaded_asset(get_setting('default_seo_og_image')) ?? URL::to(asset('assets/img/logo.png')));
 
         JsonLd::setTitle($model['title']);
         JsonLd::setDescription($model['meta_description']);
@@ -110,6 +110,9 @@ class ProductController extends Controller
 
             $product_query  = Product::wherePublished(1);
             $categoryData = null;
+            if($request->filled('condition')) {
+                $product_query->where('condition', $request->condition);
+            }
             if ($category) {
                 $categoryData = Category::whereHas('category_translations', function ($query) use ($category) {
                     $query->where('slug', $category);
@@ -300,26 +303,72 @@ class ProductController extends Controller
             : $product->stocks->first();
 
         // Get cart quantity
+        // $cartQty = 0;
+        // $cartId = null;
+        // if ($selectedStock) {
+        //     $cartQuery = Cart::where('product_id', $product->id)
+        //         ->where('product_stock_id', $selectedStock->id)
+        //         ->where('status', 'pending')
+        //         ->where(function($query) use ($guestToken, $user_id) {
+        //             if ($user_id) {
+        //                 // Logged-in user
+        //                 $query->where('user_id', $user_id);
+        //             } else {
+        //                 // Guest user
+        //                 $query->where('temp_user_id', $guestToken);
+        //             }
+        //         });
+        //     $cartQty = $cartQuery->value('quantity') ?? 0;
+        //     $cartId = $cartQuery->value('id') ?? null;
+        // }
+
         $cartQty = 0;
         $cartId = null;
+        $totalReservedQty = 0;
+
         if ($selectedStock) {
+
+            // Current user cart quantity (normal cart only)
             $cartQuery = Cart::where('product_id', $product->id)
                 ->where('product_stock_id', $selectedStock->id)
                 ->where('status', 'pending')
+                ->where('is_pc_builder', 0)
                 ->where(function($query) use ($guestToken, $user_id) {
                     if ($user_id) {
-                        // Logged-in user
                         $query->where('user_id', $user_id);
                     } else {
-                        // Guest user
                         $query->where('temp_user_id', $guestToken);
                     }
                 });
-            $cartQty = $cartQuery->value('quantity') ?? 0;
-            $cartId = $cartQuery->value('id') ?? null;
+
+            $cartQty = $cartQuery->sum('quantity');
+
+            $cartId = $cartQuery->value('id');
+            
+
+            // TOTAL RESERVED QTY
+            // includes normal cart + pc builder
+            $totalReservedQty = Cart::where('product_stock_id', $selectedStock->id)
+                ->where('status', 'pending')
+                ->where(function($query) use ($guestToken, $user_id) {
+                    if ($user_id) {
+                        $query->where('user_id', $user_id);
+                    } else {
+                        $query->where('temp_user_id', $guestToken);
+                    }
+                })->sum('quantity');
         }
 
-       $stockId = $selectedStock ? $selectedStock->id : null;
+        $stockId = $selectedStock ? $selectedStock->id : null;
+
+        $remainingQty = 0;
+
+        if ($selectedStock) {
+            $remainingQty = max(
+                $selectedStock->qty - $totalReservedQty,
+                0
+            );
+        }
 
         // New changes 
 
@@ -410,11 +459,10 @@ class ProductController extends Controller
         }
 
         $seo = $product->seo->first();
-
         $seoContents = [
             'title' => $seo->meta_title ?? '',
             'meta_description' => $seo->meta_description ?? '',
-            'keywords' => $seo->keywords ?? '',
+            'keywords' => $seo->meta_keywords ?? '',
             'og_title' => $seo->og_title ?? '',
             'og_description' => $seo->og_description ?? '',
             'twitter_title' => $seo->twitter_title ?? '',
@@ -433,7 +481,8 @@ class ProductController extends Controller
             'variantsById',
             'selectedLevelValues',
             'selectedVariant',
-            'cartId'
+            'cartId',
+            'remainingQty'
         ));
     }
 
@@ -449,6 +498,10 @@ class ProductController extends Controller
         // Filters
         if ($request->filled('categories')) {
             $products->whereIn('products.category_id', $request->categories);
+        }
+
+        if($request->filled('condition')) {
+            $products->where('products.condition', $request->condition);
         }
 
         if ($request->filled('brands')) {
@@ -828,7 +881,7 @@ class ProductController extends Controller
         $seoContents = [
             'title' => $category->category_translations[0]['meta_title'] ?? '',
             'meta_description' => $category->category_translations[0]['meta_description'] ?? '',
-            'keywords' => $category->category_translations[0]['keywords'] ?? '',
+            'keywords' => $category->category_translations[0]['meta_keyword'] ?? '',
             'og_title' => $category->category_translations[0]['og_title'] ?? '',
             'og_description' => $category->category_translations[0]['og_description'] ?? '',
             'twitter_title' => $category->category_translations[0]['twitter_title'] ?? '',
@@ -973,7 +1026,7 @@ class ProductController extends Controller
         $seoContents = [
             'title' => $brand->brand_translations[0]['meta_title'] ?? '',
             'meta_description' => $brand->brand_translations[0]['meta_description'] ?? '',
-            'keywords' => $brand->brand_translations[0]['keywords'] ?? '',
+            'keywords' => $brand->brand_translations[0]['meta_keywords'] ?? '',
             'og_title' => $brand->brand_translations[0]['og_title'] ?? '',
             'og_description' => $brand->brand_translations[0]['og_description'] ?? '',
             'twitter_title' => $brand->brand_translations[0]['twitter_title'] ?? '',

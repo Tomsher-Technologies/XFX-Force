@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->middleware('nocache')->name('home');
 
 Route::get('register/', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [AuthController::class, 'register']);
@@ -52,26 +52,33 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 Route::get('/password/reset/{email}/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
 Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index']);
 Route::get('/product/{slug}/{sku?}', [ProductController::class, 'productDetails'])
+    ->middleware('nocache')
     ->name('product.details');
-Route::get('/products', [ProductController::class, 'index'])->name('products');
+Route::get('/products', [ProductController::class, 'index'])->middleware('nocache')->name('products');
 Route::get('/get-variants-by-value', [ProductController::class, 'getVariantsByValue']);
 Route::get('/getVarientDetails', [ProductController::class, 'getVarientDetails']);
 Route::get('/getVariantState', [ProductController::class, 'getVariantState']);
 
-Route::get('/cart', [CartController::class, 'index'])->name('cart');
+Route::middleware('nocache')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart');
+    Route::get('/buildyourpc', [BuildPcController::class, 'index'])->name('buildyourpc');
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+});
+
+
 Route::get('/addProductToCart', [CartController::class, 'addProductToCart']);
 Route::get('/removeCartItem/{id}', [CartController::class, 'removeCartItem']);
-Route::get('/getCartSummary', [CartController::class, 'getCartSummary']);
+Route::get('/getCartSummary', [CartController::class, 'getCartSummary'])->middleware('nocache');
 Route::get('/updateProductWarranty', [CartController::class, 'updateProductWarranty']);
 Route::post('/apply_coupon_code', [CartController::class, 'apply_coupon_code']);
 Route::post('/remove_coupon_code', [CartController::class, 'remove_coupon_code']);
 
-Route::get('/shop/category/{slug}', [ProductController::class, 'shopByCategory'])->name('shop.category');
-Route::get('/shop/brand/{slug}', [ProductController::class, 'shopByBrand'])->name('shop.brand');
+Route::get('/shop/category/{slug}', [ProductController::class, 'shopByCategory'])->middleware('nocache')->name('shop.category');
+Route::get('/shop/brand/{slug}', [ProductController::class, 'shopByBrand'])->middleware('nocache')->name('shop.brand');
 
-Route::get('/buildyourpc', [BuildPcController::class, 'index'])->name('buildyourpc');
+
 Route::get('/buildyourpc/products/details/{stockId}', [BuildPcController::class, 'getProductDetails']);
 Route::get('/buildyourpc/products/{category_id}/{brand_id?}/{model?}', [BuildPcController::class, 'getProductsByCategory']);
 
@@ -79,11 +86,14 @@ Route::get('/buildyourpc/savePcBuilder', [BuildPcController::class, 'savePcBuild
 Route::get('/buildyourpc/getBuildData', [BuildPcController::class, 'getBuildData']);
 Route::get('/buildyourpc/place-order', [BuildPcController::class, 'placePcBuilderOrder'])->name('pcbuilder.place.order');
 Route::post('/pc-builder/reset', [BuildPcController::class, 'resetConfiguration'])->name('pc.builder.reset');
+Route::post('/pc-builder/delete', [BuildPcController::class, 'deletePcBuilder'])->name('pc.builder.delete');
 
-Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+
 Route::post('/checkout/placeOrder', [CheckoutController::class, 'placeOrder']);
+Route::get('/stripe/success', [CheckoutController::class, 'stripeSuccess'])->name('stripe.success');
+Route::get('/stripe/cancel', [CheckoutController::class, 'stripeCancel'])->name('stripe.cancel');
 
-Route::get('/order-success/{id}', [OrderController::class, 'success'])->name('order.success');
+Route::get('/order-success/{id}', [OrderController::class, 'success'])->middleware('nocache')->name('order.success');
 Route::get('/order-fail', [OrderController::class, 'fail'])->name('order.fail');
 
 Route::get('/search-products', [ProductController::class, 'searchProducts']);
@@ -92,7 +102,7 @@ Route::get('/brands/{slug}', [BrandController::class, 'show'])->name('brands.sho
 Route::get('/builder/models', [BuildPcController::class, 'getModels']);
 
 
-Route::group(['middleware' => ['auth:frontend']], function () {
+Route::group(['middleware' => ['auth:frontend','nocache']], function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('account', [ProfileController::class, 'getUserAccountInfo'])->name('account');
     Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update'); 
@@ -125,4 +135,8 @@ Route::group(['middleware' => ['auth:frontend']], function () {
     ->name('notification.read');
 
     Route::post('/review/store', [ReviewController::class, 'store'])->name('reviews.save');
+});
+
+Route::fallback(function () {
+    return response()->view('frontend.errors.404', [], 404);
 });

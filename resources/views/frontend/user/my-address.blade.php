@@ -5,10 +5,9 @@
 @section('content')
 
     <section
-        class="bg-[#0F161B] w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[100px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px]">
+        class="bg-[#0F161B] w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px]">
         <div class="text-white">
-            <div
-                class="w-full mx-auto flex flex-col xl:flex-row gap-[20px] md:gap-[50px] border-t border-[#252b31] pt-0 xl:pt-[80px]">
+            <div class="w-full mx-auto flex flex-col xl:flex-row gap-[20px] md:gap-[50px] border-t-none xl:border-t border-[#252b31] pt-0 xl:pt-[80px]">
 
                 @include('frontend.layouts.sidebar')
 
@@ -22,7 +21,7 @@
                             </div>
                             <div class="w-full flex justify-center md:justify-end">
                                 <button onclick="openAddAddressModal()"
-                                    class="w-fit flex items-center justify-center gap-2 bg-[#2A7CFF] hover:bg-[#1a66e5] text-white px-6 py-3 rounded-xl font-medium text-[13px] uppercase cursor-pointer transition-all active:scale-95 shadow-[0_0_20px_rgba(42,124,255,0.3)]">
+                                    class="w-fit flex items-center justify-center gap-2 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:bg-[#1a66e5] text-white px-6 py-3 rounded-xl font-medium text-[13px] uppercase cursor-pointer transition-all active:scale-95 shadow-[0_0_20px_rgba(42,124,255,0.3)]">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 4v16m8-8H4" />
@@ -56,7 +55,7 @@
 
                                             <!-- Right side: Edit + Delete buttons -->
                                             <div class="flex flex-row gap-2 md:gap-3 mt-2 md:mt-0">
-                                                <button onclick="editAddress({{ $address->id }})" class="flex items-center gap-2 bg-[#252C33] hover:bg-[#2A7CFF] text-white text-[13px] uppercase font-medium px-4 py-2 rounded-xl transition-all">
+                                                <button onclick="editAddress({{ $address->id }})" class="flex items-center gap-2 bg-[#252C33] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-white text-[13px] uppercase font-medium px-4 py-2 rounded-xl transition-all">
                                                     <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill-rule="evenodd" clip-rule="evenodd"
                                                             d="M7.06225 2.46955C7.44287 2.55401 8.58718 2.86026 9.38256 3.64338C10.1665 4.41446 10.4778 5.51582 10.5671 5.90217C9.98386 6.54506 9.27096 7.29742 8.40698 8.16096C4.82477 11.7404 3.39283 12.6795 3.33374 12.7176C3.25164 12.7705 3.15773 12.8017 3.0603 12.8094L0.636471 12.9979C0.621313 12.9996 0.606133 12.9998 0.591549 12.9998C0.434944 12.9998 0.283705 12.9368 0.172604 12.825C0.0503889 12.7019 -0.0112895 12.5318 0.00170553 12.3582L0.190182 9.93732C0.197865 9.8386 0.230155 9.74226 0.283932 9.659C0.325253 9.5957 1.26836 8.16301 4.84546 4.58869C5.69033 3.7444 6.42826 3.04514 7.06225 2.46955ZM10.3953 0.00763642C10.5012 0.0244213 11.4443 0.191172 12.1277 0.864082C12.8078 1.55404 12.9752 2.49891 12.9919 2.60529C13.0144 2.74743 12.9856 2.89353 12.9099 3.01545C12.8842 3.05747 12.5011 3.66234 11.4851 4.85725C11.2593 4.23886 10.8658 3.44182 10.2078 2.79377C9.55179 2.1479 8.74277 1.76131 8.11694 1.53889C9.33083 0.505953 9.94742 0.117453 9.99194 0.0896677C10.1119 0.0147327 10.2552 -0.0155577 10.3953 0.00763642Z"
@@ -119,7 +118,7 @@
 
                                     <div id="map" class="w-full h-full"></div>
 
-                                    <button type="button" onclick="getCurrentLocation()" class="absolute cursor-pointer bottom-3 right-3 bg-[#2A7CFF] p-3 rounded-full shadow-lg hover:bg-blue-600 transition-all active:scale-95 z-10">
+                                    <button type="button" onclick="getCurrentLocation()" class="absolute cursor-pointer bottom-3 right-3 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] p-3 rounded-full shadow-lg hover:bg-blue-600 transition-all active:scale-95 z-10">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -243,7 +242,7 @@
 
                                         <input type="checkbox" name="default" value="1" class="sr-only peer">
 
-                                        <div class="w-11 h-6 bg-gray-800 rounded-full peer-checked:bg-[#2A7CFF] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full">
+                                        <div class="w-11 h-6 bg-gray-800 rounded-full peer-checked:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full">
                                         </div>
 
                                     </label>
@@ -254,7 +253,7 @@
                                 <div class="flex flex-col md:flex-row gap-3 mt-8">
 
                                     <button type="submit"
-                                        class="flex-1 bg-[#2A7CFF] text-white font-medium uppercase py-4 rounded-xl text-[14px] hover:bg-[#1447e6]">
+                                        class="flex-1 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-white font-medium uppercase py-4 rounded-xl text-[14px] hover:bg-[#1447e6]">
                                         Save Address
                                     </button>
 

@@ -8,10 +8,6 @@
     <meta name="robots" content="noindex, nofollow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="preconnect" href="https://pcgarage.me/" />
     <link rel="dns-prefetch" href="https://pcgarage.me/" />
-  
-    <!-- Page Title -->
-    <title>PC Garage | @yield('title', 'Default Site Title')</title>
-    <!-- //Page Title -->
 
      {!! SEO::generate() !!}
     <?php
@@ -96,28 +92,32 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": false,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": true,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            };
+            if (typeof toastr !== 'undefined') {
+                toastr.options = {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": true,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                };
+            }
 
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
+            if (typeof $ !== 'undefined') {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            }
 
             @if (session('success'))
                 toastr.success('{{ session("success") }}');
@@ -201,6 +201,10 @@
         })();
     </script>
     @yield('script')
+    <div id="global-loader"
+     class="fixed inset-0 bg-black/50 flex items-center justify-center z-[999999] hidden">
+        <div class="loader"></div>
+    </div>
 </body>
 
 </html>

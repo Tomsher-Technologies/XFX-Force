@@ -46,5 +46,9 @@ class OrderDetail extends Model
         return $this->hasMany(OrderReturn::class, 'order_detail_id');
     }
 
+    public function warranty()
+    {
+        return $this->belongsTo(ProductWarranty::class);
+    }
     
 }

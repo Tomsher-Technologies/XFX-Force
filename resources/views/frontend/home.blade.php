@@ -17,17 +17,17 @@
                     @if($slider->slider_type == 'image')
                         <picture class="h-full">
                             @if($slider->mobileImage)
-                                <source media="(max-width: 600px)" srcset="{{ $slider->mobileImage ? Storage::url($slider->mobileImage->file_name) : '' }}">
+                                <source media="(max-width: 600px)" srcset="{{ $slider->mobileImage ? Storage::url($slider->mobileImage->file_name) : asset('assets/images/placeholder.png') }}">
                             @endif
 
                             @if($slider->mainImage)
-                                <img src="{{ $slider->mainImage ? Storage::url($slider->mainImage->file_name) : '' }}" class="object-cover w-full h-full object-top" alt="{{ $slider->title }}">
+                                <img src="{{ $slider->mainImage ? Storage::url($slider->mainImage->file_name) : asset('assets/images/placeholder.png') }}" class="object-cover w-full h-full object-top" alt="{{ $slider->title }}">
                             @endif
                         </picture>
                     @elseif($slider->slider_type == 'video')
 
                         <video playsinline webkit-playsinline muted autoplay loop>
-                            <source src="{{ $slider->mainVideo ? Storage::url($slider->mainVideo->file_name) : '' }}" type="video/mp4" />
+                            <source src="{{ $slider->mainVideo ? Storage::url($slider->mainVideo->file_name) : asset('assets/images/placeholder.png') }}" type="video/mp4" />
                         </video>
                     @endif
 
@@ -91,7 +91,7 @@
 
                                 <a href="{{ $url }}"
                                 @if($slider->link_type === 'external') target="_blank" @endif
-                                class="btn btn-cta !rounded-full !text-[#000000] !text-[15px] !uppercase !px-[30px] !py-[10px] !bg-white font-medium">
+                                class="btn btn-cta !rounded-full !text-[#ffffff] !text-[15px] !uppercase !px-[30px] !py-[10px] !bg-white font-medium">
                                 {{ $slider->btn_text ?? 'START BUILDING' }}
                                 </a>
                             </div>
@@ -120,11 +120,11 @@
         @foreach($banners as $banner)
 
             <div class="seg-card rounded-[20px] items-center flex flex-col gap-[20px] justify-between xl:justify-end p-[20px] md:p-[30px] relative overflow-hidden min-h-auto xl:min-h-[450px] bg-black">
-                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" alt="{{ $banner->title }}" class="relative xl:absolute object-cover object-top w-full h-full bottom-0 left-0 rounded-[10px]">
+                <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : asset('assets/images/placeholder.png') }}" alt="{{ $banner->title }}" class="relative xl:absolute object-cover object-top w-full h-full bottom-0 left-0 rounded-[10px]">
                 <div class="content relative z-[1] flex flex-col items-center justify-between xl:justify-end h-full w-full">
-                    <h2 class="text-[25px] text-[white] capitalize font-bold text-center">{{ $banner->title }}</h2>
+                    <h2 class="text-[25px] text-white capitalize font-bold text-center">{{ $banner->title }}</h2>
                     <p class="text-[15px] text-[#ffffff] text-center">{{ $banner->sub_title }}</p>
-                    <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[10px] bg-white font-medium mt-[20px] transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white" title="">{{ $banner->btn_text }}</a>
+                    <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif class="btn btn-cta w-full md:w-fit text-center !rounded-full text-[#000000] !text-[13px] !md:text-[14px] !uppercase !px-[30px] !py-[10px] bg-white font-medium mt-[20px] transition-all duration-[600ms] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white" title="">{{ $banner->btn_text }}</a>
                 </div>
             </div>
         @endforeach
@@ -136,17 +136,28 @@
 <!--categories-->
 @if(!empty($categories))
 <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[50px] md:pt-0 lg:pt-0 xl:pt-[50px] pb-[50px] md:pb-[50px] lg:pb-[50px] xl:pb-[100px] relative border-b border-[#ffffff10] xl:border-hidden">
-    <div class="section-title mb-[30px] relative">
-        <h3 class="text-[30px] md:text-[50px] text-[white] font-bold text-center xl:text-left uppercase">{{ $page_content['category_title'] ?? ''}}</h3>
-    </div>
+    <!-- <div class="section-title mb-[30px] relative">
+        <h3 class="text-[30px] md:text-[50px] text-white font-bold text-center xl:text-left uppercase">{{ $page_content['category_title'] ?? ''}}</h3>
+    </div> -->
     <div class="relative group">
         <div class="swiper cateswiper relative overflow-x-hidden">
+
+        <div class="flex justify-between w-full">
+            <div class="section-title mb-[30px] relative w-full">
+                <h3 class="text-[30px] md:text-[50px] text-white font-bold text-center xl:text-left uppercase">{{ $page_content['category_title'] ?? ''}}</h3>
+            </div>
+            <div class="controls relative right-[0px] left-[0px] mt-0 m-auto items-end gap-[30px] justify-end md:justify-end hidden xl:flex flex-row">
+                <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+            </div>
+        </div>
+
             <div class="swiper-wrapper">
                 @foreach ($categories as $category)
                     <div class="swiper-slide" data-swiper-autoplay="8000">
                         <a href="{{ route('shop.category', $category->category_translations->first()->slug) }}" class="flex flex-col items-center justify-center gap-[15px]">
                             <div class="category-thumb flex align-center bg-[#272930] p-[20px] lg:p-[20px] rounded-full h-[75px] lg:h-[80px] xl:h-[95px] w-[75px] lg:w-[80px] xl:w-[95px] overflow-hidden">
-                                <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : '' }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
+                                <img src="{{ $category->iconImage ? Storage::url($category->iconImage->file_name) : asset('assets/images/placeholder.png') }}" alt="{{ $category->name }}" title="{{ $category->name }}" class="w-full md:w-[85%] m-auto">
                             </div>
                             <h4 class="text-white text-center font-medium text-[12px] xl:text-[16px] capitalize">{{ ucfirst($category->name) }}</h4>
                         </a>
@@ -154,165 +165,274 @@
                 @endforeach
             </div>
         </div>
-        <!-- <div class="swiper-pagination !relative mt-[50px]  block xl:hidden m-auto"></div> -->
-        <div class="controls relative md:absolute right-[0px] left-[0px] m-auto mt-[30px]mt-[0px] md:top-[-80px] items-center gap-[30px] justify-center md:justify-end hidden xl:flex flex-row">
-            <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
-            <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
-        </div>
+        
     </div>
 </section>
 @endif
 <!--//categories-->
 
+
 <!--special gaming pc-->
 @if(!empty($newArrivals) || !empty($popularItems))
 @php
-    // Determine which tab should be active by default
     if(!empty($newArrivals)) {
         $defaultTab = 'newFeatured';
     } elseif(!empty($popularItems)) {
         $defaultTab = 'popularFeatured';
     } else {
-        $defaultTab = null; // no tab to show
+        $defaultTab = null;
     }
 @endphp
-<section x-data="{ activeTab: '{{ $defaultTab }}' }" class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[50px] pb-[50px] md:pb-[50px] lg:pb-[50px] xl:pb-[100px] relative border-b border-[#ffffff10] xl:border-hidden">
+
+<section 
+    x-data="{ 
+        activeTab: '{{ $defaultTab }}',
+        // Function to force Swiper to recalculate width/height
+        refreshSwiper() {
+            this.$nextTick(() => {
+                const activePanel = document.querySelector('.tab-panel:not([style*=&quot;display: none&quot;])');
+                const swiperEl = activePanel ? activePanel.querySelector('.gamepcswiper-new') : null;
+                if (swiperEl && swiperEl.swiper) {
+                    swiperEl.swiper.update();
+                    swiperEl.swiper.updateSize();
+                    swiperEl.swiper.updateSlides();
+                }
+            });
+        }
+    }" 
+    class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[50px] pb-[50px] md:pb-[50px] lg:pb-[50px] xl:pb-[100px] relative border-b border-[#ffffff10] xl:border-hidden">
 
     <div class="section-title mb-[30px] relative flex flex-col xl:flex-row items-center xl:items-end justify-between">
-        <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center uppercase text-center xl:text-left leading-[40px] xl:leading-[50px] m-[0] mb-[30px] xl:mb-[0px]">{{$page_content['featured_products_title'] ?? ''}}</h3>
-        <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] xl:mr-[150px] justify-center xl:justify-end align-center">
-            <div class="flex gap-[20px] tab-container relative z-[1]">
+        <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center uppercase xl:text-left leading-[40px] xl:leading-[50px] m-[0] mb-[30px] xl:mb-[0px]">
+            {{$page_content['featured_products_title'] ?? ''}}
+        </h3>
+
+        <div class="w-full action-group flex flex-row items-center gap-[30px] justify-center xl:justify-end">
+            <div class="flex p-1 bg-white/5 rounded-full border border-white/10 relative z-[1]">
                 @if(!empty($newArrivals))
-                <button  @click="activeTab='newFeatured'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer active-tab" data-active="true">New Arrivals</button>
+                <button 
+                    @click="activeTab='newFeatured'; refreshSwiper()" 
+                    :class="activeTab === 'newFeatured' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
+                    class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
+                    New Arrivals
+                </button>
                 @endif
+
                 @if(!empty($popularItems))
-                <button @click="activeTab='popularFeatured'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer" data-active="false">Popular Items</button>
+                <button 
+                    @click="activeTab='popularFeatured'; refreshSwiper()" 
+                    :class="activeTab === 'popularFeatured' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
+                    class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
+                    Popular Items
+                </button>
                 @endif
             </div>
-            <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden xl:block"></div>
         </div>
     </div>
 
-    
-
-    <div x-show="activeTab === 'newFeatured'" x-transition class="tab-panel">
+    <!-- New Arrivals Panel -->
+    <div x-show="activeTab === 'newFeatured'" x-transition:enter="transition ease-out duration-300" class="tab-panel">
         <div class="relative group">
-            <div class="swiper gamepcswiper relative overflow-x-hidden">
+            <div class="swiper gamepcswiper-new relative overflow-x-hidden">
                 <div class="swiper-wrapper">
                     @foreach($newArrivals as $item)
                     <div class="swiper-slide" data-swiper-autoplay="8000">
+
                         <div class="gamepc-card relative rounded-[20px] overflow-hidden min-h-[500px]">
+
                             <img src="{{ $newUploads[$item['featured_new_image']] ? Storage::url($newUploads[$item['featured_new_image']]->file_name) : asset('assets/img/placeholder.jpg') }}" class="absolute object-cover object-center w-full h-full"
+
                                 alt="{{ $item['featured_new_title'] ?? '' }}" title="{{ $item['featured_new_title'] ?? '' }}">
+
                             <div class="content h-full w-full z-[1] absolute flex flex-col items-start justify-end gap-[20px] p-[30px]">
+
                                 <div class="title flex flex-col items-start gap-[15px]">
+
                                     <span class="text-white text-[15px] uppercase text-left font-bold">{{ $item['featured_new_sub_title'] ?? '' }}</span>
+
                                     <h4 class="text-white text-[40px] font-[Juan-cock] uppercase leading-[40px]">{{ $item['featured_new_title'] ?? '' }}</h4>
+
                                 </div>
+
                                 @php
+
                                 $productSpecifications = \App\Models\ProductSpecification::where(
+
                                     'product_id',
+
                                     $item['featured_new_product_id']
+
                                 )->with(['specification','specificationItem'])
+
                                 ->orderBy('sort_order')
+
                                 ->get();
 
+
+
                                 $product = \App\Models\Product::with('stocks')->find($item['featured_new_product_id']);
+
                                 $firstStock = $product?->stocks?->first();
+
                                 @endphp
+
                                 <div class="specifications w-full transition-all duration-[600ms]">
+
                                     <ul class="m-[0] w-full divide-y divide-[#ffffff30]">
+
                                         @foreach ($productSpecifications as $key=> $productSpecification)
+
                                             @if($productSpecification->specification && $key < 3) {{-- Show only first 4 specifications --}}
-                                            <li class="text-white w-full uppercase text-[15px] font-medium py-[10px]">
-                                                {{ $productSpecification->specification->main_title }} 
+
+                                            <li class="text-white w-full uppercase text-[15px] font-medium leading-[40px] line-clamp-1">
+
+                                                {{ $productSpecification->specification->main_title }}
+
                                                 @if($productSpecification->specificationItem)
+
                                                     {{ $productSpecification->specificationItem->title }}
+
                                                 @endif
+
                                             </li>
+
                                             @endif
+
                                         @endforeach
+
                                     </ul>
+
                                 </div>
+
                                 @if($product && $firstStock)
-                                <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}"
-                                    class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">shop
+
+                                <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white">shop
+
                                     now</a>
+
                                     @endif
+
                             </div>
+
                         </div>
+
                     </div>
                     @endforeach
                 </div>
-            </div>
-            <div class="swiper-pagination !relative mt-[50px] hidden m-auto"></div>
-            <div class="controls relative xl:absolute right-[0px] left-[0px] m-auto mt-[30px] xl:mt-[0px] xl:top-[-80px] flex flex-row items-center gap-[30px] justify-center xl:justify-end">
-                <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
-                <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                <!-- Pagination & Controls -->
+                <div class="flex flex-row justify-between w-full relative mt-[30px]">
+                    <div class="swiper-pagination !relative mt-0 m-auto w-full flex justify-center xl:justify-start"></div>
+                    <div class="controls relative right-[0px] left-[0px] m-auto mt-[30px] xl:mt-0 hidden xl:flex flex-row items-center gap-[10px] justify-center xl:justify-end">
+                        <div class="swiper-button-prev-new !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                        <div class="swiper-button-next-new !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div x-show="activeTab === 'popularFeatured'" x-transition class="tab-panel">
+    <!-- Popular Items Panel -->
+    <div x-show="activeTab === 'popularFeatured'" x-transition:enter="transition ease-out duration-300" class="tab-panel">
         <div class="relative group">
-            <div class="swiper gamepcswiper relative overflow-x-hidden">
+            <div class="swiper gamepcswiper-pop relative overflow-x-hidden">
                 <div class="swiper-wrapper">
                     @foreach($popularItems as $item)
                     <div class="swiper-slide" data-swiper-autoplay="8000">
+
                         <div class="gamepc-card relative rounded-[20px] overflow-hidden min-h-[500px]">
+
                             <img src="{{ $popularUploads[$item['featured_popular_image']] ? Storage::url($popularUploads[$item['featured_popular_image']]->file_name) : asset('assets/img/placeholder.jpg') }}" class="absolute object-cover object-center w-full h-full"
+
                                 alt="{{ $item['featured_popular_title'] ?? '' }}" title="{{ $item['featured_popular_title'] ?? '' }}">
-                            <div
-                                class="content h-full w-full z-[1] absolute flex flex-col items-start justify-end gap-[20px] p-[30px]">
+
+                            <div class="content h-full w-full z-[1] absolute flex flex-col items-start justify-end gap-[20px] p-[30px]">
+
                                 <div class="title flex flex-col items-start gap-[15px]">
+
                                     <span class="text-white text-[15px] uppercase text-left font-bold">{{ $item['featured_popular_sub_title'] ?? '' }}</span>
+
                                     <h4 class="text-white text-[40px] font-[Juan-cock] uppercase leading-[40px]">{{ $item['featured_popular_title'] ?? '' }}</h4>
+
                                 </div>
-                                
+
+                               
+
                                 @php
+
                                 $productSpecifications = \App\Models\ProductSpecification::where(
+
                                     'product_id',
+
                                     $item['featured_popular_product_id']
+
                                 )->with('specification')
+
                                 ->orderBy('sort_order')
+
                                 ->get();
 
+
+
                                 $product = \App\Models\Product::with('stocks')->find($item['featured_popular_product_id']);
+
                                 $firstStock = $product?->stocks?->first();
+
                                 @endphp
 
+
+
                                 <div class="specifications w-full transition-all duration-[600ms]">
-                                    <ul class="m-[0] w-full divide-y divide-[#ffffff30]">
+
+                                    <ul class="m-[0] w-full divide-y divide-[#ffffff30] gap-0">
+
                                         @foreach ($productSpecifications as $key=> $productSpecification)
+
                                             @if($productSpecification->specification&& $key < 3) {{-- Show only first 4 specifications --}}
-                                            <li
-                                                class="text-white w-full uppercase text-[15px] font-medium py-[10px]">
-                                                {{ $productSpecification->specification->main_title }}</li>
+
+                                            <li class="text-white w-full uppercase text-[15px] font-medium leading-[40px] line-clamp-1">
+
+                                                {{ $productSpecification->specification->main_title }}
+                                            </li>
+
                                             @endif
+
                                         @endforeach
+
                                     </ul>
+
                                 </div>
+
                                 @if($product && $firstStock)
+
                                 <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}"
-                                    class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">shop
+
+                                    class="w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white">shop
+
                                     now</a>
+
                                     @endif
+
                             </div>
+
                         </div>
+
                     </div>
                     @endforeach
                 </div>
-            </div>
-            <div class="swiper-pagination !relative mt-[50px] hidden m-auto"></div>
-            <div class="controls relative xl:absolute right-[0px] left-[0px] m-auto mt-[30px] xl:mt-[0px] xl:top-[-80px] flex flex-row items-center gap-[30px] justify-center xl:justify-end">
-                <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
-                <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                <!-- Pagination & Controls -->
+                <div class="flex flex-row justify-between w-full relative mt-[30px]">
+                    <div class="swiper-pagination !relative mt-0 m-auto w-full flex justify-center xl:justify-start"></div>
+                    <div class="controls relative right-[0px] left-[0px] m-auto mt-[30px] xl:mt-0 hidden xl:flex flex-row items-center gap-[10px] justify-center xl:justify-end">
+                        <div class="swiper-button-prev-pop !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                        <div class="swiper-button-next-pop !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                    </div>
+                </div>
             </div>
         </div>
-        
     </div>
 </section>
 @endif
+
 <!--//special gaming pc-->
 
 <!--upcoming products-->
@@ -324,96 +444,131 @@
     } elseif(!empty($upcomingPopularProducts)) {
         $defaultTab = 'popularUpcoming';
     } else {
-        $defaultTab = null; // no tab to show
+        $defaultTab = null;
     }
 @endphp
-<section x-data="{ activeTab: '{{ $defaultTab }}' }" class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[50px] xl:pt-0 relative" >
+
+<section 
+    x-data="{ 
+        activeTab: '{{ $defaultTab }}',
+        // Function to force Swiper to recalculate width/height
+        refreshSwiper() {
+            this.$nextTick(() => {
+                const activePanel = document.querySelector('.tab-panel:not([style*=&quot;display: none&quot;])');
+                const swiperEl = activePanel ? activePanel.querySelector('.productswiper-up-new') : null;
+                if (swiperEl && swiperEl.swiper) {
+                    swiperEl.swiper.update();
+                    swiperEl.swiper.updateSize();
+                    swiperEl.swiper.updateSlides();
+                }
+            });
+        }
+    }"  
+    class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[50px] xl:pt-0 relative">
 
     <div class="section-title mb-[30px] relative flex flex-col xl:flex-row items-center xl:items-end justify-between">
-        <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center uppercase text-center xl:text-left leading-[40px] xl:leading-[50px] m-[0] mb-[30px] xl:mb-[0px]">{{$page_content['upcoming_products_title'] ?? ''}}</h3>
-        <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] xl:mr-[150px] justify-center xl:justify-end align-center">
-            <div class="flex gap-[20px] tab-container z-20">
+        <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center uppercase xl:text-left leading-[40px] xl:leading-[50px] m-[0] mb-[30px] xl:mb-[0px]">
+            {{$page_content['upcoming_products_title'] ?? ''}}
+        </h3>
+
+        <!-- Styled Tab Pill Buttons -->
+        <div class="w-full action-group flex flex-row items-center gap-[30px] justify-center xl:justify-end">
+            <div class="flex gap-[15px] p-1 bg-white/5 rounded-full border border-white/10 relative z-[20]">
                 @if(!empty($upcomingNewProducts))
-                <button @click="activeTab='newUpcoming'"
-                        class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer z-20" data-active="true">New Arrivals</button>
+                <button 
+                    @click="activeTab='newUpcoming'; refreshSwiper()" 
+                    :class="activeTab === 'newUpcoming' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
+                    class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
+                    New Arrivals
+                </button>
                 @endif
+
                 @if(!empty($upcomingPopularProducts))
-                    <button @click="activeTab='popularUpcoming'" 
-                    class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer z-20" data-active="false">Popular Items</button>
+                <button 
+                    @click="activeTab='popularUpcoming'; refreshSwiper()" 
+                    :class="activeTab === 'popularUpcoming' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
+                    class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
+                    Popular Items
+                </button>
                 @endif
             </div>
-            <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden xl:block"></div>
         </div>
+        
     </div>
 
-    <div x-show="activeTab === 'newUpcoming'" x-transition class="tab-panel">
+    <!-- New Arrivals Panel -->
+    <div x-show="activeTab === 'newUpcoming'" x-transition:enter="transition ease-out duration-300" class="tab-panel">
         <div class="relative group">
-            <div class="swiper productswiper relative overflow-x-hidden">
+            <div class="swiper productswiper-up-new relative overflow-x-hidden">
                 <div class="swiper-wrapper">
                     @foreach($upcomingNewProducts as $product)
                     @php
-                        // Get the first stock for this product
                         $firstStock = $product->stocks->first();
                         $prodData = [
-                                    'product_id' => $product->id ?? null,
-                                    'stock_id' => $firstStock->id ?? null,
-                                    'thumbnail_img' => $product->thumbnail_img ?? null,
-                                    'offer_tag' => $firstStock->offer_tag ?? null,
-                                    'name' => $product->name ?? null,
-                                    'offer_price' => $firstStock->offer_price ?? null,
-                                    'price' => $firstStock->price ?? null,
-                                    'page' => 'home-list',
-                                ]
+                            'product_id' => $product->id ?? null,
+                            'stock_id' => $firstStock->id ?? null,
+                            'thumbnail_img' => $product->thumbnail_img ?? null,
+                            'offer_tag' => $firstStock->offer_tag ?? null,
+                            'name' => $product->name ?? null,
+                            'offer_price' => $firstStock->offer_price ?? null,
+                            'price' => $firstStock->price ?? null,
+                            'page' => 'home-list',
+                        ]
                     @endphp
                     <div class="swiper-slide" data-swiper-autoplay="8000">
                         @include('frontend.partials.product_card', ['prodData' => $prodData])
                     </div>
                     @endforeach
                 </div>
-            </div>
-            <div class="swiper-pagination !relative mt-[50px] hidden m-auto"></div>
-            <div class="controls relative xl:absolute right-[0px] left-[0px] m-auto mt-[30px] xl:mt-[0px] xl:top-[-80px] flex flex-row items-center gap-[30px] justify-center xl:justify-end">
-                <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
-                <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                <div class="flex flex-row justify-between w-full relative mt-[30px]">
+                    <div class="swiper-pagination !relative mt-0 m-auto w-full flex justify-center xl:justify-start"></div>
+                    <div class="controls relative right-[0px] left-[0px] m-auto mt-[30px] xl:mt-0 hidden xl:flex flex-row items-center gap-[10px] justify-center xl:justify-end">
+                        <div class="swiper-button-prev-new !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                        <div class="swiper-button-next-new !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div x-show="activeTab === 'popularUpcoming'" x-transition class="tab-panel">
+    <!-- Popular Items Panel -->
+    <div x-show="activeTab === 'popularUpcoming'" x-transition:enter="transition ease-out duration-300" class="tab-panel">
         <div class="relative group">
-            <div class="swiper productswiper relative overflow-x-hidden">
+            <div class="swiper productswiper-up-pop relative overflow-x-hidden">
                 <div class="swiper-wrapper">
                     @foreach($upcomingPopularProducts as $product)
                     @php
-                        // Get the first stock for this product
                         $firstStock = $product->stocks->first();
                         $prodData1 = [
-                                    'product_id' => $product->id ?? null,
-                                    'stock_id' => $firstStock->id ?? null,
-                                    'thumbnail_img' => $product->thumbnail_img ?? null,
-                                    'offer_tag' => $firstStock->offer_tag ?? null,
-                                    'name' => $product->name ?? null,
-                                    'offer_price' => $firstStock->offer_price ?? null,
-                                    'price' => $firstStock->price ?? null,
-                                    'page' => 'home-list',
-                                ];
+                            'product_id' => $product->id ?? null,
+                            'stock_id' => $firstStock->id ?? null,
+                            'thumbnail_img' => $product->thumbnail_img ?? null,
+                            'offer_tag' => $firstStock->offer_tag ?? null,
+                            'name' => $product->name ?? null,
+                            'offer_price' => $firstStock->offer_price ?? null,
+                            'price' => $firstStock->price ?? null,
+                            'page' => 'home-list',
+                        ];
                     @endphp
                     <div class="swiper-slide" data-swiper-autoplay="8000">
                         @include('frontend.partials.product_card', ['prodData' => $prodData1])
                     </div>
                     @endforeach
                 </div>
-            </div>
-            <div class="swiper-pagination !relative mt-[50px] hidden m-auto"></div>
-            <div class="controls relative xl:absolute right-[0px] left-[0px] m-auto mt-[30px] xl:mt-[0px] xl:top-[-80px] flex flex-row items-center gap-[30px] justify-center xl:justify-end">
-                <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
-                <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                <div class="flex flex-row justify-between w-full relative mt-[30px]">
+                    <div class="swiper-pagination !relative mt-0 m-auto w-full flex justify-center xl:justify-start"></div>
+                    <div class="controls relative right-[0px] left-[0px] m-auto mt-[30px] xl:mt-0 hidden xl:flex flex-row items-center gap-[10px] justify-center xl:justify-end">
+                        <div class="swiper-button-prev-pop !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                        <div class="swiper-button-next-pop !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 @endif
-<!--//upcoming products-->
+
+
 
 <!--ads slider 01-->
 @if(!empty($middleBanners))
@@ -423,7 +578,7 @@
             @foreach($middleBanners as $banner)
             <div class="swiper-slide" data-swiper-autoplay="8000">
                 <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif>
-                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full" alt="{{ $banner->name}}">
+                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : asset('assets/images/placeholder.png') }}" class="w-full h-full rounded-[20px]" alt="{{ $banner->name}}">
                 </a>
             </div>
             @endforeach
@@ -445,27 +600,57 @@
         $defaultTab = null; // no tab to show
     }
 @endphp
-<section x-data="{ activeTab: '{{ $defaultTab }}' }" class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-0 relative">
+<section x-data="{ 
+        activeTab: '{{ $defaultTab }}',
+        // Function to force Swiper to recalculate width/height
+        refreshSwiper() {
+            this.$nextTick(() => {
+                const activePanel = document.querySelector('.tab-panel:not([style*=&quot;display: none&quot;])');
+                const swiperEl = activePanel ? activePanel.querySelector('.productswiper-ftr-new') : null;
+                if (swiperEl && swiperEl.swiper) {
+                    swiperEl.swiper.update();
+                    swiperEl.swiper.updateSize();
+                    swiperEl.swiper.updateSlides();
+                }
+            });
+        }
+    }" class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-0 relative">
 
     <div class="section-title mb-[30px] relative flex flex-col xl:flex-row items-center xl:items-end justify-between">
         <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center uppercase text-center xl:text-left leading-[40px] xl:leading-[50px] m-[0] mb-[30px] xl:mb-[0px]">{{ $page_content['middle_featured_products_title'] ?? ''}}</h3>
-        <div class="w-full action-group flex flex-row items-center gap-[30px] mr-[0px] xl:mr-[150px] justify-center xl:justify-end align-center">
-            <div class="flex gap-[20px] tab-container z-20">
+        
+
+
+        <!-- Styled Tab Pill Buttons -->
+        <div class="w-full action-group flex flex-row items-center gap-[30px] justify-center xl:justify-end">
+            <div class="flex gap-[15px] p-1 bg-white/5 rounded-full border border-white/10 relative z-[20]">
                 @if(!empty($middleNewProducts))
-                <button @click="activeTab='newMiddleProducts'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-white text-black text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer" data-active="true">New Arrivals</button>
+                <button 
+                    @click="activeTab='newMiddleProducts'; refreshSwiper()" 
+                    :class="activeTab === 'newMiddleProducts' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
+                    class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
+                    New Arrivals
+                </button>
                 @endif
+
                 @if(!empty($middlePopularProducts))
-                <button @click="activeTab='popularMiddleProducts'" class="tab-btn border rounded-full transition-all duration-[300ms] border-[#ffffff30] bg-transparent text-[#ffffff30] text-[13px] uppercase px-[30px] py-[10px] font-medium cursor-pointer" data-active="false">Popular Items</button>
+                <button 
+                    @click="activeTab='popularMiddleProducts'; refreshSwiper()" 
+                    :class="activeTab === 'popularMiddleProducts' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
+                    class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
+                    Popular Items
+                </button>
                 @endif
             </div>
-            <div class="divider w-[1px] h-[30px] bg-[#ffffff30] hidden xl:block"></div>
         </div>
+
+
     </div>
 
     <!-- new arrival -->
-    <div x-show="activeTab === 'newMiddleProducts'" x-transition class="tab-panel">
+    <div x-show="activeTab === 'newMiddleProducts'" x-transition:enter="transition ease-out duration-300" class="tab-panel">
         <div class="relative group">
-            <div class="swiper productswiper relative overflow-x-hidden">
+            <div class="swiper productswiper-ftr-new relative overflow-x-hidden">
                 <div class="swiper-wrapper">
                     @foreach($middleNewProducts as $product)
                     @php
@@ -487,19 +672,21 @@
                     </div>
                     @endforeach
                 </div>
-            </div>
-            <div class="swiper-pagination !relative mt-[50px] hidden m-auto"></div>
-            <div class="controls relative xl:absolute right-[0px] left-[0px] m-auto mt-[30px] xl:mt-[0px] xl:top-[-80px] flex flex-row items-center gap-[30px] justify-center xl:justify-end">
-                <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
-                <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                <div class="flex flex-row justify-between w-full relative mt-[30px]">
+                    <div class="swiper-pagination !relative mt-0 m-auto w-full flex justify-center xl:justify-start"></div>
+                    <div class="controls relative right-[0px] left-[0px] m-auto mt-[30px] xl:mt-0 hidden xl:flex flex-row items-center gap-[10px] justify-center xl:justify-end">
+                        <div class="swiper-button-prev-new !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                        <div class="swiper-button-next-new !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- popular -->
-    <div x-show="activeTab === 'popularMiddleProducts'" x-transition class="tab-panel">
+    <div x-show="activeTab === 'popularMiddleProducts'" x-transition:enter="transition ease-out duration-300" class="tab-panel">
         <div class="relative group">
-            <div class="swiper productswiper relative overflow-x-hidden">
+            <div class="swiper productswiper-ftr-pop relative overflow-x-hidden">
                 <div class="swiper-wrapper">
                     @foreach($middlePopularProducts as $product)
                     @php
@@ -521,11 +708,13 @@
                     </div>
                     @endforeach
                 </div>
-            </div>
-            <div class="swiper-pagination !relative mt-[50px] hidden m-auto"></div>
-            <div class="controls relative xl:absolute right-[0px] left-[0px] m-auto mt-[30px] xl:mt-[0px] xl:top-[-80px] flex flex-row items-center gap-[30px] justify-center xl:justify-end">
-                <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
-                <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                <div class="flex flex-row justify-between w-full relative mt-[30px]">
+                    <div class="swiper-pagination !relative mt-0 m-auto w-full flex justify-center xl:justify-start"></div>
+                    <div class="controls relative right-[0px] left-[0px] m-auto mt-[30px] xl:mt-0 hidden xl:flex flex-row items-center gap-[10px] justify-center xl:justify-end">
+                        <div class="swiper-button-prev-pop !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                        <div class="swiper-button-next-pop !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -541,7 +730,7 @@
             @foreach($middleFullBanners as $banner)
             <div class="swiper-slide" data-swiper-autoplay="8000">
                 <a href="{{ getBannerUrl($banner) }}" @if($banner->link_type === 'external') target="_blank" @endif>
-                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : '' }}" class="w-full h-full" alt="{{ $banner->name }}">
+                    <img src="{{ $banner->mainImage ? Storage::url($banner->mainImage->file_name) : asset('assets/images/placeholder.png') }}" class="w-full h-full rounded-[20px]" alt="{{ $banner->name }}">
                 </a>
             </div>
             @endforeach
@@ -560,7 +749,7 @@
     </div>
 
     <div class="relative group">
-        <div class="swiper productswiper relative overflow-x-hidden">
+        <div class="swiper productswiper-bstdeals relative overflow-x-hidden">
             <div class="swiper-wrapper">
                 @foreach($bestDealsProducts as $product)
                 @php
@@ -582,11 +771,13 @@
                 </div>
                 @endforeach
             </div>
-        </div>
-        <div class="swiper-pagination !relative flex flex-start mt-[50px] hidden"></div>
-        <div class="controls relative md:absolute right-[0px] m-auto mt-[30px] md:mt-[0px] md:top-[-80px] flex items-center gap-[30px] justify-center md:justify-end">
-            <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
-            <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+            <div class="flex flex-row justify-between w-full relative mt-[30px]">
+                <div class="swiper-pagination !relative mt-0 m-auto w-full flex justify-center xl:justify-start"></div>
+                <div class="controls relative right-[0px] left-[0px] m-auto mt-[30px] xl:mt-0 hidden xl:flex flex-row items-center gap-[10px] justify-center xl:justify-end">
+                    <div class="swiper-button-prev-bstdeals !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                    <div class="swiper-button-next-bstdeals !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -601,11 +792,11 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[15px]">
         @foreach($popularGalleryProducts as $product)
-        <div class="group ftr-card relative rounded-[20px] overflow-hidden min-h-[300px] xl:min-h-[400px] cursor-pointer" onclick="window.location.href='{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}'">
+        <div class="group ftr-card relative rounded-[20px] overflow-hidden cursor-pointer" onclick="window.location.href='{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}'">
             <img src="{{ get_product_image($product->thumbnail_img) }}" class="relative object-center object-fit top-0 left-0 transition-all duration-[600ms] group-hover:scale-110" alt="{{ $product->name }}" title="{{ $product->name }}">
             <div class="content flex flex-col xl:flex-row items-end justify-end xl:justify-between gap-[20px] xl:gap-[30px] relative z-[1] w-full h-fit bg-[#0b0f13] p-[30px]">
                 <h6 class="text-white text-[20px] font-medium w-full xl:w-[50%] text-center xl:text-left line-clamp-2">{{ $product->name }}</h6>
-                <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full xl:w-fit text-center text-black text-[13px] xl:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[10px] rounded-full transition-all duration-[600ms] group-hover:bg-[#2A7CFF] group-hover:text-white">Shop Now</a>
+                <a href="{{ route('product.details', [$product->slug, $product->stocks->first()->sku]) }}" class="w-full xl:w-fit text-center text-black text-[13px] xl:text-[14px] font-medium uppercase bg-white border border-transparent px-[30px] py-[10px] rounded-full transition-all duration-[600ms] group-hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] group-hover:text-white">Shop Now</a>
             </div>
         </div>
         @endforeach
@@ -616,14 +807,14 @@
 
 <!--graphic cards-->
 @if(!empty($graphicCardProducts))
-<section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] lg:py-0 relative border-b border-[#ffffff10] xl:border-hidden">
+<section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] lg:py-0 lg:pb-[80px] relative border-b border-[#ffffff10] xl:border-hidden">
 
     <div class="section-title mb-[30px] relative flex flex-col md:flex-row items-center md:items-end justify-between">
         <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0] md:mb-[0px]">{{$page_content['graphic_cards_title'] ?? ''}}</h3>
     </div>
 
     <div class="relative group">
-        <div class="swiper productswiper relative overflow-x-hidden">
+        <div class="swiper productswiper-gphic relative overflow-x-hidden">
             <div class="swiper-wrapper">
                 @foreach($graphicCardProducts as $product)
                     @php
@@ -645,11 +836,13 @@
                 </div>
                 @endforeach
             </div>
-        </div>
-        <div class="swiper-pagination !relative flex flex-start mt-[50px] hidden"></div>
-        <div class="controls relative md:absolute right-[0px] m-auto mt-[30px] md:mt-[0px] md:top-[-80px] flex items-center gap-[30px] justify-center md:justify-end">
-            <div class="swiper-button-prev !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
-            <div class="swiper-button-next !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+            <div class="flex flex-row justify-between w-full relative mt-[30px]">
+                <div class="swiper-pagination !relative mt-0 m-auto w-full flex justify-center xl:justify-start"></div>
+                <div class="controls relative right-[0px] left-[0px] m-auto mt-[30px] xl:mt-0 hidden xl:flex flex-row items-center gap-[10px] justify-center xl:justify-end">
+                    <div class="swiper-button-prev-gphic !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                    <div class="swiper-button-next-gphic !relative !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer !rounded-full !bg-white/10 !backdrop-blur-[100px] !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-[300ms] !hover:bg-white/20 !mt-[0px]"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -662,9 +855,9 @@
 <!--testimonials-->
 @if(!empty($testimonialsVideo) || !empty($testimonialsText))
 <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] relative">
-    <div class="border-y-1 border-[#ffffff10] py-[50px] xl:py-[100px]">
+    <div class="border-y border-[#ffffff10] py-[50px] xl:py-[100px]">
         <div class="section-title mb-[30px] relative flex items-center justify-center">
-            <h3 class="text-[30px] md:text-[50px] text-[white] font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">{{$page_content['testimonials_title'] ?? ''}}</h3>
+            <h3 class="text-[30px] md:text-[50px] text-white font-bold uppercase text-center md:text-left leading-[40px] md:leading-[50px] m-[0]">{{$page_content['testimonials_title'] ?? ''}}</h3>
         </div>
         <div class="flex flex-col xl:flex-row gap-[30px] max-w-6xl m-auto">
             <div>
@@ -696,7 +889,7 @@
                                             <h6 class="text-white text-[20px] md:text-[25px] font-medium">{{$testimonial->name}}</h6>
                                             <p class="text-white text-[15px] font-normal">{{$testimonial->sub_title}}</p>
                                         </div>
-                                        <button class="bg-[#ffffff30] border-hidden rounded-full p-[10px] flex align-center items-center justify-center h-[50px] w-[50px] transition-all duration-[600ms] group-hover:bg-[#2a7cff]"><img src="{{ asset('assets/images/play.svg') }}" alt="Play Button" class="w-[10px] h-[10px]"></button>
+                                        <button class="bg-[#ffffff30] border-hidden rounded-full p-[10px] flex align-center items-center justify-center h-[50px] w-[50px] transition-all duration-[600ms] group-hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]"><img src="{{ asset('assets/images/play.svg') }}" alt="Play Button" class="w-[10px] h-[10px]"></button>
                                     </div>
                                 </a>
                             </div>
@@ -730,7 +923,7 @@
                                     @foreach ($testimonialsText as $testimonialsText)    
                                     <div class="swiper-slide">
                                         <div class="flex flex-col gap-[30px] xl:gap-[50px] justify-between h-full">
-                                            <p class="text-white text-center lg:text-left text-[15px] font-normal leading-[30px]">{{$testimonialsText->comment}}</p>
+                                            <p class="text-white text-center xl:text-left text-[15px] font-normal leading-[30px]">{{$testimonialsText->comment}}</p>
                                             <div class="flex flex-row gap-[20px] justify-center xl:justify-start">
                                                 <div id="userAvatar" class="flex items-center justify-center w-12 h-12 rounded-full bg-[#393B42] text-white font-bold text-xl">{{ strtoupper(substr($testimonialsText->name, 0, 1)) }}</div>
                                                 <div>
@@ -761,7 +954,7 @@
 
 <!--about & Brands-->
 @if(!empty($homePageFooters))
-    <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pb-[50px] xl:pb-[100px] relative">
+    <section class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] md:py-[50px] xl:py-[100px] relative">
         <div class="max-w-6xl m-auto">
             <div class="swiper aboutswiper overflow-hidden min-h-full">
                 <div class="swiper-wrapper">
@@ -774,7 +967,7 @@
                     <div class="swiper-slide">
                         <div class="flex flex-col xl:grid md:grid-cols-2 gap-0 xl:gap-[100px] items-start xl:items-end">
                             <div class="section-title mb-0 flex flex-col gap-10">
-                                <h3 class="text-[30px] md:text-[50px] text-[white] font-bold uppercase text-center xl:text-left leading-[40px] md:leading-[50px] m-[0]">{{$footer['footer_title']}}</h3>
+                                <h3 class="text-[30px] md:text-[50px] text-white font-bold uppercase text-center xl:text-left leading-[40px] md:leading-[50px] m-[0]">{{$footer['footer_title']}}</h3>
                                 <div class="mt-[15px] mb-[30px] xl:mb-[0px] m-auto xl:m-0 w-full xl:w-[500px] h-full xl:h-[500px] relative">
                                     <img src="{{$footerImageUrl}}" alt="About PC Garage" title="About PC Garage" class="w-full h-full relative xl:absolute object-cover object-top m-auto z-[0]">
                                 </div>
@@ -782,7 +975,7 @@
                             
                             <div class="flex flex-col gap-10">
                                 <div style="color:rgb(255 255 255) !important;" class="text-white text-[15px] xl:text-[18px] font-normal leading-[30px] xl:leading-[35px] text-center xl:text-left">{!! $footer['footer_content'] !!}</div>
-                                <a href="{{$footer['footer_button_link']}}" class="w-full md:w-fit m-auto xl:m-0 h-fit text-center text-black uppercase text-[13px] md:text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[#2a7cff] hover:text-white">{{$footer['footer_button_text']}}</a>
+                                <a href="{{$footer['footer_button_link']}}" class="w-full md:w-fit m-auto xl:m-0 h-fit text-center text-black uppercase text-[13px] md:text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white">{{$footer['footer_button_text']}}</a>
                             </div>
                         </div>
                     </div>

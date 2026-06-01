@@ -121,16 +121,47 @@ h3 {
   font-family: "Mona-Sans", sans-serif;
 }
 
-
-.swiper-button-next,
-.swiper-container-rtl .swiper-button-prev {
-  left: auto;
-  background-image: url("public/assets/images/arrow-right.svg");
+/* Add this to your global CSS to style the scrollbar */
+#model-menu::-webkit-scrollbar {
+    width: 6px;
 }
-.swiper-button-prev,
-.swiper-container-rtl .swiper-button-next {
+
+#model-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#model-menu::-webkit-scrollbar-thumb {
+    background: #374151; /* Dark gray */
+    border-radius: 10px;
+}
+
+#model-menu::-webkit-scrollbar-thumb:hover {
+    background: #4B5563;
+}
+
+
+.swiper-button-next-new, .swiper-button-next-pop, .swiper-button-next-bstdeals, .swiper-button-next-gphic, .swiper-button-next-related {
+  left: auto;
+  background-image: url("../../public/assets/images/arrow-right.svg");
+  background-repeat: no-repeat !important;
+  background-position: center center;
+}
+.swiper-button-prev-new, .swiper-button-prev-pop, .swiper-button-prev-bstdeals, .swiper-button-prev-gphic, .swiper-button-prev-related {
   right: auto;
-  background-image: url("public/assets/images/arrow-left.svg");
+  background-image: url("../../public/assets/images/arrow-left.svg");
+  background-repeat: no-repeat !important;
+  background-position: center center;
+}
+
+.swiper-pagination-horizontal.swiper-pagination-bullets.swiper-pagination-bullets-dynamic{
+    left: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    bottom: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    padding: 0;
 }
 
 /* landing banner */
@@ -345,7 +376,8 @@ h3 {
   visibility: visible;
 }
 .gamepc-card:hover a {
-  background-color: #2a7cff;
+  /* background-color: #2a7cff; */
+  background:linear-gradient(52deg, #0844ff 11.5%, #64b8fb 129.52%);
   color: #fff;
 }
 .product-card:before {
@@ -381,8 +413,14 @@ h3 {
     opacity: 1;
 }
 
+.product-card .prd-card-btn{
+  background: transparent;
+   transition: all 0.6s ease;
+}
+
 .product-card:hover .prd-card-btn{
-  background-color: #2A7CFF;
+  /* background-color: #2A7CFF; */
+  background:linear-gradient(52deg, #0844ff 11.5%, #64b8fb 129.52%);
 }
 
 
@@ -489,7 +527,7 @@ strong {
 
 @layer components {
     .nav-item.active, .nav-item:hover {
-        @apply bg-[#2A7CFF] text-[#ffffff] font-medium;
+        @apply bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-[#ffffff] font-medium;
     }
     .nav-item:not(.active) {
         @apply text-gray-400 hover:bg-[#252C33] hover:text-white;
@@ -523,6 +561,10 @@ strong {
     .nav-item:not(.selected) .check-icon{
         /* @apply hidden; */
     }
+}
+
+.pc-loading * {
+    transition: none !important;
 }
 
 /* Modal Backdrop Animation */
@@ -864,7 +906,8 @@ ol.lh18 li{
 
 /* CTA */
 .btn-cta {
-  background: #007bff;
+  /* background: #007bff; */
+  background:linear-gradient(52deg, #0844ff 11.5%, #64b8fb 129.52%);
   color: #fff;
   padding: 0.6rem 1rem;
   border-radius: 4px;
@@ -1049,6 +1092,12 @@ ol.lh18 li{
   opacity: 0;
 }
 
+.swiper-button-next,
+.swiper-button-prev {
+    z-index: 20;
+    pointer-events: auto;
+}
+
 input:checked ~ div svg {
   opacity: 1 !important;
 }
@@ -1113,6 +1162,16 @@ h1.about-title, h3.about-title{
 }
 
 [x-cloak] { display: none !important; }
+
+/* Force buttons to stay active */
+.swiper-button-disabled {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+.swal2-container {
+    z-index: 100000 !important;
+}
 
 /*===================================*/
 

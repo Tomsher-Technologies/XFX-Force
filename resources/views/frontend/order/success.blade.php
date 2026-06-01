@@ -13,7 +13,7 @@
                     <div class="max-w-3xl m-auto">
                         
                         <div class="text-center mb-12">
-                            <div class="inline-flex items-center justify-center w-20 h-20 bg-[#2A7CFF]/10 rounded-full mb-6 animate-bounce">
+                            <div class="inline-flex items-center justify-center w-20 h-20 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10 rounded-full mb-6 animate-bounce">
                                 <svg class="w-10 h-10 text-[#2A7CFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                                 </svg>
@@ -26,24 +26,35 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-[30px] lg:gap-[100px] mb-10 pb-10 border-b border-white/5 text-center lg:text-left">
                                 <div>
                                     @if ($order->shipping_type == "pickup")
-                                        <p class="text-[12px] font-medium text-gray-400 uppercase mb-2">Pickup Location</p>
+                                        <p class="text-[12px] font-medium text-gray-400 uppercase mb-1">Pickup Location</p>
                                         <p class="text-white leading-relaxed">
                                            {{ get_setting('pickup_address') }}
                                         </p>
                                     @else
-                                        <p class="text-[12px] font-medium text-gray-400 uppercase mb-2">Shipping Address</p>
+                                        <p class="text-[12px] font-medium text-gray-400 uppercase mb-1">Shipping Address</p>
                                         <p class="text-white leading-relaxed">
                                             @php 
                                                 $shippingAddress = json_decode($order->shipping_address);
                                             @endphp
-                                            {{ $shippingAddress?->name }}, {{ $shippingAddress?->address }}, {{ $shippingAddress?->city }}, {{ $shippingAddress?->state }}, {{ $shippingAddress?->country }}
+                                            @php
+                                                $shippingParts = array_filter([
+                                                    $shippingAddress?->name,
+                                                    $shippingAddress?->address,
+                                                    $shippingAddress?->city,
+                                                    $shippingAddress?->state,
+                                                    $shippingAddress?->country,
+                                                    $shippingAddress?->phone,
+                                                ]);
+                                            @endphp
+
+                                            {{ implode(', ', $shippingParts) }}
                                         </p>
                                     @endif
                                 </div>
                                 <div>
-                                    <p class="text-[12px] font-medium text-gray-400 uppercase mb-2">Payment Method</p>
+                                    <p class="text-[12px] font-medium text-gray-400 uppercase mb-1">Payment Method</p>
                                     <p class="text-white leading-relaxed">
-                                        {{ ($order->payment_type == 'cash_on_delivery') ? 'Cash on Delivery' :  'Debit / Credit Card' }}<br>
+                                        {{ ($order->payment_type == 'cod') ? 'Cash on Delivery' :  'Debit / Credit Card' }}<br>
                                         <span class="text-[#2A7CFF] text-sm italic">
                                             Expected by {{ \Carbon\Carbon::parse($order->estimated_delivery)->format('F j, Y') }}
 
@@ -83,7 +94,23 @@
                                         </div>
                                         <div class="flex-grow w-full">
                                             <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1  cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">{{ $item->product->name ?? '' }}</h4>
+
                                             <p class="text-gray-500 text-xs mt-1">{{ $item->product_stock->stock_title ?? '' }}</p>
+                                            
+                                            <p class="text-[10px] text-[#ffffff50] text-left md:text-left"> 
+                                                @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
+                                                    <span class="text-gray-400 text-sm">
+                                                        
+                                                        @foreach($item->product_stock->attributes as $attr)
+                                                            {{ $attr->attribute?->name ?? '' }}:
+                                                            {{ $attr->value?->value ?? '' }}
+
+                                                            @if(!$loop->last) | @endif
+                                                        @endforeach
+                                                        
+                                                    </span>
+                                                @endif
+                                            </p>
                                             <div class="mt-2 text-sm md:hidden">
                                                 <div class="price w-full flex flex-row items-center gap-[10px]">
                                                     <h5 class="price flex flex-row text-white text-left text-[15px] lg:text-[20px] m-[0] font-medium align-center items-center gap-[5px] lg:gap-[10px]">
@@ -135,7 +162,24 @@
                                             </div>
                                             <div class="flex-grow w-full">
                                                 <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1  cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">{{ $item->product->name ?? '' }}</h4>
+                                                
                                                 <p class="text-gray-500 text-xs mt-1">{{ $item->product_stock->stock_title ?? '' }}</p>
+
+                                                <p class="text-[10px] text-[#ffffff50] text-left"> 
+                                                    @if($item->product_stock && $item->product_stock->attributes && $item->product_stock->attributes->count())
+                                                        <span class="text-gray-400 text-sm">
+                                                            
+                                                            @foreach($item->product_stock->attributes as $attr)
+                                                                {{ $attr->attribute?->name ?? '' }}:
+                                                                {{ $attr->value?->value ?? '' }}
+
+                                                                @if(!$loop->last) | @endif
+                                                            @endforeach
+                                                            
+                                                        </span>
+                                                    @endif
+                                                </p>
+                                                
                                                 <div class="mt-2 text-sm md:hidden">
                                                     <div class="price w-full flex flex-row items-center gap-[10px]">
                                                         <h5 class="price flex flex-row text-white text-left text-[15px] lg:text-[20px] m-[0] font-medium align-center items-center gap-[5px] lg:gap-[10px]">
@@ -178,12 +222,14 @@
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="{{ route('products') }}" class="flex-1 bg-white text-black text-center py-5 rounded-2xl font-medium uppercase text-[13px] hover:bg-[#2A7CFF] hover:text-white transition-all duration-300">
+                            <a href="{{ route('products') }}" class="flex-1 bg-white text-black text-center py-5 rounded-2xl font-medium uppercase text-[13px] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white transition-all duration-300">
                                 Continue Shopping
                             </a>
+                            @auth('frontend')
                             <a href="{{ route('orders.show', base64_encode($order->id)) }}" class="flex-1 border border-white/10 text-white text-center py-5 rounded-2xl font-medium uppercase text-[13px] hover:bg-white/5 transition-all">
                                 Go to Order
                             </a>
+                            @endauth
                         </div>
 
                         <p class="text-center mt-12 text-gray-600 text-xs uppercase">
@@ -379,11 +425,11 @@ window.updateMultiQty = function(btn, change) {
     if (newVal === 1) {
         iconWrapper.innerHTML = TRASH_ICON;
         minusBtn.classList.add('hover:text-red-500', 'hover:bg-red-500/10');
-        minusBtn.classList.remove('hover:bg-[#2A7CFF]', 'hover:text-white');
+        minusBtn.classList.remove('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
     } else {
         iconWrapper.innerHTML = MINUS_ICON;
         minusBtn.classList.remove('hover:text-red-500', 'hover:bg-red-500/10');
-        minusBtn.classList.add('hover:bg-[#2A7CFF]', 'hover:text-white');
+        minusBtn.classList.add('hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]', 'hover:text-white');
     }
     
     // Pulse animation
@@ -468,13 +514,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Reset all buttons in this group
             siblingButtons.forEach(s => {
-                s.classList.remove('active', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'border-1');
+                s.classList.remove('active', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'border-1');
                 s.classList.add('border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'border');
                 s.classList.remove('text-white', 'font-medium');
             });
 
             // Set active state for clicked button
-            btn.classList.add('active', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/10', 'border-1');
+            btn.classList.add('active', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10', 'border-1');
             btn.classList.remove('border-[#ffffff10]', 'bg-[#161B22]', 'text-gray-400', 'border');
             btn.classList.add('text-white', 'font-medium');
 
@@ -623,10 +669,10 @@ window.addEventListener('keydown', (e) => {
     });
 
     navLinks.forEach((link) => {
-        link.classList.remove('text-[#2A7CFF]', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/5');
+        link.classList.remove('text-[#2A7CFF]', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/5');
         link.classList.add('text-gray-400', 'border-transparent');
         if (link.getAttribute("href").includes(current)) {
-            link.classList.add('text-[#2A7CFF]', 'border-[#2A7CFF]', 'bg-[#2A7CFF]/5');
+            link.classList.add('text-[#2A7CFF]', 'border-[#2A7CFF]', 'bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/5');
             link.classList.remove('text-gray-400', 'border-transparent');
         }
     });

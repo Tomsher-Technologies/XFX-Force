@@ -36,27 +36,78 @@
             <img id="details-img" src="{{$image}}" alt="" title="" class="object-cover">
         </div>
 
-        <h4 id="details-title" class="text-[20px] font-medium leading-[30px] text-white"> {{ $stock->title ?? $stock->product->name ?? '' }}</h4>
+        <h4 id="details-title" class="text-[20px] font-medium leading-[30px] text-white mb-1"> {{ $stock->title ?? $stock->product->name ?? '' }}
+          <p class="text-[10px] text-[#ffffff50] text-center xl:text-left">  
+            @if($stock && $stock->attributes && $stock->attributes->count())
+                <span class="text-gray-400 text-sm">
+                    
+                    @foreach($stock->attributes as $attr)
+                        {{ $attr->attribute?->name ?? '' }}:
+                        {{ $attr->value?->value ?? '' }}
+
+                        @if(!$loop->last) | @endif
+                    @endforeach
+                    
+                </span>
+            @endif
+          </p>
+        </h4>
         
         <!--ratings-->
-            <a href="#" class="flex items-center gap-[8px] my-[15px]">
-                <div class="flex items-center gap-[2px]">
-                    @for ($i = 0; $i < 4; $i++)
-                        <svg class="w-3 h-3 md:w-4 md:h-4 text-[#FFB800] fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                    @endfor
+        @if($stock)
+        @php
+            $approvedReviews = $stock->product->reviews->where('status', 1);
+            $rating = round(($approvedReviews->avg('rating') ?? 0) * 2) / 2;
+            $totalReviews = $approvedReviews->count();
 
-                    <div class="relative">
-                        <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-600 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                        <div class="absolute top-0 left-0 overflow-hidden w-[50%]">
-                            <svg class="w-3 h-3 md:w-4 md:h-4 text-[#FFB800] fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                        </div>
+            $fullStars = floor($rating);
+            $halfStar = ($rating - $fullStars) == 0.5;
+            $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+        @endphp
+
+        <a href="javascript:void(0)" class="flex items-center gap-[8px] mt-2 cursor-default">
+            <div class="flex items-center gap-[2px]">
+                {{-- Full Stars --}}
+                @for ($i = 0; $i < $fullStars; $i++)
+                <svg class="w-3 h-3 md:w-4 md:h-4 text-[#FFB800] fill-current" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                @endfor
+
+                {{-- Half Star --}}
+                @if($halfStar)
+                <div class="relative">
+                    <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-600 fill-current" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+
+                    <div class="absolute top-0 left-0 overflow-hidden w-[50%]">
+                        <svg class="w-3 h-3 md:w-4 md:h-4 text-[#FFB800] fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
                     </div>
                 </div>
+                @endif
 
-                <span class="text-white text-[12px] md:text-[14px] font-medium">4.5</span>
-                <span class="text-[#898989] text-[11px] md:text-[13px] font-medium">(120 reviews)</span>
-            </a>
-            <!--//ratings-->
+
+                {{-- Empty Stars --}}
+                @for ($i = 0; $i < $emptyStars; $i++)
+                <svg class="w-3 h-3 md:w-4 md:h-4 text-gray-600 fill-current" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                @endfor
+            </div>
+
+            <span class="text-white text-[12px] md:text-[14px] font-medium">
+            {{ number_format($rating,1) }}
+            </span>
+
+            <span class="text-gray-400 text-[11px] md:text-[13px] font-medium">
+            ({{ $totalReviews }} reviews)
+            </span>
+        </a>
+        <!--//ratings-->
+        @endif
 
         <div id="details-desc" class="text-gray-300 text-base mb-8 text-[15px]">
             @if($stock)
@@ -65,7 +116,7 @@
         </div>
 
         <div class="space-y-4 mb-10">
-            <h5 class="text-[15px] text-white font-medium uppercase mb-5">Specifications</h5>
+            
 
             @php
                 $productSpecifications = \App\Models\ProductSpecification::where(
@@ -87,12 +138,15 @@
                 ->filter()
                 ->values();
             @endphp
-            @foreach ($specifications as $specification)
-            <div class="flex justify-between items-center pb-3 border-b border-[#2E363E]">
-                <span class="text-gray-400 text-[14px]">{{ $specification['title'] }}</span>
-                <span id="spec-vram" class="text-white text-[14px] font-medium">{{ $specification['value'] }}</span>
-            </div>
-            @endforeach
+            @if($specifications->isNotEmpty())
+                <h5 class="text-[15px] text-white font-medium uppercase mb-5">Specifications</h5>
+                @foreach ($specifications as $specification)
+                <div class="flex justify-between items-center pb-3 border-b border-[#2E363E]">
+                    <span class="text-gray-400 text-[14px]">{{ $specification['title'] }}</span>
+                    <span id="spec-vram" class="text-white text-[14px] font-medium">{{ $specification['value'] }}</span>
+                </div>
+                @endforeach
+            @endif
         </div>
         @if($stock)
         <a href="{{ route('product.details', [$stock->product->slug, $stock->sku] ) }}" id="view-product-link" target="_blank" class="text-[15px] text-center px-4 py-3 rounded-[10px] text-gray-400 bg-[#252C33] hover:text-white transition-all duration-300">
@@ -112,29 +166,6 @@
                 </svg>
                 <span id="details-price" class="text-white text-left text-[20px] font-medium leading-[35px]">{{ number_format($stock?->offer_price, 2) }}</span>
             </h5>
-        </div>
-    </div>
-    <div class="counter-container w-full block xl:hidden">
-        <button onclick="selectProduct(this)" class="action-btn w-full text-center text-white uppercase text-[13px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] bg-transparent hover:bg-[#2A7CFF] hover:border-[#2A7CFF] transition-all duration-300">
-            Select
-        </button>
-
-        <div class="counter-wrapper hidden items-center gap-2 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 w-full">
-            <button onclick="updateMultiQty(this, -1); event.stopPropagation();" class="minus-btn flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all active:scale-90">
-                <span class="icon-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                </span>
-            </button>
-
-            <input type="number" value="1" readonly class="qty-input w-12 h-10 text-center bg-[#282B34] text-white font-medium rounded-lg focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-
-            <button onclick="updateMultiQty(this, 1); event.stopPropagation();" class="flex-1 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2A7CFF] rounded-lg transition-all active:scale-90">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
-                </svg>
-            </button>
         </div>
     </div>
 </div>

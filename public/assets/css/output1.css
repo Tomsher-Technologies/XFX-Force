@@ -1451,7 +1451,7 @@
     border-style: var(--tw-border-style);
     border-width: 2px;
   }
-  .border-y-1 {
+  .border-y {
     border-block-style: var(--tw-border-style);
     border-block-width: 1px;
   }
@@ -1459,7 +1459,7 @@
     border-top-style: var(--tw-border-style);
     border-top-width: 1px;
   }
-  .border-t-1 {
+  .border-t {
     border-top-style: var(--tw-border-style);
     border-top-width: 1px;
   }

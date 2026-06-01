@@ -58,7 +58,7 @@
                                     <img src="{{ asset('assets/images/caret-down.svg') }}" class="img-fluid" alt="Caret Down Icon">
                                 </a>
 
-                                <div class="mega-menu absolute top-full m-auto left-0 right-0 w-5xl bg-[#ffffff20] backdrop-blur-[100px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.1)] opacity-0 invisible translate-y-[0px] transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:visible group-hover:translate-y-[55px]">
+                                <div class="mega-menu absolute top-full m-auto left-0 right-0 w-5xl bg-[#ffffff20] backdrop-blur-[100px] p-10 shadow-[0_10px_30px_rgba(0,0,0,0.1)] opacity-0 invisible translate-y-[0px] transition-all ease-in-out group-hover:opacity-100 group-hover:visible group-hover:translate-y-[55px]">
                                         
                                     <div class="mega-grid w-full mx-auto grid gap-[50px] grid-cols-{{ count($menu->sections) }} gap-[50px]">
 
@@ -108,11 +108,11 @@
                     <!--//search trigger-->
 
                     <!--cart trigger-->
-                    <a href="{{ route('cart') }}" class="action-btn cart-icon no-underline relative bg-transparent border-none cursor-pointer flex items-center justify-center p-2 hover:bg-white/5 rounded-lg transition-all">
+                    <a href="{{ route('cart') }}" class="action-btn cart-icon no-underline relative bg-transparent border-none cursor-pointer hidden md:flex items-center justify-center p-2 hover:bg-white/5 rounded-lg transition-all">
                         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4.375 12.5C5.06522 12.5 5.62479 13.0598 5.625 13.75C5.625 14.4404 5.06535 15 4.375 15C3.6847 14.9999 3.125 14.4403 3.125 13.75C3.12521 13.0599 3.68483 12.5001 4.375 12.5ZM10.625 12.5C11.3152 12.5 11.8748 13.0598 11.875 13.75C11.875 14.4404 11.3154 15 10.625 15C9.93465 15 9.375 14.4404 9.375 13.75C9.37521 13.0598 9.93478 12.5 10.625 12.5ZM0.763672 0C1.22266 0.000213547 1.66578 0.168673 2.00879 0.473633C2.35176 0.778715 2.57121 1.19942 2.625 1.65527L2.65137 1.875H15L13.6475 9.375H3.53418L3.61523 10.0723C3.633 10.2244 3.70688 10.3649 3.82129 10.4668C3.93567 10.5685 4.08326 10.625 4.23633 10.625H12.5V11.875H4.23633C3.77734 11.8748 3.33422 11.7063 2.99121 11.4014C2.64824 11.0963 2.42879 10.6756 2.375 10.2197L1.38477 1.80176C1.36684 1.64975 1.29309 1.50991 1.17871 1.4082C1.06432 1.30649 0.916744 1.25002 0.763672 1.25H0V0H0.763672ZM3.38672 8.125H12.6025L13.5039 3.125H2.79883L3.38672 8.125Z" fill="white"/>
                         </svg>
-                        <span class="count bg-[#2a7cff] text-white text-[10px] font-bold h-5 w-5 inline-flex leading-[25px] p-[5px] items-center justify-center rounded-full absolute -top-1 -right-1 border-2 border-[#0B0F13]" id="total-cart-count-top">{{ $totalCartItemsCount }}</span>
+                        <span class="count bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-white text-[10px] font-bold h-5 w-5 inline-flex leading-[25px] p-[5px] items-center justify-center rounded-full absolute -top-1 -right-1 border-2 border-[#0B0F13]" id="total-cart-count-top">{{ $totalCartItemsCount }}</span>
                     </a>
                     <!--//cart trigger-->
 
