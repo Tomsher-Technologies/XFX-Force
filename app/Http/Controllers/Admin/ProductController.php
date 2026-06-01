@@ -49,7 +49,7 @@ class ProductController extends Controller
         $query = null;
         $seller_id = null;
         $sort_search = null;
-        $products = Product::orderBy('created_at', 'desc');
+        $products = Product::orderBy('id', 'desc');
         $category = ($request->has('category')) ? $request->category : '';
 
         if ($request->type != null) {

@@ -111,8 +111,15 @@ class ProductController extends Controller
             $product_query  = Product::wherePublished(1);
             $categoryData = null;
             if($request->filled('condition')) {
-                $product_query->where('condition', $request->condition);
-            }
+                $conditionMap = [
+                    'new' => 0,
+                    'refurbished' => 1,
+                    'open_box' => 2,
+                ];
+                if(isset($conditionMap[$request->condition])) {
+                    $product_query->where('condition', $conditionMap[$request->condition]);
+                }
+            } 
             if ($category) {
                 $categoryData = Category::whereHas('category_translations', function ($query) use ($category) {
                     $query->where('slug', $category);
@@ -501,8 +508,15 @@ class ProductController extends Controller
         }
 
         if($request->filled('condition')) {
-            $products->where('products.condition', $request->condition);
-        }
+            $conditionMap = [
+                'new' => 0,
+                'refurbished' => 1,
+                'open_box' => 2,
+            ];
+            if(isset($conditionMap[$request->condition])) {
+                $products->where('condition', $conditionMap[$request->condition]);
+            }
+        } 
 
         if ($request->filled('brands')) {
             $products->whereIn('products.brand_id', $request->brands);
