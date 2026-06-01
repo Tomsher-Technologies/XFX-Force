@@ -725,11 +725,6 @@ Log::info($_REQUEST);
 			currentSort = "newest";
 			currentView = "gridview";
 
-			$request->merge([
-				'search' => '',
-				'condition' => '',
-			]);
-			
 
 			// reset URL clean
 			window.history.replaceState({}, '', '/products');
