@@ -242,6 +242,7 @@ class ProductController extends Controller
             return response()->json([
                 'html' => $html,
                 'hasMore' => $products->hasMorePages(),
+                'total' => $products->total(),
             ]);
         }
 
@@ -507,16 +508,33 @@ class ProductController extends Controller
             $products->whereIn('products.category_id', $request->categories);
         }
 
-        if($request->filled('condition')) {
+        if($request->filled('conditions')) {
             $conditionMap = [
                 'new' => 0,
                 'refurbished' => 1,
                 'open_box' => 2,
             ];
-            if(isset($conditionMap[$request->condition])) {
-                $products->where('condition', $conditionMap[$request->condition]);
+
+            $selectedConditions = explode(
+                ',',
+                $request->conditions
+            );
+
+            $conditionValues = [];
+
+            foreach ($selectedConditions as $condition) {
+                if (isset($conditionMap[$condition])) {
+                    $conditionValues[] = $conditionMap[$condition];
+                }
             }
-        } 
+
+            if (!empty($conditionValues)) {
+                $products->whereIn(
+                    'products.condition',
+                    $conditionValues
+                );
+            }
+        }
 
         if ($request->filled('brands')) {
             $products->whereIn('products.brand_id', $request->brands);
@@ -584,7 +602,8 @@ class ProductController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'html' => view('frontend.partials.product-list', compact('products', 'view'))->render(),
-                'hasMore' => $products->hasMorePages()
+                'hasMore' => $products->hasMorePages(),
+                'total' => $products->total(),
             ]);
         }
         
@@ -844,6 +863,34 @@ class ProductController extends Controller
             $products->where('product_stocks.offer_price', '<=', $request->max_price);
         }
 
+        if($request->filled('conditions')) {
+            $conditionMap = [
+                'new' => 0,
+                'refurbished' => 1,
+                'open_box' => 2,
+            ];
+
+            $selectedConditions = explode(
+                ',',
+                $request->conditions
+            );
+
+            $conditionValues = [];
+
+            foreach ($selectedConditions as $condition) {
+                if (isset($conditionMap[$condition])) {
+                    $conditionValues[] = $conditionMap[$condition];
+                }
+            }
+
+            if (!empty($conditionValues)) {
+                $products->whereIn(
+                    'products.condition',
+                    $conditionValues
+                );
+            }
+        }
+
         // Sorting
         switch ($sort) {
             case 'oldest':
@@ -968,6 +1015,34 @@ class ProductController extends Controller
 
         if ($request->filled('max_price')) {
             $productsQuery->where('product_stocks.offer_price', '<=', $request->max_price);
+        }
+
+        if($request->filled('conditions')) {
+            $conditionMap = [
+                'new' => 0,
+                'refurbished' => 1,
+                'open_box' => 2,
+            ];
+
+            $selectedConditions = explode(
+                ',',
+                $request->conditions
+            );
+
+            $conditionValues = [];
+
+            foreach ($selectedConditions as $condition) {
+                if (isset($conditionMap[$condition])) {
+                    $conditionValues[] = $conditionMap[$condition];
+                }
+            }
+
+            if (!empty($conditionValues)) {
+                $productsQuery->whereIn(
+                    'products.condition',
+                    $conditionValues
+                );
+            }
         }
 
         // Sorting
