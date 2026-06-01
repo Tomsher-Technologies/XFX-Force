@@ -250,6 +250,78 @@
                             </el-disclosure>
                         </div>
                         <!--//brand filter-->
+
+                        <!-- Condition Filter -->
+						<div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px] condition-box">
+							<button type="button"
+								command="--toggle"
+								commandfor="filter-section-condition"
+								class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
+
+								<span class="font-medium uppercase text-white">
+									Condition
+								</span>
+
+								<span class="ml-6 flex items-center">
+									<svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
+										<path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+									</svg>
+									<svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
+										<path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
+									</svg>
+								</span>
+							</button>
+
+							<el-disclosure id="filter-section-condition"
+								hidden
+								class="pt-6 [&:not([hidden])]:block border-t border-transparent xl:border-[#282B34] pb-[20px]">
+
+								<div class="space-y-4">
+
+									<div class="flex gap-[15px] items-center">
+										<input type="checkbox"
+											id="condition-new"
+											name="conditions[]"
+											value="new"
+											class="category-checkbox h-[20px] w-[20px]">
+
+										<label for="condition-new"
+											class="relative top-[5px] text-[15px] text-white">
+											New
+										</label>
+									</div>
+
+									<div class="flex gap-[15px] items-center">
+										<input type="checkbox"
+											id="condition-refurbished"
+											name="conditions[]"
+											value="refurbished"
+											class="category-checkbox h-[20px] w-[20px]">
+
+										<label for="condition-refurbished"
+											class="relative top-[5px] text-[15px] text-white">
+											Refurbished
+										</label>
+									</div>
+
+									<div class="flex gap-[15px] items-center">
+										<input type="checkbox"
+											id="condition-open-box"
+											name="conditions[]"
+											value="open_box"
+											class="category-checkbox h-[20px] w-[20px]">
+
+										<label for="condition-open-box"
+											class="relative top-[5px] text-[15px] text-white">
+											Open Box
+										</label>
+									</div>
+
+								</div>
+
+							</el-disclosure>
+						</div>
+						<!-- //Condition Filter -->
                     </form>
                 </div>
 
@@ -579,6 +651,28 @@
 			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
 		);
 
+        const conditions = Array.from(
+			document.querySelectorAll('input[name="conditions[]"]:checked')
+		).map(el => el.value);
+
+		const browserUrl = new URL(window.location.href);
+
+		if (conditions.length) {
+			browserUrl.searchParams.set(
+				'conditions',
+				conditions.join(',')
+			);
+		} else {
+			browserUrl.searchParams.delete('conditions');
+		}
+
+		window.history.replaceState(
+			{},
+			'',
+			browserUrl.pathname + browserUrl.search
+		);
+
+
 		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
 
 		const min_price = parseInt(
@@ -601,6 +695,13 @@
 
 		categories.forEach(cat => currentFilters.append('categories[]', cat));
 		selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
+
+        if (conditions.length) {
+			currentFilters.append(
+				'conditions',
+				conditions.join(',')
+			);
+		}
 
 		return fetch(`${url}?${currentFilters.toString()}`, {
 				method: 'GET',
@@ -629,6 +730,13 @@
 					wrapper.innerHTML = data.html;
 					loadMore.style.display = data.hasMore ? 'block' : 'none';
 				}
+
+                const countEl = document.getElementById('product-count');
+
+				console.log(data);
+				// update total from backend response
+				countEl.dataset.total = data.total;
+                
                 hideLoader();
 				updateProductCount();
 
@@ -661,7 +769,7 @@
             }
 
             // Uncheck all categories and brands
-            document.querySelectorAll('input[name="brands[]"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[name="brands[]"], input[name="conditions[]"]').forEach(cb => cb.checked = false);
             selectedBrands = [];
 
             // Reset sort and view if desired
@@ -669,6 +777,7 @@
             currentView = "gridview";
 
             filterProducts();
+            updateProductCount();
         });
     });
 
@@ -678,9 +787,10 @@
 			filterProducts();
 		}
 
-		if (e.target.matches('input[name="brands[]"]')) {
+		if (e.target.matches('input[name="brands[]"]') ||
+			e.target.matches('input[name="conditions[]"]')) {
 			filterProducts();
-		}
+		}     
 	});
 
     /* INITIAL LOAD */
@@ -766,6 +876,11 @@
 			if (!data.hasMore) {
 				document.getElementById('load-more-wrapper').style.display = 'none';
 			}
+
+            const countEl = document.getElementById('product-count');
+
+			// update total from backend response
+			countEl.dataset.total = data.total;
 
 			updateProductCount();
 
