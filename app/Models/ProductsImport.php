@@ -46,9 +46,9 @@ class ProductsImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows)
     {
         $conditionMap = [
-            'New' => 0,
-            'Refurbished' => 1,
-            'Open Box' => 2,
+            'new' => 0,
+            'refurbished' => 1,
+            'open box' => 2,
         ];
 
         // Clean SKUs
@@ -163,7 +163,7 @@ class ProductsImport implements ToCollection, WithHeadingRow
                         'video_link' => trim($this->pickLatestValue($products, 'video_link') ?? ''),
                         'category_id' => $categoryId,
                         'brand_id' => $brandId,
-                        'condition' => $conditionMap[trim($this->pickLatestValue($products, 'condition'))] ?? 0,
+                        'condition' => $conditionMap[trim(strtolower($this->pickLatestValue($products, 'condition')))] ?? 0,
                         'product_length' => $this->pickLatestValue($products, 'length'),
                         'product_width' => $this->pickLatestValue($products, 'width'),
                         'product_height' => $this->pickLatestValue($products, 'height'),
