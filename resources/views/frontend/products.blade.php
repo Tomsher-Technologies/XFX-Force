@@ -644,7 +644,8 @@ Log::info($_REQUEST);
 			max_price,
 			sort: currentSort,
 			view: currentView,
-			search: '{{ request('search', '') }}'
+			search: '{{ request('search', '') }}',
+			condition: '{{ request('condition', '') }}',
 		});
 
 		categories.forEach(cat => currentFilters.append('categories[]', cat));
