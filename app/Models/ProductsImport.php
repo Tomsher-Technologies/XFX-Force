@@ -106,6 +106,7 @@ class ProductsImport implements ToCollection, WithHeadingRow
                 ? $row['parent_sku']
                 : $row['sku'];
         });
+        $generatedSlugs = [];
 
         foreach ($grouped as $products) {
 
@@ -155,40 +156,51 @@ class ProductsImport implements ToCollection, WithHeadingRow
                 $brandId = $brand->id;
 
                 // Product save or update
+                $product = Product::where('sku', $skuToUse)->first();
+
+                $productData = [
+                    'name' =>  trim($this->pickLatestValue($products, 'product_name') ?? ''),
+                    'video_provider' => trim($this->pickLatestValue($products, 'video_provider') ?? ''),
+                    'video_link' => trim($this->pickLatestValue($products, 'video_link') ?? ''),
+                    'category_id' => $categoryId,
+                    'brand_id' => $brandId,
+                    'condition' => $conditionMap[trim(strtolower($this->pickLatestValue($products, 'condition')))] ?? 0,
+                    'product_length' => $this->pickLatestValue($products, 'length'),
+                    'product_width' => $this->pickLatestValue($products, 'width'),
+                    'product_height' => $this->pickLatestValue($products, 'height'),
+                    'product_weight' => $this->pickLatestValue($products, 'weight'),
+                    'estimated_delivery_days' => $this->pickLatestValue($products, 'est_delivery_days'),
+                    'tags' => trim($this->pickLatestValue($products, 'tags') ?? ''),
+                    'product_type' => $this->pickLatestValue($products, 'parent_sku') ? 1 : 0,
+                    'return_refund' => strtolower(trim($this->pickLatestValue($products, 'return_refund') ?? '')) === 'yes' ? 1 : 0,
+                    'published' => strtolower(trim($this->pickLatestValue($products, 'published') ?? '')) === 'no' ? 0 : 1,
+                    'discount' => $this->pickLatestValue($products, 'discount_price'),
+                    'discount_type' => $this->pickLatestValue($products, 'discount_type'),
+                    'discount_start_date' => !empty($this->pickLatestValue($products, 'discount_start_date'))
+                        ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_start_date'))
+                        ->setTime(0, 0, 0)
+                        ->getTimestamp()
+                        : null,
+                    'discount_end_date' => !empty($this->pickLatestValue($products, 'discount_end_date'))
+                        ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_end_date'))
+                        ->setTime(23, 59, 59)
+                        ->getTimestamp()
+                        : null,
+                    'description' => trim($this->pickLatestValue($products, 'description') ?? ''),
+                    'updated_by' => Auth::user()->id,
+                ];
+
+                // Generate slug only for new products
+                if (!$product) {
+                    $productData['slug'] = $this->productSlug(
+                        trim($this->pickLatestValue($products, 'product_name') ?? ''),
+                        $generatedSlugs
+                    );
+                }
+
                 $product = Product::updateOrCreate(
                     ['sku' => $skuToUse],
-                    [
-                        'name' =>  trim($this->pickLatestValue($products, 'product_name') ?? ''),
-                        'video_provider' => trim($this->pickLatestValue($products, 'video_provider') ?? ''),
-                        'video_link' => trim($this->pickLatestValue($products, 'video_link') ?? ''),
-                        'category_id' => $categoryId,
-                        'brand_id' => $brandId,
-                        'condition' => $conditionMap[trim(strtolower($this->pickLatestValue($products, 'condition')))] ?? 0,
-                        'product_length' => $this->pickLatestValue($products, 'length'),
-                        'product_width' => $this->pickLatestValue($products, 'width'),
-                        'product_height' => $this->pickLatestValue($products, 'height'),
-                        'product_weight' => $this->pickLatestValue($products, 'weight'),
-                        'estimated_delivery_days' => $this->pickLatestValue($products, 'est_delivery_days'),
-                        'tags' => trim($this->pickLatestValue($products, 'tags') ?? ''),
-                        'product_type' => $this->pickLatestValue($products, 'parent_sku') ? 1 : 0,
-                        'return_refund' => strtolower(trim($this->pickLatestValue($products, 'return_refund') ?? '')) === 'yes' ? 1 : 0,
-                        'published' => strtolower(trim($this->pickLatestValue($products, 'published') ?? '')) === 'no' ? 0 : 1,
-                        'discount' => $this->pickLatestValue($products, 'discount_price'),
-                        'discount_type' => $this->pickLatestValue($products, 'discount_type'),
-                        'discount_start_date' => !empty($this->pickLatestValue($products, 'discount_start_date'))
-                            ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_start_date'))
-                            ->setTime(0, 0, 0)
-                            ->getTimestamp()
-                            : null,
-                        'discount_end_date' => !empty($this->pickLatestValue($products, 'discount_end_date'))
-                            ? Date::excelToDateTimeObject($this->pickLatestValue($products, 'discount_end_date'))
-                            ->setTime(23, 59, 59)
-                            ->getTimestamp()
-                            : null,
-                        'slug' => $this->productSlug(trim($this->pickLatestValue($products, 'product_name') ?? '')),
-                        'description' => trim($this->pickLatestValue($products, 'description') ?? ''),
-                        'updated_by' => Auth::user()->id,
-                    ]
+                    $productData
                 );
 
                 // Save or update product SEO
@@ -458,12 +470,31 @@ class ProductsImport implements ToCollection, WithHeadingRow
         return $this->rows;
     }
 
-    public function productSlug($name)
+    // public function productSlug($name)
+    // {
+    //     $slug = Str::slug($name, '-');
+    //     $same_slug_count = Product::where('slug', 'LIKE', $slug . '%')->count();
+    //     $slug_suffix = $same_slug_count ? '-' . $same_slug_count + 1 : '';
+    //     $slug .= $slug_suffix;
+
+    //     return $slug;
+    // }
+
+    public function productSlug($name, &$generatedSlugs = [])
     {
-        $slug = Str::slug($name, '-');
-        $same_slug_count = Product::where('slug', 'LIKE', $slug . '%')->count();
-        $slug_suffix = $same_slug_count ? '-' . $same_slug_count + 1 : '';
-        $slug .= $slug_suffix;
+        $baseSlug = Str::slug($name);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (
+            Product::where('slug', $slug)->exists() ||
+            in_array($slug, $generatedSlugs)
+        ) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        $generatedSlugs[] = $slug;
 
         return $slug;
     }
