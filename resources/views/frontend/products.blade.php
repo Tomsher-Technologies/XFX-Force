@@ -296,13 +296,16 @@ Log::info($_REQUEST);
 								class="pt-6 [&:not([hidden])]:block border-t border-transparent xl:border-[#282B34] pb-[20px]">
 
 								<div class="space-y-4">
-
+									@php
+										$selectedConditions = explode(',', request('conditions', ''));
+									@endphp
 									<div class="flex gap-[15px] items-center">
 										<input type="checkbox"
 											id="condition-new"
 											name="conditions[]"
 											value="new"
-											class="category-checkbox h-[20px] w-[20px]">
+											class="category-checkbox h-[20px] w-[20px]" 
+											{{ in_array('new', $selectedConditions) ? 'checked' : '' }}>
 
 										<label for="condition-new"
 											class="relative top-[5px] text-[15px] text-white">
@@ -315,7 +318,8 @@ Log::info($_REQUEST);
 											id="condition-refurbished"
 											name="conditions[]"
 											value="refurbished"
-											class="category-checkbox h-[20px] w-[20px]">
+											class="category-checkbox h-[20px] w-[20px]"
+											{{ in_array('refurbished', $selectedConditions) ? 'checked' : '' }} >
 
 										<label for="condition-refurbished"
 											class="relative top-[5px] text-[15px] text-white">
@@ -328,7 +332,8 @@ Log::info($_REQUEST);
 											id="condition-open-box"
 											name="conditions[]"
 											value="open_box"
-											class="category-checkbox h-[20px] w-[20px]">
+											class="category-checkbox h-[20px] w-[20px]"
+											{{ in_array('open_box', $selectedConditions) ? 'checked' : '' }}>
 
 										<label for="condition-open-box"
 											class="relative top-[5px] text-[15px] text-white">
