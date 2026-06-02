@@ -43,29 +43,29 @@ Log::info($_REQUEST);
 <!--product listing-->
 <section class="bg-[#0F161B]">
 
-<!-- Mobile filter dialog -->
-  <el-dialog>
-    <dialog id="mobile-filters" class="m-0 overflow-hidden p-0 backdrop:bg-transparent xl:hidden">
-      <el-dialog-backdrop class="fixed inset-0 bg-black/50 backdrop-blur-[10px] transition-opacity duration-300 ease-linear data-[closed]:opacity-0"></el-dialog-backdrop>
+	<!-- Mobile filter dialog -->
+  	<el-dialog>
+		<dialog id="mobile-filters" class="m-0 overflow-hidden p-0 backdrop:bg-transparent xl:hidden">
+		<el-dialog-backdrop class="fixed inset-0 bg-black/50 backdrop-blur-[10px] transition-opacity duration-300 ease-linear data-[closed]:opacity-0"></el-dialog-backdrop>
 
-      <div tabindex="0" class="fixed inset-0 flex focus:outline focus:outline-0">
-        <el-dialog-panel class="relative ml-auto flex size-full max-w-xs transform flex-col overflow-y-auto bg-black pb-6 p-4 shadow-xl transition duration-300 ease-in-out data-[closed]:translate-x-full">
-          <div class="flex items-center justify-between px-4">
-            <h2 class="text-lg font-medium text-white uppercase">Filters</h2>
-            <button type="button" command="close" commandfor="mobile-filters" class="relative -mr-2 flex size-10 items-center justify-center rounded-md p-2 text-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <span class="absolute -inset-0.5"></span>
-              <span class="sr-only">Close menu</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6">
-                <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
-          </div>
-            <div id="mobile-filter"></div>
-        </el-dialog-panel>
-      </div>
-    </dialog>
-  </el-dialog>
-  <!--//Mobile filter dialog -->
+		<div tabindex="0" class="fixed inset-0 flex focus:outline focus:outline-0">
+			<el-dialog-panel class="relative ml-auto flex size-full max-w-xs transform flex-col overflow-y-auto bg-black pb-6 p-4 shadow-xl transition duration-300 ease-in-out data-[closed]:translate-x-full">
+			<div class="flex items-center justify-between px-4">
+				<h2 class="text-lg font-medium text-white uppercase">Filters</h2>
+				<button type="button" command="close" commandfor="mobile-filters" class="relative -mr-2 flex size-10 items-center justify-center rounded-md p-2 text-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+				<span class="absolute -inset-0.5"></span>
+				<span class="sr-only">Close menu</span>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6">
+					<path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+				</svg>
+				</button>
+			</div>
+				<div id="mobile-filter"></div>
+			</el-dialog-panel>
+		</div>
+		</dialog>
+  	</el-dialog>
+  	<!--//Mobile filter dialog -->
 
 	<main class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] py-[50px] xl:py-[100px]">
 		<div class="flex flex-col xl:grid xl:grid-cols-4 xl:gap-[50px]">
@@ -269,6 +269,78 @@ Log::info($_REQUEST);
 							</el-disclosure>
 						</div>
 						<!--//brand filter-->
+
+						<!-- Condition Filter -->
+						<div class="bg-black/30 backdrop-blur-[60px] px-[30px] py-[15px] rounded-[20px] mb-[10px] condition-box">
+							<button type="button"
+								command="--toggle"
+								commandfor="filter-section-condition"
+								class="flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer">
+
+								<span class="font-medium uppercase text-white">
+									Condition
+								</span>
+
+								<span class="ml-6 flex items-center">
+									<svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [[aria-expanded='true']_&]:hidden">
+										<path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+									</svg>
+									<svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 [&:not([aria-expanded='true']_*)]:hidden">
+										<path d="M4 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 10Z" clip-rule="evenodd" fill-rule="evenodd" />
+									</svg>
+								</span>
+							</button>
+
+							<el-disclosure id="filter-section-condition"
+								hidden
+								class="pt-6 [&:not([hidden])]:block border-t border-transparent xl:border-[#282B34] pb-[20px]">
+
+								<div class="space-y-4">
+
+									<div class="flex gap-[15px] items-center">
+										<input type="checkbox"
+											id="condition-new"
+											name="conditions[]"
+											value="new"
+											class="category-checkbox h-[20px] w-[20px]">
+
+										<label for="condition-new"
+											class="relative top-[5px] text-[15px] text-white">
+											New
+										</label>
+									</div>
+
+									<div class="flex gap-[15px] items-center">
+										<input type="checkbox"
+											id="condition-refurbished"
+											name="conditions[]"
+											value="refurbished"
+											class="category-checkbox h-[20px] w-[20px]">
+
+										<label for="condition-refurbished"
+											class="relative top-[5px] text-[15px] text-white">
+											Refurbished
+										</label>
+									</div>
+
+									<div class="flex gap-[15px] items-center">
+										<input type="checkbox"
+											id="condition-open-box"
+											name="conditions[]"
+											value="open_box"
+											class="category-checkbox h-[20px] w-[20px]">
+
+										<label for="condition-open-box"
+											class="relative top-[5px] text-[15px] text-white">
+											Open Box
+										</label>
+									</div>
+
+								</div>
+
+							</el-disclosure>
+						</div>
+						<!-- //Condition Filter -->
 					</form>
 				</div>
 
@@ -619,13 +691,31 @@ Log::info($_REQUEST);
 			document.querySelectorAll('input[name="brands[]"]:checked')
 		).map(el => el.value);
 
-		// const visibleFilter = [...document.querySelectorAll('.price-filter')]
-		// 	.find(el => el.offsetParent !== null);
 
 		const activeFilterWrapper = document.querySelector(
 			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
 		);
 
+		const conditions = Array.from(
+			document.querySelectorAll('input[name="conditions[]"]:checked')
+		).map(el => el.value);
+
+		const browserUrl = new URL(window.location.href);
+
+		if (conditions.length) {
+			browserUrl.searchParams.set(
+				'conditions',
+				conditions.join(',')
+			);
+		} else {
+			browserUrl.searchParams.delete('conditions');
+		}
+
+		window.history.replaceState(
+			{},
+			'',
+			browserUrl.pathname + browserUrl.search
+		);
 		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
 
 		const min_price = parseInt(
@@ -649,6 +739,12 @@ Log::info($_REQUEST);
 
 		categories.forEach(cat => currentFilters.append('categories[]', cat));
 		selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
+		if (conditions.length) {
+			currentFilters.append(
+				'conditions',
+				conditions.join(',')
+			);
+		}
 
 		return fetch(`${url}?${currentFilters.toString()}`, {
 				method: 'GET',
@@ -658,7 +754,6 @@ Log::info($_REQUEST);
 			})
 			.then(res => res.json())
 			.then(data => {
-				// document.getElementById('product-loader').classList.add('hidden');
 				
 				const wrapper = document.getElementById('product-list-wrapper');
 				
@@ -678,14 +773,15 @@ Log::info($_REQUEST);
 					loadMore.style.display = data.hasMore ? 'block' : 'none';
 				}
 
-				hideLoader();
+				const countEl = document.getElementById('product-count');
+
+				console.log(data);
+				// update total from backend response
+				countEl.dataset.total = data.total;
+
 				
+				hideLoader();
 				updateProductCount();
-
-				// Scroll
-				// const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
-				// window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-
 				
 			})
 			.catch(err => console.error('Filter products error:', err));
@@ -716,7 +812,7 @@ Log::info($_REQUEST);
 			updateProgress(0, maxVal);
 
 			// Reset checkboxes
-			document.querySelectorAll('input[name="categories[]"], input[name="brands[]"]')
+			document.querySelectorAll( 'input[name="categories[]"], input[name="brands[]"], input[name="conditions[]"]')
 				.forEach(cb => cb.checked = false);
 
 			selectedBrands = [];
@@ -724,10 +820,12 @@ Log::info($_REQUEST);
 			currentSort = "newest";
 			currentView = "gridview";
 
+
 			// reset URL clean
 			window.history.replaceState({}, '', '/products');
 
 			filterProducts();
+			updateProductCount();
 		});
 	});
 
@@ -751,7 +849,8 @@ Log::info($_REQUEST);
 	document.addEventListener('change', function (e) {
 		if (
 			e.target.matches('input[name="categories[]"]') ||
-			e.target.matches('input[name="brands[]"]')
+			e.target.matches('input[name="brands[]"]') ||
+			e.target.matches('input[name="conditions[]"]')
 		) {
 			filterProducts().then(() => {
 				const wrapper = document.getElementById('product-list-wrapper');
@@ -837,6 +936,11 @@ Log::info($_REQUEST);
 			if (!data.hasMore) {
 				document.getElementById('load-more-wrapper').style.display = 'none';
 			}
+
+			const countEl = document.getElementById('product-count');
+
+			// update total from backend response
+			countEl.dataset.total = data.total;
 
 			updateProductCount();
 
