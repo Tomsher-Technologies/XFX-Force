@@ -304,7 +304,7 @@ Log::info($_REQUEST);
 											id="condition-new"
 											name="conditions[]"
 											value="new"
-											class="category-checkbox h-[20px] w-[20px]" 
+											class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200" 
 											{{ in_array('new', $selectedConditions) ? 'checked' : '' }}>
 
 										<label for="condition-new"
@@ -318,7 +318,7 @@ Log::info($_REQUEST);
 											id="condition-refurbished"
 											name="conditions[]"
 											value="refurbished"
-											class="category-checkbox h-[20px] w-[20px]"
+											class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
 											{{ in_array('refurbished', $selectedConditions) ? 'checked' : '' }} >
 
 										<label for="condition-refurbished"
@@ -332,7 +332,7 @@ Log::info($_REQUEST);
 											id="condition-open-box"
 											name="conditions[]"
 											value="open_box"
-											class="category-checkbox h-[20px] w-[20px]"
+											class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
 											{{ in_array('open_box', $selectedConditions) ? 'checked' : '' }}>
 
 										<label for="condition-open-box"
@@ -733,13 +733,14 @@ Log::info($_REQUEST);
 
 		const url = `/products`;
 
+		const searchParam = new URLSearchParams(window.location.search).get('search') || '';
 		// Store filters globally
 		currentFilters = new URLSearchParams({
 			min_price,
 			max_price,
 			sort: currentSort,
 			view: currentView,
-			search: '{{ request('search', '') }}'
+			search: searchParam
 		});
 
 		categories.forEach(cat => currentFilters.append('categories[]', cat));

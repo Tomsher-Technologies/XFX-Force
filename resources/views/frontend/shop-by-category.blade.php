@@ -285,7 +285,7 @@
 											id="condition-new"
 											name="conditions[]"
 											value="new"
-											class="category-checkbox h-[20px] w-[20px]"
+											class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
                                             {{ in_array('new', $selectedConditions) ? 'checked' : '' }}>
 
 										<label for="condition-new"
@@ -299,7 +299,7 @@
 											id="condition-refurbished"
 											name="conditions[]"
 											value="refurbished"
-											class="category-checkbox h-[20px] w-[20px]"
+											class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
                                             {{ in_array('refurbished', $selectedConditions) ? 'checked' : '' }}>
 
 										<label for="condition-refurbished"
@@ -313,7 +313,7 @@
 											id="condition-open-box"
 											name="conditions[]"
 											value="open_box"
-											class="category-checkbox h-[20px] w-[20px]"
+											class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
                                             {{ in_array('open_box', $selectedConditions) ? 'checked' : '' }}>
 
 										<label for="condition-open-box"
@@ -649,9 +649,6 @@
 			document.querySelectorAll('input[name="brands[]"]:checked')
 		).map(el => el.value);
 
-		// const visibleFilter = [...document.querySelectorAll('.price-filter')]
-		// 	.find(el => el.offsetParent !== null);
-
         const activeFilterWrapper = document.querySelector(
 			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
 		);
@@ -689,16 +686,17 @@
 		) || 300000;
 
 		const url = `/products`;
-
+        const searchParam = new URLSearchParams(window.location.search).get('search') || '';
 		// Store filters globally
 		currentFilters = new URLSearchParams({
 			min_price,
 			max_price,
 			sort: currentSort,
-			view: currentView
+			view: currentView,
+            search: searchParam,
 		});
-
-		categories.forEach(cat => currentFilters.append('categories[]', cat));
+        
+        categories.forEach(cat => currentFilters.append('categories[]', cat));
 		selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
 
         if (conditions.length) {
@@ -716,8 +714,6 @@
 			})
 			.then(res => res.json())
 			.then(data => {
-                
-
 				const wrapper = document.getElementById('product-list-wrapper');
 
 				// Show / Hide load more
@@ -738,7 +734,6 @@
 
                 const countEl = document.getElementById('product-count');
 
-				console.log(data);
 				// update total from backend response
 				countEl.dataset.total = data.total;
                 

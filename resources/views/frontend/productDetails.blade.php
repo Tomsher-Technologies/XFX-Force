@@ -2,6 +2,7 @@
 
 @section('title', 'Shop - Single')
 @section('content')
+<script src="https://checkout.tabby.ai/tabby-promo.js"></script>
 
 <!--breadcrumb-->
 <section class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[0px] relative">
@@ -172,8 +173,6 @@
                     <span class="text-white/70">SKU:</span> {{ $firstStock->sku }}
                 @endif
             </p>
-
-
             
             @php
                 $approvedReviews = $product->reviews->where('status', 1);
@@ -232,6 +231,11 @@
             </a>
             <!-- //rating -->
             
+            <div
+                id="tabbyPromo"
+                data-price="{{ $firstStock->offer_price }}"
+                class="mt-4">
+            </div>
 
             </div>
             <input type="hidden" value="{{ $firstStock->id}}" id="stock_id">
@@ -695,4 +699,30 @@
 </section>
 <!--//related products-->
 @endif
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function loadTabbyPromo(price) {
+            document.getElementById('tabbyPromo').innerHTML = '';
+
+            new TabbyPromo({
+                selector: '#tabbyPromo',
+                currency: 'AED',
+                price: price,
+                lang: 'en',
+                source: 'product',
+                theme:'dark'
+            });
+        }
+
+        let price = document.getElementById('tabbyPromo').getAttribute('data-price');
+        loadTabbyPromo(price);
+        window.updateTabbyPromo = loadTabbyPromo;
+    });
+</script>
+
+<style>
+    .styles__snipperWrapperBgWhite--e52a2 {
+        background-color: #ccc !important;
+    }
+</style>
 @endsection

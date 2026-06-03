@@ -17,6 +17,7 @@ use App\Http\Controllers\Frontend\ReviewController;
 use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Frontend\WishlistController;
+use App\Http\Controllers\Frontend\TabbyWebhookController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -136,6 +137,22 @@ Route::group(['middleware' => ['auth:frontend','nocache']], function () {
 
     Route::post('/review/store', [ReviewController::class, 'store'])->name('reviews.save');
 });
+
+Route::get(
+    '/payment/tabby/success',
+    [CheckoutController::class, 'tabbySuccess']
+)->name('tabby.success');
+
+Route::get(
+    '/payment/tabby/cancel',
+    [CheckoutController::class, 'tabbyCancel']
+)->name('tabby.cancel');
+
+Route::post(
+    'webhooks/tabby',
+    [TabbyWebhookController::class, 'handle']
+)->name('tabby.webhook');
+
 
 Route::fallback(function () {
     return response()->view('frontend.errors.404', [], 404);
