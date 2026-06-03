@@ -24,7 +24,14 @@
                         <div class="flex flex-col xl:flex-row justify-between items-center text-center xl:text-left xl:items-start gap-6 w-full">
                             <div class="w-full">
                                 <h2 class="text-[20px] font-medium uppercase text-white mb-1 text-center xl:text-left">Order #{{ $order->code }}</h2>
-                                <p class="text-gray-500 text-sm">Placed on {{ \Carbon\Carbon::parse($order->created_at)->format('F d, Y') }} •  Payment Method: {{ ($order->payment_type == 'cod') ? 'Cash on Delivery' : 'Debit / Credit Card' }}
+                                @php
+                                    $paymentLabels = [
+                                        'cod' => 'Cash on Delivery',
+                                        'card' => 'Debit / Credit Card',
+                                        'tabby' => 'Tabby',
+                                    ];
+                                @endphp
+                                <p class="text-gray-500 text-sm">Placed on {{ \Carbon\Carbon::parse($order->created_at)->format('F d, Y') }} •  Payment Method: {{ $paymentLabels[$order->payment_type] ?? ucfirst($order->payment_type) }}
                                     • {{ $order->orderDetails->count() }} Items Total </p>
                                     
                             </div>
