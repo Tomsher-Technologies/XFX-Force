@@ -142,7 +142,7 @@
                     ];
                 @endphp
 
-                {{ $paymentLabels[$order->payment_type] ?? ucfirst($order->payment_type) }}<br>
+                {{ $paymentLabels[$order->payment_type] ?? ucfirst($order->payment_type) }}
                 <br>
                 <hr style="border: 0.5px solid #eee">
                 <strong>Shipping Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->shipping_type)) }}
