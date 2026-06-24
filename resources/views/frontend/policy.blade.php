@@ -22,7 +22,7 @@
                            
                             <div class="lg:w-3/4 space-y-16 text-gray-400 leading-relaxed">
 
-                                <div class="mb-4 mt-2 leading-[30px] text-[15px] text-justify lg:text-left">
+                                <div class="mb-4 mt-2 leading-[30px] text-[15px] text-justify lg:text-left policy-page">
                                     {!! $page_content['description'] ?? 'No content available.' !!}
                                 </div>
 

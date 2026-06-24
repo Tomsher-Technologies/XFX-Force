@@ -12,7 +12,7 @@
                     <div>
                         <div class="flex flex-col items-center xl:items-left justify-center xl:justify-left pt-12 xl:pt-0 border-b border-[#252B31] mb-0 lg:mb-12 text-center lg:text-left">
                            
-                            <h1 class="text-[40px] font-medium text-white uppercase tracking-wider mb-1">
+                            <h1 class="text-[40px] font-medium text-white uppercase tracking-wider mb-1 policy-page">
                                 {{ $page_content['title'] ?? 'Privacy Policy' }}
                             </h1>
                            
