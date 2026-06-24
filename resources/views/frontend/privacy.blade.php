@@ -12,7 +12,7 @@
                     <div>
                         <div class="flex flex-col items-center xl:items-left justify-center xl:justify-left pt-12 xl:pt-0 border-b border-[#252B31] mb-0 lg:mb-12 text-center lg:text-left">
                            
-                            <h1 class="text-[40px] font-medium text-white uppercase tracking-wider mb-1 policy-page">
+                            <h1 class="text-[40px] font-medium text-white uppercase tracking-wider mb-1">
                                 {{ $page_content['title'] ?? 'Privacy Policy' }}
                             </h1>
                            
@@ -22,7 +22,7 @@
                            
                             <div class="lg:w-3/4 space-y-16 text-gray-400 leading-relaxed">
 
-                                <div class="mb-4 mt-2 leading-[30px] text-[15px] text-justify lg:text-left">
+                                <div class="mb-4 mt-2 leading-[30px] text-[15px] text-justify lg:text-left  policy-page">
                                     {!! $page_content['description'] ?? 'No content available.' !!}
                                 </div>
 
