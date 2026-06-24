@@ -44,6 +44,11 @@ Route::post('login', [AuthController::class, 'login']);
 Route::get('terms', [HomeController::class, 'terms'])->name('terms');
 Route::get('privacy-policy', [HomeController::class, 'privacy'])->name('privacy-policy');
 Route::get('return-policy', [HomeController::class, 'returnPolicy'])->name('return-policy');
+
+Route::get('warranty-policy', [HomeController::class, 'warrantyPolicy'])->name('warranty-policy');
+Route::get('cookie-policy', [HomeController::class, 'cookiePolicy'])->name('cookie-policy');
+Route::get('shipping-policy', [HomeController::class, 'shippingPolicy'])->name('shipping-policy');
+
 Route::get('contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact-submit', [HomeController::class, 'submitContactForm'])->name('contact.submit');
 Route::get('about', [HomeController::class, 'about'])->name('about');
