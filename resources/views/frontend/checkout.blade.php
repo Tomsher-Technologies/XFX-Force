@@ -250,7 +250,7 @@
                             <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3">
                                 <span class="w-8 h-8 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-full flex items-center justify-center text-sm">4</span> Payment Methods
                             </h2>
-                            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-0 xl:mb-8">
+                            <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-0 xl:mb-8">
 
                                 <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
                                     <div class="flex items-center gap-3">
@@ -261,11 +261,50 @@
 
                                 <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
                                     <div class="flex items-center gap-3">
-                                        <input type="radio" name="pay" class="accent-[#2A7CFF]" value="card">
-                                        <span>Credit / Debit Card</span>
+                                        <input type="radio" name="pay" class="accent-[#2A7CFF]" value="tabby">
+                                        <span>Tabby</span>
                                     </div>
                                     <div class="hidden md:flex gap-2">
-                                        <img src="{{ asset('assets/images/payment-methods.png') }}" class="w-full md:w-[280px] h-auto object-contain ml-auto">
+                                        <img src="{{ asset('assets/images/tabby.svg') }}" class="w-12">
+                                    </div>
+                                </label>
+
+                                <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
+                                    <div class="flex items-center gap-3">
+                                        <input type="radio" name="pay" class="accent-[#2A7CFF]" value="card">
+                                        <div class="flex items-center gap-2">
+                                            <span>Credit / Debit Card</span>
+
+                                            <div class="relative inline-block group">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="w-5 h-5 text-gray-400 cursor-pointer"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"/>
+                                                </svg>
+
+                                                <!-- Tooltip -->
+                                                <div
+                                                    class="absolute left-6 top-1/2 -translate-y-1/2
+                                                        opacity-0 invisible
+                                                        group-hover:opacity-100 group-hover:visible
+                                                        transition-all duration-200
+                                                        z-[9999]
+                                                        bg-white p-2 rounded-lg shadow-lg border border-gray-200
+                                                        w-[300px]">
+
+                                                    <img src="{{ asset('assets/images/payment-methods.png') }}"
+                                                        class="w-full h-auto"
+                                                        alt="Payment Methods">
+
+                                                </div>
+
+                                            </div>
+                                        </div>
                                     </div>
                                 </label>
                             </div>

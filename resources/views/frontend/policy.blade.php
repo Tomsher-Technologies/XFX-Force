@@ -1,19 +1,19 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Terms and Conditions')
+@section('title', $page_content['title'] ?? 'Policy')
 @section('content')
-    <section
-        class="bg-[#0F161B] w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px]">
+
+    <section class="bg-[#0F161B] w-full mx-auto px-[16px] md:px-[30px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[50px] xl:pb-[100px] flex flex-col gap-[30px] md:gap-[50px]">
         <div class="text-white">
             <div
                 class="w-full mx-auto flex flex-col xl:flex-row gap-[20px] md:gap-[50px] border-t border-[#252b31] pt-0 xl:pt-[80px]">
 
                 <main class="flex-grow">
                     <div>
-                        <div class="flex flex-col items-center xl:items-left justify-center xl:justify-left pt-12 xl:pt-0  border-b border-[#252B31] mb-0 lg:mb-12 text-center lg:text-left">
+                        <div class="flex flex-col items-center xl:items-left justify-center xl:justify-left pt-12 xl:pt-0 border-b border-[#252B31] mb-0 lg:mb-12 text-center lg:text-left">
                            
-                            <h1 class="text-[40px] font-medium text-white uppercase tracking-wider mb-3">
-                                {{ $page_content['title'] ?? 'Terms and Conditions' }}
+                            <h1 class="text-[40px] font-medium text-white uppercase tracking-wider mb-1">
+                                {{ $page_content['title'] ?? 'Policy' }}
                             </h1>
                            
                         </div>

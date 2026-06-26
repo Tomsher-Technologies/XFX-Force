@@ -133,11 +133,16 @@
                 <strong>Invoice Number:</strong> {{ $order->code }} <br>
                 <hr style="border: 0.5px solid #eee">
                 <strong>Payment Method:</strong> 
-                @if($order->payment_type == 'cod')
-                    Cash on Delivery
-                @else
-                    Debit / Credit Card
-                @endif
+
+                @php
+                    $paymentLabels = [
+                        'cod' => 'Cash on Delivery',
+                        'card' => 'Debit / Credit Card',
+                        'tabby' => 'Tabby',
+                    ];
+                @endphp
+
+                {{ $paymentLabels[$order->payment_type] ?? ucfirst($order->payment_type) }}
                 <br>
                 <hr style="border: 0.5px solid #eee">
                 <strong>Shipping Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->shipping_type)) }}

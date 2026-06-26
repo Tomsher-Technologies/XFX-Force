@@ -268,6 +268,63 @@ class HomeController extends Controller
         return view('frontend.return_policy', compact('page','page_content'));
     }
 
+    public function cookiePolicy()
+    {
+        $page = Page::where('type', 'cookie_policy')->first();
+        $page_content = $page ? json_decode($page->data, true) : [];
+        
+        $seoContents = [
+            'title' => $page_content['meta_title'] ?? '',
+            'meta_description' => $page_content['meta_description'] ?? '',
+            'keywords' => $page_content['keywords'] ?? '',
+            'og_title' => $page_content['og_title'] ?? '',
+            'og_description' => $page_content['og_description'] ?? '',
+            'twitter_title' => $page_content['twitter_title'] ?? '',
+            'twitter_description' => $page_content['twitter_description'] ?? '',
+        ];
+        
+        $this->loadSEO($seoContents);
+        return view('frontend.policy', compact('page','page_content'));
+    }
+
+    public function shippingPolicy()
+    {
+        $page = Page::where('type', 'shipping_policy')->first();
+        $page_content = $page ? json_decode($page->data, true) : [];
+        
+        $seoContents = [
+            'title' => $page_content['meta_title'] ?? '',
+            'meta_description' => $page_content['meta_description'] ?? '',
+            'keywords' => $page_content['keywords'] ?? '',
+            'og_title' => $page_content['og_title'] ?? '',
+            'og_description' => $page_content['og_description'] ?? '',
+            'twitter_title' => $page_content['twitter_title'] ?? '',
+            'twitter_description' => $page_content['twitter_description'] ?? '',
+        ];
+        
+        $this->loadSEO($seoContents);
+        return view('frontend.policy', compact('page','page_content'));
+    }
+
+    public function warrantyPolicy()
+    {
+        $page = Page::where('type', 'warranty_policy')->first();
+        $page_content = $page ? json_decode($page->data, true) : [];
+        
+        $seoContents = [
+            'title' => $page_content['meta_title'] ?? '',
+            'meta_description' => $page_content['meta_description'] ?? '',
+            'keywords' => $page_content['keywords'] ?? '',
+            'og_title' => $page_content['og_title'] ?? '',
+            'og_description' => $page_content['og_description'] ?? '',
+            'twitter_title' => $page_content['twitter_title'] ?? '',
+            'twitter_description' => $page_content['twitter_description'] ?? '',
+        ];
+        
+        $this->loadSEO($seoContents);
+        return view('frontend.policy', compact('page','page_content'));
+    }
+
     public function contact()
     {
         $page = Page::where('type', 'contact_us')->first();

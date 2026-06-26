@@ -2218,7 +2218,7 @@ const mobile = document.getElementById('mobile-filter');
 
 function moveFilter() {
 
-    filter.classList.remove('is-mobile', 'is-desktop');
+    filter?.classList.remove('is-mobile', 'is-desktop');
 
     if (window.innerWidth < 1300) {
 

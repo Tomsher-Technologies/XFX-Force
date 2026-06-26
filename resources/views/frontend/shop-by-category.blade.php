@@ -277,13 +277,16 @@
 								class="pt-6 [&:not([hidden])]:block border-t border-transparent xl:border-[#282B34] pb-[20px]">
 
 								<div class="space-y-4">
-
+                                    @php
+										$selectedConditions = explode(',', request('conditions', ''));
+									@endphp
 									<div class="flex gap-[15px] items-center">
 										<input type="checkbox"
 											id="condition-new"
 											name="conditions[]"
 											value="new"
-											class="category-checkbox h-[20px] w-[20px]">
+											class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
+                                            {{ in_array('new', $selectedConditions) ? 'checked' : '' }}>
 
 										<label for="condition-new"
 											class="relative top-[5px] text-[15px] text-white">
@@ -296,7 +299,8 @@
 											id="condition-refurbished"
 											name="conditions[]"
 											value="refurbished"
-											class="category-checkbox h-[20px] w-[20px]">
+											class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
+                                            {{ in_array('refurbished', $selectedConditions) ? 'checked' : '' }}>
 
 										<label for="condition-refurbished"
 											class="relative top-[5px] text-[15px] text-white">
@@ -309,7 +313,8 @@
 											id="condition-open-box"
 											name="conditions[]"
 											value="open_box"
-											class="category-checkbox h-[20px] w-[20px]">
+											class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
+                                            {{ in_array('open_box', $selectedConditions) ? 'checked' : '' }}>
 
 										<label for="condition-open-box"
 											class="relative top-[5px] text-[15px] text-white">
@@ -416,7 +421,7 @@
                         <div class="loader"></div>
                     </div>
                     <div class="text-center mt-4 text-white" id="load-more-wrapper">
-                        <button id="load-more-btn" class="mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hidden md:block hover:bg-white/5" title="Click to View More Products">
+                        <button id="load-more-btn" class="mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-white/5" title="Click to View More Products">
                         Load More
                         </button>
                     </div>
@@ -644,9 +649,6 @@
 			document.querySelectorAll('input[name="brands[]"]:checked')
 		).map(el => el.value);
 
-		// const visibleFilter = [...document.querySelectorAll('.price-filter')]
-		// 	.find(el => el.offsetParent !== null);
-
         const activeFilterWrapper = document.querySelector(
 			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
 		);
@@ -684,16 +686,17 @@
 		) || 300000;
 
 		const url = `/products`;
-
+        const searchParam = new URLSearchParams(window.location.search).get('search') || '';
 		// Store filters globally
 		currentFilters = new URLSearchParams({
 			min_price,
 			max_price,
 			sort: currentSort,
-			view: currentView
+			view: currentView,
+            search: searchParam,
 		});
-
-		categories.forEach(cat => currentFilters.append('categories[]', cat));
+        
+        categories.forEach(cat => currentFilters.append('categories[]', cat));
 		selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
 
         if (conditions.length) {
@@ -711,8 +714,6 @@
 			})
 			.then(res => res.json())
 			.then(data => {
-                
-
 				const wrapper = document.getElementById('product-list-wrapper');
 
 				// Show / Hide load more
@@ -733,7 +734,6 @@
 
                 const countEl = document.getElementById('product-count');
 
-				console.log(data);
 				// update total from backend response
 				countEl.dataset.total = data.total;
                 

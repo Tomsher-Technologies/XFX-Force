@@ -17,6 +17,7 @@ use App\Http\Controllers\Frontend\ReviewController;
 use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Frontend\WishlistController;
+use App\Http\Controllers\Frontend\TabbyWebhookController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -43,6 +44,11 @@ Route::post('login', [AuthController::class, 'login']);
 Route::get('terms', [HomeController::class, 'terms'])->name('terms');
 Route::get('privacy-policy', [HomeController::class, 'privacy'])->name('privacy-policy');
 Route::get('return-policy', [HomeController::class, 'returnPolicy'])->name('return-policy');
+
+Route::get('warranty-policy', [HomeController::class, 'warrantyPolicy'])->name('warranty-policy');
+Route::get('cookie-policy', [HomeController::class, 'cookiePolicy'])->name('cookie-policy');
+Route::get('shipping-policy', [HomeController::class, 'shippingPolicy'])->name('shipping-policy');
+
 Route::get('contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact-submit', [HomeController::class, 'submitContactForm'])->name('contact.submit');
 Route::get('about', [HomeController::class, 'about'])->name('about');
@@ -136,6 +142,22 @@ Route::group(['middleware' => ['auth:frontend','nocache']], function () {
 
     Route::post('/review/store', [ReviewController::class, 'store'])->name('reviews.save');
 });
+
+Route::get(
+    '/payment/tabby/success',
+    [CheckoutController::class, 'tabbySuccess']
+)->name('tabby.success');
+
+Route::get(
+    '/payment/tabby/cancel',
+    [CheckoutController::class, 'tabbyCancel']
+)->name('tabby.cancel');
+
+Route::post(
+    'webhooks/tabby',
+    [TabbyWebhookController::class, 'handle']
+)->name('tabby.webhook');
+
 
 Route::fallback(function () {
     return response()->view('frontend.errors.404', [], 404);

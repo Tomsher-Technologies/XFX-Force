@@ -101,7 +101,7 @@
                 </div>
                 <div class="py-[50px] md:py-[0px] border-b border-[#282B34] md:border-hidden">
                     <h6 class="text-white uppercase text-[14px] font-medium block mb-[20px]">{{ get_setting('footer_address_title') }}</h6>
-                    <p class="text-[#898989] text-[15px] leading-[30px]">{{ get_setting('footer_address') }}</p>
+                    <p class="text-[#898989] text-[15px] leading-[30px]">{!! nl2br(e(get_setting('footer_address'))) !!}</p>
                 </div>
             </div>
         </div>

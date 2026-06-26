@@ -32,7 +32,7 @@
                         {{ json_decode($order->shipping_address)->address }},
                         {{ json_decode($order->shipping_address)->city }}
                         <br>
-                        {{ json_decode($order->shipping_address)->zipcode }}
+                        {{-- {{ json_decode($order->shipping_address)->zipcode }} -- }}
                     </address>
 
                     <p><b>Order Notes : </b> {{$order->order_notes ?? ''}}</p>

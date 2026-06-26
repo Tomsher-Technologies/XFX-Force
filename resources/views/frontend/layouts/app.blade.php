@@ -48,6 +48,11 @@
     @yield('style')
 
     <style>
+        .policy-page ol, .policy-page ul, .policy-page menu {
+            list-style: revert !important;
+            margin: revert !important;
+            padding: revert !important;
+        }
         .swiper-button-next,.swiper-container-rtl .swiper-button-prev {
             left: auto;
             background-image: url("{{ asset('assets/images/arrow-right.svg') }}"); 
