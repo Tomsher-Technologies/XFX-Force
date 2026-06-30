@@ -639,7 +639,8 @@
     function filterProducts() {
         page = 1;
         showLoader();
-		document.getElementById('load-more-wrapper').style.display = 'block';
+        const loadMore = document.getElementById('load-more-wrapper');
+        if(loadMore) loadMore.style.display = 'block';
 
 		const categories = Array.from(
 			document.querySelectorAll('input[name="categories[]"]:checked')
@@ -717,36 +718,43 @@
 				const wrapper = document.getElementById('product-list-wrapper');
 
 				// Show / Hide load more
-				const loadMore = document.getElementById('load-more-wrapper');
+				
 
 				if (!data.html.trim()) {
-					loadMore.style.display = 'none';
+					if(loadMore) loadMore.style.display = 'none';
 
-					wrapper.innerHTML = `
+					if(wrapper)  wrapper.innerHTML = `
 						<div class="text-white text-center py-10">
 							No Products Found!
 						</div>
 					`;
 				} else {
-					wrapper.innerHTML = data.html;
-					loadMore.style.display = data.hasMore ? 'block' : 'none';
+					if(wrapper) wrapper.innerHTML = data.html;
+					if(loadMore) loadMore.style.display = data.hasMore ? 'block' : 'none';
 				}
 
                 const countEl = document.getElementById('product-count');
 
 				// update total from backend response
-				countEl.dataset.total = data.total;
+				if (countEl) countEl.dataset.total = data.total;
                 
-                hideLoader();
+                // hideLoader();
 				updateProductCount();
 
 				// Scroll
-				const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
-				window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                if(wrapper) {
+                    const offsetTop =  wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                }
 
 				
 			})
-			.catch(err => console.error('Filter products error:', err));
+            .catch(err => {
+                console.error('Filter products error:', err);
+            })
+            .finally(() => {
+                hideLoader();
+            });
 	}
 
     /* CLEAR FILTER */
@@ -836,18 +844,25 @@
 	let lastPage = {{ $products->lastPage() }};
 	let loading = false;
 
-	document.getElementById('load-more-btn').addEventListener('click', async function() {
-		if (loading || page >= lastPage) return;
-		loading = true;
-		page++;
+    document.addEventListener('click', async function(e){
 
-		await loadMoreProducts(page);
-		loading = false;
+        if(e.target.id !== 'load-more-btn') return;
 
-		if (page >= lastPage) {
-			document.getElementById('load-more-wrapper').style.display = 'none';
-		}
-	});
+        if (loading || page >= lastPage) return;
+
+        loading = true;
+        page++;
+
+        await loadMoreProducts(page);
+
+        loading = false;
+
+        const wrapper = document.getElementById('load-more-wrapper');
+
+        if(wrapper && page >= lastPage){
+            wrapper.style.display = 'none';
+        }
+    });
 
 	async function loadMoreProducts(page) {
 		const loader = document.getElementById('product-loader');
@@ -897,16 +912,26 @@
 		const total = parseInt(countEl.dataset.total);
 		let visible = 0;
 
-		// Check active view
-		if (document.querySelector('[x-show="activeTab === \'gridview\'"]').offsetParent !== null) {
-			visible = document.querySelectorAll('#product-list .product-card').length;
-		} else {
-			visible = document.querySelectorAll('#product-list .product-card-list').length;
-		}
+        // Check active view
+        const gridView = document.querySelector('[x-show="activeTab === \'gridview\'"]');
+
+        if (gridView && gridView.offsetParent !== null) {
+            visible = document.querySelectorAll('#product-list .product-card').length;
+        } else {
+            visible = document.querySelectorAll('#product-list .product-card-list').length;
+        }
+
+		
+		// if (document.querySelector('[x-show="activeTab === \'gridview\'"]').offsetParent !== null) {
+		// 	visible = document.querySelectorAll('#product-list .product-card').length;
+		// } else {
+		// 	visible = document.querySelectorAll('#product-list .product-card-list').length;
+		// }
 
 		if (visible === 0) {
 			countEl.innerText = `Items 0 of 0`;
-            document.getElementById('product-list-wrapper').innerHTML = `
+            const wrapper = document.getElementById('product-list-wrapper');
+            if(wrapper) wrapper.innerHTML = `
 						<div class="text-white text-center py-10">
 							No Products Found!
 						</div>`;
