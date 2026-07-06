@@ -303,8 +303,8 @@
         <!-- Totals Summary Table -->
         <table style="width: 100%; border: none; margin-top: 10px;">
             <tr>
-                <td style="width: 55%; border: none;"></td>
-                <td style="width: 45%; border: none; padding: 0;">
+                <td style="width: 45%; border: none;"></td>
+                <td style="width: 55%; border: none; padding: 0;">
                     <table class="totals-table" style="width: 100%; margin-bottom: 0;">
                         <tr>
                             <td style="text-align: left;">Subtotal:</td>
@@ -339,7 +339,7 @@
                             <td style="text-align: right; font-weight: bold;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->shipping_cost) }}</td>
                         </tr>
                         <tr class="grand-total">
-                            <td style="text-align: left; font-size: 14px; color: #111111;">Grand Total(Including Tax):</td>
+                            <td style="text-align: left; font-size: 14px; color: #111111;">Grand Total<span style="font-size: 12px; color: #6b7280;"> (Including Tax):</span></td>
                             <td style="text-align: right; font-size: 16px; color: #111111;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->grand_total) }}</td>
                         </tr>
                     </table>
