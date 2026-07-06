@@ -2,9 +2,8 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ env('APP_NAME') }}</title>
-    <meta http-equiv="Content-Type" content="text/html;" />
-    <meta charset="UTF-8">
+    <title>Order Confirmation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style media="all">
         @font-face {
             font-family: 'Roboto';
@@ -16,242 +15,307 @@
         * {
             margin: 0;
             padding: 0;
-            line-height: 1.3;
-            font-family: 'Roboto';
-            color: #333542;
+            line-height: 1.4;
+            font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #333333;
         }
 
         body {
-            font-size: .875rem;
+            background-color: #f6f8fa;
+            font-size: 13px;
+            padding: 20px 0;
         }
 
-        .gry-color *,
-        .gry-color {
-            color: #878f9c;
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 30px;
         }
 
         table {
             width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
 
-        table th {
-            font-weight: normal;
+        td, th {
+            padding: 6px;
+            vertical-align: top;
         }
 
-        table.padding th {
-            padding: .5rem .7rem;
+        /* Top Header */
+        .company-details {
+            line-height: 1.5;
+            color: #555555;
+            font-size: 12px;
         }
-
-        table.padding td {
-            padding: .7rem;
+        .company-details strong {
+            color: #111111;
+            font-size: 16px;
         }
-
-        table.sm-padding td {
-            padding: .2rem .7rem;
-        }
-
-        .border-bottom td,
-        .border-bottom th {
-            border-bottom: 1px solid #eceff4;
-        }
-
-        .text-left {
-            text-align: left;
-        }
-
-        .text-right {
+        .invoice-title {
             text-align: right;
+            line-height: 1.5;
+            font-size: 12px;
+        }
+        .invoice-title h1 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            color: #2A7CFF;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .invoice-title p {
+            margin: 2px 0;
+            color: #555555;
         }
 
-        .small {
-            font-size: .85rem;
+        /* Dividers */
+        .divider {
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
         }
 
-        .currency {}
+        /* Address Section */
+        .address-title {
+            font-weight: bold;
+            color: #111111;
+            text-transform: uppercase;
+            font-size: 11px;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 3px;
+        }
+
+        /* Items Table */
+        .items-table {
+            margin-top: 15px;
+        }
+        .items-table th {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 8px 10px;
+            text-align: left;
+            border-top: 1px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
+        }
+        .items-table td {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 10px;
+        }
+        .items-table tr.item-row:nth-child(even) td {
+            background-color: #f9fafb;
+        }
+        .variation-list {
+            margin: 3px 0 0 0;
+            padding-left: 12px;
+            font-size: 11px;
+            color: #6b7280;
+        }
+        .badge-free {
+            background-color: #10b981;
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: bold;
+            padding: 1px 3px;
+            text-transform: uppercase;
+        }
+
+        /* Totals */
+        .totals-table td {
+            padding: 4px 6px;
+            color: #4b5563;
+        }
+        .totals-table tr.grand-total td {
+            border-top: 1px solid #111111;
+            border-bottom: 3px double #111111;
+            font-weight: bold;
+            font-size: 15px;
+            color: #111111;
+            padding-top: 6px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 11px;
+            color: #9ca3af;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 15px;
+        }
     </style>
 </head>
 
 <body>
-    <div>
+    <div class="email-container">
+        <!-- Top header -->
         @php
             $logo = get_setting('default_invoice_logo');
         @endphp
-        <div style="background: #dce4e978;padding: 1.5rem;">
-            <table>
-                <tr>
-                    <td>
+        <table>
+            <tr>
+                <td style="width: 50%; padding: 0;">
+                    <div class="company-details">
                         <a href="{{ env('APP_URL') }}">
-                            <img src="{{ uploaded_asset($logo) }}" height="75" alt="{{ env('APP_NAME') }}" style="display:inline-block;">
-                        </a>
-                    </td>
-                </tr>
-            </table>
-            <table>
-                <tr>
-                    <td style="font-size: 1.2rem;" class="strong">{{ get_setting('site_name') }}</td>
-                    <td class="text-right"></td>
-                </tr>
-                <tr>
-                    <td class="gry-color small">{{ get_setting('contact_address') }}</td>
-                    <td class="text-right"></td>
-                </tr>
-                <tr>
-                    <td class="gry-color small"></td>
-                    <td class="text-right small"><span class="gry-color small">Order ID:</span> <span
-                            class="strong">{{ $order->code }}</span></td>
-                </tr>
-                <tr>
-                    <td class="gry-color small"></td>
-                    <td class="text-right small"><span class="gry-color small">Order Date:</span>
-                        <span class=" strong">{{ date('d-m-Y', $order->date) }}</span>
-                    </td>
-                </tr>
-            </table>
+                            <img src="{{ uploaded_asset($logo) }}" height="60" alt="{{ env('APP_NAME') }}" style="display:inline-block; margin-bottom: 10px;">
+                        </a><br>
+                        {!! nl2br(get_setting('footer_address')) !!}<br>
+                        Phone: {{ get_setting('footer_phone') ?? '+971 123456789' }}<br>
+                        Email: {{ get_setting('footer_email') ?? 'info@pcgarage.com' }}
+                    </div>
+                </td>
+                <td style="width: 50%; padding: 0;">
+                    <div class="invoice-title">
+                        <h1>Order Confirmation</h1>
+                        <p><strong>Order Number:</strong> {{ $order->code }}</p>
+                        <p><strong>Date:</strong> {{ date('d M Y, h:i A', $order->date) }}</p>
+                        <p><strong>Payment Method:</strong> 
+                            @php
+                                $paymentLabels = [
+                                    'cod' => 'Cash on Delivery',
+                                    'card' => 'Debit / Credit Card',
+                                    'tabby' => 'Tabby',
+                                ];
+                            @endphp
+                            {{ $paymentLabels[$order->payment_type] ?? ucfirst($order->payment_type) }}
+                        </p>
+                        <p><strong>Shipping Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->shipping_type)) }}</p>
+                    </div>
+                </td>
+            </tr>
+        </table>
 
-        </div>
+        <div class="divider"></div>
 
-        <div style="padding: 1.5rem;padding-bottom: 0;display: flex;justify-content: space-between;">
-            <table>
-                @php
-                    $shipping_address = json_decode($order->shipping_address);
-                @endphp
-                <tr>
-                    <td class="strong small gry-color">Ship to:</td>
-                </tr>
-                <tr>
-                    <td class="strong">{{ $shipping_address->name ?? ''}}</td>
-                </tr>
-                <tr>
-                    <td class="gry-color small">
-                        {{ $shipping_address->address ?? '' }}, <br>
-                        {{ $shipping_address->city ?? '' }},
-                        {{ $shipping_address->state ?? '' }}, <br>
-                        {{ $shipping_address->country ?? '' }}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="gry-color small">Email: {{ $shipping_address->email ?? '' }}</td>
-                </tr>
-                <tr>
-                    <td class="gry-color small">Phone: {{ $shipping_address->phone ?? '' }}</td>
-                </tr>
-            </table>
-            <table>
-                @php
-                    $billing_address = json_decode($order->billing_address);
-                @endphp
-                <tr>
-                    <td class="strong small gry-color">Bill to:</td>
-                </tr>
-                <tr>
-                    <td class="strong">{{ $billing_address->name ?? '' }}</td>
-                </tr>
-                <tr>
-                    <td class="gry-color small">
-                        {{ $billing_address->address ?? '' }}, <br>
-                        {{ $billing_address->city ?? '' }},
-                        {{ $billing_address->state ?? '' }}, <br>
-                        {{ $billing_address->country ?? '' }}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="gry-color small">Email: {{ $billing_address->email ?? '' }}</td>
-                </tr>
-                <tr>
-                    <td class="gry-color small">Phone: {{ $billing_address->phone ?? '' }}</td>
-                </tr>
-            </table>
-        </div>
+        <!-- Addresses side by side -->
+        <table style="margin-bottom: 15px;">
+            <tr>
+                <td style="width: 50%; padding-left: 0; padding-right: 15px;">
+                    <div class="address-title">Bill To</div>
+                    @php 
+                        $billingAddress = json_decode($order->billing_address);
+                    @endphp
+                    <p style="margin: 0; font-weight: bold; color: #111111;">{{ $billingAddress?->name }}</p>
+                    <p style="margin: 3px 0 0 0; color: #4b5563;">{{ $billingAddress?->address }}</p>
+                    <p style="margin: 2px 0 0 0; color: #4b5563;">{{ $billingAddress?->city }}</p>
+                    <p style="margin: 6px 0 0 0; font-size: 12px; color: #6b7280;">Phone: {{ $billingAddress?->phone }}</p>
+                    <p style="margin: 2px 0 0 0; font-size: 12px; color: #6b7280;">Email: {{ $billingAddress?->email }}</p>
+                </td>
+                <td style="width: 50%; padding-right: 0; padding-left: 15px;">
+                    @php 
+                        $shippingAddress = json_decode($order->shipping_address);
+                    @endphp
+                    @if($order->shipping_type == 'pickup')
+                        <div class="address-title">Pickup Location</div>
+                        <p style="margin: 3px 0 0 0; color: #4b5563;">{{ $order->pickup_location }}</p>
+                    @else
+                        <div class="address-title">Ship To</div>
+                        <p style="margin: 0; font-weight: bold; color: #111111;">{{ $shippingAddress?->name }}</p>
+                        <p style="margin: 3px 0 0 0; color: #4b5563;">{{ $shippingAddress?->address }}</p>
+                        <p style="margin: 2px 0 0 0; color: #4b5563;">{{ $shippingAddress?->city }}</p>
+                        <p style="margin: 6px 0 0 0; font-size: 12px; color: #6b7280;">Phone: {{ $shippingAddress?->phone }}</p>
+                        <p style="margin: 2px 0 0 0; font-size: 12px; color: #6b7280;">Email: {{ $shippingAddress?->email }}</p>
+                    @endif
+                </td>
+            </tr>
+        </table>
 
-        <div style="padding: 1.5rem;">
-            <table class="padding text-left small border-bottom">
-                <thead>
-                    <tr class="gry-color" style="background: #eceff4;">
-                        <th width="35%">Product Name</th>
-                        <th width="10%">Qty</th>
-                        <th width="15%">Unit Price</th>
-                        <th width="15%" class="text-right">Total</th>
-                    </tr>
-                </thead>
-                <tbody class="strong">
-                    @foreach ($order->orderDetails as $key => $orderDetail)
-                        @if ($orderDetail->product != null)
-                            <tr class="">
-                                <td>{{ $orderDetail->product->name }} @if ($orderDetail->variation != null)
-                                        ({{ $orderDetail->variation }})
-                                    @endif
-                                </td>
-                                <td class="gry-color">{{ $orderDetail->quantity }}</td>
-                                <td class="gry-color currency">
-                                    @if ($orderDetail->og_price != $orderDetail->offer_price)
-                                        <del>{{ single_price($orderDetail->og_price) }}</del> <br>
-                                    @endif
-                                    {{ single_price($orderDetail->price / $orderDetail->quantity) }}</td>
-                                <td class="text-right currency">
-                                    {{ single_price($orderDetail->price) }}</td>
+        <!-- Ordered Items Table -->
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th style="width: 50%;">Product Description</th>
+                    <th style="width: 15%; text-align: right;">Unit Price</th>
+                    <th style="width: 15%; text-align: center;">Qty</th>
+                    <th style="width: 20%; text-align: right;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($order->orderDetails as $key => $orderDetail)
+                    @if ($orderDetail->product != null)
+                        <tr class="item-row">
+                            <td>
+                                <div style="font-weight: bold; color: #111111;">{{ $orderDetail->product->name }}</div>
+                                @if ($orderDetail->variation != null)
+                                    <ul class="variation-list">
+                                        <li>{{ $orderDetail->variation }}</li>
+                                    </ul>
+                                @endif
+                            </td>
+                            <td style="text-align: right; white-space: nowrap;">
+                                @if ($orderDetail->og_price != $orderDetail->offer_price)
+                                    <del style="color: #999999;">{{ single_price($orderDetail->og_price) }}</del><br>
+                                @endif
+                                {{ single_price($orderDetail->price / $orderDetail->quantity) }}
+                            </td>
+                            <td style="text-align: center;">{{ $orderDetail->quantity }}</td>
+                            <td style="text-align: right; font-weight: bold; white-space: nowrap; color: #111111;">{{ single_price($orderDetail->price) }}</td>
+                        </tr>
+                    @endif
+                @endforeach
+            </tbody>
+        </table>
+
+        <!-- Totals Summary Table -->
+        <table style="width: 100%; border: none; margin-top: 10px;">
+            <tr>
+                <td style="width: 55%; border: none;"></td>
+                <td style="width: 45%; border: none; padding: 0;">
+                    <table class="totals-table" style="width: 100%; margin-bottom: 0;">
+                        <tr>
+                            <td style="text-align: left;">Subtotal:</td>
+                            <td style="text-align: right; font-weight: bold; width: 50%;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->sub_total) }}</td>
+                        </tr>
+                        @if ($order->offer_discount != 0)
+                            <tr>
+                                <td style="text-align: left;">Discount:</td>
+                                <td style="text-align: right; color: #b91c1c;">- {{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->offer_discount) }}</td>
                             </tr>
                         @endif
-                    @endforeach
-                </tbody>
-            </table>
+                        @if ($order->coupon_discount != 0)
+                            <tr>
+                                <td style="text-align: left;">Coupon Discount:</td>
+                                <td style="text-align: right; color: #b91c1c;">- {{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->coupon_discount) }}</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; font-size: 11px; color: #888;">Coupon Code:</td>
+                                <td style="text-align: right; font-size: 11px; color: #888;">{{ $order->coupon_code }}</td>
+                            </tr>
+                        @endif
+                        @if ($order->warranty_amount != 0)
+                            <tr>
+                                <td style="text-align: left;">Warranty Amount:</td>
+                                <td style="text-align: right; font-weight: bold;">+ {{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->warranty_amount) }}</td>
+                            </tr>
+                        @endif
+                        <tr>
+                            <td style="text-align: left;">Shipping:</td>
+                            <td style="text-align: right; font-weight: bold;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->shipping_cost) }}</td>
+                        </tr>
+                        <tr class="grand-total">
+                            <td style="text-align: left; font-size: 14px; color: #111111;">Grand Total:</td>
+                            <td style="text-align: right; font-size: 16px; color: #111111;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->grand_total) }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p style="margin: 0; font-size: 12px; font-weight: bold; color: #111111;">Thank you for shopping with {{ env('APP_NAME') }}!</p>
+            <p style="margin: 4px 0 0 0;">If you have any questions about this order, please reply to this email or contact support.</p>
+            {{-- <p style="margin: 4px 0 0 0;"><a href="{{ env('APP_URL') }}" style="color: #2A7CFF; text-decoration: none; font-weight: bold;">{{ str_replace(['http://', 'https://'], '', env('APP_URL')) }}</a></p> --}}
         </div>
-
-        <div style="padding:0 1.5rem;">
-            <table style="width: 40%;margin-left:auto;" class="text-right sm-padding small strong">
-                <tbody>
-                    <tr>
-                        <th class="gry-color text-left">Sub Total</th>
-                        <td class="currency">
-                            {{ single_price($order->sub_total) }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="gry-color text-left">
-                            VAT
-                        </th>
-                        <td class="currency">
-                            {{ single_price($order->tax) }}
-                        </td>
-                    </tr>
-
-                    @if ($order->offer_discount)
-                        <tr class="border-bottom">
-                            <th class="gry-color text-left">Discount</th>
-                            <td class="currency">{{ single_price($order->offer_discount) }}</td>
-                        </tr>
-                    @endif
-
-                    @if ($order->coupon_discount)
-                        <tr class="border-bottom">
-                            <th class="gry-color text-left">Coupon Discount</th>
-                            <td class="currency">{{ single_price($order->coupon_discount) }}</td>
-                        </tr>
-                        <tr class="border-bottom">
-                            <th class="gry-color text-left">Coupon Code</th>
-                            <td class="currency">{{ $order->coupon_code }}</td>
-                        </tr>
-                    @endif
-
-                    @if ($order->warranty_amount)
-                        <tr class="border-bottom">
-                            <th class="gry-color text-left">Warranty Amount</th>
-                            <td class="currency">{{ single_price($order->warranty_amount) }}</td>
-                        </tr>
-                    @endif
-
-                    <tr>
-                        <th class="gry-color text-left">Shipping Cost</th>
-                        <td class="currency">{{ single_price($order->shipping_cost) }}</td>
-                    </tr>
-                   
-                    <tr>
-                        <th class="text-left strong">Grand Total</th>
-                        <td class="currency">{{ single_price($order->grand_total) }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
     </div>
 </body>
 

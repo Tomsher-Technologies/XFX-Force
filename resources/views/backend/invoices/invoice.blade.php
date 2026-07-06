@@ -339,7 +339,7 @@
                             <td style="text-align: right; font-weight: bold;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->shipping_cost) }}</td>
                         </tr>
                         <tr class="grand-total">
-                            <td style="text-align: left; font-size: 14px; color: #111111;">Grand Total<span style="font-size: 12px; color: #6b7280;"> (Including Tax):</span></td>
+                            <td style="text-align: left; font-size: 14px; color: #111111;">Grand Total<span style="font-size: 10px; color: #6b7280;"> (Including Tax):</span></td>
                             <td style="text-align: right; font-size: 16px; color: #111111;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->grand_total) }}</td>
                         </tr>
                     </table>
