@@ -253,12 +253,12 @@
                             </td>
                             <td style="text-align: right; white-space: nowrap;">
                                 @if ($orderDetail->og_price != $orderDetail->offer_price)
-                                    <del style="color: #999999;">{{ single_price($orderDetail->og_price) }}</del><br>
+                                    <del style="color: #999999;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->og_price) }}</del><br>
                                 @endif
-                                {{ single_price($orderDetail->price / $orderDetail->quantity) }}
+                                {{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->price / $orderDetail->quantity) }}
                             </td>
                             <td style="text-align: center;">{{ $orderDetail->quantity }}</td>
-                            <td style="text-align: right; font-weight: bold; white-space: nowrap; color: #111111;">{{ single_price($orderDetail->price) }}</td>
+                            <td style="text-align: right; font-weight: bold; white-space: nowrap; color: #111111;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->price) }}</td>
                         </tr>
                     @endif
                 @endforeach
