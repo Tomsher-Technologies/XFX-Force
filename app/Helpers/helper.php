@@ -931,7 +931,27 @@ if (!function_exists('checkCartQuantityPerVariant')) {
                     $query->where('temp_user_id', $guestToken);
                 }
             })
-            ->sum('quantity'); //  FIX: use sum, not first()
+            ->sum('quantity');
     }
 }
+
+if (!function_exists('shape_arabic_html')) {
+    function shape_arabic_html($html)
+    {
+        if (class_exists('ArPHP\I18N\Arabic')) {
+            try {
+                $arabic = new \ArPHP\I18N\Arabic('Glyphs');
+                $p = $arabic->arIdentify($html);
+                for ($i = count($p) - 1; $i >= 0; $i -= 2) {
+                    $utf8ar = $arabic->utf8Glyphs(substr($html, $p[$i - 1], $p[$i] - $p[$i - 1]));
+                    $html = substr_replace($html, $utf8ar, $p[$i - 1], $p[$i] - $p[$i - 1]);
+                }
+            } catch (\Exception $e) {
+                // Fallback to unshaped html if there is an exception
+            }
+        }
+        return $html;
+    }
+}
+
 
