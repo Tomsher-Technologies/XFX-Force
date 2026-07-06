@@ -24,8 +24,8 @@ class InvoiceController extends Controller
 
         $upload = Upload::find(get_setting('default_invoice_logo'));
 
-        $imagePath = $upload && $upload->file_name
-            ? public_path('storage/' . $upload->file_name)
+         $imagePath = $upload && $upload->file_name
+            ? storage_path('app/public/' . $upload->file_name)
             : null;
 
         $pdf = Pdf::loadView('backend.invoices.invoice', [
