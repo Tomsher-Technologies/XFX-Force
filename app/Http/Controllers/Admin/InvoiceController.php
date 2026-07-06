@@ -28,14 +28,18 @@ class InvoiceController extends Controller
             ? storage_path('app/public/' . $upload->file_name)
             : null;
 
-        $pdf = Pdf::loadView('backend.invoices.invoice', [
+        $html = view('backend.invoices.invoice', [
                     'order' => $order,
                     'font_family' => $font_family,
                     'direction' => $direction,
                     'text_align' => $text_align,
                     'not_text_align' => $not_text_align,
                     'imagePath' => $imagePath
-                ]);
+                ])->render();
+
+        $html = shape_arabic_html($html);
+
+        $pdf = Pdf::loadHTML($html);
         
         return $pdf->download('order-' . $order->code . '.pdf');
     }
