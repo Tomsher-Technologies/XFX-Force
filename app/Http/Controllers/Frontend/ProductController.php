@@ -1159,8 +1159,17 @@ class ProductController extends Controller
 
         $products = Product::where('published', 1)
             ->where(function($q) use ($query) {
-                $q->where('name', 'like', "%{$query}%")
-                ->orWhere('tags', 'like', "%{$query}%"); // search inside comma-separated tags
+                $q->where('name', 'like', '%' . $query . '%')
+                ->orWhere('sku', 'like', '%' . $query . '%')
+                ->orWhere('slug', 'like', '%' . $query . '%')
+                ->orWhere('description', 'like', '%' . $query . '%')
+                ->orWhere('tags', 'like', '%' . $query . '%')
+                ->orWhereHas('stocks', function ($q) use ($query) {
+                    $q->where('sku', 'like', '%' . $query . '%')
+                    ->orWhere('stock_title', 'like', '%' . $query . '%')
+                    ->orWhere('model', 'like', '%' . $query . '%')
+                    ->orWhere('stock_description', 'like', '%' . $query . '%');
+                });
             })
             ->limit(10)
             ->get(['id', 'name', 'slug']); // include id if needed
