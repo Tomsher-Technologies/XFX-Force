@@ -77,6 +77,13 @@
                                     <textarea class="form-control" placeholder="Enter.." name="footer_address" rows="5">{{ get_setting('footer_address') }}</textarea>
                                 </div>
 
+                                <div class="form-group">
+                                    <label>WhatsApp Floating Number</label>
+                                    <input type="hidden" name="types[]" value="whatsapp_floating_number">
+                                    <input type="text" class="form-control" placeholder="Enter WhatsApp Number (e.g. +971501234567).." name="whatsapp_floating_number"
+                                        value="{{ get_setting('whatsapp_floating_number') }}">
+                                </div>
+
                                 <div class="text-right">
                                     <button type="submit" class="btn btn-primary btn-sm">Update</button>
                                 </div>
