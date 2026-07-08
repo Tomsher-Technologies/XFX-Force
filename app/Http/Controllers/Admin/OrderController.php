@@ -152,7 +152,7 @@ class OrderController extends Controller
         $refund_search  = ($request->has('refund_search')) ? $request->refund_search : '';
 
 
-        $orders = OrderReturn::with(['order', 'product'])->orderBy('created_at', 'DESC');
+        $orders = OrderReturn::with(['order.user', 'product'])->orderBy('created_at', 'DESC');
         if ($search) {
             $orders = $orders->whereHas('order', function ($query) use ($search) {
                 $query->where('code', 'like', '%' . $search . '%'); // Adjust field name if necessary
@@ -191,17 +191,22 @@ class OrderController extends Controller
     {
         $request->validate([
             'return_id' => 'required|exists:order_returns,id',
-            'status' => 'required|in:approved,rejected',
+            'status' => 'required|in:approved,rejected,received,refunded',
         ]);
 
         $return = OrderReturn::findOrFail($request->return_id);
+        $oldStatus = $return->status;
         $return->status = $request->status;
         $return->save();
 
         $order = Order::findOrFail($return->order_id);
         if($order){
             if ($order->return_request == 1) {
-                $order->return_approval = ($request->status == 'approved') ? 1 : 2;
+                if (in_array($request->status, ['approved', 'received', 'refunded'])) {
+                    $order->return_approval = 1;
+                } elseif ($request->status == 'rejected') {
+                    $order->return_approval = 2;
+                }
                 $order->return_approval_date = date('Y-m-d H:i:s');
                 $order->save();
             }
@@ -211,7 +216,7 @@ class OrderController extends Controller
             $customerName  = $customer->name;
             $orderCode     = $order->code;
 
-            if ($request->status == "approved") { // Approved
+            if ($request->status == "approved" && $oldStatus != "approved") { // Approved
 
                 // STOCK RETURN (same style as delivery cancel restore)
                 $orderDetail = OrderDetail::find($return->order_detail_id);
@@ -252,7 +257,7 @@ class OrderController extends Controller
                 ";
                 Mail::to($customerEmail)->queue(new EmailManager($array));
 
-            } else { // Rejected
+            } elseif ($request->status == "rejected" && $oldStatus != "rejected") { // Rejected
 
                 /* ---------- Customer Notification ---------- */
                 $message = "Your return request for Order #{$orderCode} has been rejected";
@@ -278,6 +283,56 @@ class OrderController extends Controller
                     <p>Team ".env('APP_NAME')."</p>
                 ";
                 Mail::to($customerEmail)->queue(new EmailManager($array));
+
+            } elseif ($request->status == "received" && $oldStatus != "received") { // Received
+
+                /* ---------- Customer Notification ---------- */
+                $message = "Your returned items for Order #{$orderCode} have been received";
+                sendNotification(
+                    $customer,
+                    $message,
+                    $order,
+                    'return_received'
+                );
+
+                /* -------- Customer Email -------- */
+                // $array['view'] = 'emails.commonmail';
+                // $array['subject'] = "Your Order Return Received - {$orderCode}";
+                // $array['from'] = env('MAIL_FROM_ADDRESS');
+                // $array['content'] = "
+                //     <p>Hi {$customerName},</p>
+                //     <p>We have successfully <b>received</b> your returned item(s) for Order #{$orderCode}.</p>
+                //     <p>Our team is now processing your refund. We will notify you once it's processed.</p>
+                //     <p>Thank you for your patience.</p>
+                //     <p>Best regards,</p>
+                //     <p>Team ".env('APP_NAME')."</p>
+                // ";
+                // Mail::to($customerEmail)->queue(new EmailManager($array));
+
+            } elseif ($request->status == "refunded" && $oldStatus != "refunded") { // Refunded
+
+                /* ---------- Customer Notification ---------- */
+                // $message = "Your refund for Order #{$orderCode} has been processed";
+                // sendNotification(
+                //     $customer,
+                //     $message,
+                //     $order,
+                //     'return_refunded'
+                // );
+
+                /* -------- Customer Email -------- */
+                // $array['view'] = 'emails.commonmail';
+                // $array['subject'] = "Your Order Refund Processed - {$orderCode}";
+                // $array['from'] = env('MAIL_FROM_ADDRESS');
+                // $array['content'] = "
+                //     <p>Hi {$customerName},</p>
+                //     <p>Your refund for Order #{$orderCode} has been successfully <b>processed</b>.</p>
+                //     <p>The refunded amount should reflect in your account shortly, depending on your payment method.</p>
+                //     <p>Thank you for shopping with us.</p>
+                //     <p>Best regards,</p>
+                //     <p>Team ".env('APP_NAME')."</p>
+                // ";
+                // Mail::to($customerEmail)->queue(new EmailManager($array));
             }
         }
 

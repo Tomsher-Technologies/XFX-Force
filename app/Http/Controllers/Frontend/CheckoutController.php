@@ -802,7 +802,7 @@ class CheckoutController
                         'product_id' => $orderDetail->product_id,
                         'return_qty' => $qty,
                         'return_reason' => $request->return_reason,
-                        'status' => 'Pending', // Default status
+                        'status' => 'pending', // Default status
                     ]);
                 }
             }
