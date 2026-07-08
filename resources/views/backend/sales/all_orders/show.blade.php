@@ -494,6 +494,9 @@
                 order_id: order_id,
                 status: status
             }, function(data) {
+                if (status === 'delivered' && {{ $order->payment_type == 'cod' ? 'true' : 'false' }}) {
+                    $('#update_payment_status').val('paid').selectpicker('refresh');
+                }
                 AIZ.plugins.notify('success', 'Delivery status has been updated');
             });
         });

@@ -510,6 +510,9 @@ class OrderController extends Controller
             $user->save();
         }
         if ($request->status == 'delivered') {
+            if($order->payment_type == 'cod') {
+                $order->payment_status = 'paid';
+            }
             $order->delivery_completed_date = date('Y-m-d H:i:s');
             $order->save();
         }
