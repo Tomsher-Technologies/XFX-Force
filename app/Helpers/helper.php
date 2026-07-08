@@ -530,8 +530,8 @@ function getChildCategoryIds($parentId)
     {
         $childIds = [];
 
-        if($category->child){
-            foreach ($category->child as $child) {
+        if($category->childs){
+            foreach ($category->childs as $child) {
                 $childIds[] = $child->id;
     
                 // Recursively get child category IDs for the current child

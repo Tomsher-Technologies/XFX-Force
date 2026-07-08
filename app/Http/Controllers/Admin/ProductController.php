@@ -87,6 +87,7 @@ class ProductController extends Controller
                 $q->whereIn('id', $childIds);
             });
         }
+        
 
         if ($request->search != null) {
             $sort_search = $request->search;
