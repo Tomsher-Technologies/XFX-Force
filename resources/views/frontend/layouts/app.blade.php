@@ -5,9 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta name="robots" content="noindex, nofollow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <link rel="preconnect" href="https://pcgarage.me/" />
-    <link rel="dns-prefetch" href="https://pcgarage.me/" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="preconnect" href="{{ url('/') }}" />
+    <link rel="dns-prefetch" href="{{ url('/') }}" />
 
      {!! SEO::generate() !!}
     <?php

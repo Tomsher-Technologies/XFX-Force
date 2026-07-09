@@ -11,6 +11,7 @@
         "diglactic/laravel-breadcrumbs": "^9.0",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "2.7.2",
+        "khaled.alshamaa/ar-php": "*",
         "laracasts/flash": "^3.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",

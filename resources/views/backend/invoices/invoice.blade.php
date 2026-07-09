@@ -1,208 +1,222 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Invoice</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Order Confirmation</title>
     <style>
         body {
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-family: 'DejaVu Sans', sans-serif;
+            color: #333333;
             margin: 0;
-            /* padding: 20px; */
+            padding: 10px;
+            font-size: 13px;
+            line-height: 1.4;
         }
-
-        .invoice {
-            width: 100%;
-            /* margin: 0 auto; */
-            /* border: 1px solid #ccc; */
-            /* padding: 20px; */
-            /* border-radius: 6px; */
-
-        }
-
-        .invoice-header {
-            width: 100%;
-            height: 50px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .invoice-header h1 {
-            margin: 0;
-            width: 50%;
-            float: right;
-            text-align: right;
-        }
-
-        .invoice-info {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 35px;
-            height: 70px;
-        }
-
-        .invoice-info-left {
-            text-align: left;
-            width: 50%;
-            float: left;
-        }
-
-        .invoice-info-right {
-            width: 50%;
-            text-align: right;
-            float: right;
-
-        }
-
-        .invoice-address {
-            width: 100%;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            height: 250px;
-        }
-
-        .invoice-address p {
-            margin: 5px 0;
-            color: #666;
-            line-height: 1.5;
-        }
-
-        .invoice-table {
+        table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-
         }
-
-        .invoice-table th,
-        .invoice-table td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
+        td, th {
+            padding: 6px;
+            vertical-align: top;
         }
-
-        .invoice-total {
+        /* Top Header */
+        .company-details {
+            line-height: 1.5;
+            color: #555555;
+        }
+        .company-details strong {
+            color: #111111;
+            font-size: 16px;
+        }
+        .invoice-title {
             text-align: right;
+            line-height: 1.5;
         }
-
-        .invoice-logo {
-            /* width: 50%; */
-            /* max-width: 150px; */
-            margin-right: 20px;
-            float: left;
+        .invoice-title h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            color: #111111;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .invoice-title p {
+            margin: 2px 0;
+            color: #555555;
+        }
+        /* Dividers */
+        .divider {
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+        }
+        /* Address Section */
+        .address-title {
+            font-weight: bold;
+            color: #111111;
+            text-transform: uppercase;
+            font-size: 11px;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 3px;
+        }
+        /* Items Table */
+        .items-table {
+            margin-top: 15px;
+        }
+        .items-table th {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 8px 10px;
             text-align: left;
+            border-top: 1px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
         }
-
-        .invoice-table .theader {
-            background: #f5f6fa;
-
+        .items-table td {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 10px;
         }
-
-        th {
-            padding: 10px 15px;
-            line-height: 1.55em;
+        .items-table tr.item-row:nth-child(even) td {
+            background-color: #f9fafb;
         }
-
-        td {
-            padding: 10px 15px;
-            line-height: 1.55em;
+        .items-table tr.category-row td {
+            background-color: #f3f4f6;
+            font-weight: bold;
+            color: #111111;
+            font-size: 11px;
+            padding: 6px 10px;
+            border-left: 3px solid #111111;
+        }
+        .variation-list {
+            margin: 3px 0 0 0;
+            padding-left: 12px;
+            font-size: 11px;
+            color: #6b7280;
+        }
+        .warranty-label {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 3px;
+        }
+        .badge-free {
+            background-color: #10b981;
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: bold;
+            padding: 1px 3px;
+            text-transform: uppercase;
+        }
+        /* Totals */
+        .totals-table td {
+            padding: 4px 6px;
+            color: #4b5563;
+        }
+        .totals-table tr.grand-total td {
+            border-top: 1px solid #111111;
+            border-bottom: 3px double #111111;
+            font-weight: bold;
+            font-size: 15px;
+            color: #111111;
+            padding-top: 6px;
+        }
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 11px;
+            color: #9ca3af;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 15px;
         }
     </style>
 </head>
-
 <body>
-    <div class="invoice">
-        <div class="invoice-header">
-            @if($imagePath && file_exists($imagePath))
-            <img width="140" src="{{ $imagePath }}" alt="{{ env('APP_NAME') }}" title="{{ env('APP_NAME') }}" class="invoice-logo">
-            @else
-                {{ env('APP_NAME') }}
-            @endif
+    <div style="padding: 5px;">
+        <!-- Top header -->
+        <table>
+            <tr>
+                <td style="width: 50%; padding: 0;">
+                    <div class="company-details">
+                        @if($imagePath && file_exists($imagePath))
+                        <img width="200" src="{{ $imagePath }}" alt="{{ env('APP_NAME') }}" title="{{ env('APP_NAME') }}" class="invoice-logo">
+                        @else
+                            {{-- {{ env('APP_NAME') }} --}}
+                        @endif
+                        <br>
+                        {!! nl2br(get_setting('footer_address')) !!}<br>
+                        Phone: {{ get_setting('footer_phone') }}<br>
+                        Email: {{ get_setting('footer_email') }}
+                    </div>
+                </td>
+                <td style="width: 50%; padding: 0;">
+                    <div class="invoice-title">
+                        <h1>Order Confirmation</h1>
+                        <p><strong>Order Number:</strong> {{ $order->code }}</p>
+                        <p><strong>Date:</strong> {{ date('d M Y, h:i A', $order->date) }}</p>
+                        <p><strong>Payment Method:</strong> 
+                            @php
+                                $paymentLabels = [
+                                    'cod' => 'Cash on Delivery',
+                                    'card' => 'Debit / Credit Card',
+                                    'tabby' => 'Tabby',
+                                ];
+                            @endphp
+                            {{ $paymentLabels[$order->payment_type] ?? ucfirst($order->payment_type) }}
+                        </p>
+                        <p><strong>Shipping Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->shipping_type)) }}</p>
+                    </div>
+                </td>
+            </tr>
+        </table>
 
-            <h1>Invoice</h1>
-        </div>
+        <div class="divider"></div>
 
-        <div class="invoice-info">
-            <div class="invoice-info-left">
-                <strong>Invoice Number:</strong> {{ $order->code }} <br>
-                <hr style="border: 0.5px solid #eee">
-                <strong>Payment Method:</strong> 
-
-                @php
-                    $paymentLabels = [
-                        'cod' => 'Cash on Delivery',
-                        'card' => 'Debit / Credit Card',
-                        'tabby' => 'Tabby',
-                    ];
-                @endphp
-
-                {{ $paymentLabels[$order->payment_type] ?? ucfirst($order->payment_type) }}
-                <br>
-                <hr style="border: 0.5px solid #eee">
-                <strong>Shipping Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->shipping_type)) }}
-            </div>
-
-            <div class="invoice-info-right">
-                <strong>Date:</strong> {{ date('d M Y, h:i A', $order->date) }} <br>
-                <hr style="border: 0.5px solid #eee">
-                <strong>Delivery Status:</strong>
-                {{ ucfirst(str_replace('_', ' ', $order->delivery_status)) }} <br>
-                <hr style="border: 0.5px solid #eee">
-                <strong>&nbsp;</strong>
-            </div>
-        </div>
-
-        <hr style="border: 0.5px solid #eee">
-
-        <div class="invoice-address">
-            <div class="invoice-info-left">
-                <strong>Billing Address:</strong>
-                <p>
+        <!-- Addresses side by side -->
+        <table style="margin-bottom: 15px;">
+            <tr>
+                <td style="width: 50%; padding-left: 0; padding-right: 15px;">
+                    <div class="address-title">Bill To</div>
                     @php 
                         $billingAddress = json_decode($order->billing_address);
                     @endphp
-                    {{ $billingAddress?->name }} <br>
-                    {{ $billingAddress?->address }}<br>
-                    {{ $billingAddress?->city }}<br>
-                    {{ $billingAddress?->phone }}<br>
-                    {{ $billingAddress?->email }}<br>
-                </p>
-            </div>
-            <div class="invoice-info-left" style="float: right; text-align:right">
-                 @if($order->shipping_type == 'pickup')
-                    <strong>Pickup Location:</strong>
-                    <p>
-                        {{ $order->pickup_location }}
-                    </p>
-                @else
-                    <strong>Shipping Address:</strong>
-                    <p>
+                    <p style="margin: 0; font-weight: bold; color: #111111;">{{ $billingAddress?->name }}</p>
+                    <p style="margin: 3px 0 0 0; color: #4b5563;">{{ $billingAddress?->address }}</p>
+                    <p style="margin: 2px 0 0 0; color: #4b5563;">{{ $billingAddress?->city }}</p>
+                    <p style="margin: 6px 0 0 0; font-size: 12px; color: #6b7280;">Phone: {{ $billingAddress?->phone }}</p>
+                    <p style="margin: 2px 0 0 0; font-size: 12px; color: #6b7280;">Email: {{ $billingAddress?->email }}</p>
+                </td>
+                <td style="width: 50%; padding-right: 0; padding-left: 15px;">
+                    @if($order->shipping_type == 'pickup')
+                        <div class="address-title">Pickup Location</div>
+                        <p style="margin: 3px 0 0 0; color: #4b5563;">{{ $order->pickup_location }}</p>
+                    @else
+                        <div class="address-title">Ship To</div>
                         @php 
                             $shippingAddress = json_decode($order->shipping_address);
                         @endphp
-                        {{ $shippingAddress?->name }}<br>
-                        {{ $shippingAddress?->address }} <br>
-                        {{ $shippingAddress?->city }} <br>
-                        {{ $shippingAddress?->phone }} <br>
-                        {{ $shippingAddress?->email }} <br>
-                    </p>
-                @endif
-            </div>
-        </div>
+                        <p style="margin: 0; font-weight: bold; color: #111111;">{{ $shippingAddress?->name }}</p>
+                        <p style="margin: 3px 0 0 0; color: #4b5563;">{{ $shippingAddress?->address }}</p>
+                        <p style="margin: 2px 0 0 0; color: #4b5563;">{{ $shippingAddress?->city }}</p>
+                        <p style="margin: 6px 0 0 0; font-size: 12px; color: #6b7280;">Phone: {{ $shippingAddress?->phone }}</p>
+                        <p style="margin: 2px 0 0 0; font-size: 12px; color: #6b7280;">Email: {{ $shippingAddress?->email }}</p>
+                    @endif
+                </td>
+            </tr>
+        </table>
 
-        <table class="invoice-table">
-            <thead class="theader">
+        <!-- Ordered Items Table -->
+        <table class="items-table">
+            <thead>
                 <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
+                    <th style="width: 50%;">Product Description</th>
+                    <th style="width: 15%; text-align: right;">Unit Price</th>
+                    <th style="width: 15%; text-align: center;">Qty</th>
+                    <th style="width: 20%; text-align: right;">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -212,119 +226,133 @@
                 @endphp
 
                 @if($pcBuilderItems->count() > 0)
-                    <tr class="bg-light">
-                        <td class="fw-bold text-dark" colspan="4" style="font-weight: 600;">PC Builder Items</td>
+                    <tr class="category-row">
+                        <td colspan="4">PC Builder Items</td>
                     </tr>
                     @foreach ($pcBuilderItems as $key => $orderDetail)
-                        <tr>
-                            <td class="text-start">
-                                <span class="fw-medium">
-                                    {{ $orderDetail->product->name }}
-                                </span>
+                        <tr class="item-row">
+                            <td>
+                                <div style="font-weight: bold; color: #111111;">{{ $orderDetail->product->name }}</div>
                                 @if ($orderDetail->variation != null)
                                     @php
                                         $variations = json_decode($orderDetail->variation);
-                                        
                                     @endphp
-                                    <ul>
+                                    <ul class="variation-list">
                                         @foreach($variations as $var)
-                                            <li> {{ $var->name ?? '' }} : {{ $var->value ?? '' }}</li>
+                                            <li>{{ $var->name ?? '' }}: {{ $var->value ?? '' }}</li>
                                         @endforeach
                                     </ul>
                                 @endif
                             </td>
-                            <td class="gry-color currency">
+                            <td style="text-align: right; white-space: nowrap;">
                                 @if ($orderDetail->og_price != $orderDetail->offer_price)
-                                    <del>{{ single_price($orderDetail->og_price) }}</del> <br>
+                                    <del style="color: #999999;"> {{ env('DEFAULT_CURRENCY', 'AED') }}{{ single_price($orderDetail->og_price) }}</del><br>
                                 @endif
-                                {{ single_price($orderDetail->price / $orderDetail->quantity) }}</td>
-                            <td class="gry-color">{{ $orderDetail->quantity }}</td>
-                            <td class="text-right currency">
-                                {{ single_price($orderDetail->price) }}
+                                {{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->price / $orderDetail->quantity) }}
                             </td>
-                        
+                            <td style="text-align: center;">{{ $orderDetail->quantity }}</td>
+                            <td style="text-align: right; font-weight: bold; white-space: nowrap; color: #111111;">{{ single_price($orderDetail->price) }}</td>
                         </tr>
                     @endforeach
 
-                <!-- Other Products -->
-                <tr class="bg-light">
-                    <td class="fw-bold text-dark" colspan="4" style="font-weight: 600;">Other products</td>
-                </tr>
+                    @if($normalItems->count() > 0)
+                        <tr class="category-row">
+                            <td colspan="4">Other Products</td>
+                        </tr>
+                    @endif
                 @endif
-                @foreach ($normalItems as $key => $orderDetail)
-                    <tr>
-                        <td class="text-start">
-                            <span class="fw-medium">
-                                {{ $orderDetail->product->name }}
-                                @if($orderDetail->warranty)
-                                    <br>
-                                    <small class="text-[#99a1af]">
-                                        Warranty: {{ $orderDetail->warranty->name }}
 
-                                        @if($orderDetail->warranty->price > 0)
-                                            + {{ format_price($orderDetail->warranty->price) }}
-                                        @else
-                                            <span class="badge">FREE</span>
-                                        @endif
-                                    </small>
-                                @endif
-                            </span>
+                @foreach ($normalItems as $key => $orderDetail)
+                    <tr class="item-row">
+                        <td>
+                            <div style="font-weight: bold; color: #111111;">{{ $orderDetail->product->name }}</div>
+                            @if($orderDetail->warranty)
+                                <div class="warranty-label">
+                                    Warranty: {{ $orderDetail->warranty->name }}
+                                    @if($orderDetail->warranty->price > 0)
+                                        (+ {{ format_price($orderDetail->warranty->price) }})
+                                    @else
+                                        <span class="badge-free">FREE</span>
+                                    @endif
+                                </div>
+                            @endif
                             @if ($orderDetail->variation != null)
                                 @php
                                     $variations = json_decode($orderDetail->variation);
-                                    
                                 @endphp
-                                <ul>
+                                <ul class="variation-list">
                                     @foreach($variations as $var)
-                                        <li> {{ $var->name ?? '' }} : {{ $var->value ?? '' }}</li>
+                                        <li>{{ $var->name ?? '' }}: {{ $var->value ?? '' }}</li>
                                     @endforeach
                                 </ul>
                             @endif
                         </td>
-                        <td class="gry-color currency">
+                        <td style="text-align: right; white-space: nowrap;">
                             @if ($orderDetail->og_price != $orderDetail->offer_price)
-                                <del>{{ single_price($orderDetail->og_price) }}</del> <br>
+                                <del style="color: #999999;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->og_price) }}</del><br>
                             @endif
-                            {{ single_price($orderDetail->price / $orderDetail->quantity) }}</td>
-                        <td class="gry-color">{{ $orderDetail->quantity }}</td>
-                        <td class="text-right currency">
-                            {{ single_price($orderDetail->price) }}
+                            {{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->price / $orderDetail->quantity) }}
                         </td>
-                       
+                        <td style="text-align: center;">{{ $orderDetail->quantity }}</td>
+                        <td style="text-align: right; font-weight: bold; white-space: nowrap; color: #111111;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->price) }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
 
-        <div class="invoice-total">
-            <p><strong>Subtotal:</strong> AED {{ single_price($order->sub_total) }}</p>
-            <p><strong>VAT:</strong> AED {{ single_price($order->tax) }}</p>
-            @if ($order->offer_discount != 0)
-                <p><strong>Discount:</strong> AED {{ single_price($order->offer_discount) }}</p>
-            @endif
-            
-            @if ($order->coupon_discount != 0)
-                <p><strong>Coupon Discount:</strong> AED {{ single_price($order->coupon_discount) }}</p>
-            @endif
+        <!-- Totals Summary Table -->
+        <table style="width: 100%; border: none; margin-top: 10px;">
+            <tr>
+                <td style="width: 45%; border: none;"></td>
+                <td style="width: 55%; border: none; padding: 0;">
+                    <table class="totals-table" style="width: 100%; margin-bottom: 0;">
+                        <tr>
+                            <td style="text-align: left;">Subtotal:</td>
+                            <td style="text-align: right; font-weight: bold; width: 50%;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->sub_total) }}</td>
+                        </tr>
+                        @if ($order->offer_discount != 0)
+                            <tr>
+                                <td style="text-align: left;">Discount:</td>
+                                <td style="text-align: right; color: #b91c1c;">- {{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->offer_discount) }}</td>
+                            </tr>
+                        @endif
+                        @if ($order->coupon_discount != 0)
+                            <tr>
+                                <td style="text-align: left;">Coupon Discount:</td>
+                                <td style="text-align: right; color: #b91c1c;">- {{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->coupon_discount) }}</td>
+                            </tr>
+                        @endif
+                        @if($order->has_warranty)
+                            <tr>
+                                <td style="text-align: left;">Warranty (Premium Care+):</td>
+                                <td style="text-align: right; font-weight: bold;">
+                                    @if($order->warranty_amount > 0)
+                                        + {{ env('DEFAULT_CURRENCY', 'AED') }} {{ format_price($order->warranty_amount) }}
+                                    @else
+                                        <span class="badge-free">FREE</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
+                        <tr>
+                            <td style="text-align: left;">Shipping Charge:</td>
+                            <td style="text-align: right; font-weight: bold;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->shipping_cost) }}</td>
+                        </tr>
+                        <tr class="grand-total">
+                            <td style="text-align: left; font-size: 14px; color: #111111;">Grand Total<span style="font-size: 10px; color: #6b7280;"> (Including Tax):</span></td>
+                            <td style="text-align: right; font-size: 16px; color: #111111;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->grand_total) }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
 
-            @if($order->has_warranty)
-                <p>
-                    <strong>Warranty (Premium Care+):</strong> 
-                    @if($order->warranty_amount > 0)
-                        + AED
-                        {{ format_price($order->warranty_amount) }}
-                    @else
-                        <span class="text-black uppercase font-bold text-[10px] bg-[#29A706] px-2 py-1 rounded">
-                            FREE
-                        </span>
-                    @endif
-                </p>
-            @endif
-            
-            <p><strong>Shipping Charge:</strong> AED {{ single_price($order->shipping_cost) }}</p>
-            <p><strong>Grand Total:</strong> AED {{ single_price($order->grand_total) }}</p>
+        <!-- Footer -->
+        <div class="footer">
+            <p style="margin: 0; font-size: 12px; font-weight: bold; color: #111111;">Thank you for shopping with PC Garage!</p>
+            <p style="margin: 4px 0 0 0;">If you have any questions about this order confirmation, please contact our support team.</p>
+            {{-- <p style="margin: 4px 0 0 0;"><a href="{{ env('APP_URL') }}" style="color: #2A7CFF; text-decoration: none; font-weight: bold;">{{ str_replace(['http://', 'https://'], '', env('APP_URL')) }}</a></p> --}}
         </div>
     </div>
 </body>
-
 </html>

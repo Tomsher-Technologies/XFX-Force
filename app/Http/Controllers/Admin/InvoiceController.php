@@ -24,18 +24,22 @@ class InvoiceController extends Controller
 
         $upload = Upload::find(get_setting('default_invoice_logo'));
 
-        $imagePath = $upload && $upload->file_name
-            ? public_path('storage/' . $upload->file_name)
+         $imagePath = $upload && $upload->file_name
+            ? storage_path('app/public/' . $upload->file_name)
             : null;
 
-        $pdf = Pdf::loadView('backend.invoices.invoice', [
+        $html = view('backend.invoices.invoice', [
                     'order' => $order,
                     'font_family' => $font_family,
                     'direction' => $direction,
                     'text_align' => $text_align,
                     'not_text_align' => $not_text_align,
                     'imagePath' => $imagePath
-                ]);
+                ])->render();
+
+        $html = shape_arabic_html($html);
+
+        $pdf = Pdf::loadHTML($html);
         
         return $pdf->download('order-' . $order->code . '.pdf');
     }
