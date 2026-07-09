@@ -246,68 +246,113 @@
                             </div>
                         </section>
 
+                        @php
+                            $active_payments = [];
+                            if (get_setting('payment_method_cod', 1) == 1) {
+                                $active_payments[] = 'cod';
+                            }
+                            if (get_setting('payment_method_tabby', 1) == 1) {
+                                $active_payments[] = 'tabby';
+                            }
+                            if (get_setting('payment_method_card', 1) == 1) {
+                                $active_payments[] = 'card';
+                            }
+                        @endphp
+
                         <section>
                             <h2 class="flex items-center text-[18px] md:text-[20px] uppercase mb-[25px] pb-[20px] border-b border-[#282B34] gap-3">
                                 <span class="w-8 h-8 bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] rounded-full flex items-center justify-center text-sm">4</span> Payment Methods
                             </h2>
-                            <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-0 xl:mb-8">
-
-                                <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
-                                    <div class="flex items-center gap-3">
-                                        <input type="radio" name="pay" checked class="accent-[#2A7CFF]" value="cod">
-                                        <span>Cash On Delivery</span>
-                                    </div>
-                                </label>
-
-                                <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
-                                    <div class="flex items-center gap-3">
-                                        <input type="radio" name="pay" class="accent-[#2A7CFF]" value="tabby">
-                                        <span>Tabby</span>
-                                    </div>
-                                    <div class="hidden md:flex gap-2">
-                                        <img src="{{ asset('assets/images/tabby.svg') }}" class="w-12">
-                                    </div>
-                                </label>
-
-                                <label class="payment-option flex items-center justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer  transition-all">
-                                    <div class="flex items-center gap-3">
-                                        <input type="radio" name="pay" class="accent-[#2A7CFF]" value="card">
-                                        <div class="flex items-center gap-2">
-                                            <span>Credit / Debit Card</span>
-
-                                            <div class="relative inline-block group">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    class="w-5 h-5 text-gray-400 cursor-pointer"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor">
-                                                    <path stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"/>
-                                                </svg>
-
-                                                <!-- Tooltip -->
-                                                <div
-                                                    class="absolute left-6 top-1/2 -translate-y-1/2
-                                                        opacity-0 invisible
-                                                        group-hover:opacity-100 group-hover:visible
-                                                        transition-all duration-200
-                                                        z-[9999]
-                                                        bg-white p-2 rounded-lg shadow-lg border border-gray-200
-                                                        w-[300px]">
-
-                                                    <img src="{{ asset('assets/images/payment-methods.png') }}"
-                                                        class="w-full h-auto"
-                                                        alt="Payment Methods">
-
-                                                </div>
-
+                            @if(empty($active_payments))
+                                <div class="p-4 bg-[#161B22] border border-red-800 text-red-500 rounded-xl mb-6">
+                                    No payment methods are currently available. Please contact support.
+                                </div>
+                            @else
+                                <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-0 xl:mb-8">
+                                    @if(in_array('cod', $active_payments))
+                                    <label class="payment-option flex flex-col justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer transition-all">
+                                        <div class="flex items-center justify-between w-full">
+                                            <div class="flex items-center gap-3">
+                                                <input type="radio" name="pay" {{ reset($active_payments) == 'cod' ? 'checked' : '' }} class="accent-[#2A7CFF]" value="cod">
+                                                <span>Cash On Delivery</span>
                                             </div>
                                         </div>
-                                    </div>
-                                </label>
-                            </div>
+                                        @if(filled(get_setting('payment_method_cod_refund_note')))
+                                            <div class="mt-2 text-xs text-gray-500 pl-7">
+                                                {{ get_setting('payment_method_cod_refund_note') }}
+                                            </div>
+                                        @endif
+                                    </label>
+                                    @endif
+
+                                    @if(in_array('tabby', $active_payments))
+                                    <label class="payment-option flex flex-col justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer transition-all">
+                                        <div class="flex items-center justify-between w-full">
+                                            <div class="flex items-center gap-3">
+                                                <input type="radio" name="pay" {{ reset($active_payments) == 'tabby' ? 'checked' : '' }} class="accent-[#2A7CFF]" value="tabby">
+                                                <span>Tabby</span>
+                                            </div>
+                                            <div class="hidden md:flex gap-2">
+                                                <img src="{{ asset('assets/images/tabby.svg') }}" class="w-12">
+                                            </div>
+                                        </div>
+                                        @if(filled(get_setting('payment_method_tabby_refund_note')))
+                                            <div class="mt-2 text-xs text-gray-500 pl-7">
+                                                {{ get_setting('payment_method_tabby_refund_note') }}
+                                            </div>
+                                        @endif
+                                    </label>
+                                    @endif
+
+                                    @if(in_array('card', $active_payments))
+                                    <label class="payment-option flex flex-col justify-between p-4 bg-[#161B22] border border-gray-800 rounded-xl cursor-pointer transition-all">
+                                        <div class="flex items-center justify-between w-full">
+                                            <div class="flex items-center gap-3">
+                                                <input type="radio" name="pay" {{ reset($active_payments) == 'card' ? 'checked' : '' }} class="accent-[#2A7CFF]" value="card">
+                                                <div class="flex items-center gap-2">
+                                                    <span>Credit / Debit Card</span>
+
+                                                    <div class="relative inline-block group">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="w-5 h-5 text-gray-400 cursor-pointer"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            stroke="currentColor">
+                                                            <path stroke-linecap="round"
+                                                                stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"/>
+                                                        </svg>
+
+                                                        <!-- Tooltip -->
+                                                        <div
+                                                            class="absolute left-6 top-1/2 -translate-y-1/2
+                                                                opacity-0 invisible
+                                                                group-hover:opacity-100 group-hover:visible
+                                                                transition-all duration-200
+                                                                z-[9999]
+                                                                bg-white p-2 rounded-lg shadow-lg border border-gray-200
+                                                                w-[300px]">
+
+                                                            <img src="{{ asset('assets/images/payment-methods.png') }}"
+                                                                class="w-full h-auto"
+                                                                alt="Payment Methods">
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if(filled(get_setting('payment_method_card_refund_note')))
+                                            <div class="mt-2 text-xs text-gray-500 pl-7">
+                                                {{ get_setting('payment_method_card_refund_note') }}
+                                            </div>
+                                        @endif
+                                    </label>
+                                    @endif
+                                </div>
+                            @endif
                         </section>
                     </div>
                 </form>
@@ -829,6 +874,13 @@ function completeYourOrder(e, btn) {
                 toastr.error('Please select shipping address');
                 return;
             }
+        }
+
+        // check payment method selection
+        const selectedPayment = document.querySelector('input[name="pay"]:checked');
+        if (!selectedPayment) {
+            toastr.error('Please select a payment method');
+            return;
         }
 
         // Serialize form data

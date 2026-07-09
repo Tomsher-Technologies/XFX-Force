@@ -106,7 +106,22 @@ class CheckoutController
     {
         $cartController = new CartController();
         $cartSummary = $cartController->getCartSummary();
-        $paymentType = $request->pay ?? 'cod'; // DEFAULT COD
+        
+        $active_payments = [];
+        if (get_setting('payment_method_cod', 1) == 1) {
+            $active_payments[] = 'cod';
+        }
+        if (get_setting('payment_method_tabby', 1) == 1) {
+            $active_payments[] = 'tabby';
+        }
+        if (get_setting('payment_method_card', 1) == 1) {
+            $active_payments[] = 'card';
+        }
+
+        $paymentType = $request->pay ?? (reset($active_payments) ?: 'cod');
+        if (!in_array($paymentType, $active_payments)) {
+            $paymentType = reset($active_payments) ?: 'cod';
+        }
 
         $isGuest = !auth('frontend')->check();
         $billing_shipping_same = $request->same_as_billing ?? null;
