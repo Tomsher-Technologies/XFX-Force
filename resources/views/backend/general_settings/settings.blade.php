@@ -211,6 +211,48 @@
                     </div>
                 </div>
             </div>
+
+            <!-- COD Additional Charge -->
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0 h6">Default COD Additional Charge</h5>
+                    </div>
+
+                    <form action="{{ route('configuration.cod_charge_settings') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+
+                        <div class="card-body">
+
+                            <div class="form-group row mt-2">
+                                <label class="col-md-4 col-from-label">
+                                    COD Additional Charge
+                                </label>
+
+                                <div class="col-md-8">
+                                    <input 
+                                        class="form-control" 
+                                        type="number" 
+                                        id="cod_additional_charge" 
+                                        name="cod_additional_charge"
+                                        min="0"
+                                        step="0.01"
+                                        required
+                                        value="{{ get_setting('cod_additional_charge') ?? 0 }}">
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-0 text-right">
+                                <button type="submit" class="btn btn-sm btn-primary mt-2">
+                                    Save
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <div class="col-lg-6">

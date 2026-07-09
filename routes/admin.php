@@ -234,6 +234,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/configuration/delivery', [BusinessSettingsController::class, 'delivery_settings'])->name('configuration.delivery_settings');
     Route::post('/configuration/invoice', [BusinessSettingsController::class, 'invoice_settings'])->name('configuration.invoice_settings');
     Route::post('/configuration/seo-og', [BusinessSettingsController::class, 'seo_og_image_settings'])->name('configuration.seo_og_image_settings');
+    Route::post('/configuration/cod-charge', [BusinessSettingsController::class, 'cod_charge_settings'])->name('configuration.cod_charge_settings');
 
     //Reports
     Route::get('/stock_report', [ReportController::class, 'stock_report'])->name('stock_report.index');
