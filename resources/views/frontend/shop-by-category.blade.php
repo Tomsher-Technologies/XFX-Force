@@ -776,7 +776,7 @@
                 maxInput.value = maxSlider.max;
             }
 
-            // Uncheck all categories and brands
+            // Uncheck conditions and brands
             document.querySelectorAll('input[name="brands[]"], input[name="conditions[]"]').forEach(cb => cb.checked = false);
             selectedBrands = [];
 

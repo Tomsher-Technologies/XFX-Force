@@ -212,4 +212,18 @@ class BusinessSettingsController extends Controller
         Artisan::call('cache:clear');
         return back();
     }
+
+    public function cod_charge_settings(Request $request)
+    {
+        BusinessSetting::updateOrCreate([
+            'type' => 'cod_additional_charge'
+        ], [
+            'value' => $request->cod_additional_charge ?? ''
+        ]);
+
+        flash('Settings updated successfully')->success();
+
+        Artisan::call('cache:clear');
+        return back();
+    }
 }

@@ -1063,6 +1063,15 @@ class ProductController extends Controller
                 $productsQuery->orderBy('products.created_at', 'desc');
                 break;
         }
+        // Clone the query before pagination
+        $categoryQuery = clone $productsQuery;
+
+        $categoryIds = $categoryQuery
+            ->select('products.category_id')
+            ->distinct()
+            ->pluck('products.category_id')
+            ->toArray();
+
 
         // $products = $productsQuery->with('stocks')->distinct()->paginate(12);
         $products = $productsQuery
@@ -1074,7 +1083,7 @@ class ProductController extends Controller
         $productCount = $products->count();
 
         // Fetch categories for filters: only categories that have products of this brand
-        $categoryIds = $products->pluck('category_id')->unique()->toArray();
+        // $categoryIds = $products->pluck('category_id')->unique()->toArray();
 
         // Get parent categories also
         $allCategoryIds = $categoryIds;

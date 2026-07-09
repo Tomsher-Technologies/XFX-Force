@@ -144,14 +144,23 @@ class ProductsImport implements ToCollection, WithHeadingRow
                 $categoryId = $category->id;
 
 
-                // Brand (case-insensitive)
-                $brand = Brand::firstOrCreate(
-                    ['name' => $brandName],
-                    [
+                // Get or Create Brand (case-insensitive using translation table)
+                $brand = Brand::whereHas('brand_translations', function ($q) use ($brandName) {
+                    $q->whereRaw('LOWER(name) = ?', [strtolower($brandName)]);
+                })->first();
+
+                if (!$brand) {
+
+                    $brand = Brand::create([
+                        'name' => $brandName,
                         'slug' => Str::slug($brandName),
-                        'status' => 1
-                    ]
-                );
+                        'is_active' => 1,
+                    ]);
+
+                    BrandTranslation::create([
+                        'brand_id' => $brand->id,
+                    ]);
+                }
 
                 $brandId = $brand->id;
 
