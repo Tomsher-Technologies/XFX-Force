@@ -32,7 +32,7 @@
                         {{ json_decode($order->shipping_address)->address }},
                         {{ json_decode($order->shipping_address)->city }}
                         <br>
-                        {{-- {{ json_decode($order->shipping_address)->zipcode }} -- }}
+                        {{-- {{ json_decode($order->shipping_address)->zipcode }} --}}
                     </address>
 
                     <p><b>Order Notes : </b> {{$order->order_notes ?? ''}}</p>
@@ -177,14 +177,22 @@
                                 {{ single_price($order->orderDetails->sum('price')) }}
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <strong class="text-muted">Tax :</strong>
-                            </td>
-                            <td>
-                                {{ single_price($order->orderDetails->sum('tax')) }}
-                            </td>
-                        </tr>
+
+                        @php
+
+                            $tax = $order->orderDetails->sum('tax');
+                        @endphp
+                        @if($tax > 0)
+                            <tr>
+                                <td>
+                                    <strong class="text-muted">Tax :</strong>
+                                </td>
+                                <td>
+                                    {{ single_price($tax) }}
+                                </td>
+                            </tr>
+                        @endif
+
                         <tr>
                             <td>
                                 <strong class="text-muted">Shipping :</strong>

@@ -305,14 +305,18 @@
                                 {{ single_price($order->orderDetails->sum('price')) }}
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <strong class="text-muted">Tax :</strong>
-                            </td>
-                            <td>
-                                {{ single_price($order->tax) }}
-                            </td>
-                        </tr>
+                        
+                        @if($order->tax > 0)
+                            <tr>
+                                <td>
+                                    <strong class="text-muted">Tax :</strong>
+                                </td>
+                                <td>
+                                    {{ single_price($order->tax) }}
+                                </td>
+                            </tr>
+                        @endif
+
                         <tr>
                             <td>
                                 <strong class="text-muted">Shipping :</strong>

@@ -178,84 +178,54 @@
                 </div>
             </div>
 
-            <!-- Default SEO OG Image -->
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0 h6">Default SEO OG Image</h5>
-                    </div>
-                    <div class="card-body">
-                        <form action="{{ route('configuration.seo_og_image_settings') }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            <div class="form-group row  mt-2">
-                                <div class="col-md-6">
-                                    <label class="form-label" for="default_seo_og_image">Image</label>
-                                    <div class="input-group " data-toggle="aizuploader" data-type="image">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
-                                        </div>
-                                        <div class="form-control file-amount">Choose File</div>
-                                        <input type="hidden" name="types[]" value="default_seo_og_image">
-                                        <input type="hidden" name="default_seo_og_image" class="selected-files"
-                                            value="{{ get_setting('default_seo_og_image') }}">
-                                    </div>
-                                    <div class="file-preview"></div>
-                                </div>
-                            </div>
-
-                            <div class="form-group mb-0 text-right">
-                                <button type="submit" class="btn btn-sm btn-primary mt-2">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COD Additional Charge -->
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0 h6">Default COD Additional Charge</h5>
-                    </div>
-
-                    <form action="{{ route('configuration.cod_charge_settings') }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-
-                        <div class="card-body">
-
-                            <div class="form-group row mt-2">
-                                <label class="col-md-4 col-from-label">
-                                    COD Additional Charge
-                                </label>
-
-                                <div class="col-md-8">
-                                    <input 
-                                        class="form-control" 
-                                        type="number" 
-                                        id="cod_additional_charge" 
-                                        name="cod_additional_charge"
-                                        min="0"
-                                        step="0.01"
-                                        required
-                                        value="{{ get_setting('cod_additional_charge') ?? 0 }}">
-                                </div>
-                            </div>
-
-                            <div class="form-group mb-0 text-right">
-                                <button type="submit" class="btn btn-sm btn-primary mt-2">
-                                    Save
-                                </button>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-            </div>
+          
+            
         </div>
 
+       
+
         <div class="col-lg-6">
+
+             <!-- COD Additional Charge -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0 h6">Default COD Additional Charge</h5>
+                </div>
+
+                <form action="{{ route('configuration.cod_charge_settings') }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+
+                    <div class="card-body">
+
+                        <div class="form-group row mt-2">
+                            <label class="col-md-4 col-from-label">
+                                COD Additional Charge
+                            </label>
+
+                            <div class="col-md-8">
+                                <input 
+                                    class="form-control" 
+                                    type="number" 
+                                    id="cod_additional_charge" 
+                                    name="cod_additional_charge"
+                                    min="0"
+                                    step="0.01"
+                                    required
+                                    value="{{ get_setting('cod_additional_charge') ?? 0 }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-0 text-right">
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">
+                                Save
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0 h6">Pickup Location Settings</h5>
@@ -329,6 +299,39 @@
                     </div>
                 </form>
             </div>
+
+            <!-- Default SEO OG Image -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0 h6">Default SEO OG Image</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('configuration.seo_og_image_settings') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group row  mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label" for="default_seo_og_image">Image</label>
+                                <div class="input-group " data-toggle="aizuploader" data-type="image">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
+                                    </div>
+                                    <div class="form-control file-amount">Choose File</div>
+                                    <input type="hidden" name="types[]" value="default_seo_og_image">
+                                    <input type="hidden" name="default_seo_og_image" class="selected-files"
+                                        value="{{ get_setting('default_seo_og_image') }}">
+                                </div>
+                                <div class="file-preview"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-0 text-right">
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </div>
 
