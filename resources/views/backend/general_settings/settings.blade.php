@@ -352,9 +352,8 @@
                                 </label>
                             </div>
                             <div class="col-md-12 mt-2">
-                                <input type="text" name="payment_method_cod_refund_note" class="form-control"
-                                    placeholder="Refund days note (e.g. Refunds take 1-3 business days)"
-                                    value="{{ get_setting('payment_method_cod_refund_note') }}">
+                                <textarea name="payment_method_cod_refund_note" class="form-control" rows="4"
+                                    placeholder="Refund days note (e.g. Refunds take 1-3 business days)">{{ get_setting('payment_method_cod_refund_note') }}</textarea>
                             </div>
                         </div>
 
@@ -370,9 +369,8 @@
                                 </label>
                             </div>
                             <div class="col-md-12 mt-2">
-                                <input type="text" name="payment_method_tabby_refund_note" class="form-control"
-                                    placeholder="Refund days note (e.g. Refunds take 5-7 business days)"
-                                    value="{{ get_setting('payment_method_tabby_refund_note') }}">
+                                <textarea name="payment_method_tabby_refund_note" class="form-control" rows="4"
+                                    placeholder="Refund days note (e.g. Refunds take 5-7 business days)">{{ get_setting('payment_method_tabby_refund_note') }}</textarea>
                             </div>
                         </div>
 
@@ -388,9 +386,8 @@
                                 </label>
                             </div>
                             <div class="col-md-12 mt-2">
-                                <input type="text" name="payment_method_card_refund_note" class="form-control"
-                                    placeholder="Refund days note (e.g. Refunds take 3-5 business days)"
-                                    value="{{ get_setting('payment_method_card_refund_note') }}">
+                                <textarea name="payment_method_card_refund_note" class="form-control" rows="4"
+                                    placeholder="Refund days note (e.g. Refunds take 3-5 business days)">{{ get_setting('payment_method_card_refund_note') }}</textarea>
                             </div>
                         </div>
 
