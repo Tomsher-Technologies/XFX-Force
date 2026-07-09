@@ -86,7 +86,6 @@
                         </div>
                     </div>
                     <!-- top buttons -->
-
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-2 space-y-6">
                             @php
@@ -826,6 +825,34 @@
                                     </p>
                                 </div>
                             </div>
+
+                            @php
+                                $hasRefundedRequest = false;
+                                foreach ($order->orderDetails as $detail) {
+                                    if (\App\Models\OrderReturn::where('order_detail_id', $detail->id)->where('status', 'refunded')->exists()) {
+                                        $hasRefundedRequest = true;
+                                        break;
+                                    }
+                                }
+                            @endphp
+
+                            @if($hasRefundedRequest)
+                                @php
+                                    $refundNoteKey = 'payment_method_' . $order->payment_type . '_refund_note';
+                                    $refundNote = get_setting($refundNoteKey);
+                                @endphp
+                                @if(filled($refundNote))
+                                    <div class="mt-6 mb-6 bg-green-500/10 border border-green-500/20 text-green-500 p-4 rounded-xl flex items-start gap-3">
+                                        <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+                                        </svg>
+                                        <div>
+                                            <h4 class="font-bold text-sm uppercase tracking-wider mb-1">Refund Processing Information</h4>
+                                            <p class="text-xs text-gray-300 leading-relaxed">{{ $refundNote }}</p>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
                         </div>
                     </div>
                 </div>
