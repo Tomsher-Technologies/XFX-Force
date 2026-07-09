@@ -85,9 +85,9 @@
                                         </div>
                                         
 
-                                        @php
+                                        @php   
                                         if (!function_exists('renderCategories')) {
-                                            function renderCategories($categories, $groupedCategories, $brand, $level = 0) {
+                                            function renderCategories($categories, $groupedCategories, $brand, $level = 0) {        
                                                 foreach ($categories as $category) {
                                                     // Calculate sum of products for this category + all its children
                                                     $childIds = getAllChildIds($category->id, $groupedCategories);
@@ -652,8 +652,8 @@ let currentView = "gridview";
                 maxInput.value = maxSlider.max;
             }
 
-            // Reset categories (all checked)
-            document.querySelectorAll('input[name="categories[]"], input[name="conditions[]"]').forEach(cb => cb.checked = true);
+            // Uncheck conditions and categories
+            document.querySelectorAll('input[name="categories[]"], input[name="conditions[]"]').forEach(cb => cb.checked = false);
 
             // Sort & view
             currentSort = "newest";
