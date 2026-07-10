@@ -106,7 +106,7 @@
                             </td>
 
                             <td class="text-center">
-                                <a class="btn btn-soft-primary btn-icon btn-circle" href="{{route('cancel_orders.show', encrypt($order->id))}}" title="View">
+                                <a class="btn btn-sm btn-soft-primary btn-icon btn-circle" href="{{route('cancel_orders.show', encrypt($order->id))}}" title="View">
                                     <i class="las la-eye"></i>
                                 </a>
                             </td>
