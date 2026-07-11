@@ -369,7 +369,6 @@
                             $pcBuilderItems = $cartItems->where('is_pc_builder', 1);
                         @endphp
                         
-
                         {{-- PC Builder Items --}}
                         @if($pcBuilderItems->count())
                             <h4 class="text-white text-sm font-semibold mb-3 mt-6">PC Builder Items</h4>
@@ -590,6 +589,20 @@
                                     @endif
                                 </span>
 
+                            </div>
+                        </li>
+
+                        <li class="py-[10px]" id="cod-additional-charge-row" style="display: none;">
+                            <div class="flex flex-row justify-between">
+                                <span class="text-[#99a1af] text-[15px] justify-start text-left">
+                                    COD Additional Charge
+                                </span>
+
+                                <span class="flex flex-row text-[#99a1af] items-center justify-end text-right gap-[10px] text-[15px]">
+                                    <span id="cart-cod-additional-charge">
+                                        {{ format_price(get_setting('cod_additional_charge') ?? 0) }}
+                                    </span>
+                                </span>
                             </div>
                         </li>
                         
@@ -1109,28 +1122,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </script>
 <script id="pay-radio-script">
-    const options = document.querySelectorAll('.payment-option');
+    document.addEventListener('DOMContentLoaded', function () {
+        const options = document.querySelectorAll('.payment-option');
+        const codChargeRow = document.getElementById('cod-additional-charge-row');
+        const finalTotalElement = document.getElementById('final-total');
 
-    function updateBorders() {
+        const codCharge = {{ (float) (get_setting('cod_additional_charge') ?? 0) }};
+
+        // Total rendered by PHP does not yet include COD charge
+        let baseTotal = parseFloat(
+            finalTotalElement.textContent.replace(/,/g, '')
+        ) || 0;
+
+        function updatePaymentOption() {
+            let selectedPayment = null;
+
+            options.forEach(label => {
+                const radio = label.querySelector('input[type="radio"]');
+
+                if (!radio) return;
+
+                if (radio.checked) {
+                    selectedPayment = radio.value;
+
+                    label.classList.remove('border-gray-800');
+                    label.classList.add('border-[#2A7CFF]');
+                } else {
+                    label.classList.remove('border-[#2A7CFF]');
+                    label.classList.add('border-gray-800');
+                }
+            });
+
+            const isCod = selectedPayment === 'cod';
+
+            // Show/hide COD charge row
+            if (codChargeRow) {
+                codChargeRow.style.display = isCod ? '' : 'none';
+            }
+
+            // Add COD charge only when COD is selected
+            if(baseTotal > 0){
+                const finalTotal = baseTotal + (isCod ? codCharge : 0);
+                finalTotalElement.innerText = finalTotal.toFixed(2);
+            }
+        }
+
+        updatePaymentOption();
+
         options.forEach(label => {
             const radio = label.querySelector('input[type="radio"]');
-            
-            if (radio.checked) {
-                label.classList.remove('border-gray-800');
-                label.classList.add('border-[#2A7CFF]');
-            } else {
-                label.classList.remove('border-[#2A7CFF]');
-                label.classList.add('border-gray-800');
+
+            if (radio) {
+                radio.addEventListener('change', updatePaymentOption);
             }
         });
-    }
-
-    // Run on load
-    updateBorders();
-
-    // Listen for change
-    options.forEach(label => {
-        label.querySelector('input').addEventListener('change', updateBorders);
     });
 </script>
 @endsection
