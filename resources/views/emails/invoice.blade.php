@@ -313,6 +313,7 @@
         <!-- Footer -->
         <div class="footer">
             <p style="margin: 0; font-size: 12px; font-weight: bold; color: #111111;">Thank you for shopping with {{ env('APP_NAME') }}!</p>
+            <p style="margin: 4px 0 0 0;font-size: 12px; font-weight: bold; color: #111111;">Tax invoice will be delivered along with the shipment.</p>
             <p style="margin: 4px 0 0 0;">If you have any questions about this order, please reply to this email or contact support.</p>
             {{-- <p style="margin: 4px 0 0 0;"><a href="{{ env('APP_URL') }}" style="color: #2A7CFF; text-decoration: none; font-weight: bold;">{{ str_replace(['http://', 'https://'], '', env('APP_URL')) }}</a></p> --}}
         </div>

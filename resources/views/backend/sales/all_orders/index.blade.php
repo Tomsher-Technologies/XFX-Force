@@ -92,6 +92,7 @@
                         <th  class="text-center">Shipping Method</th>
                         <th  class="text-center">Delivery Status</th>
                         <th  class="text-center">Payment Status</th>
+                        <th  class="text-center">Order Date</th>
                         <th class="text-center" width="15%">{{trans('messages.options')}}</th>
                     </tr>
                 </thead>
@@ -104,6 +105,7 @@
                        
                         <td>
                             {{ $order->code }}
+
                         </td>
                         <td class="text-center">
                             {{ count($order->orderDetails) }}
@@ -147,12 +149,14 @@
                             <span class="badge badge-inline badge-danger">{{trans('messages.unpaid')}}</span>
                             @endif
                         </td>
-                        
                         <td class="text-center">
-                            <a class="btn btn-soft-primary btn-icon btn-circle" href="{{route('all_orders.show', encrypt($order->id))}}" title="View">
+                            {{ date('d-m-Y h:i A', $order->date) }}
+                        </td>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-soft-primary btn-icon btn-circle" href="{{route('all_orders.show', encrypt($order->id))}}" title="View">
                                 <i class="las la-eye"></i>
                             </a>
-                            <a class="btn btn-soft-info btn-icon btn-circle" href="{{ route('invoice.download', $order->id) }}" title="Download Invoice">
+                            <a class="btn btn-sm btn-soft-info btn-icon btn-circle" href="{{ route('invoice.download', $order->id) }}" title="Download Invoice">
                                 <i class="las la-download"></i>
                             </a>
                            

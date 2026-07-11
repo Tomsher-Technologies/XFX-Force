@@ -53,12 +53,11 @@
 
                
                 <div class="col-md-3 bootstrap-select">
-                    
                     <select class="form-control form-control-sm aiz-selectpicker mb-md-0" data-live-search="true"
-                            name="category" id="" data-selected={{ $category }}>
-                        <option value="0">All</option>
+                            name="category" id="category" data-selected={{ $category }} onchange="sort_products()">
+                        <option value="0">All Categories</option>
                         @foreach (getAllCategories()->where('parent_id', 0) as $item)
-                            <option value="{{ $item->id }}" @if( $category == $item->id)  {{ 'selected' }} @endif )>{{ $item->name }}</option>
+                            <option value="{{ $item->id }}" @if( $category == $item->id)  {{ 'selected' }} @endif>{{ $item->name }}</option>
                             @if ($item->child)
                                 @foreach ($item->child as $cat)
                                     @include('backend.categories.menu_child_category', [
@@ -67,6 +66,15 @@
                                     ])
                                 @endforeach
                             @endif
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2 bootstrap-select">
+                    <select class="form-control form-control-sm aiz-selectpicker mb-md-0" data-live-search="true"
+                            name="brand" id="brand" data-selected={{ $brand_id ?? '' }} onchange="sort_products()">
+                        <option value="0">All Brands</option>
+                        @foreach ($brands as $item)
+                            <option value="{{ $item->id }}" @if( ($brand_id ?? '') == $item->id) {{ 'selected' }} @endif>{{ $item->name }}</option>
                         @endforeach
                     </select>
                 </div>

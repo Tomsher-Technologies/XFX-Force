@@ -86,7 +86,6 @@
                         </div>
                     </div>
                     <!-- top buttons -->
-
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-2 space-y-6">
                             @php
@@ -404,59 +403,117 @@
                                                             @endif
                                                         </p>
 
-                                                        <div class="flex flex-col items-center md:items-start justify-center md:justify-start my-2">
-                                                            @if($totalPendingQty > 0)
-                                                                <button onclick="openStatusModal()" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-yellow-500/5 border border-yellow-500/20 rounded-full hover:bg-yellow-500 transition-all duration-[600ms] group/btn">
-                                                                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
-                                                                    <span class="text-yellow-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
-                                                                        Return Requested {{ $totalPendingQty }}@if($totalPendingQty <  $item->quantity) out of {{ $item->quantity }} @endif
-                                                                    </span>
-                                                                </button>
-                                                                @php
-                                                                    $returnDetails = \App\Models\OrderReturn::where('order_detail_id', $item->id)->get();
-                                                                @endphp
+                                                        <div class="flex flex-col items-center md:items-start justify-center md:justify-start my-2 gap-2">
+                                                            @php
+                                                                $returnDetails = \App\Models\OrderReturn::where('order_detail_id', $item->id)->get();
+                                                                $totalPending = $returnDetails->where('status', 'pending')->sum('return_qty');
+                                                                $totalApproved = $returnDetails->where('status', 'approved')->sum('return_qty');
+                                                                $totalReceived = $returnDetails->where('status', 'received')->sum('return_qty');
+                                                                $totalRefunded = $returnDetails->where('status', 'refunded')->sum('return_qty');
+                                                                $totalRejected = $returnDetails->where('status', 'rejected')->sum('return_qty');
+                                                            @endphp
+
+                                                            @if($returnDetails->count() > 0)
+                                                                @if($totalPending > 0)
+                                                                    <button onclick="openStatusModal({{ $item->id }})" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-yellow-500/5 border border-yellow-500/20 rounded-full hover:bg-yellow-500 transition-all duration-[600ms] group/btn">
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                                        <span class="text-yellow-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
+                                                                            Return Requested {{ $totalPending }}@if($totalPending < $item->quantity) out of {{ $item->quantity }} @endif
+                                                                        </span>
+                                                                    </button>
+                                                                @endif
+
+                                                                @if($totalApproved > 0)
+                                                                    <button onclick="openStatusModal({{ $item->id }})" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-blue-500/5 border border-blue-500/20 rounded-full hover:bg-blue-500 transition-all duration-[600ms] group/btn">
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                                        <span class="text-blue-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
+                                                                            Return Approved {{ $totalApproved }}@if($totalApproved < $item->quantity) out of {{ $item->quantity }} @endif
+                                                                        </span>
+                                                                    </button>
+                                                                @endif
+
+                                                                @if($totalReceived > 0)
+                                                                    <button onclick="openStatusModal({{ $item->id }})" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-cyan-500/5 border border-cyan-500/20 rounded-full hover:bg-cyan-500 transition-all duration-[600ms] group/btn">
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                                        <span class="text-cyan-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
+                                                                            Items Received {{ $totalReceived }}@if($totalReceived < $item->quantity) out of {{ $item->quantity }} @endif
+                                                                        </span>
+                                                                    </button>
+                                                                @endif
+
+                                                                @if($totalRefunded > 0)
+                                                                    <button onclick="openStatusModal({{ $item->id }})" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-green-500/5 border border-green-500/20 rounded-full hover:bg-green-500 transition-all duration-[600ms] group/btn">
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                                        <span class="text-green-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
+                                                                            Refunded {{ $totalRefunded }}@if($totalRefunded < $item->quantity) out of {{ $item->quantity }} @endif
+                                                                        </span>
+                                                                    </button>
+                                                                @endif
+
+                                                                @if($totalRejected > 0)
+                                                                    <button onclick="openStatusModal({{ $item->id }})" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-red-500/5 border border-red-500/20 rounded-full hover:bg-red-500 transition-all duration-[600ms] group/btn">
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                                        <span class="text-red-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
+                                                                            Return Rejected {{ $totalRejected }}@if($totalRejected < $item->quantity) out of {{ $item->quantity }} @endif
+                                                                        </span>
+                                                                    </button>
+                                                                @endif
 
                                                                 <!--return status modal-->
-                                                                <div id="statusModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4" onclick="closeStatusModal()">
-                                                                    <div id="statusContent" class="bg-[#1C2228] border border-[#282B34] w-full max-w-2xl rounded-[20px] shadow-2xl overflow-hidden transform transition-all" onclick="event.stopPropagation()">
+                                                                <div id="statusModal-{{ $item->id }}" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 hidden" onclick="closeStatusModal({{ $item->id }})">
+                                                                    <div id="statusContent-{{ $item->id }}" class="bg-[#1C2228] border border-[#282B34] w-full max-w-2xl rounded-[20px] shadow-2xl overflow-hidden transform transition-all" onclick="event.stopPropagation()">
                                                                         <div class="p-6 border-b border-[#282B34] flex justify-between items-center bg-[#1C2228]">
-                                                                            <h4 class="text-white font-medium uppercase tracking-wider text-sm">Return Details</h4>
-                                                                            <button onclick="closeStatusModal()" class="text-gray-500 hover:text-white transition-colors cursor-pointer p-1">
+                                                                            <h4 class="text-white font-medium uppercase tracking-wider text-sm">Return Request Details</h4>
+                                                                            <button onclick="closeStatusModal({{ $item->id }})" class="text-gray-500 hover:text-white transition-colors cursor-pointer p-1">
                                                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                                                 </svg>
                                                                             </button>
                                                                         </div>
                                                                         
-                                                                        @foreach ($returnDetails as $returnDetail)
                                                                         <div class="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-6">
-                                                                            <div class="flex items-center gap-6 group">
-                                                                                <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
-                                                                                    <img src="{{ $image }}" class="w-full h-full object-cover rounded-lg" alt="Product">
-                                                                                </div>
-                                                                                <div class="flex-grow">
-                                                                                    <h4 class="text-white font-medium line-clamp-1 text-sm md:text-base">
-                                                                                        {{ $returnDetail->orderDetail->product->name }}
-                                                                                    </h4>
-                                                                                    <p class="text-gray-500 text-xs mt-1">{{ $returnDetail->orderDetail->product_stock->stock_title }}</p>
-                                                                                    <p class="text-[#2A7CFF] text-[11px] mt-2 font-bold uppercase tracking-tight">
-                                                                                        {{ \Carbon\Carbon::parse($order->created_at)->format('F d, Y • H:i') }}
-                                                                                    </p>
-                                                                                </div>
-                                                                                <div class="hidden md:flex flex-col text-right items-end">
-                                                                                    <p class="text-gray-400 text-[10px] uppercase font-bold mb-2">Quantity</p>
-                                                                                    <p class="text-white text-lg font-bold leading-none">{{ $returnDetail->return_qty }}</p>
-                                                                                </div>
-                                                                            </div>
+                                                                            @foreach ($returnDetails as $returnDetail)
+                                                                                <div class="border-b border-white/5 pb-6 last:border-0 last:pb-0">
+                                                                                    <div class="flex items-center gap-6 group mb-4">
+                                                                                        <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
+                                                                                            <img src="{{ $image }}" class="w-full h-full object-cover rounded-lg" alt="Product">
+                                                                                        </div>
+                                                                                        <div class="flex-grow">
+                                                                                            <h4 class="text-white font-medium line-clamp-1 text-sm md:text-base">
+                                                                                                {{ $returnDetail->orderDetail->product->name }}
+                                                                                            </h4>
+                                                                                            <p class="text-gray-500 text-xs mt-1">{{ $returnDetail->orderDetail->product_stock->stock_title }}</p>
+                                                                                            
+                                                                                            <div class="flex items-center gap-2 mt-2">
+                                                                                                <span class="text-[#2A7CFF] text-[11px] font-bold uppercase tracking-tight">
+                                                                                                    {{ \Carbon\Carbon::parse($returnDetail->created_at)->format('F d, Y • H:i') }}
+                                                                                                </span>
+                                                                                                
+                                                                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase 
+                                                                                                    @if($returnDetail->status == 'pending') text-yellow-500 bg-yellow-500/10 border border-yellow-500/20
+                                                                                                    @elseif($returnDetail->status == 'approved') text-blue-500 bg-blue-500/10 border border-blue-500/20
+                                                                                                    @elseif($returnDetail->status == 'received') text-cyan-500 bg-cyan-500/10 border border-cyan-500/20
+                                                                                                    @elseif($returnDetail->status == 'refunded') text-green-500 bg-green-500/10 border border-green-500/20
+                                                                                                    @else text-red-500 bg-red-500/10 border border-red-500/20 @endif">
+                                                                                                    {{ $returnDetail->status }}
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="hidden md:flex flex-col text-right items-end">
+                                                                                            <p class="text-gray-400 text-[10px] uppercase font-bold mb-2">Quantity</p>
+                                                                                            <p class="text-white text-lg font-bold leading-none">{{ $returnDetail->return_qty }}</p>
+                                                                                        </div>
+                                                                                    </div>
 
-                                                                            <div class="pt-4 border-t border-white/5">
-                                                                                <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-3 px-1">Reason for return</p>
-                                                                                <div class="w-full bg-[#0f161b] border border-[#282B34] rounded-2xl p-5 text-gray-300 text-sm leading-relaxed italic relative">
-                                                                                    {{ $returnDetail->return_reason }}
+                                                                                    <div class="pt-2">
+                                                                                        <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 px-1">Reason for return</p>
+                                                                                        <div class="w-full bg-[#0f161b] border border-[#282B34] rounded-2xl p-4 text-gray-300 text-sm leading-relaxed italic relative">
+                                                                                            {{ $returnDetail->return_reason }}
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
+                                                                            @endforeach
                                                                         </div>
-                                                                        @endforeach
 
                                                                         <div class="p-6 bg-[#171c21] border-t border-[#282B34]">
                                                                             <p class="text-center text-gray-400 text-[13px] italic">
@@ -466,19 +523,6 @@
                                                                     </div>
                                                                 </div>
                                                                 <!--//return status modal-->
-                                                            @endif
-
-                                                            @if($totalReturnedQty > 0)
-                                                                <button class="px-2 py-1 text-green-500 bg-green-500/10 rounded-full text-[10px] font-bold uppercase">
-                                                                    Returned {{ $totalReturnedQty }}@if($totalReturnedQty <  $item->quantity) out of {{ $item->quantity }} @endif
-                                                                </button>
-                                                            @endif
-
-                                                            @if($totalRejectedQty > 0)
-                                                                <button class="mt-[10px] flex items-center gap-2 px-3 py-1 bg-red-500/5 border border-red-500/20 rounded-full hover:bg-red-500 transition-all duration-[600ms] group/btn">
-                                                                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
-                                                                <span class="text-red-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">Return Rejected  {{ $totalRejectedQty }}@if($totalRejectedQty <  $item->quantity) out of {{ $item->quantity }} @endif
-                                                                </button>
                                                             @endif
                                                         </div>
                                                         
@@ -703,17 +747,20 @@
                                                 </span>
                                             </div>
                                         </li>
-                                        <li class="py-[10px]">
-                                            <div class="flex flex-row justify-between">
-                                                <span class="text-[#99a1af] text-[15px] justify-start text-left">Estimated Tax</span>
-                                                <span class="flex flex-row text-[#99a1af] items-center justify-end text-right gap-[5px] text-[15px]">
-                                                    <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M1.32445 0.0149494C1.33045 0.023919 1.36345 0.0642824 1.39495 0.103151C1.62444 0.37523 1.79693 0.817732 1.88993 1.37535C1.95143 1.74161 1.95443 1.85672 1.95443 3.25299V4.55359H1.32745C0.754472 4.55359 0.688474 4.5506 0.575979 4.52817C0.398985 4.4908 0.215992 4.39064 0.0929965 4.26207C-0.00449983 4.15892 -0.00149994 4.15294 0.00449983 4.46539C0.0119996 4.72401 0.0149994 4.75242 0.052498 4.89294C0.112496 5.11569 0.194993 5.28162 0.319488 5.42962C0.488982 5.63294 0.661475 5.74655 0.907466 5.82279C0.959964 5.83774 1.07096 5.84372 1.46395 5.84671L1.95443 5.85419V6.5015V7.1503L1.26295 7.14581L0.568479 7.14133L0.448483 7.09349C0.305989 7.03668 0.241491 6.99483 0.101996 6.87075L0 6.77955L0.00599978 7.06509C0.0134995 7.32969 0.0149994 7.35959 0.052498 7.49414C0.182993 7.96953 0.497981 8.30888 0.913466 8.4195C1.01696 8.44791 1.05746 8.4494 1.49094 8.45538L1.95443 8.46136V9.80083C1.95443 10.6096 1.94993 11.2061 1.94243 11.3077C1.93493 11.4004 1.91093 11.5738 1.88993 11.6949C1.79243 12.2525 1.61694 12.6726 1.36495 12.9447L1.31395 13H3.85036C5.3668 13 6.50076 12.994 6.66725 12.9865C6.95974 12.9716 7.61222 12.9073 7.75921 12.8759C7.80571 12.867 7.89271 12.8535 7.9497 12.8445C8.0712 12.8266 8.27219 12.7847 8.56168 12.7115C8.96966 12.6098 9.34165 12.4828 9.70614 12.3213C9.82013 12.2705 10.1471 12.1045 10.2341 12.0522C10.2806 12.0253 10.3361 11.9924 10.3571 11.9819C10.4156 11.9506 10.5131 11.8878 10.6556 11.7861C10.7261 11.7353 10.7966 11.6859 10.8116 11.6755C10.8746 11.6336 11.0921 11.4527 11.1911 11.3615C11.5676 11.0162 11.8826 10.632 12.127 10.2209C12.1615 10.1611 12.2065 10.0864 12.226 10.055C12.2755 9.97125 12.4795 9.55267 12.499 9.48988C12.508 9.46148 12.52 9.43158 12.526 9.4256C12.565 9.37477 12.79 8.66916 12.817 8.51518C12.826 8.46585 12.8305 8.45837 12.868 8.4509C12.892 8.44641 13.2415 8.44641 13.645 8.4494C14.452 8.45538 14.452 8.45538 14.6305 8.5376C14.731 8.58395 14.7609 8.60488 14.8719 8.70504C15.0174 8.8351 15.0039 8.85603 14.9949 8.53013C14.9889 8.33878 14.9814 8.22068 14.9679 8.17284C14.9169 7.98896 14.9049 7.95009 14.8599 7.85741C14.713 7.53749 14.467 7.30876 14.152 7.19963L14.029 7.15478L13.528 7.1488L13.0285 7.14133L13.0345 6.96642C13.0405 6.7362 13.0405 6.28024 13.033 6.04554L13.027 5.85718L13.696 5.85419C14.269 5.8512 14.3755 5.85419 14.4385 5.87063C14.6275 5.92295 14.7549 5.99471 14.9109 6.13673L14.9979 6.21746V5.99621C14.9979 5.7331 14.9844 5.61649 14.9304 5.44308C14.8239 5.09177 14.614 4.83015 14.314 4.6687C14.119 4.56405 14.107 4.56106 13.4365 4.55658C13.0435 4.55359 12.838 4.54761 12.8275 4.53864C12.8185 4.52967 12.811 4.51472 12.811 4.50276C12.811 4.4908 12.7885 4.39662 12.7585 4.29496C12.4075 3.05865 11.7521 2.07647 10.7936 1.34844C10.6631 1.24828 10.3436 1.03749 10.2146 0.965731C10.1651 0.937328 10.1111 0.907429 10.0976 0.898459C10.0346 0.864075 9.67314 0.687673 9.58314 0.650299C9.52914 0.62638 9.45865 0.596481 9.42715 0.584522C8.89767 0.355796 8.0097 0.139029 7.33173 0.0717571C7.22073 0.0612926 7.07374 0.0448482 7.00624 0.0388684C6.70025 0.00448482 6.27577 0 3.86536 0C1.82843 0 1.31695 0.00448482 1.32445 0.0149494ZM6.28477 0.662259C6.79175 0.692157 7.10373 0.731026 7.46822 0.819227C8.58118 1.08234 9.36415 1.63845 9.93263 2.56831C9.98513 2.65501 10.2071 3.10649 10.2401 3.19768C10.3976 3.62075 10.4741 3.8719 10.5416 4.20377C10.5581 4.2845 10.5806 4.39213 10.5911 4.44296C10.6016 4.4923 10.6061 4.53864 10.6016 4.54312C10.5941 4.5491 9.08816 4.55209 7.25223 4.5506L3.91485 4.54761L3.91035 2.62661C3.90885 1.57118 3.91035 0.693652 3.91485 0.677208L3.92085 0.648804H4.98731C5.57229 0.648804 6.15727 0.654784 6.28477 0.662259ZM10.7471 5.89903C10.7576 5.96332 10.7576 7.05462 10.7471 7.10844L10.7381 7.1488L7.32573 7.14581L3.91485 7.14133L3.91185 6.50747C3.90885 6.15915 3.91185 5.86914 3.91485 5.86316C3.91935 5.85568 5.3728 5.8512 7.33023 5.8512H10.7381L10.7471 5.89903ZM10.5941 8.46585C10.6016 8.48827 10.5656 8.67215 10.4921 8.97114C10.4081 9.3075 10.2941 9.64685 10.1786 9.898C10.1216 10.0266 9.97913 10.3046 9.94463 10.3569C9.92813 10.3809 9.88013 10.4571 9.83813 10.5244C9.56814 10.946 9.18266 11.3302 8.74317 11.6142C8.58268 11.7158 8.25269 11.8893 8.1642 11.9162C8.1462 11.9207 8.1267 11.9296 8.1192 11.9356C8.1087 11.9446 7.9722 11.9954 7.81321 12.0522C7.52072 12.1554 6.96424 12.2675 6.51726 12.3138C6.22777 12.3422 6.18127 12.3437 5.06681 12.3437H3.91335V10.4048V8.46435L7.22673 8.45837C9.04916 8.45538 10.5506 8.4509 10.5626 8.44791C10.5761 8.44641 10.5896 8.45538 10.5941 8.46585Z" fill="#99a1af"></path>
-                                                    </svg>
-                                                    {{ format_price($order->tax) }}
-                                                </span>
-                                            </div>
-                                        </li>
+
+                                        @if($order->tax > 0)
+                                            <li class="py-[10px]">
+                                                <div class="flex flex-row justify-between">
+                                                    <span class="text-[#99a1af] text-[15px] justify-start text-left">Estimated Tax</span>
+                                                    <span class="flex flex-row text-[#99a1af] items-center justify-end text-right gap-[5px] text-[15px]">
+                                                        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M1.32445 0.0149494C1.33045 0.023919 1.36345 0.0642824 1.39495 0.103151C1.62444 0.37523 1.79693 0.817732 1.88993 1.37535C1.95143 1.74161 1.95443 1.85672 1.95443 3.25299V4.55359H1.32745C0.754472 4.55359 0.688474 4.5506 0.575979 4.52817C0.398985 4.4908 0.215992 4.39064 0.0929965 4.26207C-0.00449983 4.15892 -0.00149994 4.15294 0.00449983 4.46539C0.0119996 4.72401 0.0149994 4.75242 0.052498 4.89294C0.112496 5.11569 0.194993 5.28162 0.319488 5.42962C0.488982 5.63294 0.661475 5.74655 0.907466 5.82279C0.959964 5.83774 1.07096 5.84372 1.46395 5.84671L1.95443 5.85419V6.5015V7.1503L1.26295 7.14581L0.568479 7.14133L0.448483 7.09349C0.305989 7.03668 0.241491 6.99483 0.101996 6.87075L0 6.77955L0.00599978 7.06509C0.0134995 7.32969 0.0149994 7.35959 0.052498 7.49414C0.182993 7.96953 0.497981 8.30888 0.913466 8.4195C1.01696 8.44791 1.05746 8.4494 1.49094 8.45538L1.95443 8.46136V9.80083C1.95443 10.6096 1.94993 11.2061 1.94243 11.3077C1.93493 11.4004 1.91093 11.5738 1.88993 11.6949C1.79243 12.2525 1.61694 12.6726 1.36495 12.9447L1.31395 13H3.85036C5.3668 13 6.50076 12.994 6.66725 12.9865C6.95974 12.9716 7.61222 12.9073 7.75921 12.8759C7.80571 12.867 7.89271 12.8535 7.9497 12.8445C8.0712 12.8266 8.27219 12.7847 8.56168 12.7115C8.96966 12.6098 9.34165 12.4828 9.70614 12.3213C9.82013 12.2705 10.1471 12.1045 10.2341 12.0522C10.2806 12.0253 10.3361 11.9924 10.3571 11.9819C10.4156 11.9506 10.5131 11.8878 10.6556 11.7861C10.7261 11.7353 10.7966 11.6859 10.8116 11.6755C10.8746 11.6336 11.0921 11.4527 11.1911 11.3615C11.5676 11.0162 11.8826 10.632 12.127 10.2209C12.1615 10.1611 12.2065 10.0864 12.226 10.055C12.2755 9.97125 12.4795 9.55267 12.499 9.48988C12.508 9.46148 12.52 9.43158 12.526 9.4256C12.565 9.37477 12.79 8.66916 12.817 8.51518C12.826 8.46585 12.8305 8.45837 12.868 8.4509C12.892 8.44641 13.2415 8.44641 13.645 8.4494C14.452 8.45538 14.452 8.45538 14.6305 8.5376C14.731 8.58395 14.7609 8.60488 14.8719 8.70504C15.0174 8.8351 15.0039 8.85603 14.9949 8.53013C14.9889 8.33878 14.9814 8.22068 14.9679 8.17284C14.9169 7.98896 14.9049 7.95009 14.8599 7.85741C14.713 7.53749 14.467 7.30876 14.152 7.19963L14.029 7.15478L13.528 7.1488L13.0285 7.14133L13.0345 6.96642C13.0405 6.7362 13.0405 6.28024 13.033 6.04554L13.027 5.85718L13.696 5.85419C14.269 5.8512 14.3755 5.85419 14.4385 5.87063C14.6275 5.92295 14.7549 5.99471 14.9109 6.13673L14.9979 6.21746V5.99621C14.9979 5.7331 14.9844 5.61649 14.9304 5.44308C14.8239 5.09177 14.614 4.83015 14.314 4.6687C14.119 4.56405 14.107 4.56106 13.4365 4.55658C13.0435 4.55359 12.838 4.54761 12.8275 4.53864C12.8185 4.52967 12.811 4.51472 12.811 4.50276C12.811 4.4908 12.7885 4.39662 12.7585 4.29496C12.4075 3.05865 11.7521 2.07647 10.7936 1.34844C10.6631 1.24828 10.3436 1.03749 10.2146 0.965731C10.1651 0.937328 10.1111 0.907429 10.0976 0.898459C10.0346 0.864075 9.67314 0.687673 9.58314 0.650299C9.52914 0.62638 9.45865 0.596481 9.42715 0.584522C8.89767 0.355796 8.0097 0.139029 7.33173 0.0717571C7.22073 0.0612926 7.07374 0.0448482 7.00624 0.0388684C6.70025 0.00448482 6.27577 0 3.86536 0C1.82843 0 1.31695 0.00448482 1.32445 0.0149494ZM6.28477 0.662259C6.79175 0.692157 7.10373 0.731026 7.46822 0.819227C8.58118 1.08234 9.36415 1.63845 9.93263 2.56831C9.98513 2.65501 10.2071 3.10649 10.2401 3.19768C10.3976 3.62075 10.4741 3.8719 10.5416 4.20377C10.5581 4.2845 10.5806 4.39213 10.5911 4.44296C10.6016 4.4923 10.6061 4.53864 10.6016 4.54312C10.5941 4.5491 9.08816 4.55209 7.25223 4.5506L3.91485 4.54761L3.91035 2.62661C3.90885 1.57118 3.91035 0.693652 3.91485 0.677208L3.92085 0.648804H4.98731C5.57229 0.648804 6.15727 0.654784 6.28477 0.662259ZM10.7471 5.89903C10.7576 5.96332 10.7576 7.05462 10.7471 7.10844L10.7381 7.1488L7.32573 7.14581L3.91485 7.14133L3.91185 6.50747C3.90885 6.15915 3.91185 5.86914 3.91485 5.86316C3.91935 5.85568 5.3728 5.8512 7.33023 5.8512H10.7381L10.7471 5.89903ZM10.5941 8.46585C10.6016 8.48827 10.5656 8.67215 10.4921 8.97114C10.4081 9.3075 10.2941 9.64685 10.1786 9.898C10.1216 10.0266 9.97913 10.3046 9.94463 10.3569C9.92813 10.3809 9.88013 10.4571 9.83813 10.5244C9.56814 10.946 9.18266 11.3302 8.74317 11.6142C8.58268 11.7158 8.25269 11.8893 8.1642 11.9162C8.1462 11.9207 8.1267 11.9296 8.1192 11.9356C8.1087 11.9446 7.9722 11.9954 7.81321 12.0522C7.52072 12.1554 6.96424 12.2675 6.51726 12.3138C6.22777 12.3422 6.18127 12.3437 5.06681 12.3437H3.91335V10.4048V8.46435L7.22673 8.45837C9.04916 8.45538 10.5506 8.4509 10.5626 8.44791C10.5761 8.44641 10.5896 8.45538 10.5941 8.46585Z" fill="#99a1af"></path>
+                                                        </svg>
+                                                        {{ format_price($order->tax) }}
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        @endif
                                         
                                         @if($order->has_warranty)
                                         <li class="py-[10px]">
@@ -778,6 +825,34 @@
                                     </p>
                                 </div>
                             </div>
+
+                            @php
+                                $hasRefundedRequest = false;
+                                foreach ($order->orderDetails as $detail) {
+                                    if (\App\Models\OrderReturn::where('order_detail_id', $detail->id)->where('status', 'refunded')->exists()) {
+                                        $hasRefundedRequest = true;
+                                        break;
+                                    }
+                                }
+                            @endphp
+
+                            @if($hasRefundedRequest)
+                                @php
+                                    $refundNoteKey = 'payment_method_' . $order->payment_type . '_refund_note';
+                                    $refundNote = get_setting($refundNoteKey);
+                                @endphp
+                                @if(filled($refundNote))
+                                    <div class="mt-6 mb-6 bg-green-500/10 border border-green-500/20 text-green-500 p-4 rounded-xl flex items-start gap-3">
+                                        <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+                                        </svg>
+                                        <div>
+                                            <h4 class="font-bold text-sm uppercase tracking-wider mb-1">Refund Processing Information</h4>
+                                            <p class="text-xs text-gray-300 leading-relaxed">{{ $refundNote }}</p>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -1130,20 +1205,31 @@
 
 <!--return modal status modal script-->
 <script>
-    /* Simple JS triggers */
-    function openStatusModal() {
-        document.getElementById('statusModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
+    /* Simple JS triggers with ID parameters */
+    function openStatusModal(id) {
+        const modal = document.getElementById('statusModal-' + id);
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
     }
 
-    function closeStatusModal() {
-        document.getElementById('statusModal').classList.remove('active');
-        document.body.style.overflow = '';
+    function closeStatusModal(id) {
+        const modal = document.getElementById('statusModal-' + id);
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
     }
 
-    // Escape Key Support
+    // Escape Key Support to close all active status modals
     window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeStatusModal();
+        if (e.key === 'Escape') {
+            document.querySelectorAll('[id^="statusModal-"]').forEach(modal => {
+                modal.classList.add('hidden');
+            });
+            document.body.style.overflow = '';
+        }
     });
 </script>
 <!--//return modal status modal script-->

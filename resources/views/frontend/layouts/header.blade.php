@@ -90,7 +90,7 @@
                     @endforeach
                 </ul>
 
-                <div class="nav-actions flex items-center gap-[30px] md:gap-[50px] justify-end">
+                <div class="nav-actions flex items-center gap-[30px] md:gap-[30px] justify-end">
                     <!--burger menu trigger-->
                     <button onclick="toggleMobileMenu()" class="burger-menu gap-[6px] flex xl:hidden flex-col bg-transparent border-hidden cursor-pointer">
                         <span class="w-[20px] h-[1.5px] flex bg-[#ffffff]"></span>
@@ -106,6 +106,20 @@
                         </svg>
                     </button>
                     <!--//search trigger-->
+
+                    <!--wishlist trigger-->
+                    <a href="{{ Auth('frontend')->check() ? route('wishlist') : route('login') }}" class="action-btn wishlist-icon no-underline relative bg-transparent border-none cursor-pointer flex items-center justify-center p-2 hover:bg-white/5 rounded-lg transition-all" title="Wishlist">
+                        <svg class="w-5 h-5 group-hover:text-white  text-[#ffffff]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                        @if(Auth('frontend')->check())
+                            @php
+                                $wishlistCount = \App\Models\Wishlist::where('user_id', Auth('frontend')->user()->id)->count();
+                            @endphp
+                            @if($wishlistCount > 0)
+                                <span class="count bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] text-white text-[10px] font-bold h-5 w-5 inline-flex leading-[25px] p-[5px] items-center justify-center rounded-full absolute -top-1 -right-1 border-2 border-[#0B0F13]" id="total-wishlist-count-top">{{ $wishlistCount }}</span>
+                            @endif
+                        @endif
+                    </a>
+                    <!--//wishlist trigger-->
 
                     <!--cart trigger-->
                     <a href="{{ route('cart') }}" class="action-btn cart-icon no-underline relative bg-transparent border-none cursor-pointer hidden md:flex items-center justify-center p-2 hover:bg-white/5 rounded-lg transition-all">

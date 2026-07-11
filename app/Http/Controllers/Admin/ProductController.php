@@ -51,6 +51,7 @@ class ProductController extends Controller
         $sort_search = null;
         $products = Product::orderBy('id', 'desc');
         $category = ($request->has('category')) ? $request->category : '';
+        $brand_id = ($request->has('brand')) ? $request->brand : '';
 
         if ($request->type != null) {
             $var = explode(",", $request->type);
@@ -63,6 +64,10 @@ class ProductController extends Controller
             }
 
             $sort_type = $request->type;
+        }
+
+        if ($request->has('brand') && $request->brand !== '0' && $request->brand !== '') {
+            $products = $products->where('brand_id', $request->brand);
         }
         if ($request->has('category') && $request->category !== '0') {
             $childIds = [];
@@ -82,20 +87,30 @@ class ProductController extends Controller
                 $q->whereIn('id', $childIds);
             });
         }
+        
 
         if ($request->search != null) {
             $sort_search = $request->search;
-            $products = $products
-                ->where('name', 'like', '%' . $sort_search . '%')
-                ->orWhereHas('stocks', function ($q) use ($sort_search) {
-                    $q->where('sku', 'like', '%' . $sort_search . '%');
-                });
+            $products = $products->where(function($q) use ($sort_search) {
+                        $q->where('name', 'like', '%' . $sort_search . '%')
+                        ->orWhere('sku', 'like', '%' . $sort_search . '%')
+                        ->orWhere('slug', 'like', '%' . $sort_search . '%')
+                        ->orWhere('description', 'like', '%' . $sort_search . '%')
+                        ->orWhere('tags', 'like', '%' . $sort_search . '%')
+                        ->orWhereHas('stocks', function ($q) use ($sort_search) {
+                            $q->where('sku', 'like', '%' . $sort_search . '%')
+                            ->orWhere('stock_title', 'like', '%' . $sort_search . '%')
+                            ->orWhere('model', 'like', '%' . $sort_search . '%')
+                            ->orWhere('stock_description', 'like', '%' . $sort_search . '%');
+                        });
+                    });
         }
 
         $products = $products->paginate(10);
         $type = 'All';
+        $brands = \App\Models\Brand::where('is_active', 1)->orderBy('name', 'asc')->get();
 
-        return view('backend.products.index', compact('category', 'products', 'type', 'col_name', 'query', 'seller_id', 'sort_search'));
+        return view('backend.products.index', compact('category', 'brands', 'brand_id', 'products', 'type', 'col_name', 'query', 'seller_id', 'sort_search'));
     }
 
     /**

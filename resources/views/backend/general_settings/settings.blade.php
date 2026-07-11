@@ -178,84 +178,54 @@
                 </div>
             </div>
 
-            <!-- Default SEO OG Image -->
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0 h6">Default SEO OG Image</h5>
-                    </div>
-                    <div class="card-body">
-                        <form action="{{ route('configuration.seo_og_image_settings') }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            <div class="form-group row  mt-2">
-                                <div class="col-md-6">
-                                    <label class="form-label" for="default_seo_og_image">Image</label>
-                                    <div class="input-group " data-toggle="aizuploader" data-type="image">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
-                                        </div>
-                                        <div class="form-control file-amount">Choose File</div>
-                                        <input type="hidden" name="types[]" value="default_seo_og_image">
-                                        <input type="hidden" name="default_seo_og_image" class="selected-files"
-                                            value="{{ get_setting('default_seo_og_image') }}">
-                                    </div>
-                                    <div class="file-preview"></div>
-                                </div>
-                            </div>
-
-                            <div class="form-group mb-0 text-right">
-                                <button type="submit" class="btn btn-sm btn-primary mt-2">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COD Additional Charge -->
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0 h6">Default COD Additional Charge</h5>
-                    </div>
-
-                    <form action="{{ route('configuration.cod_charge_settings') }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-
-                        <div class="card-body">
-
-                            <div class="form-group row mt-2">
-                                <label class="col-md-4 col-from-label">
-                                    COD Additional Charge
-                                </label>
-
-                                <div class="col-md-8">
-                                    <input 
-                                        class="form-control" 
-                                        type="number" 
-                                        id="cod_additional_charge" 
-                                        name="cod_additional_charge"
-                                        min="0"
-                                        step="0.01"
-                                        required
-                                        value="{{ get_setting('cod_additional_charge') ?? 0 }}">
-                                </div>
-                            </div>
-
-                            <div class="form-group mb-0 text-right">
-                                <button type="submit" class="btn btn-sm btn-primary mt-2">
-                                    Save
-                                </button>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-            </div>
+          
+            
         </div>
 
+       
+
         <div class="col-lg-6">
+
+             <!-- COD Additional Charge -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0 h6">Default COD Additional Charge</h5>
+                </div>
+
+                <form action="{{ route('configuration.cod_charge_settings') }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+
+                    <div class="card-body">
+
+                        <div class="form-group row mt-2">
+                            <label class="col-md-4 col-from-label">
+                                COD Additional Charge
+                            </label>
+
+                            <div class="col-md-8">
+                                <input 
+                                    class="form-control" 
+                                    type="number" 
+                                    id="cod_additional_charge" 
+                                    name="cod_additional_charge"
+                                    min="0"
+                                    step="0.01"
+                                    required
+                                    value="{{ get_setting('cod_additional_charge') ?? 0 }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-0 text-right">
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">
+                                Save
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0 h6">Pickup Location Settings</h5>
@@ -329,6 +299,105 @@
                     </div>
                 </form>
             </div>
+
+            <!-- Default SEO OG Image -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0 h6">Default SEO OG Image</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('configuration.seo_og_image_settings') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group row  mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label" for="default_seo_og_image">Image</label>
+                                <div class="input-group " data-toggle="aizuploader" data-type="image">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
+                                    </div>
+                                    <div class="form-control file-amount">Choose File</div>
+                                    <input type="hidden" name="types[]" value="default_seo_og_image">
+                                    <input type="hidden" name="default_seo_og_image" class="selected-files"
+                                        value="{{ get_setting('default_seo_og_image') }}">
+                                </div>
+                                <div class="file-preview"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-0 text-right">
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Payment Methods Settings -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0 h6">Payment Methods Settings</h5>
+                </div>
+                <form action="{{ route('configuration.payment_methods_settings') }}" method="POST">
+                    @csrf
+                    <div class="card-body">
+                        <div class="form-group row mb-3">
+                            <div class="col-md-6">
+                                <label class="col-from-label mb-0">Cash On Delivery</label>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <label class="aiz-switch aiz-switch-success mb-0">
+                                    <input name="payment_method_cod"
+                                        {{ get_setting('payment_method_cod', 1) == '1' ? 'checked' : '' }} type="checkbox">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <textarea name="payment_method_cod_refund_note" class="form-control" rows="4"
+                                    placeholder="Refund days note (e.g. Refunds take 1-3 business days)">{{ get_setting('payment_method_cod_refund_note') }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <div class="col-md-6">
+                                <label class="col-from-label mb-0">Tabby</label>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <label class="aiz-switch aiz-switch-success mb-0">
+                                    <input name="payment_method_tabby"
+                                        {{ get_setting('payment_method_tabby', 1) == '1' ? 'checked' : '' }} type="checkbox">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <textarea name="payment_method_tabby_refund_note" class="form-control" rows="4"
+                                    placeholder="Refund days note (e.g. Refunds take 5-7 business days)">{{ get_setting('payment_method_tabby_refund_note') }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <div class="col-md-6">
+                                <label class="col-from-label mb-0">Credit / Debit Card</label>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <label class="aiz-switch aiz-switch-success mb-0">
+                                    <input name="payment_method_card"
+                                        {{ get_setting('payment_method_card', 1) == '1' ? 'checked' : '' }} type="checkbox">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <textarea name="payment_method_card_refund_note" class="form-control" rows="4"
+                                    placeholder="Refund days note (e.g. Refunds take 3-5 business days)">{{ get_setting('payment_method_card_refund_note') }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-0 text-right">
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </div>
 

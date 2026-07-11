@@ -1,5 +1,29 @@
 @extends('backend.layouts.app')
 
+@section('style')
+<style>
+    /* Pulsing status dot styling */
+    .pulse-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 6px;
+        animation: status-pulse 1.5s infinite;
+    }
+    @keyframes status-pulse {
+        0% { opacity: 0.4; transform: scale(0.9); }
+        50% { opacity: 1; transform: scale(1.1); }
+        100% { opacity: 0.4; transform: scale(0.9); }
+    }
+    .badge-inline i {
+        vertical-align: middle;
+        position: relative;
+        top: -1px;
+    }
+</style>
+@endsection
+
 @section('content')
 
     <div class="card">
@@ -305,14 +329,18 @@
                                 {{ single_price($order->orderDetails->sum('price')) }}
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <strong class="text-muted">Tax :</strong>
-                            </td>
-                            <td>
-                                {{ single_price($order->tax) }}
-                            </td>
-                        </tr>
+                        
+                        @if($order->tax > 0)
+                            <tr>
+                                <td>
+                                    <strong class="text-muted">Tax :</strong>
+                                </td>
+                                <td>
+                                    {{ single_price($order->tax) }}
+                                </td>
+                            </tr>
+                        @endif
+
                         <tr>
                             <td>
                                 <strong class="text-muted">Shipping :</strong>
@@ -418,14 +446,32 @@
                                         {{ date('d M, Y H:i A', strtotime($return->created_at)) }}
                                     </td>
                                     <td class="p-2 border text-center">
-                                        <span class="inline-block px-2 py-1 rounded-full text-white 
-                                            {{ 
-                                                $return->status === 'pending' ? 'bg-primary' : 
-                                                ($return->status === 'approved' ? 'bg-success' : 
-                                                'bg-danger') 
-                                            }}">
-                                            {{ $return->status }}
-                                        </span>
+                                        @if($return->status === 'pending')
+                                            <span class="badge badge-sm badge-inline badge-soft-warning px-2.5 py-1.5 rounded-pill">
+                                                <span class="pulse-dot bg-warning"></span>
+                                                Pending
+                                            </span>
+                                        @elseif($return->status === 'approved')
+                                            <span class="badge badge-sm badge-inline badge-soft-primary px-2.5 py-1.5 rounded-pill">
+                                                <i class="las la-check-circle mr-1"></i>
+                                                Approved
+                                            </span>
+                                        @elseif($return->status === 'received')
+                                            <span class="badge badge-sm badge-inline badge-soft-info px-2.5 py-1.5 rounded-pill">
+                                                <i class="las la-truck mr-1"></i>
+                                                Received
+                                            </span>
+                                        @elseif($return->status === 'refunded')
+                                            <span class="badge badge-sm badge-inline badge-soft-success px-2.5 py-1.5 rounded-pill">
+                                                <i class="las la-check-circle mr-1"></i>
+                                                Refunded
+                                            </span>
+                                        @else
+                                            <span class="badge badge-sm badge-inline badge-soft-danger px-2.5 py-1.5 rounded-pill">
+                                                <i class="las la-times-circle mr-1"></i>
+                                                Rejected
+                                            </span>
+                                        @endif
                                     </td>
                                     <td class="p-2 border text-center text-blue-600 font-semibold">
                                         {{ $balanceAtThisReturn }} left
@@ -452,6 +498,9 @@
                 order_id: order_id,
                 status: status
             }, function(data) {
+                if (status === 'delivered' && {{ $order->payment_type == 'cod' ? 'true' : 'false' }}) {
+                    $('#update_payment_status').val('paid').selectpicker('refresh');
+                }
                 AIZ.plugins.notify('success', 'Delivery status has been updated');
             });
         });

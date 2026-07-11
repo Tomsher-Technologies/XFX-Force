@@ -311,12 +311,20 @@
                 <div>
                     <label class="text-[15px] text-white mb-[15px] block text-center md:text-left">Price</label>
                     <div class="price w-full flex flex-row items-end gap-[15px]">
-                        <h5 class="price flex flex-row text-[#2A7CFF] text-left text-[25px] m-[0] font-bold align-center items-center gap-[10px] leading-[35px]">
-                            <img src="{{ asset('assets/images/aed.svg') }}" class="w-[22px] h-[22px]" alt="AED" title="Symbol of AED">
-                            <span class="offer-price">{{ format_price($firstStock->offer_price, 2) }}</span>
-                        </h5>
-                        @if(filled($firstStock->offer_tag))
-                        <span class="text-[#898989] font-medium line-through text-[20px] main-price">{{ $firstStock->price }} </span>
+                        @if($remainingQty <= 0 && $cartQty <= 0)
+                            <h5 class="price flex flex-row text-[#2A7CFF] text-left text-[25px] m-[0] font-bold align-center items-center gap-[10px] leading-[35px]">
+                                <img src="{{ asset('assets/images/aed.svg') }}" class="w-[22px] h-[22px]" alt="AED" title="Symbol of AED">
+                                <span class="offer-price">{{ format_price(0, 2) }}</span>
+                            </h5>
+                        @else
+                            <h5 class="price flex flex-row text-[#2A7CFF] text-left text-[25px] m-[0] font-bold align-center items-center gap-[10px] leading-[35px]">
+                                <img src="{{ asset('assets/images/aed.svg') }}" class="w-[22px] h-[22px]" alt="AED" title="Symbol of AED">
+                                <span class="offer-price">{{ format_price($firstStock->offer_price, 2) }}</span>
+                            </h5>
+                            @if(filled($firstStock->offer_tag))
+                                <span class="text-[#898989] font-medium line-through text-[20px] main-price">{{ format_price($firstStock->price, 2) }}</span>
+                            @endif
+
                         @endif
                     </div>
                 </div>
