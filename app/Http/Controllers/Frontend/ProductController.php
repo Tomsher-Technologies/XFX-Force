@@ -297,7 +297,12 @@ class ProductController extends Controller
             'stocks',
             'stocks.attributes.attribute',
             'stocks.attributes.value'
-        ])->where('slug', $slug)->where('published', 1)->firstOrFail();
+        ])
+        ->where('slug', $slug)
+        ->where('published', 1)
+        ->whereHas('stocks', function ($query) use ($sku) {
+            $query->where('sku', $sku);
+        })->firstOrFail();
 
         // Related products (same category, excluding this product)
         $relatedProducts = Product::where('category_id', $product->category_id)
