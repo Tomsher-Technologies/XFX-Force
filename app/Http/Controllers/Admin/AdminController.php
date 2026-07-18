@@ -25,13 +25,13 @@ class AdminController extends Controller
         $total_products = \App\Models\Product::count();
         $total_brands = \App\Models\Brand::count();
         
-        $total_revenue = \App\Models\Order::where('order_success', 1)->sum('grand_total');
+        $total_revenue = \App\Models\Order::where('order_success', 1)->where('delivery_status', '!=', 'cancelled')->sum('grand_total');
         $total_revenue_all = $total_revenue;
         $pending_orders = \App\Models\Order::where('order_success', 1)->where('delivery_status', 'pending')->count();
         
-        $today_revenue = \App\Models\Order::where('order_success', 1)->where('date', '>=', strtotime('today'))->sum('grand_total');
+        $today_revenue = \App\Models\Order::where('order_success', 1)->where('delivery_status', '!=', 'cancelled')->where('date', '>=', strtotime('today'))->sum('grand_total');
         $today_orders = \App\Models\Order::where('order_success', 1)->where('date', '>=', strtotime('today'))->count();
-        $this_month_revenue = \App\Models\Order::where('order_success', 1)->where('date', '>=', strtotime('first day of this month 00:00:00'))->sum('grand_total');
+        $this_month_revenue = \App\Models\Order::where('order_success', 1)->where('delivery_status', '!=', 'cancelled')->where('date', '>=', strtotime('first day of this month 00:00:00'))->sum('grand_total');
 
         // Order Status Counts for distribution doughnut chart
         $statuses = ['pending', 'confirmed', 'picked_up', 'on_the_way', 'delivered', 'cancelled'];
@@ -47,7 +47,7 @@ class AdminController extends Controller
             $month_start = strtotime("first day of -$i month 00:00:00");
             $month_end = strtotime("last day of -$i month 23:59:59");
             $sales_trend_months[] = date('M Y', $month_start);
-            $sales_trend_data[] = \App\Models\Order::where('order_success', 1)->whereBetween('date', [$month_start, $month_end])->sum('grand_total');
+            $sales_trend_data[] = \App\Models\Order::where('order_success', 1)->where('delivery_status', '!=', 'cancelled')->whereBetween('date', [$month_start, $month_end])->sum('grand_total');
         }
 
         // Recent Orders
