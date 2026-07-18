@@ -89,6 +89,7 @@ class OrderController extends Controller
         $date = $request->date;
         $sort_search = null;
         $delivery_status = null;
+        $limit = $request->has('limit') ? (int) $request->limit : 15;
 
         $orders = Order::where('order_success', 1)
             ->orderBy('id', 'desc');
@@ -103,8 +104,8 @@ class OrderController extends Controller
         if ($date != null) {
             $orders = $orders->where('created_at', '>=', date('Y-m-d', strtotime(explode(" to ", $date)[0])))->where('created_at', '<=', date('Y-m-d', strtotime(explode(" to ", $date)[1])));
         }
-        $orders = $orders->paginate(15);
-        return view('backend.sales.all_orders.index', compact('orders', 'sort_search', 'delivery_status', 'date'));
+        $orders = $orders->paginate($limit);
+        return view('backend.sales.all_orders.index', compact('orders', 'sort_search', 'delivery_status', 'date', 'limit'));
     }
 
     public function all_orders_show($id)
