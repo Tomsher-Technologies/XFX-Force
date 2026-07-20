@@ -384,7 +384,7 @@ class OrderController extends Controller
                 $track              = new OrderTracking;
                 $track->order_id    = $cancel_request->id;
                 $track->status      = 'cancelled';
-                $track->description = 'Your order has been successfully canceled.';
+                $track->description = 'Order has been canceled by ' . (auth()->user() ? auth()->user()->name : 'System') ;
                 $track->status_date = date('Y-m-d H:i:s');
                 $track->save();
 
@@ -501,7 +501,7 @@ class OrderController extends Controller
         $track              = new OrderTracking;
         $track->order_id    = $order->id;
         $track->status      = $request->status;
-        $track->description = null;
+        $track->description = 'Status changed by ' . (auth()->user() ? auth()->user()->name : 'System');
         $track->status_date = date('Y-m-d H:i:s');
         $track->save();
 
