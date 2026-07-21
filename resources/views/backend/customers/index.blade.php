@@ -55,7 +55,11 @@
                                     <td>{{ $user->phone }}</td>
                                     <td>{{ $user->created_at ? $user->created_at->format('d-m-Y h:i A') : '' }}</td>
                                     <td class="text-center">
-                                       
+                                        <a href="{{ route('customers.edit', $user->id) }}"
+                                            class="btn btn-sm btn-soft-success btn-icon btn-circle"
+                                            title="Edit">
+                                            <i class="las la-edit"></i>
+                                        </a>
                                         @if ($user->banned != 1)
                                             <a href="#" class="btn btn-sm btn-soft-danger btn-icon btn-circle"
                                                 onclick="confirm_ban('{{ route('customers.ban', encrypt($user->id)) }}');"

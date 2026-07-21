@@ -115,54 +115,60 @@ class AuthController extends Controller
         // Attempt to log the user in
         if (Auth::guard('frontend')->attempt($credentials, $remember)) {
             if (Auth::guard('frontend')->user()->user_type === 'customer') {
-                // Redirect to checkout if coming from checkout
-                if ($request->checkout) {
-                    return redirect()->route('checkout')
-                        ->with('success', 'Login successful! Continue checkout.');
-                }
-
-                // Redirect to buildyourpc page if coming from buildyourpc page.
-                if ($request->buildyourpc) {
-
-                    $userId = Auth::guard('frontend')->id();
-                    $guestToken = request()->cookie('guest_token');
-
-                    Log::debug("Guest token: " . $guestToken);
-
-                    // 1. Get existing user builder (BEFORE deleting)
-                    $oldBuilder = PcBuilderSetup::where('user_id', $userId)->first();
-
-                    Log::debug("Old builder: " . print_r($oldBuilder, true));
-
-                    // 2. Remove PC builder cart items linked to OLD builder
-                    if ($oldBuilder) {
-                        Cart::where('user_id', $userId)
-                            ->where('is_pc_builder', 1)
-                            ->where('pc_builder_id', $oldBuilder->id)
-                            ->delete();
+                $user = Auth::guard('frontend')->user();
+                if($user->banned == 0){
+                    // Redirect to checkout if coming from checkout
+                    if ($request->checkout) {
+                        return redirect()->route('checkout')
+                            ->with('success', 'Login successful! Continue checkout.');
                     }
 
-                    // 3. Delete old builder
-                    PcBuilderSetup::where('user_id', $userId)->delete();
+                    // Redirect to buildyourpc page if coming from buildyourpc page.
+                    if ($request->buildyourpc) {
 
-                    // 4. Get guest builder
-                    $guestBuilder = PcBuilderSetup::where('temp_user_id', $guestToken)->first();
+                        $userId = Auth::guard('frontend')->id();
+                        $guestToken = request()->cookie('guest_token');
 
-                    Log::debug("Guest builder: " . print_r($guestBuilder, true));
+                        Log::debug("Guest token: " . $guestToken);
 
-                    // 5. Transfer guest builder to user
-                    if ($guestBuilder) {
-                        $guestBuilder->update([
-                            'user_id' => $userId,
-                            'temp_user_id' => null
-                        ]);
+                        // 1. Get existing user builder (BEFORE deleting)
+                        $oldBuilder = PcBuilderSetup::where('user_id', $userId)->first();
+
+                        Log::debug("Old builder: " . print_r($oldBuilder, true));
+
+                        // 2. Remove PC builder cart items linked to OLD builder
+                        if ($oldBuilder) {
+                            Cart::where('user_id', $userId)
+                                ->where('is_pc_builder', 1)
+                                ->where('pc_builder_id', $oldBuilder->id)
+                                ->delete();
+                        }
+
+                        // 3. Delete old builder
+                        PcBuilderSetup::where('user_id', $userId)->delete();
+
+                        // 4. Get guest builder
+                        $guestBuilder = PcBuilderSetup::where('temp_user_id', $guestToken)->first();
+
+                        Log::debug("Guest builder: " . print_r($guestBuilder, true));
+
+                        // 5. Transfer guest builder to user
+                        if ($guestBuilder) {
+                            $guestBuilder->update([
+                                'user_id' => $userId,
+                                'temp_user_id' => null
+                            ]);
+                        }
+
+                        return redirect()->route('buildyourpc')
+                            ->with('success', 'Login successful! Continue configuring your PC.');
                     }
-
-                    return redirect()->route('buildyourpc')
-                        ->with('success', 'Login successful! Continue configuring your PC.');
-                }
-                
-                return redirect()->route('home')->with('success', 'Login successful! Welcome back.'); // Redirect to home for customers
+                    
+                    return redirect()->route('home')->with('success', 'Login successful! Welcome back.'); // Redirect to home for customers
+                }else{
+                    Auth::guard('frontend')->logout();
+                    return back()->with('error', 'Your account has been banned. Please contact support.');
+                } 
             } else {
                 Auth::guard('frontend')->logout(); // Log out non-customers
                 return back()->with('error', 'Access restricted to customers only.');
