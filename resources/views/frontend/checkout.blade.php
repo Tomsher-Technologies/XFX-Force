@@ -277,11 +277,11 @@
                                                 <span>Cash On Delivery</span>
                                             </div>
                                         </div>
-                                        @if(filled(get_setting('payment_method_cod_refund_note')))
+                                        {{-- @if(filled(get_setting('payment_method_cod_refund_note')))
                                             <div class="mt-2 text-xs text-gray-500 pl-7">
                                                 {{ get_setting('payment_method_cod_refund_note') }}
                                             </div>
-                                        @endif
+                                        @endif --}}
                                     </label>
                                     @endif
 
@@ -296,11 +296,11 @@
                                                 <img src="{{ asset('assets/images/tabby.svg') }}" class="w-12">
                                             </div>
                                         </div>
-                                        @if(filled(get_setting('payment_method_tabby_refund_note')))
+                                        {{-- @if(filled(get_setting('payment_method_tabby_refund_note')))
                                             <div class="mt-2 text-xs text-gray-500 pl-7">
                                                 {{ get_setting('payment_method_tabby_refund_note') }}
                                             </div>
-                                        @endif
+                                        @endif --}}
                                     </label>
                                     @endif
 
@@ -344,11 +344,11 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @if(filled(get_setting('payment_method_card_refund_note')))
+                                        {{-- @if(filled(get_setting('payment_method_card_refund_note')))
                                             <div class="mt-2 text-xs text-gray-500 pl-7">
                                                 {{ get_setting('payment_method_card_refund_note') }}
                                             </div>
-                                        @endif
+                                        @endif --}}
                                     </label>
                                     @endif
                                 </div>

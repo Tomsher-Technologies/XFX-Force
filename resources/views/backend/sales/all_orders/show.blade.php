@@ -21,6 +21,58 @@
         position: relative;
         top: -1px;
     }
+    
+    /* Timeline style */
+    .timeline {
+        position: relative;
+        padding-left: 25px;
+        margin: 0;
+        list-style: none;
+    }
+    .timeline::before {
+        content: "";
+        position: absolute;
+        left: 5px;
+        top: 10px;
+        bottom: 10px;
+        width: 2px;
+        background: #ebedf2;
+    }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 25px;
+    }
+    .timeline-item:last-child {
+        margin-bottom: 0;
+    }
+    .timeline-badge {
+        position: absolute;
+        left: -25px;
+        top: 4px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #fff;
+        border: 3px solid #3b82f6;
+        z-index: 1;
+    }
+    .timeline-badge.badge-success { border-color: #2ec4b6; }
+    .timeline-badge.badge-danger { border-color: #ef4444; }
+    .timeline-badge.badge-warning { border-color: #f59e0b; }
+    .timeline-badge.badge-info { border-color: #3b82f6; }
+    
+    .timeline-card {
+        padding: 16px 20px;
+        border-radius: 8px;
+        background: #fdfdfd;
+        border: 1px solid #eef0f5;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        transition: all 0.3s ease;
+    }
+    .timeline-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        border-color: #e2e8f0;
+    }
 </style>
 @endsection
 
@@ -68,7 +120,7 @@
                 </div>
                 <div class="col-md-3 ml-auto">
                     <label for="update_delivery_status">Delivery Status</label>
-                    @if ($delivery_status != 'delivered' && $delivery_status != 'cancelled')
+                    {{-- @if ($delivery_status != 'delivered' && $delivery_status != 'cancelled') --}}
                         <select class="form-control aiz-selectpicker" data-minimum-results-for-search="Infinity"
                             id="update_delivery_status">
                             <option value="pending" @if ($delivery_status == 'pending') selected @endif>
@@ -84,9 +136,9 @@
                             <option value="cancelled" @if ($delivery_status == 'cancelled') selected @endif>
                                 Cancel</option>
                         </select>
-                    @else
+                    {{-- @else
                         <input type="text" class="form-control" value="{{ $delivery_status }}" disabled>
-                    @endif
+                    @endif --}}
                 </div>
                 <div class="col-md-3 ml-auto d-none">
                     <label for="update_tracking_code">Tracking Code (optional)</label>
@@ -397,6 +449,80 @@
         </div>
     </div>
 
+    @if ($order->order_trackings->count() > 0)
+        <div class="card shadow-sm border-light">
+            <div class="card-header bg-light py-3">
+                <h5 class="mb-0 h6 text-dark fw-600">
+                    <i class="las la-history text-primary mr-2" style="font-size: 1.25rem;"></i>
+                    Order Status History & Activity Log
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="timeline">
+                    @foreach ($order->order_trackings as $tracking)
+                        @php
+                            $badgeClass = 'badge-info';
+                            $textBadgeBg = 'bg-info';
+                            if ($tracking->status == 'delivered') {
+                                $badgeClass = 'badge-success';
+                                $textBadgeBg = 'bg-success';
+                            } elseif ($tracking->status == 'cancelled') {
+                                $badgeClass = 'badge-danger';
+                                $textBadgeBg = 'bg-danger';
+                            } elseif ($tracking->status == 'pending') {
+                                $badgeClass = 'badge-warning';
+                                $textBadgeBg = 'bg-warning';
+                            }
+                            
+                            // Extract who changed it and the action/details
+                            $changed_by = 'System / Admin';
+                            $details = $tracking->description;
+                            
+                            if ($tracking->status == 'pending' && (!$details || str_contains($details, 'placed successfully'))) {
+                                $changed_by = '';
+                                $details = 'Order placed successfully.';
+                            } elseif ($details && str_contains($details, 'by ')) {
+                                $parts = explode('by ', $details);
+                                $changed_by = end($parts);
+                                $details = str_replace(' by ' . $changed_by, '', $details);
+                            } elseif (!$details) {
+                                $details = 'Status updated to ' . ucfirst(str_replace('_', ' ', $tracking->status));
+                            }
+                        @endphp
+                        <li class="timeline-item">
+                            <div class="timeline-badge {{ $badgeClass }}"></div>
+                            <div class="timeline-card">
+                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-2">
+                                    <div class="d-flex align-items-center flex-wrap">
+                                        <span class="badge badge-inline {{ $textBadgeBg }} text-uppercase fs-10 fw-600 px-2.5 py-1 text-white mr-3">
+                                            {{ ucfirst(str_replace('_', ' ', $tracking->status)) }}
+                                        </span>
+                                        @if($changed_by != '')
+                                            <span class="text-dark fs-13">
+                                                Changed by: <strong class="text-primary fw-600">{{ $changed_by }}</strong>
+                                            </span>
+                                        @endif
+                                        
+                                    </div>
+                                    <span class="text-muted fs-11 mt-1 mt-md-0">
+                                        <i class="las la-calendar mr-1"></i>
+                                        {{ date('d-m-Y', strtotime($tracking->status_date)) }}
+                                        <span class="mx-1">•</span>
+                                        <i class="las la-clock mr-1"></i>
+                                        {{ date('h:i A', strtotime($tracking->status_date)) }}
+                                    </span>
+                                </div>
+                                <p class="mb-0 text-secondary fs-12 font-italic">
+                                    {{ $details }}
+                                </p>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+
     @if ($order->orderReturns->count() > 0)
         <div class="card">
             <div class="card-header">
@@ -502,6 +628,9 @@
                     $('#update_payment_status').val('paid').selectpicker('refresh');
                 }
                 AIZ.plugins.notify('success', 'Delivery status has been updated');
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
             });
         });
 

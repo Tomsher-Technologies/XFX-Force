@@ -52,4 +52,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderReturn::class)->orderBy('id', 'asc');
     }
+
+    public function order_trackings()
+    {
+        return $this->hasMany(OrderTracking::class, 'order_id')->orderBy('id', 'desc');
+    }
 }

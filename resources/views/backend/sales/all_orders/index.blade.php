@@ -42,6 +42,15 @@
             </div>
 
             <div class="col-lg-2 ml-auto">
+                <select class="form-control aiz-selectpicker" name="limit" id="limit" onchange="this.form.submit()">
+                    <option value="10" @if ($limit == 10) selected @endif>Show 10</option>
+                    <option value="15" @if ($limit == 15) selected @endif>Show 15</option>
+                    <option value="20" @if ($limit == 20) selected @endif>Show 20</option>
+                    <option value="50" @if ($limit == 50) selected @endif>Show 50</option>
+                    <option value="100" @if ($limit == 100) selected @endif>Show 100</option>
+                </select>
+            </div>
+            <div class="col-lg-2">
                 <select class="form-control aiz-selectpicker" name="delivery_status" id="delivery_status">
                     <option value="">{{trans('messages.filter_by_delivery_status')}}</option>
                     <option value="pending" @if ($delivery_status == 'pending') selected @endif>{{trans('messages.pending')}}</option>
@@ -64,8 +73,8 @@
             </div>
             <div class="col-auto">
                 <div class="form-group mb-0">
-                    <button type="submit" class="btn btn-info">Filter</button>
-                    <a href="{{ route('all_orders.index') }}" class="btn  btn-cancel">{{trans('messages.reset')}}</a>
+                    <button type="submit" class="btn btn-sm btn-info">Filter</button>
+                    <a href="{{ route('all_orders.index') }}" class="btn btn-sm btn-cancel">{{trans('messages.reset')}}</a>
                 </div>
             </div>
         </div>
