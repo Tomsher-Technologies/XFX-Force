@@ -8,35 +8,37 @@
             font-family: 'DejaVu Sans', sans-serif;
             color: #333333;
             margin: 0;
-            padding: 10px;
-            font-size: 13px;
-            line-height: 1.4;
+            padding: 5px;
+            font-size: 11px;
+            line-height: 1.35;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         td, th {
-            padding: 6px;
+            padding: 4px 6px;
             vertical-align: top;
         }
         /* Top Header */
         .company-details {
-            line-height: 1.5;
+            line-height: 1.4;
             color: #555555;
+            font-size: 10.5px;
         }
         .company-details strong {
             color: #111111;
-            font-size: 16px;
+            font-size: 13px;
         }
         .invoice-title {
             text-align: right;
-            line-height: 1.5;
+            line-height: 1.4;
+            font-size: 10.5px;
         }
         .invoice-title h1 {
-            margin: 0 0 8px 0;
-            font-size: 24px;
+            margin: 0 0 4px 0;
+            font-size: 18px;
             color: #111111;
             text-transform: uppercase;
             font-weight: bold;
@@ -48,7 +50,7 @@
         /* Dividers */
         .divider {
             border-bottom: 2px solid #e5e7eb;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding-bottom: 5px;
         }
         /* Address Section */
@@ -56,30 +58,31 @@
             font-weight: bold;
             color: #111111;
             text-transform: uppercase;
-            font-size: 11px;
-            margin-bottom: 6px;
+            font-size: 10px;
+            margin-bottom: 4px;
             letter-spacing: 0.5px;
             border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 3px;
+            padding-bottom: 2px;
         }
         /* Items Table */
         .items-table {
-            margin-top: 15px;
+            margin-top: 10px;
         }
         .items-table th {
             background-color: #f3f4f6;
             color: #1f2937;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
-            padding: 8px 10px;
+            padding: 6px 8px;
             text-align: left;
             border-top: 1px solid #cbd5e1;
             border-bottom: 1px solid #cbd5e1;
         }
         .items-table td {
             border-bottom: 1px solid #e5e7eb;
-            padding: 10px;
+            padding: 6px 8px;
+            font-size: 10px;
         }
         .items-table tr.item-row:nth-child(even) td {
             background-color: #f9fafb;
@@ -88,20 +91,20 @@
             background-color: #f3f4f6;
             font-weight: bold;
             color: #111111;
-            font-size: 11px;
-            padding: 6px 10px;
+            font-size: 10px;
+            padding: 5px 8px;
             border-left: 3px solid #111111;
         }
         .variation-list {
-            margin: 3px 0 0 0;
-            padding-left: 12px;
-            font-size: 11px;
+            margin: 2px 0 0 0;
+            padding-left: 10px;
+            font-size: 9.5px;
             color: #6b7280;
         }
         .warranty-label {
-            font-size: 11px;
+            font-size: 9.5px;
             color: #6b7280;
-            margin-top: 3px;
+            margin-top: 2px;
         }
         .badge-free {
             background-color: #10b981;
@@ -113,25 +116,26 @@
         }
         /* Totals */
         .totals-table td {
-            padding: 4px 6px;
+            padding: 3px 5px;
             color: #4b5563;
+            font-size: 10px;
         }
         .totals-table tr.grand-total td {
             border-top: 1px solid #111111;
             border-bottom: 3px double #111111;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 12px;
             color: #111111;
-            padding-top: 6px;
+            padding-top: 4px;
         }
         /* Footer */
         .footer {
-            margin-top: 50px;
+            margin-top: 30px;
             text-align: center;
-            font-size: 11px;
+            font-size: 9.5px;
             color: #9ca3af;
             border-top: 1px solid #e5e7eb;
-            padding-top: 15px;
+            padding-top: 10px;
         }
     </style>
 </head>
@@ -187,8 +191,8 @@
                     <p style="margin: 0; font-weight: bold; color: #111111;">{{ $billingAddress?->name }}</p>
                     <p style="margin: 3px 0 0 0; color: #4b5563;">{{ $billingAddress?->address }}</p>
                     <p style="margin: 2px 0 0 0; color: #4b5563;">{{ $billingAddress?->city }}</p>
-                    <p style="margin: 6px 0 0 0; font-size: 12px; color: #6b7280;">Phone: {{ $billingAddress?->phone }}</p>
-                    <p style="margin: 2px 0 0 0; font-size: 12px; color: #6b7280;">Email: {{ $billingAddress?->email }}</p>
+                    <p style="margin: 4px 0 0 0; font-size: 10px; color: #6b7280;">Phone: {{ $billingAddress?->phone }}</p>
+                    <p style="margin: 2px 0 0 0; font-size: 10px; color: #6b7280;">Email: {{ $billingAddress?->email }}</p>
                 </td>
                 <td style="width: 50%; padding-right: 0; padding-left: 15px;">
                     @if($order->shipping_type == 'pickup')
@@ -202,8 +206,8 @@
                         <p style="margin: 0; font-weight: bold; color: #111111;">{{ $shippingAddress?->name }}</p>
                         <p style="margin: 3px 0 0 0; color: #4b5563;">{{ $shippingAddress?->address }}</p>
                         <p style="margin: 2px 0 0 0; color: #4b5563;">{{ $shippingAddress?->city }}</p>
-                        <p style="margin: 6px 0 0 0; font-size: 12px; color: #6b7280;">Phone: {{ $shippingAddress?->phone }}</p>
-                        <p style="margin: 2px 0 0 0; font-size: 12px; color: #6b7280;">Email: {{ $shippingAddress?->email }}</p>
+                        <p style="margin: 4px 0 0 0; font-size: 10px; color: #6b7280;">Phone: {{ $shippingAddress?->phone }}</p>
+                        <p style="margin: 2px 0 0 0; font-size: 10px; color: #6b7280;">Email: {{ $shippingAddress?->email }}</p>
                     @endif
                 </td>
             </tr>
@@ -214,8 +218,8 @@
             <thead>
                 <tr>
                     <th style="width: 38%;">Product Description</th>
-                    <th style="width: 15%;">Model</th>
-                    <th style="width: 17%; text-align: right;">Unit Price</th>
+                    <th style="width: 15%;">Part Number</th>
+                    <th style="width: 17%; text-align: center;">Unit Price</th>
                     <th style="width: 10%; text-align: center;">Qty</th>
                     <th style="width: 20%; text-align: right;">Total</th>
                 </tr>
@@ -249,7 +253,7 @@
                                     $productCondition = $orderDetail->product->condition ?? 0;
                                     $conditionName = $conditionMap[$productCondition] ?? 'New';
                                 @endphp
-                                <div style="font-size: 11px; color: #555555; margin-top: 2px;">Condition: {{ $conditionName }}</div>
+                                <div style="font-size: 9.5px; color: #555555; margin-top: 2px;">Condition: {{ $conditionName }}</div>
                                 @if ($orderDetail->variation != null)
                                     @php
                                         $variations = json_decode($orderDetail->variation);
@@ -267,7 +271,7 @@
                                 @endphp
                                 {{ $itemModel ?: '-' }}
                             </td>
-                            <td style="text-align: right; white-space: nowrap;">
+                            <td style="text-align: center; white-space: nowrap;">
                                 @if ($orderDetail->og_price != $orderDetail->offer_price)
                                     <del style="color: #999999;"> {{ env('DEFAULT_CURRENCY', 'AED') }}{{ single_price($orderDetail->og_price) }}</del><br>
                                 @endif
@@ -304,7 +308,7 @@
                                 $productCondition = $orderDetail->product->condition ?? 0;
                                 $conditionName = $conditionMap[$productCondition] ?? 'New';
                             @endphp
-                            <div style="font-size: 11px; color: #555555; margin-top: 2px;">Condition: {{ $conditionName }}</div>
+                            <div style="font-size: 9.5px; color: #555555; margin-top: 2px;">Condition: {{ $conditionName }}</div>
                             @if($orderDetail->warranty)
                                 <div class="warranty-label">
                                     Warranty: {{ $orderDetail->warranty->name }}
@@ -332,7 +336,7 @@
                             @endphp
                             {{ $itemModel ?: '-' }}
                         </td>
-                        <td style="text-align: right; white-space: nowrap;">
+                        <td style="text-align: center; white-space: nowrap;">
                             @if ($orderDetail->og_price != $orderDetail->offer_price)
                                 <del style="color: #999999;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->og_price) }}</del><br>
                             @endif
@@ -384,8 +388,8 @@
                             <td style="text-align: right; font-weight: bold;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->shipping_cost) }}</td>
                         </tr>
                         <tr class="grand-total">
-                            <td style="text-align: left; font-size: 14px; color: #111111;">Grand Total<span style="font-size: 10px; color: #6b7280;"> (Including Tax):</span></td>
-                            <td style="text-align: right; font-size: 16px; color: #111111;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->grand_total) }}</td>
+                            <td style="text-align: left; font-size: 12px; color: #111111;">Grand Total<span style="font-size: 9px; color: #6b7280;"> (Including Tax):</span></td>
+                            <td style="text-align: right; font-size: 13px; color: #111111;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->grand_total) }}</td>
                         </tr>
                     </table>
                 </td>
@@ -394,10 +398,9 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p style="margin: 0; font-size: 12px; font-weight: bold; color: #111111;">Thank you for shopping with PC Garage!</p>
-            <p style="margin: 4px 0 0 0;font-size: 12px; font-weight: bold; color: #111111;">Tax invoice will be delivered along with the shipment.</p>
-            <p style="margin: 4px 0 0 0;">If you have any questions about this order confirmation, please contact our support team.</p>
-            {{-- <p style="margin: 4px 0 0 0;"><a href="{{ env('APP_URL') }}" style="color: #2A7CFF; text-decoration: none; font-weight: bold;">{{ str_replace(['http://', 'https://'], '', env('APP_URL')) }}</a></p> --}}
+            <p style="margin: 0; font-size: 10px; font-weight: bold; color: #111111;">Thank you for shopping with PC Garage!</p>
+            <p style="margin: 3px 0 0 0; font-size: 10px; font-weight: bold; color: #111111;">Tax invoice will be delivered along with the shipment.</p>
+            <p style="margin: 3px 0 0 0;">If you have any questions about this order confirmation, please contact our support team.</p>
         </div>
     </div>
 </body>
