@@ -224,9 +224,10 @@
                     <table class="table table-bordered aiz-table invoice-summary">
                         <thead>
                             <tr class="bg-trans-dark">
-                                <th class="min-col">#</th>
-                                <th width="10%">Photo</th>
-                                <th class="text-uppercase">Description</th>
+                                <th class="min-col" width="8%">#</th>
+                                
+                                <th class="text-uppercase" width="42%">Description</th>
+                                <th class="min-col text-center">Part Number</th>
                                 <th class="min-col text-center text-uppercase">Qty
                                 </th>
                                 <th class="min-col text-center text-uppercase">
@@ -242,7 +243,7 @@
                             @endphp 
                             @if($pcBuilderItems->count() > 0)
                             <tr class="bg-light">
-                                <td class="fw-bold text-dark">
+                                <td class="fw-bold text-dark"  colspan="6">
                                     PC Builder Items
                                 </td>
                             </tr>
@@ -252,14 +253,13 @@
                                 @endphp
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                
                                     <td>
                                         @if ($orderDetail->product != null)
                                             <img height="50" src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}">
                                         @else
                                             <strong>N/A</strong>
                                         @endif
-                                    </td>
-                                    <td>
                                         @if ($orderDetail->product != null)
                                             <strong class="text-muted fs-13">{{ $orderDetail->product->name }}</strong>
                                             @php
@@ -311,19 +311,25 @@
                                             @endif --}}
                                         @endif
                                     </td>
+                                    <td class="text-center">
+                                        @php
+                                            $itemModel = $orderDetail->product_stock?->model ?? $orderDetail->product?->stocks?->first()?->model ?? '';
+                                        @endphp
+                                        {{ $itemModel ?: '-' }}
+                                    </td>
                                    
                                     <td class="text-center">{{ $orderDetail->quantity }}</td>
                                     <td class="text-center">
                                         @if ($orderDetail->og_price != $orderDetail->offer_price)
-                                            <del>{{ single_price($orderDetail->og_price) }}</del> <br>
+                                            <del>AED {{ single_price($orderDetail->og_price) }}</del> <br>
                                         @endif
-                                        {{ single_price($orderDetail->price / $orderDetail->quantity) }}
+                                        AED {{ single_price($orderDetail->price / $orderDetail->quantity) }}
                                     </td>
-                                    <td class="text-center">{{ single_price($orderDetail->price) }}</td>
+                                    <td class="text-center">AED {{ single_price($orderDetail->price) }}</td>
                                 </tr>
                             @endforeach
                             <tr class="bg-light">
-                                <td class="fw-bold text-dark">Other Products</td>
+                                <td class="fw-bold text-dark"  colspan="6">Other Products</td>
                             </tr>
                             @endif
                             @foreach ($normalItems as $key => $orderDetail)
@@ -332,14 +338,13 @@
                                 @endphp
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                    
                                     <td>
-                                        @if ($orderDetail->product != null)
+                                         @if ($orderDetail->product != null)
                                             <img height="50" src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}">
                                         @else
                                             <strong>N/A</strong>
                                         @endif
-                                    </td>
-                                    <td>
                                         @if ($orderDetail->product != null)
                                             <strong class="text-muted fs-13">{{ $orderDetail->product->name }}</strong>
                                             @php
@@ -392,14 +397,20 @@
                                         @endif
                                     </td>
                                    
+                                    <td class="text-center">
+                                        @php
+                                            $itemModel = $orderDetail->product_stock?->model ?? $orderDetail->product?->stocks?->first()?->model ?? '';
+                                        @endphp
+                                        {{ $itemModel ?: '-' }}
+                                    </td>
                                     <td class="text-center">{{ $orderDetail->quantity }}</td>
                                     <td class="text-center">
                                         @if ($orderDetail->og_price != $orderDetail->offer_price)
-                                            <del>{{ single_price($orderDetail->og_price) }}</del> <br>
+                                            <del>AED {{ single_price($orderDetail->og_price) }}</del> <br>
                                         @endif
-                                        {{ single_price($orderDetail->price / $orderDetail->quantity) }}
+                                        AED {{ single_price($orderDetail->price / $orderDetail->quantity) }}
                                     </td>
-                                    <td class="text-center">{{ single_price($orderDetail->price) }}</td>
+                                    <td class="text-center">AED {{ single_price($orderDetail->price) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -414,7 +425,7 @@
                                 <strong class="text-muted">Sub Total :</strong>
                             </td>
                             <td>
-                                {{ single_price($order->orderDetails->sum('price')) }}
+                                AED {{ single_price($order->orderDetails->sum('price')) }}
                             </td>
                         </tr>
                         
@@ -424,7 +435,7 @@
                                     <strong class="text-muted">Tax :</strong>
                                 </td>
                                 <td>
-                                    {{ single_price($order->tax) }}
+                                    AED {{ single_price($order->tax) }}
                                 </td>
                             </tr>
                         @endif
@@ -435,7 +446,7 @@
                             </td>
                             <td>
                                 @if($order->shipping_cost > 0)
-                                    {{ single_price($order->shipping_cost) }}
+                                    AED {{ single_price($order->shipping_cost) }}
                                 @else 
                                     <span class="badge badge-inline badge-success">Free</span>
                                 @endif
@@ -449,7 +460,7 @@
                                 </td>
                                 <td>
                                     @if($order->warranty_amount > 0)
-                                        {{ format_price($order->warranty_amount) }}
+                                        AED {{ format_price($order->warranty_amount) }}
                                     @else
                                         <span class="text-black uppercase font-bold text-[10px] bg-[#29A706] px-2 py-1 rounded">
                                             FREE
@@ -463,7 +474,7 @@
                                 <strong class="text-muted">Coupon :</strong>
                             </td>
                             <td>
-                                {{ single_price($order->coupon_discount) }}
+                                AED {{ single_price($order->coupon_discount) }}
                             </td>
                         </tr>
                         <tr>
@@ -471,7 +482,7 @@
                                 <strong class="text-muted">TOTAL :</strong>
                             </td>
                             <td class="text-muted h5">
-                                {{ single_price($order->grand_total) }}
+                                AED {{ single_price($order->grand_total) }}
                             </td>
                         </tr>
                     </tbody>
