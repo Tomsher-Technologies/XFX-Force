@@ -213,9 +213,10 @@
         <table class="items-table">
             <thead>
                 <tr>
-                    <th style="width: 50%;">Product Description</th>
-                    <th style="width: 15%; text-align: right;">Unit Price</th>
-                    <th style="width: 15%; text-align: center;">Qty</th>
+                    <th style="width: 38%;">Product Description</th>
+                    <th style="width: 15%;">Model</th>
+                    <th style="width: 17%; text-align: right;">Unit Price</th>
+                    <th style="width: 10%; text-align: center;">Qty</th>
                     <th style="width: 20%; text-align: right;">Total</th>
                 </tr>
             </thead>
@@ -227,7 +228,7 @@
 
                 @if($pcBuilderItems->count() > 0)
                     <tr class="category-row">
-                        <td colspan="4">PC Builder Items</td>
+                        <td colspan="5">PC Builder Items</td>
                     </tr>
                     @foreach ($pcBuilderItems as $key => $orderDetail)
                         <tr class="item-row">
@@ -260,6 +261,12 @@
                                     </ul>
                                 @endif
                             </td>
+                            <td>
+                                @php
+                                    $itemModel = $orderDetail->product_stock?->model ?? $orderDetail->product?->stocks?->first()?->model ?? '';
+                                @endphp
+                                {{ $itemModel ?: '-' }}
+                            </td>
                             <td style="text-align: right; white-space: nowrap;">
                                 @if ($orderDetail->og_price != $orderDetail->offer_price)
                                     <del style="color: #999999;"> {{ env('DEFAULT_CURRENCY', 'AED') }}{{ single_price($orderDetail->og_price) }}</del><br>
@@ -273,7 +280,7 @@
 
                     @if($normalItems->count() > 0)
                         <tr class="category-row">
-                            <td colspan="4">Other Products</td>
+                            <td colspan="5">Other Products</td>
                         </tr>
                     @endif
                 @endif
@@ -318,6 +325,12 @@
                                     @endforeach
                                 </ul>
                             @endif
+                        </td>
+                        <td>
+                            @php
+                                $itemModel = $orderDetail->product_stock?->model ?? $orderDetail->product?->stocks?->first()?->model ?? '';
+                            @endphp
+                            {{ $itemModel ?: '-' }}
                         </td>
                         <td style="text-align: right; white-space: nowrap;">
                             @if ($orderDetail->og_price != $orderDetail->offer_price)

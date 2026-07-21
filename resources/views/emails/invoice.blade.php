@@ -233,9 +233,10 @@
         <table class="items-table">
             <thead>
                 <tr>
-                    <th style="width: 50%;">Product Description</th>
-                    <th style="width: 15%; text-align: right;">Unit Price</th>
-                    <th style="width: 15%; text-align: center;">Qty</th>
+                    <th style="width: 38%;">Product Description</th>
+                    <th style="width: 15%;">Model</th>
+                    <th style="width: 17%; text-align: right;">Unit Price</th>
+                    <th style="width: 10%; text-align: center;">Qty</th>
                     <th style="width: 20%; text-align: right;">Total</th>
                 </tr>
             </thead>
@@ -266,6 +267,12 @@
                                         <li>{{ $orderDetail->variation }}</li>
                                     </ul>
                                 @endif
+                            </td>
+                            <td>
+                                @php
+                                    $itemModel = $orderDetail->product_stock?->model ?? $orderDetail->product?->stocks?->first()?->model ?? '';
+                                @endphp
+                                {{ $itemModel ?: '-' }}
                             </td>
                             <td style="text-align: right; white-space: nowrap;">
                                 @if ($orderDetail->og_price != $orderDetail->offer_price)
