@@ -233,6 +233,22 @@
                         <tr class="item-row">
                             <td>
                                 <div style="font-weight: bold; color: #111111;">{{ $orderDetail->product->name }}</div>
+                                @php
+                                    $conditionMap = [
+                                        0 => 'New',
+                                        1 => 'Refurbished',
+                                        2 => 'Open Box',
+                                        '0' => 'New',
+                                        '1' => 'Refurbished',
+                                        '2' => 'Open Box',
+                                        'new' => 'New',
+                                        'refurbished' => 'Refurbished',
+                                        'open_box' => 'Open Box',
+                                    ];
+                                    $productCondition = $orderDetail->product->condition ?? 0;
+                                    $conditionName = $conditionMap[$productCondition] ?? 'New';
+                                @endphp
+                                <div style="font-size: 11px; color: #555555; margin-top: 2px;">Condition: {{ $conditionName }}</div>
                                 @if ($orderDetail->variation != null)
                                     @php
                                         $variations = json_decode($orderDetail->variation);
@@ -266,6 +282,22 @@
                     <tr class="item-row">
                         <td>
                             <div style="font-weight: bold; color: #111111;">{{ $orderDetail->product->name }}</div>
+                            @php
+                                $conditionMap = [
+                                    0 => 'New',
+                                    1 => 'Refurbished',
+                                    2 => 'Open Box',
+                                    '0' => 'New',
+                                    '1' => 'Refurbished',
+                                    '2' => 'Open Box',
+                                    'new' => 'New',
+                                    'refurbished' => 'Refurbished',
+                                    'open_box' => 'Open Box',
+                                ];
+                                $productCondition = $orderDetail->product->condition ?? 0;
+                                $conditionName = $conditionMap[$productCondition] ?? 'New';
+                            @endphp
+                            <div style="font-size: 11px; color: #555555; margin-top: 2px;">Condition: {{ $conditionName }}</div>
                             @if($orderDetail->warranty)
                                 <div class="warranty-label">
                                     Warranty: {{ $orderDetail->warranty->name }}
