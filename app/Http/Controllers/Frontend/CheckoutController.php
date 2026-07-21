@@ -106,7 +106,22 @@ class CheckoutController
     {
         $cartController = new CartController();
         $cartSummary = $cartController->getCartSummary();
-        $paymentType = $request->pay ?? 'cod'; // DEFAULT COD
+        
+        $active_payments = [];
+        if (get_setting('payment_method_cod', 1) == 1) {
+            $active_payments[] = 'cod';
+        }
+        if (get_setting('payment_method_tabby', 1) == 1) {
+            $active_payments[] = 'tabby';
+        }
+        if (get_setting('payment_method_card', 1) == 1) {
+            $active_payments[] = 'card';
+        }
+
+        $paymentType = $request->pay ?? (reset($active_payments) ?: 'cod');
+        if (!in_array($paymentType, $active_payments)) {
+            $paymentType = reset($active_payments) ?: 'cod';
+        }
 
         $isGuest = !auth('frontend')->check();
         $billing_shipping_same = $request->same_as_billing ?? null;
@@ -419,9 +434,28 @@ class CheckoutController
 
         OrderDetail::insert($orderItems);
 
-        $shipping = ($request->fulfillment_method == 'pickup') ? 0 : $cartSummary['shipping'];
-        $grand_total = ($sub_total + $cartSummary['tax'] + $shipping + $cartSummary['warranty_sum']) - ($discount + $total_coupon_discount);
+        // $shipping = ($request->fulfillment_method == 'pickup') ? 0 : $cartSummary['shipping'];
+        // $grand_total = ($sub_total + $cartSummary['tax'] + $shipping + $cartSummary['warranty_sum']) - ($discount + $total_coupon_discount);
 
+        $shipping = ($request->fulfillment_method == 'pickup')
+            ? 0
+            : $cartSummary['shipping'];
+
+        // COD additional charge
+        $codCharge = ($paymentType === 'cod')
+            ? (float) (get_setting('cod_additional_charge') ?? 0)
+            : 0;
+
+        $grand_total = (
+            $sub_total
+            + $cartSummary['tax']
+            + $shipping
+            + $cartSummary['warranty_sum']
+            + $codCharge
+        ) - (
+            $discount
+            + $total_coupon_discount
+        );
         $order->update([
             'grand_total' => $grand_total,
             'sub_total' => $sub_total,
@@ -430,6 +464,7 @@ class CheckoutController
             'warranty_amount' => $cartSummary['warranty_sum'],
             'has_warranty' => $cartSummary['has_warranty'],
             'shipping_cost' => $shipping,
+            'cod_charge' => $codCharge,
             'shipping_type' => ($request->fulfillment_method == 'pickup')
                 ? 'pickup'
                 : (($total_shipping == 0) ? 'free_shipping' : 'flat_rate'),
@@ -802,7 +837,7 @@ class CheckoutController
                         'product_id' => $orderDetail->product_id,
                         'return_qty' => $qty,
                         'return_reason' => $request->return_reason,
-                        'status' => 'Pending', // Default status
+                        'status' => 'pending', // Default status
                     ]);
                 }
             }

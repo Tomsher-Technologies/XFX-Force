@@ -15,17 +15,17 @@
                 <form class="" action="" id="sort_orders" method="GET">
                     <div class="row">
                         
-                        <div class="col-lg-3 mt-2">
-                            <div class="form-group mb-2">
+                        <div class="col-lg-3 ">
+                            <div class="form-group">
                                 <label>Order Code</label>
-                                <input type="text" class="form-control" id="search" name="search"@isset($search) value="{{ $search }}" @endisset placeholder="Type Order code & hit Enter">
+                                <input type="text" class="form-control form-control-sm" id="search" name="search"@isset($search) value="{{ $search }}" @endisset placeholder="Type Order code & hit Enter">
                             </div>
                         </div>
 
-                        <div class="col-lg-3 mt-2">
-                            <div class="form-group mb-2">
+                        <div class="col-lg-3">
+                            <div class="form-group ">
                                 <label>Request Approval Status</label>
-                                <select id="ca_search" name="ca_search" class="form-control" >
+                                <select id="ca_search" name="ca_search" class="form-control form-control-sm" >
                                     <option {{ ($ca_search == '') ? 'selected' : '' }} value="">Select status</option>
                                     <option {{ ($ca_search == '0') ? 'selected' : '' }} value="10">Pending</option>
                                     <option {{ ($ca_search == '1') ? 'selected' : '' }} value="1">Approved</option>
@@ -34,34 +34,33 @@
                             </div>
                         </div>
                         
-                        <div class="col-lg-4 mt-2">
-                            <div class="form-group mb-2">
+                        <div class="col-lg-4 ">
+                            <div class="form-group">
                                 <label>Request Date</label>
-                                <input type="text" class="aiz-date-range form-control" value="{{ $date }}" name="date" placeholder="Filter by request date" data-format="DD-MM-Y" data-separator=" to " data-advanced-range="true" autocomplete="off">
+                                <input type="text" class="aiz-date-range form-control form-control-sm" value="{{ $date }}" name="date" placeholder="Filter by request date" data-format="DD-MM-Y" data-separator=" to " data-advanced-range="true" autocomplete="off">
                             </div>
                         </div>
 
                      
 
-                        <div class="col-auto mt-3">
-                            <div class="form-group mb-0" style="margin: inherit;">
-                                <button type="submit" class="btn btn-info">Filter</button>
-                                <a href="{{ route('cancel_requests.index') }}" class="btn  btn-cancel">{{trans('messages.reset')}}</a>
+                        <div class="col-auto m-auto">
+                            <div class="form-group" style="margin: inherit;">
+                                <button type="submit" class="btn btn-info btn-sm">Filter</button>
+                                <a href="{{ route('cancel_requests.index') }}" class="btn btn-sm btn-cancel">{{trans('messages.reset')}}</a>
                             </div>
                         </div>
                     </div>
                 </form>
-            <hr>
-
-            <table class="table aiz-table mb-2">
+           
+            <table class="table table-bordered aiz-table mb-2">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Order Code</th>
                         <th>Request Date</th>
-                        <th data-breakpoints="xl">Customer</th>
+                        <th >Customer</th>
                         <th class="w-25">Reason</th>
-                        <th data-breakpoints="xl">Amount</th>
+                        <th >Amount</th>
                         <th class="text-center">Request Approval</th>
                         <th class="text-center">Order Details</th>
                     </tr>
@@ -107,7 +106,7 @@
                             </td>
 
                             <td class="text-center">
-                                <a class="btn btn-soft-primary btn-icon btn-circle" href="{{route('cancel_orders.show', encrypt($order->id))}}" title="View">
+                                <a class="btn btn-sm btn-soft-primary btn-icon btn-circle" href="{{route('cancel_orders.show', encrypt($order->id))}}" title="View">
                                     <i class="las la-eye"></i>
                                 </a>
                             </td>

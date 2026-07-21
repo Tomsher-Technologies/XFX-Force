@@ -332,6 +332,72 @@
                 </div>
             </div>
 
+            <!-- Payment Methods Settings -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0 h6">Payment Methods Settings</h5>
+                </div>
+                <form action="{{ route('configuration.payment_methods_settings') }}" method="POST">
+                    @csrf
+                    <div class="card-body">
+                        <div class="form-group row mb-3">
+                            <div class="col-md-6">
+                                <label class="col-from-label mb-0">Cash On Delivery</label>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <label class="aiz-switch aiz-switch-success mb-0">
+                                    <input name="payment_method_cod"
+                                        {{ get_setting('payment_method_cod', 1) == '1' ? 'checked' : '' }} type="checkbox">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <textarea name="payment_method_cod_refund_note" class="form-control" rows="4"
+                                    placeholder="Refund days note (e.g. Refunds take 1-3 business days)">{{ get_setting('payment_method_cod_refund_note') }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <div class="col-md-6">
+                                <label class="col-from-label mb-0">Tabby</label>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <label class="aiz-switch aiz-switch-success mb-0">
+                                    <input name="payment_method_tabby"
+                                        {{ get_setting('payment_method_tabby', 1) == '1' ? 'checked' : '' }} type="checkbox">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <textarea name="payment_method_tabby_refund_note" class="form-control" rows="4"
+                                    placeholder="Refund days note (e.g. Refunds take 5-7 business days)">{{ get_setting('payment_method_tabby_refund_note') }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <div class="col-md-6">
+                                <label class="col-from-label mb-0">Credit / Debit Card</label>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <label class="aiz-switch aiz-switch-success mb-0">
+                                    <input name="payment_method_card"
+                                        {{ get_setting('payment_method_card', 1) == '1' ? 'checked' : '' }} type="checkbox">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <textarea name="payment_method_card_refund_note" class="form-control" rows="4"
+                                    placeholder="Refund days note (e.g. Refunds take 3-5 business days)">{{ get_setting('payment_method_card_refund_note') }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-0 text-right">
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </div>
 

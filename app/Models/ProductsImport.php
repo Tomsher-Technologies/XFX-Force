@@ -290,16 +290,42 @@ class ProductsImport implements ToCollection, WithHeadingRow
                 }
 
                 // save images (thumbnail and gallery)
-                if (isset($firstRow['url_1'])) {
+                /*if (isset($firstRow['url_1'])) {
                     $product->thumbnail_img = ImageHelper::downloadAndResizeImage(
                         'main_product',
                         $firstRow['url_1'],
                         $product->sku,
                         true
                     );
+                }*/
+
+                if (!empty($firstRow['url_1'])) {
+                    try {
+                        $product->thumbnail_img = ImageHelper::downloadAndResizeImage(
+                            'main_product',
+                            $firstRow['url_1'],
+                            $product->sku,
+                            true
+                        );
+                    } catch (\Exception $e) {
+                        $this->errorsList[] = [
+                            'row' => 'Product: ' . $product->sku,
+                            'column' => 'URL 1',
+                            'errors' => [
+                                "Thumbnail image could not be imported for <strong>SKU: {$product->sku}</strong>. Please verify that the image URL is valid and publicly accessible."
+                            ],
+                            'values' => $firstRow
+                        ];
+
+                        Log::warning('Product thumbnail import failed', [
+                            'sku' => $product->sku,
+                            'url' => $firstRow['url_1'],
+                            'message' => $e->getMessage(),
+                        ]);
+                    }
                 }
 
-                $gallery = [];
+                /*$gallery = [];
                 if (isset($firstRow['url_2'])) {
                     if (!empty($firstRow['url_2'])) {
                         $urls = explode(',', $firstRow['url_2']);
@@ -317,6 +343,57 @@ class ProductsImport implements ToCollection, WithHeadingRow
                         }
                     }
                 }
+                $product->photos = implode(',', $gallery);
+                $product->save();*/
+
+                $gallery = [];
+
+                if (!empty($firstRow['url_2'])) {
+                    $urls = explode(',', $firstRow['url_2']);
+
+                    foreach ($urls as $i => $url) {
+                        $url = trim($url);
+
+                        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                            $this->errorsList[] = [
+                                'row' => 'Product: ' . $product->sku,
+                                'column' => 'URL 2',
+                                'errors' => [
+                                    "Invalid gallery image URL. <strong>SKU: {$product->sku}</strong><br>{$url}"
+                                ],
+                                'values' => $firstRow
+                            ];
+
+                            continue;
+                        }
+
+                        try {
+                            $image = ImageHelper::downloadAndResizeImage(
+                                'main_product',
+                                $url,
+                                $product->sku,
+                                false,
+                                $i + 1
+                            );
+
+                            if (!empty($image)) {
+                                $gallery[] = $image;
+                            }
+                        } catch (\Exception $e) {
+                            $this->errorsList[] = [
+                                'row' => 'Product: ' . $product->sku,
+                                'column' => 'URL 2',
+                                'errors' => [
+                                    "Gallery image could not be imported. <strong>SKU: {$product->sku}</strong>. Please check that the image URLs are valid and publicly accessible.",
+                                ],
+                                'values' => $firstRow
+                            ];
+
+                            continue;
+                        }
+                    }
+                }
+
                 $product->photos = implode(',', $gallery);
                 $product->save();
 
@@ -343,13 +420,43 @@ class ProductsImport implements ToCollection, WithHeadingRow
                     $stockImages = [];
 
                     // Stock image first
-                    if (!empty($row['stock_image'])) {
+                    /*if (!empty($row['stock_image'])) {
                         $stockImages[] = ImageHelper::downloadAndResizeImage(
                             'sub_product',
                             $row['stock_image'],
                             $product->sku,
                             true
                         );
+                    }*/
+
+                    if (!empty($row['stock_image'])) {
+                        try {
+                            $stockImage = ImageHelper::downloadAndResizeImage(
+                                'sub_product',
+                                $row['stock_image'],
+                                $product->sku,
+                                true
+                            );
+
+                            if (!empty($stockImage)) {
+                                $stockImages[] = $stockImage;
+                            }
+                        } catch (\Exception $e) {
+                            $this->errorsList[] = [
+                                'row' => 'SKU: ' . ($row['sku'] ?? ''),
+                                'column' => 'Stock Image',
+                                'errors' => [
+                                    "The stock image could not be imported for <strong>SKU: {$row['sku']}</strong>. Please verify that the image URL is valid and publicly accessible."
+                                ],
+                                'values' => $row
+                            ];
+
+                            Log::warning('Stock image import failed', [
+                                'sku' => $row['sku'] ?? null,
+                                'url' => $row['stock_image'] ?? null,
+                                'message' => $e->getMessage(),
+                            ]);
+                        }
                     }
 
                     // Include product thumbnail

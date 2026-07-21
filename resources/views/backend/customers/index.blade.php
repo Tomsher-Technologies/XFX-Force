@@ -35,8 +35,8 @@
                             <th>Name</th>
                             <th data-breakpoints="lg">Email Address</th>
                             <th data-breakpoints="lg">Phone</th>
-                            <th data-breakpoints="lg">Phone Verified Status</th>
-                            <th>Options</th>
+                            <th data-breakpoints="lg">Registration Date</th>
+                            <th class="text-center">Options</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,30 +53,24 @@
                                     </td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->phone }}</td>
-                                    <td>
-                                        @if ($user->email_verified_at)
-                                            <span class="badge badge-inline badge-success">Verified</span>
-                                        @else
-                                            <span class="badge badge-inline badge-danger">Unverified</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-right">
+                                    <td>{{ $user->created_at ? $user->created_at->format('d-m-Y h:i A') : '' }}</td>
+                                    <td class="text-center">
                                        
                                         @if ($user->banned != 1)
-                                            <a href="#" class="btn btn-soft-danger btn-icon btn-circle"
+                                            <a href="#" class="btn btn-sm btn-soft-danger btn-icon btn-circle"
                                                 onclick="confirm_ban('{{ route('customers.ban', encrypt($user->id)) }}');"
                                                 title="Ban this Customer">
                                                 <i class="las la-user-slash"></i>
                                             </a>
                                         @else
-                                            <a href="#" class="btn btn-soft-success btn-icon btn-circle"
+                                            <a href="#" class="btn btn-sm btn-soft-success btn-icon btn-circle"
                                                 onclick="confirm_unban('{{ route('customers.ban', encrypt($user->id)) }}');"
                                                 title="Unban this Customer">
                                                 <i class="las la-user-check"></i>
                                             </a>
                                         @endif
                                         <a href="#"
-                                            class="btn btn-soft-danger btn-icon btn-circle confirm-delete"
+                                            class="btn btn-sm btn-soft-danger btn-icon btn-circle confirm-delete"
                                             data-href="{{ route('customers.destroy', $user->id) }}"
                                             title="Delete">
                                             <i class="las la-trash"></i>

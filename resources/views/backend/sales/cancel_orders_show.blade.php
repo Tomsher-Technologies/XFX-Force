@@ -5,7 +5,7 @@
     <div class="card">
         <div class="card-header">
             <h1 class="h2 fs-16 mb-0">Order Details</h1>
-            <a class="btn btn-info" href="{{ Session::has('last_url') ? Session::get('last_url') : route('cancel_requests.index') }}" >Go Back</a>
+            <a class="btn btn-sm btn-info" href="{{ Session::has('last_url') ? Session::get('last_url') : route('cancel_requests.index') }}" >Go Back</a>
         </div>
         <div class="card-body">
             <div class="row gutters-5">
@@ -32,22 +32,11 @@
                         {{ json_decode($order->shipping_address)->address }},
                         {{ json_decode($order->shipping_address)->city }}
                         <br>
-                        {{-- {{ json_decode($order->shipping_address)->zipcode }} --}}
+                        
                     </address>
 
                     <p><b>Order Notes : </b> {{$order->order_notes ?? ''}}</p>
-                    @if ($order->manual_payment && is_array(json_decode($order->manual_payment_data, true)))
-                        <br>
-                        <strong class="text-main">Payment Information</strong><br>
-                        Name: {{ json_decode($order->manual_payment_data)->name }},
-                        Amount: {{ single_price(json_decode($order->manual_payment_data)->amount) }},
-                        TRX ID: {{ json_decode($order->manual_payment_data)->trx_id }}
-                        <br>
-                        <a href="{{ uploaded_asset(json_decode($order->manual_payment_data)->photo) }}"
-                            target="_blank"><img
-                                src="{{ uploaded_asset(json_decode($order->manual_payment_data)->photo) }}" alt=""
-                                height="100"></a>
-                    @endif
+                    
                 </div>
                 <div class="col-sm-12 col-md-6 float-right">
                     <table class="float-right">

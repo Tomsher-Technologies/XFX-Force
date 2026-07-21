@@ -36,18 +36,7 @@
                     </address>
 
                     <p><b>Order Notes : </b> {{$order->order_notes ?? ''}}</p>
-                    @if ($order->manual_payment && is_array(json_decode($order->manual_payment_data, true)))
-                        <br>
-                        <strong class="text-main">Payment Information</strong><br>
-                        Name: {{ json_decode($order->manual_payment_data)->name }},
-                        Amount: {{ single_price(json_decode($order->manual_payment_data)->amount) }},
-                        TRX ID: {{ json_decode($order->manual_payment_data)->trx_id }}
-                        <br>
-                        <a href="{{ uploaded_asset(json_decode($order->manual_payment_data)->photo) }}"
-                            target="_blank"><img
-                                src="{{ uploaded_asset(json_decode($order->manual_payment_data)->photo) }}" alt=""
-                                height="100"></a>
-                    @endif
+                    
                 </div>
                 <div class="col-sm-12 col-md-6 float-right">
                     <table class="float-right">
@@ -155,16 +144,36 @@
 
                                         @if ($order->delivery_status == 'delivered')
                                             @if ($returnRequest)
-                                                <p><br><b>Return Status</b>: 
-                                                    <span class="badge badge-lg badge-inline 
-                                                        @if($returnRequest->status == 'pending') bg-warning
-                                                        @elseif($returnRequest->status == 'approved') bg-success
-                                                        @else bg-danger @endif">
-                                                        {{ ucfirst($returnRequest->status) }}
-                                                    </span>
+                                                <p class="mt-2 mb-0"><b>Return Status</b>: 
+                                                    @if($returnRequest->status == 'pending')
+                                                        <span class="badge badge-sm badge-inline badge-soft-warning px-2.5 py-1.5 rounded-pill">
+                                                            <span class="pulse-dot bg-warning"></span>
+                                                            Pending
+                                                        </span>
+                                                    @elseif($returnRequest->status == 'approved')
+                                                        <span class="badge badge-sm badge-inline badge-soft-primary px-2.5 py-1.5 rounded-pill">
+                                                            <i class="las la-check-circle mr-1"></i>
+                                                            Approved
+                                                        </span>
+                                                    @elseif($returnRequest->status == 'received')
+                                                        <span class="badge badge-sm badge-inline badge-soft-info px-2.5 py-1.5 rounded-pill">
+                                                            <i class="las la-truck mr-1"></i>
+                                                            Received
+                                                        </span>
+                                                    @elseif($returnRequest->status == 'refunded')
+                                                        <span class="badge badge-sm badge-inline badge-soft-success px-2.5 py-1.5 rounded-pill">
+                                                            <i class="las la-check-circle mr-1"></i>
+                                                            Refunded
+                                                        </span>
+                                                    @else
+                                                        <span class="badge badge-sm badge-inline badge-soft-danger px-2.5 py-1.5 rounded-pill">
+                                                            <i class="las la-times-circle mr-1"></i>
+                                                            Rejected
+                                                        </span>
+                                                    @endif
                                                 </p>
                                             @else
-                                                <br><p>No return request for this product.</p>
+                                                <p class="mt-2 mb-0 text-muted">No return request for this product.</p>
                                             @endif
                                         @endif
                                     </td>
@@ -256,25 +265,46 @@
         list-style: none;
     }
     .status {
-        &.completed:before {
-            background-color: #03ff0338;
-            border-color: #78D965;
-            box-shadow: 0px 0px 4px 1px #94E185;
-        }
-
-        &.picked_up:before {
-            background-color: #e9ae004f;
-            border-color: #FFB161;
-            box-shadow: 0px 0px 4px 1px #FFC182;
-        }
-        &:before {
-            content: ' ';
-            display: inline-block;
-            width: 25px;
-            height: 12px;
-            margin-right: 10px;
-            border: 1px solid #000;
-        }
+        color: #8f9298;
+        font-weight: 600;
+    }
+    .status.completed:before {
+        background-color: #03ff0338;
+        border-color: #78D965;
+        box-shadow: 0px 0px 4px 1px #94E185;
+    }
+    .status.picked_up:before {
+        background-color: #e9ae004f;
+        border-color: #FFB161;
+        box-shadow: 0px 0px 4px 1px #FFC182;
+    }
+    .status:before {
+        content: ' ';
+        display: inline-block;
+        width: 25px;
+        height: 12px;
+        margin-right: 10px;
+        border: 1px solid #000;
+    }
+    
+    /* Pulsing status dot styling */
+    .pulse-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 6px;
+        animation: status-pulse 1.5s infinite;
+    }
+    @keyframes status-pulse {
+        0% { opacity: 0.4; transform: scale(0.9); }
+        50% { opacity: 1; transform: scale(1.1); }
+        100% { opacity: 0.4; transform: scale(0.9); }
+    }
+    .badge-inline i {
+        vertical-align: middle;
+        position: relative;
+        top: -1px;
     }
     </style>
 @endsection

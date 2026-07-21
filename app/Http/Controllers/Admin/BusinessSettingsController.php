@@ -226,4 +226,48 @@ class BusinessSettingsController extends Controller
         Artisan::call('cache:clear');
         return back();
     }
+
+    public function payment_methods_settings(Request $request)
+    {
+        BusinessSetting::updateOrCreate([
+            'type' => 'payment_method_cod'
+        ], [
+            'value' => $request->payment_method_cod ? 1 : 0
+        ]);
+
+        BusinessSetting::updateOrCreate([
+            'type' => 'payment_method_cod_refund_note'
+        ], [
+            'value' => $request->payment_method_cod_refund_note ?? ''
+        ]);
+
+        BusinessSetting::updateOrCreate([
+            'type' => 'payment_method_tabby'
+        ], [
+            'value' => $request->payment_method_tabby ? 1 : 0
+        ]);
+
+        BusinessSetting::updateOrCreate([
+            'type' => 'payment_method_tabby_refund_note'
+        ], [
+            'value' => $request->payment_method_tabby_refund_note ?? ''
+        ]);
+
+        BusinessSetting::updateOrCreate([
+            'type' => 'payment_method_card'
+        ], [
+            'value' => $request->payment_method_card ? 1 : 0
+        ]);
+
+        BusinessSetting::updateOrCreate([
+            'type' => 'payment_method_card_refund_note'
+        ], [
+            'value' => $request->payment_method_card_refund_note ?? ''
+        ]);
+
+        flash('Payment settings updated successfully')->success();
+
+        Artisan::call('cache:clear');
+        return back();
+    }
 }

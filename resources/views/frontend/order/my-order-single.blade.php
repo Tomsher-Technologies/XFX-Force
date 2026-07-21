@@ -86,7 +86,6 @@
                         </div>
                     </div>
                     <!-- top buttons -->
-
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-2 space-y-6">
                             @php
@@ -404,59 +403,117 @@
                                                             @endif
                                                         </p>
 
-                                                        <div class="flex flex-col items-center md:items-start justify-center md:justify-start my-2">
-                                                            @if($totalPendingQty > 0)
-                                                                <button onclick="openStatusModal()" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-yellow-500/5 border border-yellow-500/20 rounded-full hover:bg-yellow-500 transition-all duration-[600ms] group/btn">
-                                                                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
-                                                                    <span class="text-yellow-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
-                                                                        Return Requested {{ $totalPendingQty }}@if($totalPendingQty <  $item->quantity) out of {{ $item->quantity }} @endif
-                                                                    </span>
-                                                                </button>
-                                                                @php
-                                                                    $returnDetails = \App\Models\OrderReturn::where('order_detail_id', $item->id)->get();
-                                                                @endphp
+                                                        <div class="flex flex-col items-center md:items-start justify-center md:justify-start my-2 gap-2">
+                                                            @php
+                                                                $returnDetails = \App\Models\OrderReturn::where('order_detail_id', $item->id)->get();
+                                                                $totalPending = $returnDetails->where('status', 'pending')->sum('return_qty');
+                                                                $totalApproved = $returnDetails->where('status', 'approved')->sum('return_qty');
+                                                                $totalReceived = $returnDetails->where('status', 'received')->sum('return_qty');
+                                                                $totalRefunded = $returnDetails->where('status', 'refunded')->sum('return_qty');
+                                                                $totalRejected = $returnDetails->where('status', 'rejected')->sum('return_qty');
+                                                            @endphp
+
+                                                            @if($returnDetails->count() > 0)
+                                                                @if($totalPending > 0)
+                                                                    <button onclick="openStatusModal({{ $item->id }})" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-yellow-500/5 border border-yellow-500/20 rounded-full hover:bg-yellow-500 transition-all duration-[600ms] group/btn">
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                                        <span class="text-yellow-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
+                                                                            Return Requested {{ $totalPending }}@if($totalPending < $item->quantity) out of {{ $item->quantity }} @endif
+                                                                        </span>
+                                                                    </button>
+                                                                @endif
+
+                                                                @if($totalApproved > 0)
+                                                                    <button onclick="openStatusModal({{ $item->id }})" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-blue-500/5 border border-blue-500/20 rounded-full hover:bg-blue-500 transition-all duration-[600ms] group/btn">
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                                        <span class="text-blue-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
+                                                                            Return Approved {{ $totalApproved }}@if($totalApproved < $item->quantity) out of {{ $item->quantity }} @endif
+                                                                        </span>
+                                                                    </button>
+                                                                @endif
+
+                                                                @if($totalReceived > 0)
+                                                                    <button onclick="openStatusModal({{ $item->id }})" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-cyan-500/5 border border-cyan-500/20 rounded-full hover:bg-cyan-500 transition-all duration-[600ms] group/btn">
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                                        <span class="text-cyan-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
+                                                                            Items Received {{ $totalReceived }}@if($totalReceived < $item->quantity) out of {{ $item->quantity }} @endif
+                                                                        </span>
+                                                                    </button>
+                                                                @endif
+
+                                                                @if($totalRefunded > 0)
+                                                                    <button onclick="openStatusModal({{ $item->id }})" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-green-500/5 border border-green-500/20 rounded-full hover:bg-green-500 transition-all duration-[600ms] group/btn">
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                                        <span class="text-green-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
+                                                                            Refunded {{ $totalRefunded }}@if($totalRefunded < $item->quantity) out of {{ $item->quantity }} @endif
+                                                                        </span>
+                                                                    </button>
+                                                                @endif
+
+                                                                @if($totalRejected > 0)
+                                                                    <button onclick="openStatusModal({{ $item->id }})" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-red-500/5 border border-red-500/20 rounded-full hover:bg-red-500 transition-all duration-[600ms] group/btn">
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
+                                                                        <span class="text-red-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">
+                                                                            Return Rejected {{ $totalRejected }}@if($totalRejected < $item->quantity) out of {{ $item->quantity }} @endif
+                                                                        </span>
+                                                                    </button>
+                                                                @endif
 
                                                                 <!--return status modal-->
-                                                                <div id="statusModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4" onclick="closeStatusModal()">
-                                                                    <div id="statusContent" class="bg-[#1C2228] border border-[#282B34] w-full max-w-2xl rounded-[20px] shadow-2xl overflow-hidden transform transition-all" onclick="event.stopPropagation()">
+                                                                <div id="statusModal-{{ $item->id }}" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 hidden" onclick="closeStatusModal({{ $item->id }})">
+                                                                    <div id="statusContent-{{ $item->id }}" class="bg-[#1C2228] border border-[#282B34] w-full max-w-2xl rounded-[20px] shadow-2xl overflow-hidden transform transition-all" onclick="event.stopPropagation()">
                                                                         <div class="p-6 border-b border-[#282B34] flex justify-between items-center bg-[#1C2228]">
-                                                                            <h4 class="text-white font-medium uppercase tracking-wider text-sm">Return Details</h4>
-                                                                            <button onclick="closeStatusModal()" class="text-gray-500 hover:text-white transition-colors cursor-pointer p-1">
+                                                                            <h4 class="text-white font-medium uppercase tracking-wider text-sm">Return Request Details</h4>
+                                                                            <button onclick="closeStatusModal({{ $item->id }})" class="text-gray-500 hover:text-white transition-colors cursor-pointer p-1">
                                                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                                                 </svg>
                                                                             </button>
                                                                         </div>
                                                                         
-                                                                        @foreach ($returnDetails as $returnDetail)
                                                                         <div class="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-6">
-                                                                            <div class="flex items-center gap-6 group">
-                                                                                <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
-                                                                                    <img src="{{ $image }}" class="w-full h-full object-cover rounded-lg" alt="Product">
-                                                                                </div>
-                                                                                <div class="flex-grow">
-                                                                                    <h4 class="text-white font-medium line-clamp-1 text-sm md:text-base">
-                                                                                        {{ $returnDetail->orderDetail->product->name }}
-                                                                                    </h4>
-                                                                                    <p class="text-gray-500 text-xs mt-1">{{ $returnDetail->orderDetail->product_stock->stock_title }}</p>
-                                                                                    <p class="text-[#2A7CFF] text-[11px] mt-2 font-bold uppercase tracking-tight">
-                                                                                        {{ \Carbon\Carbon::parse($order->created_at)->format('F d, Y • H:i') }}
-                                                                                    </p>
-                                                                                </div>
-                                                                                <div class="hidden md:flex flex-col text-right items-end">
-                                                                                    <p class="text-gray-400 text-[10px] uppercase font-bold mb-2">Quantity</p>
-                                                                                    <p class="text-white text-lg font-bold leading-none">{{ $returnDetail->return_qty }}</p>
-                                                                                </div>
-                                                                            </div>
+                                                                            @foreach ($returnDetails as $returnDetail)
+                                                                                <div class="border-b border-white/5 pb-6 last:border-0 last:pb-0">
+                                                                                    <div class="flex items-center gap-6 group mb-4">
+                                                                                        <div class="w-20 h-20 bg-[#0f161b] rounded-xl border border-white/5 flex-shrink-0 flex items-center justify-center p-2">
+                                                                                            <img src="{{ $image }}" class="w-full h-full object-cover rounded-lg" alt="Product">
+                                                                                        </div>
+                                                                                        <div class="flex-grow">
+                                                                                            <h4 class="text-white font-medium line-clamp-1 text-sm md:text-base">
+                                                                                                {{ $returnDetail->orderDetail->product->name }}
+                                                                                            </h4>
+                                                                                            <p class="text-gray-500 text-xs mt-1">{{ $returnDetail->orderDetail->product_stock->stock_title }}</p>
+                                                                                            
+                                                                                            <div class="flex items-center gap-2 mt-2">
+                                                                                                <span class="text-[#2A7CFF] text-[11px] font-bold uppercase tracking-tight">
+                                                                                                    {{ \Carbon\Carbon::parse($returnDetail->created_at)->format('F d, Y • H:i') }}
+                                                                                                </span>
+                                                                                                
+                                                                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase 
+                                                                                                    @if($returnDetail->status == 'pending') text-yellow-500 bg-yellow-500/10 border border-yellow-500/20
+                                                                                                    @elseif($returnDetail->status == 'approved') text-blue-500 bg-blue-500/10 border border-blue-500/20
+                                                                                                    @elseif($returnDetail->status == 'received') text-cyan-500 bg-cyan-500/10 border border-cyan-500/20
+                                                                                                    @elseif($returnDetail->status == 'refunded') text-green-500 bg-green-500/10 border border-green-500/20
+                                                                                                    @else text-red-500 bg-red-500/10 border border-red-500/20 @endif">
+                                                                                                    {{ $returnDetail->status }}
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="hidden md:flex flex-col text-right items-end">
+                                                                                            <p class="text-gray-400 text-[10px] uppercase font-bold mb-2">Quantity</p>
+                                                                                            <p class="text-white text-lg font-bold leading-none">{{ $returnDetail->return_qty }}</p>
+                                                                                        </div>
+                                                                                    </div>
 
-                                                                            <div class="pt-4 border-t border-white/5">
-                                                                                <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-3 px-1">Reason for return</p>
-                                                                                <div class="w-full bg-[#0f161b] border border-[#282B34] rounded-2xl p-5 text-gray-300 text-sm leading-relaxed italic relative">
-                                                                                    {{ $returnDetail->return_reason }}
+                                                                                    <div class="pt-2">
+                                                                                        <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 px-1">Reason for return</p>
+                                                                                        <div class="w-full bg-[#0f161b] border border-[#282B34] rounded-2xl p-4 text-gray-300 text-sm leading-relaxed italic relative">
+                                                                                            {{ $returnDetail->return_reason }}
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
+                                                                            @endforeach
                                                                         </div>
-                                                                        @endforeach
 
                                                                         <div class="p-6 bg-[#171c21] border-t border-[#282B34]">
                                                                             <p class="text-center text-gray-400 text-[13px] italic">
@@ -466,19 +523,6 @@
                                                                     </div>
                                                                 </div>
                                                                 <!--//return status modal-->
-                                                            @endif
-
-                                                            @if($totalReturnedQty > 0)
-                                                                <button class="px-2 py-1 text-green-500 bg-green-500/10 rounded-full text-[10px] font-bold uppercase">
-                                                                    Returned {{ $totalReturnedQty }}@if($totalReturnedQty <  $item->quantity) out of {{ $item->quantity }} @endif
-                                                                </button>
-                                                            @endif
-
-                                                            @if($totalRejectedQty > 0)
-                                                                <button class="mt-[10px] flex items-center gap-2 px-3 py-1 bg-red-500/5 border border-red-500/20 rounded-full hover:bg-red-500 transition-all duration-[600ms] group/btn">
-                                                                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse font-medium group-hover:bg-white transition-all duration-[600ms]"></span>
-                                                                <span class="text-red-500 text-[10px] font-bold uppercase group-hover:text-white transition-all duration-[600ms]">Return Rejected  {{ $totalRejectedQty }}@if($totalRejectedQty <  $item->quantity) out of {{ $item->quantity }} @endif
-                                                                </button>
                                                             @endif
                                                         </div>
                                                         
@@ -781,6 +825,34 @@
                                     </p>
                                 </div>
                             </div>
+
+                            @php
+                                $hasRefundedRequest = false;
+                                foreach ($order->orderDetails as $detail) {
+                                    if (\App\Models\OrderReturn::where('order_detail_id', $detail->id)->where('status', 'refunded')->exists()) {
+                                        $hasRefundedRequest = true;
+                                        break;
+                                    }
+                                }
+                            @endphp
+
+                            @if($hasRefundedRequest)
+                                @php
+                                    $refundNoteKey = 'payment_method_' . $order->payment_type . '_refund_note';
+                                    $refundNote = get_setting($refundNoteKey);
+                                @endphp
+                                @if(filled($refundNote))
+                                    <div class="mt-6 mb-6 bg-green-500/10 border border-green-500/20 text-green-500 p-4 rounded-xl flex items-start gap-3">
+                                        <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+                                        </svg>
+                                        <div>
+                                            <h4 class="font-bold text-sm uppercase tracking-wider mb-1">Refund Processing Information</h4>
+                                            <p class="text-xs text-gray-300 leading-relaxed">{{ $refundNote }}</p>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -1133,20 +1205,31 @@
 
 <!--return modal status modal script-->
 <script>
-    /* Simple JS triggers */
-    function openStatusModal() {
-        document.getElementById('statusModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
+    /* Simple JS triggers with ID parameters */
+    function openStatusModal(id) {
+        const modal = document.getElementById('statusModal-' + id);
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
     }
 
-    function closeStatusModal() {
-        document.getElementById('statusModal').classList.remove('active');
-        document.body.style.overflow = '';
+    function closeStatusModal(id) {
+        const modal = document.getElementById('statusModal-' + id);
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
     }
 
-    // Escape Key Support
+    // Escape Key Support to close all active status modals
     window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeStatusModal();
+        if (e.key === 'Escape') {
+            document.querySelectorAll('[id^="statusModal-"]').forEach(modal => {
+                modal.classList.add('hidden');
+            });
+            document.body.style.overflow = '';
+        }
     });
 </script>
 <!--//return modal status modal script-->
