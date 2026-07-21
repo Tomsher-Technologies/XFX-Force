@@ -255,61 +255,50 @@
                                     <td>{{ $key + 1 }}</td>
                                 
                                     <td>
-                                        @if ($orderDetail->product != null)
-                                            <img height="50" src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}">
-                                        @else
-                                            <strong>N/A</strong>
-                                        @endif
-                                        @if ($orderDetail->product != null)
-                                            <strong class="text-muted fs-13">{{ $orderDetail->product->name }}</strong>
-                                            @php
-                                                $conditionMap = [
-                                                    0 => 'New',
-                                                    1 => 'Refurbished',
-                                                    2 => 'Open Box',
-                                                    '0' => 'New',
-                                                    '1' => 'Refurbished',
-                                                    '2' => 'Open Box',
-                                                    'new' => 'New',
-                                                    'refurbished' => 'Refurbished',
-                                                    'open_box' => 'Open Box',
-                                                ];
-                                                $productCondition = $orderDetail->product->condition ?? 0;
-                                                $conditionName = $conditionMap[$productCondition] ?? 'New';
-                                            @endphp
-                                            <div class="mt-1">
-                                                <small class="text-muted">Condition: <span class="badge badge-inline badge-soft-info">{{ $conditionName }}</span></small>
-                                            </div>
-                                            {{-- <small> --}}
-                                                @if ($orderDetail->variation != null)
-                                                    @php
-                                                        $variations = json_decode($orderDetail->variation);
-                                                    
-                                                    @endphp
-                                                    <ul>
-                                                        @foreach($variations as $var)
-                                                        <li> {{ $var->name ?? '' }} : <b>{{ $var->value ?? '' }}</b></li>
-                                                        @endforeach
-                                                    </ul>
+                                        <div class="d-flex align-items-center">
+                                            <div class="mr-3 flex-shrink-0">
+                                                @if ($orderDetail->product != null)
+                                                    <img height="50" class="size-50px img-fit" src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}">
+                                                @else
+                                                    <strong>N/A</strong>
                                                 @endif
-                                            {{-- </small> --}}
-                                        @else
-                                            <strong>Product Unavailable</strong>
-                                        @endif
-                                        @if ($order->delivery_status == 'delivered')
-                                            {{-- @if ($returnRequest)
-                                                <p><br><b>Return Status</b>: 
-                                                    <span class="badge badge-lg badge-inline 
-                                                        @if($returnRequest->status == 'pending') bg-warning
-                                                        @elseif($returnRequest->status == 'approved') bg-success
-                                                        @else bg-danger @endif">
-                                                        {{ ucfirst($returnRequest->status) }}
-                                                    </span>
-                                                </p>
-                                            @else
-                                                <br><p>No return request for this product.</p>
-                                            @endif --}}
-                                        @endif
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                @if ($orderDetail->product != null)
+                                                    <strong class="text-muted fs-13">{{ $orderDetail->product->name }}</strong>
+                                                    @php
+                                                        $conditionMap = [
+                                                            0 => 'New',
+                                                            1 => 'Refurbished',
+                                                            2 => 'Open Box',
+                                                            '0' => 'New',
+                                                            '1' => 'Refurbished',
+                                                            '2' => 'Open Box',
+                                                            'new' => 'New',
+                                                            'refurbished' => 'Refurbished',
+                                                            'open_box' => 'Open Box',
+                                                        ];
+                                                        $productCondition = $orderDetail->product->condition ?? 0;
+                                                        $conditionName = $conditionMap[$productCondition] ?? 'New';
+                                                    @endphp
+                                                    <div class="mt-1">
+                                                        <small class="text-muted">Condition: <span class="badge badge-inline badge-soft-info">{{ $conditionName }}</span></small>
+                                                    </div>
+                                                    @if ($orderDetail->variation != null)
+                                                        @php
+                                                            $variations = json_decode($orderDetail->variation);
+                                                        @endphp
+                                                        <ul class="mb-0 pl-3">
+                                                            @foreach($variations as $var)
+                                                            <li> {{ $var->name ?? '' }} : <b>{{ $var->value ?? '' }}</b></li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
+                                                @else
+                                                    <strong>Product Unavailable</strong>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </td>
                                     <td class="text-center">
                                         @php
@@ -340,61 +329,50 @@
                                     <td>{{ $key + 1 }}</td>
                                     
                                     <td>
-                                         @if ($orderDetail->product != null)
-                                            <img height="50" src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}">
-                                        @else
-                                            <strong>N/A</strong>
-                                        @endif
-                                        @if ($orderDetail->product != null)
-                                            <strong class="text-muted fs-13">{{ $orderDetail->product->name }}</strong>
-                                            @php
-                                                $conditionMap = [
-                                                    0 => 'New',
-                                                    1 => 'Refurbished',
-                                                    2 => 'Open Box',
-                                                    '0' => 'New',
-                                                    '1' => 'Refurbished',
-                                                    '2' => 'Open Box',
-                                                    'new' => 'New',
-                                                    'refurbished' => 'Refurbished',
-                                                    'open_box' => 'Open Box',
-                                                ];
-                                                $productCondition = $orderDetail->product->condition ?? 0;
-                                                $conditionName = $conditionMap[$productCondition] ?? 'New';
-                                            @endphp
-                                            <div class="mt-1">
-                                                <small class="text-muted">Condition: <span class="badge badge-inline badge-soft-info">{{ $conditionName }}</span></small>
-                                            </div>
-                                            {{-- <small> --}}
-                                                @if ($orderDetail->variation != null)
-                                                    @php
-                                                        $variations = json_decode($orderDetail->variation);
-                                                    
-                                                    @endphp
-                                                    <ul>
-                                                        @foreach($variations as $var)
-                                                        <li> {{ $var->name ?? '' }} : <b>{{ $var->value ?? '' }}</b></li>
-                                                        @endforeach
-                                                    </ul>
+                                        <div class="d-flex align-items-center">
+                                            <div class="mr-3 flex-shrink-0">
+                                                @if ($orderDetail->product != null)
+                                                    <img height="50" class="size-50px img-fit" src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}">
+                                                @else
+                                                    <strong>N/A</strong>
                                                 @endif
-                                            {{-- </small> --}}
-                                        @else
-                                            <strong>Product Unavailable</strong>
-                                        @endif
-                                        @if ($order->delivery_status == 'delivered')
-                                            {{-- @if ($returnRequest)
-                                                <p><br><b>Return Status</b>: 
-                                                    <span class="badge badge-lg badge-inline 
-                                                        @if($returnRequest->status == 'pending') bg-warning
-                                                        @elseif($returnRequest->status == 'approved') bg-success
-                                                        @else bg-danger @endif">
-                                                        {{ ucfirst($returnRequest->status) }}
-                                                    </span>
-                                                </p>
-                                            @else
-                                                <br><p>No return request for this product.</p>
-                                            @endif --}}
-                                        @endif
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                @if ($orderDetail->product != null)
+                                                    <strong class="text-muted fs-13">{{ $orderDetail->product->name }}</strong>
+                                                    @php
+                                                        $conditionMap = [
+                                                            0 => 'New',
+                                                            1 => 'Refurbished',
+                                                            2 => 'Open Box',
+                                                            '0' => 'New',
+                                                            '1' => 'Refurbished',
+                                                            '2' => 'Open Box',
+                                                            'new' => 'New',
+                                                            'refurbished' => 'Refurbished',
+                                                            'open_box' => 'Open Box',
+                                                        ];
+                                                        $productCondition = $orderDetail->product->condition ?? 0;
+                                                        $conditionName = $conditionMap[$productCondition] ?? 'New';
+                                                    @endphp
+                                                    <div class="mt-1">
+                                                        <small class="text-muted">Condition: <span class="badge badge-inline badge-soft-info">{{ $conditionName }}</span></small>
+                                                    </div>
+                                                    @if ($orderDetail->variation != null)
+                                                        @php
+                                                            $variations = json_decode($orderDetail->variation);
+                                                        @endphp
+                                                        <ul class="mb-0 pl-3">
+                                                            @foreach($variations as $var)
+                                                            <li> {{ $var->name ?? '' }} : <b>{{ $var->value ?? '' }}</b></li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
+                                                @else
+                                                    <strong>Product Unavailable</strong>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </td>
                                    
                                     <td class="text-center">
