@@ -443,6 +443,7 @@ return [
     'model' => 'Model',
     'testimonial' => 'Testimonial',
     'sections' => 'Sections',
+    'sort_order' => 'Sort Order',
     '' => '',
     '' => '',
     '' => '',
