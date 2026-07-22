@@ -99,6 +99,14 @@
                                 </div>
                             </div>
                         @endif
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-from-label">{{ trans('messages.sort_order') }}</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="sort_order"
+                                    value="{{ $category->sort_order }}"
+                                    placeholder="{{ trans('messages.sort_order') }}">
+                            </div>
+                        </div>
 
 
                         <h5 class="mb-0 h6">{{trans('messages.seo_section')}}</h5>
