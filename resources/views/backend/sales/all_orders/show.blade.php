@@ -406,19 +406,13 @@
                                 
                             </td>
                         </tr>
-                        @if($order->has_warranty)
+                        @if($order->has_warranty && $order->warranty_amount > 0)
                             <tr>
                                 <td>
                                     <strong class="text-muted">Warranty (Premium Care+):</strong>
                                 </td>
                                 <td>
-                                    @if($order->warranty_amount > 0)
-                                        {{ format_price($order->warranty_amount) }}
-                                    @else
-                                        <span class="text-black uppercase font-bold text-[10px] bg-[#29A706] px-2 py-1 rounded">
-                                            FREE
-                                        </span>
-                                    @endif
+                                    {{ format_price($order->warranty_amount) }}
                                 </td>
                             </tr>
                         @endif

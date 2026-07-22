@@ -129,34 +129,34 @@ class AuthController extends Controller
 
                     Log::debug("Guest token: " . $guestToken);
 
-                    // 1. Get existing user builder (BEFORE deleting)
-                    $oldBuilder = PcBuilderSetup::where('user_id', $userId)->first();
+                    // // 1. Get existing user builder (BEFORE deleting)
+                    // $oldBuilder = PcBuilderSetup::where('user_id', $userId)->first();
 
-                    Log::debug("Old builder: " . print_r($oldBuilder, true));
+                    // Log::debug("Old builder: " . print_r($oldBuilder, true));
 
-                    // 2. Remove PC builder cart items linked to OLD builder
-                    if ($oldBuilder) {
-                        Cart::where('user_id', $userId)
-                            ->where('is_pc_builder', 1)
-                            ->where('pc_builder_id', $oldBuilder->id)
-                            ->delete();
-                    }
+                    // // 2. Remove PC builder cart items linked to OLD builder
+                    // if ($oldBuilder) {
+                    //     Cart::where('user_id', $userId)
+                    //         ->where('is_pc_builder', 1)
+                    //         ->where('pc_builder_id', $oldBuilder->id)
+                    //         ->delete();
+                    // }
 
-                    // 3. Delete old builder
-                    PcBuilderSetup::where('user_id', $userId)->delete();
+                    // // 3. Delete old builder
+                    // PcBuilderSetup::where('user_id', $userId)->delete();
 
-                    // 4. Get guest builder
-                    $guestBuilder = PcBuilderSetup::where('temp_user_id', $guestToken)->first();
+                    // // 4. Get guest builder
+                    // $guestBuilder = PcBuilderSetup::where('temp_user_id', $guestToken)->first();
 
-                    Log::debug("Guest builder: " . print_r($guestBuilder, true));
+                    // Log::debug("Guest builder: " . print_r($guestBuilder, true));
 
-                    // 5. Transfer guest builder to user
-                    if ($guestBuilder) {
-                        $guestBuilder->update([
-                            'user_id' => $userId,
-                            'temp_user_id' => null
-                        ]);
-                    }
+                    // // 5. Transfer guest builder to user
+                    // if ($guestBuilder) {
+                    //     $guestBuilder->update([
+                    //         'user_id' => $userId,
+                    //         'temp_user_id' => null
+                    //     ]);
+                    // }
 
                     return redirect()->route('buildyourpc')
                         ->with('success', 'Login successful! Continue configuring your PC.');
