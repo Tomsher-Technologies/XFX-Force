@@ -457,4 +457,5 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 
 -- ALTER TABLE `orders` CHANGE `payment_type` `payment_type` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'cod, card, tabby';
 
-ALTER TABLE `orders` ADD `cod_charge` DOUBLE(20,2) NULL DEFAULT NULL AFTER `shipping_cost`;
+-- ALTER TABLE `orders` ADD `cod_charge` DOUBLE(20,2) NULL DEFAULT NULL AFTER `shipping_cost`;
+ALTER TABLE `categories` ADD `sort_order` INT NULL DEFAULT '0' AFTER `is_active`;

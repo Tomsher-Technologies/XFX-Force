@@ -371,7 +371,7 @@
                                     @case('newest') Newest @break
                                     @case('price_low_high') Price: Low to High @break
                                     @case('price_high_low') Price: High to Low @break
-                                    @default Newest
+                                    @default Price: High to Low
                                     @endswitch
                                 </span>
                                 <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="-mr-1 ml-1 size-5 shrink-0 text-gray-400 group-hover:text-gray-500">

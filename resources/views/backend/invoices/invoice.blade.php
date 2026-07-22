@@ -322,15 +322,11 @@
                                 <td style="text-align: right; color: #b91c1c;">- {{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($order->coupon_discount) }}</td>
                             </tr>
                         @endif
-                        @if($order->has_warranty)
+                        @if($order->has_warranty && $order->warranty_amount > 0)
                             <tr>
                                 <td style="text-align: left;">Warranty (Premium Care+):</td>
                                 <td style="text-align: right; font-weight: bold;">
-                                    @if($order->warranty_amount > 0)
-                                        + {{ env('DEFAULT_CURRENCY', 'AED') }} {{ format_price($order->warranty_amount) }}
-                                    @else
-                                        <span class="badge-free">FREE</span>
-                                    @endif
+                                    + {{ env('DEFAULT_CURRENCY', 'AED') }} {{ format_price($order->warranty_amount) }}
                                 </td>
                             </tr>
                         @endif
