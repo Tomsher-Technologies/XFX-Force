@@ -9,7 +9,7 @@ class Category extends Model
 {
     protected $with = ['category_translations'];
 
-    protected $fillable = ['parent_id', 'name', 'icon', 'is_active'];
+    protected $fillable = ['parent_id', 'name', 'icon', 'is_active', 'sort_order'];
 
     public function getTranslation($field = '', $lang = false)
     {

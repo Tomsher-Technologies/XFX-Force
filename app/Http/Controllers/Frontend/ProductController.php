@@ -501,12 +501,13 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        $sort = $request->get('sort', 'newest');
+        $sort = $request->get('sort', 'price_high_low');
         $view = $request->get('view', 'gridview');
 
         $products = Product::select('products.*')
             ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
-            ->where('published', 1);
+            ->where('published', 1)
+            ->where('product_stocks.qty', '>', 0);
 
         // Filters
         if ($request->filled('categories')) {
@@ -589,7 +590,7 @@ class ProductController extends Controller
             ->groupBy('products.id')
             ->with('stocks')
             ->paginate(12);
-        $categories = Category::withCount('products')->where('is_active', 1)->orderBy('name', 'asc')->get();
+        $categories = Category::withCount('products')->where('is_active', 1)->orderBy('sort_order', 'asc')->get();
 
         // Sort children alphabetically
         $categories->each(function ($category) {
@@ -819,7 +820,7 @@ class ProductController extends Controller
 
     public function shopByCategory(Request $request, $slug)
     {
-        $sort = $request->get('sort', 'newest');
+        $sort = $request->get('sort', 'price_high_low');
         $view = $request->get('view', 'gridview');
 
         // Get category using slug
@@ -849,7 +850,8 @@ class ProductController extends Controller
         $products = Product::select('products.*')
             ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
             ->where('published', 1)
-            ->whereIn('products.category_id', $categoryIds);
+            ->whereIn('products.category_id', $categoryIds)
+            ->where('product_stocks.qty', '>', 0);
 
         // Filters
         if ($request->filled('categories')) {
@@ -985,7 +987,7 @@ class ProductController extends Controller
 
     public function shopByBrand(Request $request, $slug)
     {
-        $sort = $request->get('sort', 'newest');
+        $sort = $request->get('sort', 'price_high_low');
         $view = $request->get('view', 'gridview');
 
         // Get brand using slug directly from brand table
@@ -1002,7 +1004,8 @@ class ProductController extends Controller
         $productsQuery = Product::select('products.*')
             ->leftJoin('product_stocks', 'product_stocks.product_id', '=', 'products.id')
             ->where('published', 1)
-            ->where('products.brand_id', $brand->id);
+            ->where('products.brand_id', $brand->id)
+            ->where('product_stocks.qty', '>', 0);
 
         // Filters
         if ($request->filled('categories')) {
