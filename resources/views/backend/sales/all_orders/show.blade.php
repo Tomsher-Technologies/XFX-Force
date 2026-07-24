@@ -641,38 +641,109 @@
     @endif
 @endsection
 
+@section('modal')
+    <div id="status-change-confirm-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title h6">Confirm Status Change</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mt-2 mb-4" id="status-confirm-text">Are you sure you want to change the status?</p>
+                    <button type="button" class="btn btn-sm btn-light font-weight-bold px-3 mr-2" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary font-weight-bold px-3" id="status-confirm-proceed-btn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
 @section('script')
     <script type="text/javascript">
-        
+        var previousDeliveryStatus = $('#update_delivery_status').val();
+        var previousPaymentStatus = $('#update_payment_status').val();
+        var isConfirmed = false;
+        var pendingAction = null;
+        var pendingRevert = null;
 
         $('#update_delivery_status').on('change', function() {
-            var order_id = {{ $order->id }};
             var status = $('#update_delivery_status').val();
-            $.post('{{ route('orders.update_delivery_status') }}', {
-                _token: '{{ @csrf_token() }}',
-                order_id: order_id,
-                status: status
-            }, function(data) {
-                if (status === 'delivered' && {{ $order->payment_type == 'cod' ? 'true' : 'false' }}) {
-                    $('#update_payment_status').val('paid').selectpicker('refresh');
-                }
-                AIZ.plugins.notify('success', 'Delivery status has been updated');
-                setTimeout(function() {
-                    location.reload();
-                }, 1000);
-            });
+            if (status === previousDeliveryStatus) return;
+
+            var order_id = {{ $order->id }};
+            var statusText = $('#update_delivery_status option:selected').text().trim();
+
+            pendingAction = function() {
+                previousDeliveryStatus = status;
+                $.post('{{ route('orders.update_delivery_status') }}', {
+                    _token: '{{ @csrf_token() }}',
+                    order_id: order_id,
+                    status: status
+                }, function(data) {
+                    if (status === 'delivered' && {{ $order->payment_type == 'cod' ? 'true' : 'false' }}) {
+                        $('#update_payment_status').val('paid').selectpicker('refresh');
+                        previousPaymentStatus = 'paid';
+                    }
+                    AIZ.plugins.notify('success', 'Delivery status has been updated');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                });
+            };
+
+            pendingRevert = function() {
+                $('#update_delivery_status').val(previousDeliveryStatus).selectpicker('refresh');
+            };
+
+            isConfirmed = false;
+            $('#status-confirm-text').text('Are you sure you want to change the delivery status to "' + statusText + '"?');
+            $('#status-change-confirm-modal').modal('show');
         });
 
         $('#update_payment_status').on('change', function() {
-            var order_id = {{ $order->id }};
             var status = $('#update_payment_status').val();
-            $.post('{{ route('orders.update_payment_status') }}', {
-                _token: '{{ @csrf_token() }}',
-                order_id: order_id,
-                status: status
-            }, function(data) {
-                AIZ.plugins.notify('success', 'Payment status has been updated');
-            });
+            if (status === previousPaymentStatus) return;
+
+            var order_id = {{ $order->id }};
+            var statusText = $('#update_payment_status option:selected').text().trim();
+
+            pendingAction = function() {
+                previousPaymentStatus = status;
+                $.post('{{ route('orders.update_payment_status') }}', {
+                    _token: '{{ @csrf_token() }}',
+                    order_id: order_id,
+                    status: status
+                }, function(data) {
+                    AIZ.plugins.notify('success', 'Payment status has been updated');
+                });
+            };
+
+            pendingRevert = function() {
+                $('#update_payment_status').val(previousPaymentStatus).selectpicker('refresh');
+            };
+
+            isConfirmed = false;
+            $('#status-confirm-text').text('Are you sure you want to change the payment status to "' + statusText + '"?');
+            $('#status-change-confirm-modal').modal('show');
+        });
+
+        $('#status-confirm-proceed-btn').on('click', function() {
+            isConfirmed = true;
+            $('#status-change-confirm-modal').modal('hide');
+            if (typeof pendingAction === 'function') {
+                pendingAction();
+            }
+        });
+
+        $('#status-change-confirm-modal').on('hidden.bs.modal', function() {
+            if (!isConfirmed && typeof pendingRevert === 'function') {
+                pendingRevert();
+            }
+            pendingAction = null;
+            pendingRevert = null;
         });
 
         $('#update_tracking_code').on('change', function() {
