@@ -2,14 +2,16 @@
 
 @section('content')
 
+@php
+    $showCancelledTab = request('tab') == 'cancelled' || ($delivery_status == 'cancelled' && request('tab') != 'orders');
+@endphp
+
 <div class="card">
     <form class="" action="" id="sort_orders" method="GET">
         <div class="card-header row gutters-5">
             <div class="col">
                 <h5 class="mb-md-0 h6">All Orders</h5>
             </div>
-
-            
 
             <!-- Change Status Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -78,109 +80,209 @@
                 </div>
             </div>
         </div>
+    </form>
 
-        <div class="card-body">
-            <table class="table aiz-table mb-0">
-                <thead>
-                    <tr>
-                        <th class="text-center">#</th>
-                        {{-- <th>
-                            <div class="form-group">
-                                <div class="aiz-checkbox-inline">
-                                    <label class="aiz-checkbox">
-                                        <input type="checkbox" class="check-all">
-                                        <span class="aiz-square-check"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </th> --}}
-                        <th>Order Code</th>
-                        <th  class="text-center">Num. of Products</th>
-                        <th >Customer</th>
-                        <th class="text-center" >Amount</th>
-                        <th  class="text-center">Shipping Method</th>
-                        <th  class="text-center">Delivery Status</th>
-                        <th  class="text-center">Payment Status</th>
-                        <th  class="text-center">Order Date</th>
-                        <th class="text-center" width="15%">{{trans('messages.options')}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($orders as $key => $order)
-                    <tr>
-                        <td class="text-center">
-                            {{ ($key+1) + ($orders->currentPage() - 1)*$orders->perPage() }}
-                        </td>
-                       
-                        <td>
-                            {{ $order->code }}
+    <div class="card-body">
+        <ul class="nav nav-tabs nav-fill border-light font-weight-bold mb-3" id="ordersTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link @if(!$showCancelledTab) active @endif text-reset py-3" id="orders-tab" data-toggle="tab" href="#orders-pane" role="tab" aria-controls="orders-pane" aria-selected="{{ !$showCancelledTab ? 'true' : 'false' }}">
+                    <i class="las la-shopping-bag mr-1"></i> Orders <span class="badge badge-inline badge-primary ml-1">{{ $orders->total() }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @if($showCancelledTab) active @endif text-reset py-3" id="cancelled-orders-tab" data-toggle="tab" href="#cancelled-orders-pane" role="tab" aria-controls="cancelled-orders-pane" aria-selected="{{ $showCancelledTab ? 'true' : 'false' }}">
+                    <i class="las la-times-circle mr-1"></i> Cancelled Orders <span class="badge badge-inline badge-danger ml-1">{{ $cancelled_orders->total() }}</span>
+                </a>
+            </li>
+        </ul>
 
-                        </td>
-                        <td class="text-center">
-                            {{ count($order->orderDetails) }}
-                        </td>
-                        <td>
-                            @if ($order->user != null)
-                                @if($order->user->user_type == 'guest')
-                                    Guest
-                                @else
-                                    {{ $order->user->name }}
-                                @endif
-                            @else
-                                @php
-                                    $shipping_address = json_decode($order->shipping_address);
-                                @endphp
-                               
-                                Guest ({{ $shipping_address->name ?? ''}})
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{ single_price($order->grand_total) }}
-                        </td>
-                        <td class="text-center">
-                            @if ($order->shipping_type == 'pickup')
-                                Pickup
-                            @else
-                                Delivery
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            @php
-                                $status = ucfirst(str_replace('_', ' ', $order->delivery_status));
-                               
-                            @endphp
-                            <span class="badge badge-lg badge-inline @if($order->delivery_status == 'delivered') bg-success @elseif($order->delivery_status == 'cancelled') bg-danger @else bg-warning @endif" >{!! $status !!}</span>
-                        </td>
-                        <td class="text-center">
-                            @if ($order->payment_status == 'paid')
-                            <span class="badge badge-inline badge-success">{{trans('messages.paid')}}</span>
-                            @else
-                            <span class="badge badge-inline badge-danger">{{trans('messages.unpaid')}}</span>
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            {{ date('d-m-Y h:i A', $order->date) }}
-                        </td>
-                        <td class="text-center">
-                            <a class="btn btn-sm btn-soft-primary btn-icon btn-circle" href="{{route('all_orders.show', encrypt($order->id))}}" title="View">
-                                <i class="las la-eye"></i>
-                            </a>
-                            <a class="btn btn-sm btn-soft-info btn-icon btn-circle" href="{{ route('invoice.download', $order->id) }}" title="Download Invoice">
-                                <i class="las la-download"></i>
-                            </a>
-                           
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        <div class="tab-content" id="ordersTabContent">
+            <!-- Active / Other Orders Tab -->
+            <div class="tab-pane fade @if(!$showCancelledTab) show active @endif" id="orders-pane" role="tabpanel" aria-labelledby="orders-tab">
+                <table class="table aiz-table mb-0">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th>Order Code</th>
+                            <th class="text-center">Num. of Products</th>
+                            <th>Customer</th>
+                            <th class="text-center">Amount</th>
+                            <th class="text-center">Shipping Method</th>
+                            <th class="text-center">Delivery Status</th>
+                            <th class="text-center">Payment Status</th>
+                            <th class="text-center">Order Date</th>
+                            <th class="text-center" width="15%">{{trans('messages.options')}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if($orders->count() > 0)
+                            @foreach ($orders as $key => $order)
+                            <tr>
+                                <td class="text-center">
+                                    {{ ($key+1) + ($orders->currentPage() - 1)*$orders->perPage() }}
+                                </td>
+                                <td>
+                                    {{ $order->code }}
+                                </td>
+                                <td class="text-center">
+                                    {{ count($order->orderDetails) }}
+                                </td>
+                                <td>
+                                    @if ($order->user != null)
+                                        @if($order->user->user_type == 'guest')
+                                            Guest
+                                        @else
+                                            {{ $order->user->name }}
+                                        @endif
+                                    @else
+                                        @php
+                                            $shipping_address = json_decode($order->shipping_address);
+                                        @endphp
+                                       
+                                        Guest ({{ $shipping_address->name ?? ''}})
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    {{ single_price($order->grand_total) }}
+                                </td>
+                                <td class="text-center">
+                                    @if ($order->shipping_type == 'pickup')
+                                        Pickup
+                                    @else
+                                        Delivery
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @php
+                                        $status = ucfirst(str_replace('_', ' ', $order->delivery_status));
+                                    @endphp
+                                    <span class="badge badge-lg badge-inline @if($order->delivery_status == 'delivered') bg-success @elseif($order->delivery_status == 'cancelled') bg-danger @else bg-warning @endif">{!! $status !!}</span>
+                                </td>
+                                <td class="text-center">
+                                    @if ($order->payment_status == 'paid')
+                                    <span class="badge badge-inline badge-success">{{trans('messages.paid')}}</span>
+                                    @else
+                                    <span class="badge badge-inline badge-danger">{{trans('messages.unpaid')}}</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    {{ date('d-m-Y h:i A', $order->date) }}
+                                </td>
+                                <td class="text-center">
+                                    <a class="btn btn-sm btn-soft-primary btn-icon btn-circle" href="{{route('all_orders.show', encrypt($order->id))}}" title="View">
+                                        <i class="las la-eye"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-soft-info btn-icon btn-circle" href="{{ route('invoice.download', $order->id) }}" title="Download Invoice">
+                                        <i class="las la-download"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="10" class="text-center py-4 text-muted">No orders found.</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
 
-            <div class="aiz-pagination">
-                {{ $orders->appends(request()->input())->links('pagination::bootstrap-5') }}
+                <div class="aiz-pagination mt-3">
+                    {{ $orders->appends(array_merge(request()->except(['cancelled_page']), ['tab' => 'orders']))->links('pagination::bootstrap-5') }}
+                </div>
             </div>
 
+            <!-- Cancelled Orders Tab -->
+            <div class="tab-pane fade @if($showCancelledTab) show active @endif" id="cancelled-orders-pane" role="tabpanel" aria-labelledby="cancelled-orders-tab">
+                <table class="table aiz-table mb-0">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th>Order Code</th>
+                            <th class="text-center">Num. of Products</th>
+                            <th>Customer</th>
+                            <th class="text-center">Amount</th>
+                            <th class="text-center">Shipping Method</th>
+                            <th class="text-center">Delivery Status</th>
+                            <th class="text-center">Payment Status</th>
+                            <th class="text-center">Order Date</th>
+                            <th class="text-center" width="15%">{{trans('messages.options')}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if($cancelled_orders->count() > 0)
+                            @foreach ($cancelled_orders as $key => $order)
+                            <tr>
+                                <td class="text-center">
+                                    {{ ($key+1) + ($cancelled_orders->currentPage() - 1)*$cancelled_orders->perPage() }}
+                                </td>
+                                <td>
+                                    {{ $order->code }}
+                                </td>
+                                <td class="text-center">
+                                    {{ count($order->orderDetails) }}
+                                </td>
+                                <td>
+                                    @if ($order->user != null)
+                                        @if($order->user->user_type == 'guest')
+                                            Guest
+                                        @else
+                                            {{ $order->user->name }}
+                                        @endif
+                                    @else
+                                        @php
+                                            $shipping_address = json_decode($order->shipping_address);
+                                        @endphp
+                                       
+                                        Guest ({{ $shipping_address->name ?? ''}})
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    {{ single_price($order->grand_total) }}
+                                </td>
+                                <td class="text-center">
+                                    @if ($order->shipping_type == 'pickup')
+                                        Pickup
+                                    @else
+                                        Delivery
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge badge-lg badge-inline bg-danger">Cancelled</span>
+                                </td>
+                                <td class="text-center">
+                                    @if ($order->payment_status == 'paid')
+                                    <span class="badge badge-inline badge-success">{{trans('messages.paid')}}</span>
+                                    @else
+                                    <span class="badge badge-inline badge-danger">{{trans('messages.unpaid')}}</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    {{ date('d-m-Y h:i A', $order->date) }}
+                                </td>
+                                <td class="text-center">
+                                    <a class="btn btn-sm btn-soft-primary btn-icon btn-circle" href="{{route('all_orders.show', encrypt($order->id))}}" title="View">
+                                        <i class="las la-eye"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-soft-info btn-icon btn-circle" href="{{ route('invoice.download', $order->id) }}" title="Download Invoice">
+                                        <i class="las la-download"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="10" class="text-center py-4 text-muted">No cancelled orders found.</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+
+                <div class="aiz-pagination mt-3">
+                    {{ $cancelled_orders->appends(array_merge(request()->except(['orders_page']), ['tab' => 'cancelled']))->links('pagination::bootstrap-5') }}
+                </div>
+            </div>
         </div>
-    </form>
+    </div>
 </div>
 
 @endsection
@@ -202,9 +304,6 @@
                     this.checked = false;
                 });
             }
-
         });
-
-        
     </script>
 @endsection

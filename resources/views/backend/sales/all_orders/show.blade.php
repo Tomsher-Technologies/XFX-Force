@@ -224,9 +224,10 @@
                     <table class="table table-bordered aiz-table invoice-summary">
                         <thead>
                             <tr class="bg-trans-dark">
-                                <th class="min-col">#</th>
-                                <th width="10%">Photo</th>
-                                <th class="text-uppercase">Description</th>
+                                <th class="min-col" width="8%">#</th>
+                                
+                                <th class="text-uppercase" width="42%">Description</th>
+                                <th class="min-col text-center">Part Number</th>
                                 <th class="min-col text-center text-uppercase">Qty
                                 </th>
                                 <th class="min-col text-center text-uppercase">
@@ -242,7 +243,7 @@
                             @endphp 
                             @if($pcBuilderItems->count() > 0)
                             <tr class="bg-light">
-                                <td class="fw-bold text-dark">
+                                <td class="fw-bold text-dark"  colspan="6">
                                     PC Builder Items
                                 </td>
                             </tr>
@@ -252,60 +253,72 @@
                                 @endphp
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                
                                     <td>
-                                        @if ($orderDetail->product != null)
-                                            <img height="50" src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}">
-                                        @else
-                                            <strong>N/A</strong>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($orderDetail->product != null)
-                                            <strong class="text-muted fs-13">{{ $orderDetail->product->name }}</strong>
-                                            {{-- <small> --}}
-                                                @if ($orderDetail->variation != null)
-                                                    @php
-                                                        $variations = json_decode($orderDetail->variation);
-                                                    
-                                                    @endphp
-                                                    <ul>
-                                                        @foreach($variations as $var)
-                                                        <li> {{ $var->name ?? '' }} : <b>{{ $var->value ?? '' }}</b></li>
-                                                        @endforeach
-                                                    </ul>
+                                        <div class="d-flex align-items-center">
+                                            <div class="mr-3 flex-shrink-0">
+                                                @if ($orderDetail->product != null)
+                                                    <img height="50" class="size-50px img-fit" src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}">
+                                                @else
+                                                    <strong>N/A</strong>
                                                 @endif
-                                            {{-- </small> --}}
-                                        @else
-                                            <strong>Product Unavailable</strong>
-                                        @endif
-                                        @if ($order->delivery_status == 'delivered')
-                                            {{-- @if ($returnRequest)
-                                                <p><br><b>Return Status</b>: 
-                                                    <span class="badge badge-lg badge-inline 
-                                                        @if($returnRequest->status == 'pending') bg-warning
-                                                        @elseif($returnRequest->status == 'approved') bg-success
-                                                        @else bg-danger @endif">
-                                                        {{ ucfirst($returnRequest->status) }}
-                                                    </span>
-                                                </p>
-                                            @else
-                                                <br><p>No return request for this product.</p>
-                                            @endif --}}
-                                        @endif
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                @if ($orderDetail->product != null)
+                                                    <strong class="text-muted fs-13">{{ $orderDetail->product->name }}</strong>
+                                                    @php
+                                                        $conditionMap = [
+                                                            0 => 'New',
+                                                            1 => 'Refurbished',
+                                                            2 => 'Open Box',
+                                                            '0' => 'New',
+                                                            '1' => 'Refurbished',
+                                                            '2' => 'Open Box',
+                                                            'new' => 'New',
+                                                            'refurbished' => 'Refurbished',
+                                                            'open_box' => 'Open Box',
+                                                        ];
+                                                        $productCondition = $orderDetail->product->condition ?? 0;
+                                                        $conditionName = $conditionMap[$productCondition] ?? 'New';
+                                                    @endphp
+                                                    <div class="mt-1">
+                                                        <small class="text-muted">Condition: <span class="badge badge-inline badge-soft-info">{{ $conditionName }}</span></small>
+                                                    </div>
+                                                    @if ($orderDetail->variation != null)
+                                                        @php
+                                                            $variations = json_decode($orderDetail->variation);
+                                                        @endphp
+                                                        <ul class="mb-0 pl-3">
+                                                            @foreach($variations as $var)
+                                                            <li> {{ $var->name ?? '' }} : <b>{{ $var->value ?? '' }}</b></li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
+                                                @else
+                                                    <strong>Product Unavailable</strong>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        @php
+                                            $itemModel = $orderDetail->product_stock?->model ?? $orderDetail->product?->stocks?->first()?->model ?? '';
+                                        @endphp
+                                        {{ $itemModel ?: '-' }}
                                     </td>
                                    
                                     <td class="text-center">{{ $orderDetail->quantity }}</td>
                                     <td class="text-center">
                                         @if ($orderDetail->og_price != $orderDetail->offer_price)
-                                            <del>{{ single_price($orderDetail->og_price) }}</del> <br>
+                                            <del>AED {{ single_price($orderDetail->og_price) }}</del> <br>
                                         @endif
-                                        {{ single_price($orderDetail->price / $orderDetail->quantity) }}
+                                        AED {{ single_price($orderDetail->price / $orderDetail->quantity) }}
                                     </td>
-                                    <td class="text-center">{{ single_price($orderDetail->price) }}</td>
+                                    <td class="text-center">AED {{ single_price($orderDetail->price) }}</td>
                                 </tr>
                             @endforeach
                             <tr class="bg-light">
-                                <td class="fw-bold text-dark">Other Products</td>
+                                <td class="fw-bold text-dark"  colspan="6">Other Products</td>
                             </tr>
                             @endif
                             @foreach ($normalItems as $key => $orderDetail)
@@ -314,56 +327,68 @@
                                 @endphp
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                    
                                     <td>
-                                        @if ($orderDetail->product != null)
-                                            <img height="50" src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}">
-                                        @else
-                                            <strong>N/A</strong>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($orderDetail->product != null)
-                                            <strong class="text-muted fs-13">{{ $orderDetail->product->name }}</strong>
-                                            {{-- <small> --}}
-                                                @if ($orderDetail->variation != null)
-                                                    @php
-                                                        $variations = json_decode($orderDetail->variation);
-                                                    
-                                                    @endphp
-                                                    <ul>
-                                                        @foreach($variations as $var)
-                                                        <li> {{ $var->name ?? '' }} : <b>{{ $var->value ?? '' }}</b></li>
-                                                        @endforeach
-                                                    </ul>
+                                        <div class="d-flex align-items-center">
+                                            <div class="mr-3 flex-shrink-0">
+                                                @if ($orderDetail->product != null)
+                                                    <img height="50" class="size-50px img-fit" src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}">
+                                                @else
+                                                    <strong>N/A</strong>
                                                 @endif
-                                            {{-- </small> --}}
-                                        @else
-                                            <strong>Product Unavailable</strong>
-                                        @endif
-                                        @if ($order->delivery_status == 'delivered')
-                                            {{-- @if ($returnRequest)
-                                                <p><br><b>Return Status</b>: 
-                                                    <span class="badge badge-lg badge-inline 
-                                                        @if($returnRequest->status == 'pending') bg-warning
-                                                        @elseif($returnRequest->status == 'approved') bg-success
-                                                        @else bg-danger @endif">
-                                                        {{ ucfirst($returnRequest->status) }}
-                                                    </span>
-                                                </p>
-                                            @else
-                                                <br><p>No return request for this product.</p>
-                                            @endif --}}
-                                        @endif
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                @if ($orderDetail->product != null)
+                                                    <strong class="text-muted fs-13">{{ $orderDetail->product->name }}</strong>
+                                                    @php
+                                                        $conditionMap = [
+                                                            0 => 'New',
+                                                            1 => 'Refurbished',
+                                                            2 => 'Open Box',
+                                                            '0' => 'New',
+                                                            '1' => 'Refurbished',
+                                                            '2' => 'Open Box',
+                                                            'new' => 'New',
+                                                            'refurbished' => 'Refurbished',
+                                                            'open_box' => 'Open Box',
+                                                        ];
+                                                        $productCondition = $orderDetail->product->condition ?? 0;
+                                                        $conditionName = $conditionMap[$productCondition] ?? 'New';
+                                                    @endphp
+                                                    <div class="mt-1">
+                                                        <small class="text-muted">Condition: <span class="badge badge-inline badge-soft-info">{{ $conditionName }}</span></small>
+                                                    </div>
+                                                    @if ($orderDetail->variation != null)
+                                                        @php
+                                                            $variations = json_decode($orderDetail->variation);
+                                                        @endphp
+                                                        <ul class="mb-0 pl-3">
+                                                            @foreach($variations as $var)
+                                                            <li> {{ $var->name ?? '' }} : <b>{{ $var->value ?? '' }}</b></li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
+                                                @else
+                                                    <strong>Product Unavailable</strong>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </td>
                                    
+                                    <td class="text-center">
+                                        @php
+                                            $itemModel = $orderDetail->product_stock?->model ?? $orderDetail->product?->stocks?->first()?->model ?? '';
+                                        @endphp
+                                        {{ $itemModel ?: '-' }}
+                                    </td>
                                     <td class="text-center">{{ $orderDetail->quantity }}</td>
                                     <td class="text-center">
                                         @if ($orderDetail->og_price != $orderDetail->offer_price)
-                                            <del>{{ single_price($orderDetail->og_price) }}</del> <br>
+                                            <del>AED {{ single_price($orderDetail->og_price) }}</del> <br>
                                         @endif
-                                        {{ single_price($orderDetail->price / $orderDetail->quantity) }}
+                                        AED {{ single_price($orderDetail->price / $orderDetail->quantity) }}
                                     </td>
-                                    <td class="text-center">{{ single_price($orderDetail->price) }}</td>
+                                    <td class="text-center">AED {{ single_price($orderDetail->price) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -378,7 +403,7 @@
                                 <strong class="text-muted">Sub Total :</strong>
                             </td>
                             <td>
-                                {{ single_price($order->orderDetails->sum('price')) }}
+                                AED {{ single_price($order->orderDetails->sum('price')) }}
                             </td>
                         </tr>
                         
@@ -388,7 +413,7 @@
                                     <strong class="text-muted">Tax :</strong>
                                 </td>
                                 <td>
-                                    {{ single_price($order->tax) }}
+                                    AED {{ single_price($order->tax) }}
                                 </td>
                             </tr>
                         @endif
@@ -399,7 +424,7 @@
                             </td>
                             <td>
                                 @if($order->shipping_cost > 0)
-                                    {{ single_price($order->shipping_cost) }}
+                                    AED {{ single_price($order->shipping_cost) }}
                                 @else 
                                     <span class="badge badge-inline badge-success">Free</span>
                                 @endif
@@ -412,24 +437,28 @@
                                     <strong class="text-muted">Warranty (Premium Care+):</strong>
                                 </td>
                                 <td>
-                                    {{ format_price($order->warranty_amount) }}
+                                    AED {{ format_price($order->warranty_amount) }}
                                 </td>
                             </tr>
                         @endif
-                        <tr>
-                            <td>
-                                <strong class="text-muted">Coupon :</strong>
-                            </td>
-                            <td>
-                                {{ single_price($order->coupon_discount) }}
-                            </td>
-                        </tr>
+
+                        @if($order->coupon_discount > 0)
+                            <tr>
+                                <td>
+                                    <strong class="text-muted">Coupon :</strong>
+                                </td>
+                                <td>
+                                    AED {{ single_price($order->coupon_discount) }}
+                                </td>
+                            </tr>
+                        @endif
+                        
                         <tr>
                             <td>
                                 <strong class="text-muted">TOTAL :</strong>
                             </td>
                             <td class="text-muted h5">
-                                {{ single_price($order->grand_total) }}
+                                AED {{ single_price($order->grand_total) }}
                             </td>
                         </tr>
                     </tbody>
@@ -606,38 +635,109 @@
     @endif
 @endsection
 
+@section('modal')
+    <div id="status-change-confirm-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title h6">Confirm Status Change</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mt-2 mb-4" id="status-confirm-text">Are you sure you want to change the status?</p>
+                    <button type="button" class="btn btn-sm btn-light font-weight-bold px-3 mr-2" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary font-weight-bold px-3" id="status-confirm-proceed-btn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
 @section('script')
     <script type="text/javascript">
-        
+        var previousDeliveryStatus = $('#update_delivery_status').val();
+        var previousPaymentStatus = $('#update_payment_status').val();
+        var isConfirmed = false;
+        var pendingAction = null;
+        var pendingRevert = null;
 
         $('#update_delivery_status').on('change', function() {
-            var order_id = {{ $order->id }};
             var status = $('#update_delivery_status').val();
-            $.post('{{ route('orders.update_delivery_status') }}', {
-                _token: '{{ @csrf_token() }}',
-                order_id: order_id,
-                status: status
-            }, function(data) {
-                if (status === 'delivered' && {{ $order->payment_type == 'cod' ? 'true' : 'false' }}) {
-                    $('#update_payment_status').val('paid').selectpicker('refresh');
-                }
-                AIZ.plugins.notify('success', 'Delivery status has been updated');
-                setTimeout(function() {
-                    location.reload();
-                }, 1000);
-            });
+            if (status === previousDeliveryStatus) return;
+
+            var order_id = {{ $order->id }};
+            var statusText = $('#update_delivery_status option:selected').text().trim();
+
+            pendingAction = function() {
+                previousDeliveryStatus = status;
+                $.post('{{ route('orders.update_delivery_status') }}', {
+                    _token: '{{ @csrf_token() }}',
+                    order_id: order_id,
+                    status: status
+                }, function(data) {
+                    if (status === 'delivered' && {{ $order->payment_type == 'cod' ? 'true' : 'false' }}) {
+                        $('#update_payment_status').val('paid').selectpicker('refresh');
+                        previousPaymentStatus = 'paid';
+                    }
+                    AIZ.plugins.notify('success', 'Delivery status has been updated');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                });
+            };
+
+            pendingRevert = function() {
+                $('#update_delivery_status').val(previousDeliveryStatus).selectpicker('refresh');
+            };
+
+            isConfirmed = false;
+            $('#status-confirm-text').text('Are you sure you want to change the delivery status to "' + statusText + '"?');
+            $('#status-change-confirm-modal').modal('show');
         });
 
         $('#update_payment_status').on('change', function() {
-            var order_id = {{ $order->id }};
             var status = $('#update_payment_status').val();
-            $.post('{{ route('orders.update_payment_status') }}', {
-                _token: '{{ @csrf_token() }}',
-                order_id: order_id,
-                status: status
-            }, function(data) {
-                AIZ.plugins.notify('success', 'Payment status has been updated');
-            });
+            if (status === previousPaymentStatus) return;
+
+            var order_id = {{ $order->id }};
+            var statusText = $('#update_payment_status option:selected').text().trim();
+
+            pendingAction = function() {
+                previousPaymentStatus = status;
+                $.post('{{ route('orders.update_payment_status') }}', {
+                    _token: '{{ @csrf_token() }}',
+                    order_id: order_id,
+                    status: status
+                }, function(data) {
+                    AIZ.plugins.notify('success', 'Payment status has been updated');
+                });
+            };
+
+            pendingRevert = function() {
+                $('#update_payment_status').val(previousPaymentStatus).selectpicker('refresh');
+            };
+
+            isConfirmed = false;
+            $('#status-confirm-text').text('Are you sure you want to change the payment status to "' + statusText + '"?');
+            $('#status-change-confirm-modal').modal('show');
+        });
+
+        $('#status-confirm-proceed-btn').on('click', function() {
+            isConfirmed = true;
+            $('#status-change-confirm-modal').modal('hide');
+            if (typeof pendingAction === 'function') {
+                pendingAction();
+            }
+        });
+
+        $('#status-change-confirm-modal').on('hidden.bs.modal', function() {
+            if (!isConfirmed && typeof pendingRevert === 'function') {
+                pendingRevert();
+            }
+            pendingAction = null;
+            pendingRevert = null;
         });
 
         $('#update_tracking_code').on('change', function() {

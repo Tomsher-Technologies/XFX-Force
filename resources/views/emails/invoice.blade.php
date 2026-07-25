@@ -22,8 +22,8 @@
 
         body {
             background-color: #f6f8fa;
-            font-size: 13px;
-            padding: 20px 0;
+            font-size: 11px;
+            padding: 15px 0;
         }
 
         .email-container {
@@ -32,38 +32,38 @@
             background-color: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
-            padding: 30px;
+            padding: 20px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         td, th {
-            padding: 6px;
+            padding: 4px 6px;
             vertical-align: top;
         }
 
         /* Top Header */
         .company-details {
-            line-height: 1.5;
+            line-height: 1.4;
             color: #555555;
-            font-size: 12px;
+            font-size: 10.5px;
         }
         .company-details strong {
             color: #111111;
-            font-size: 16px;
+            font-size: 13px;
         }
         .invoice-title {
             text-align: right;
-            line-height: 1.5;
-            font-size: 12px;
+            line-height: 1.4;
+            font-size: 10.5px;
         }
         .invoice-title h1 {
-            margin: 0 0 8px 0;
-            font-size: 20px;
+            margin: 0 0 6px 0;
+            font-size: 18px;
             color: #2A7CFF;
             text-transform: uppercase;
             font-weight: bold;
@@ -76,7 +76,7 @@
         /* Dividers */
         .divider {
             border-bottom: 2px solid #e5e7eb;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding-bottom: 5px;
         }
 
@@ -85,39 +85,40 @@
             font-weight: bold;
             color: #111111;
             text-transform: uppercase;
-            font-size: 11px;
-            margin-bottom: 6px;
+            font-size: 10px;
+            margin-bottom: 4px;
             letter-spacing: 0.5px;
             border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 3px;
+            padding-bottom: 2px;
         }
 
         /* Items Table */
         .items-table {
-            margin-top: 15px;
+            margin-top: 10px;
         }
         .items-table th {
             background-color: #f3f4f6;
             color: #1f2937;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
-            padding: 8px 10px;
+            padding: 6px 8px;
             text-align: left;
             border-top: 1px solid #cbd5e1;
             border-bottom: 1px solid #cbd5e1;
         }
         .items-table td {
             border-bottom: 1px solid #e5e7eb;
-            padding: 10px;
+            padding: 6px 8px;
+            font-size: 10px;
         }
         .items-table tr.item-row:nth-child(even) td {
             background-color: #f9fafb;
         }
         .variation-list {
-            margin: 3px 0 0 0;
-            padding-left: 12px;
-            font-size: 11px;
+            margin: 2px 0 0 0;
+            padding-left: 10px;
+            font-size: 9.5px;
             color: #6b7280;
         }
         .badge-free {
@@ -131,16 +132,17 @@
 
         /* Totals */
         .totals-table td {
-            padding: 4px 6px;
+            padding: 3px 5px;
             color: #4b5563;
+            font-size: 10px;
         }
         .totals-table tr.grand-total td {
             border-top: 1px solid #111111;
             border-bottom: 3px double #111111;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 12px;
             color: #111111;
-            padding-top: 6px;
+            padding-top: 4px;
         }
 
         /* Footer */
@@ -207,8 +209,8 @@
                     <p style="margin: 0; font-weight: bold; color: #111111;">{{ $billingAddress?->name }}</p>
                     <p style="margin: 3px 0 0 0; color: #4b5563;">{{ $billingAddress?->address }}</p>
                     <p style="margin: 2px 0 0 0; color: #4b5563;">{{ $billingAddress?->city }}</p>
-                    <p style="margin: 6px 0 0 0; font-size: 12px; color: #6b7280;">Phone: {{ $billingAddress?->phone }}</p>
-                    <p style="margin: 2px 0 0 0; font-size: 12px; color: #6b7280;">Email: {{ $billingAddress?->email }}</p>
+                    <p style="margin: 6px 0 0 0; font-size: 10px; color: #6b7280;">Phone: {{ $billingAddress?->phone }}</p>
+                    <p style="margin: 2px 0 0 0; font-size: 10px; color: #6b7280;">Email: {{ $billingAddress?->email }}</p>
                 </td>
                 <td style="width: 50%; padding-right: 0; padding-left: 15px;">
                     @php 
@@ -222,8 +224,8 @@
                         <p style="margin: 0; font-weight: bold; color: #111111;">{{ $shippingAddress?->name }}</p>
                         <p style="margin: 3px 0 0 0; color: #4b5563;">{{ $shippingAddress?->address }}</p>
                         <p style="margin: 2px 0 0 0; color: #4b5563;">{{ $shippingAddress?->city }}</p>
-                        <p style="margin: 6px 0 0 0; font-size: 12px; color: #6b7280;">Phone: {{ $shippingAddress?->phone }}</p>
-                        <p style="margin: 2px 0 0 0; font-size: 12px; color: #6b7280;">Email: {{ $shippingAddress?->email }}</p>
+                        <p style="margin: 6px 0 0 0; font-size: 10px; color: #6b7280;">Phone: {{ $shippingAddress?->phone }}</p>
+                        <p style="margin: 2px 0 0 0; font-size: 10px; color: #6b7280;">Email: {{ $shippingAddress?->email }}</p>
                     @endif
                 </td>
             </tr>
@@ -233,34 +235,134 @@
         <table class="items-table">
             <thead>
                 <tr>
-                    <th style="width: 50%;">Product Description</th>
-                    <th style="width: 15%; text-align: right;">Unit Price</th>
-                    <th style="width: 15%; text-align: center;">Qty</th>
+                    <th style="width: 38%;">Product Description</th>
+                    <th style="width: 15%;">Part Number</th>
+                    <th style="width: 17%; text-align: center;">Unit Price</th>
+                    <th style="width: 10%; text-align: center;">Qty</th>
                     <th style="width: 20%; text-align: right;">Total</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($order->orderDetails as $key => $orderDetail)
-                    @if ($orderDetail->product != null)
+                @php
+                $pcBuilderItems = $order->orderDetails->where('is_pc_builder', 1);
+                $normalItems = $order->orderDetails->where('is_pc_builder', 0);
+                @endphp
+
+                @if($pcBuilderItems->count() > 0)
+                    <tr class="category-row">
+                        <td colspan="5">PC Builder Items</td>
+                    </tr>
+                    @foreach ($pcBuilderItems as $key => $orderDetail)
                         <tr class="item-row">
                             <td>
                                 <div style="font-weight: bold; color: #111111;">{{ $orderDetail->product->name }}</div>
+                                @php
+                                    $conditionMap = [
+                                        0 => 'New',
+                                        1 => 'Refurbished',
+                                        2 => 'Open Box',
+                                        '0' => 'New',
+                                        '1' => 'Refurbished',
+                                        '2' => 'Open Box',
+                                        'new' => 'New',
+                                        'refurbished' => 'Refurbished',
+                                        'open_box' => 'Open Box',
+                                    ];
+                                    $productCondition = $orderDetail->product->condition ?? 0;
+                                    $conditionName = $conditionMap[$productCondition] ?? 'New';
+                                @endphp
+                                <div style="font-size: 9.5px; color: #555555; margin-top: 2px;">Condition: {{ $conditionName }}</div>
                                 @if ($orderDetail->variation != null)
+                                    @php
+                                        $variations = json_decode($orderDetail->variation);
+                                    @endphp
                                     <ul class="variation-list">
-                                        <li>{{ $orderDetail->variation }}</li>
+                                        @foreach($variations as $var)
+                                            <li>{{ $var->name ?? '' }}: {{ $var->value ?? '' }}</li>
+                                        @endforeach
                                     </ul>
                                 @endif
                             </td>
-                            <td style="text-align: right; white-space: nowrap;">
+                            <td>
+                                @php
+                                    $itemModel = $orderDetail->product_stock?->model ?? $orderDetail->product?->stocks?->first()?->model ?? '';
+                                @endphp
+                                {{ $itemModel ?: '-' }}
+                            </td>
+                            <td style="text-align: center; white-space: nowrap;">
                                 @if ($orderDetail->og_price != $orderDetail->offer_price)
-                                    <del style="color: #999999;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->og_price) }}</del><br>
+                                    <del style="color: #999999;"> {{ env('DEFAULT_CURRENCY', 'AED') }}{{ single_price($orderDetail->og_price) }}</del><br>
                                 @endif
                                 {{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->price / $orderDetail->quantity) }}
                             </td>
                             <td style="text-align: center;">{{ $orderDetail->quantity }}</td>
-                            <td style="text-align: right; font-weight: bold; white-space: nowrap; color: #111111;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->price) }}</td>
+                            <td style="text-align: right; font-weight: bold; white-space: nowrap; color: #111111;">{{ single_price($orderDetail->price) }}</td>
+                        </tr>
+                    @endforeach
+
+                    @if($normalItems->count() > 0)
+                        <tr class="category-row">
+                            <td colspan="5">Other Products</td>
                         </tr>
                     @endif
+                @endif
+
+                @foreach ($normalItems as $key => $orderDetail)
+                    <tr class="item-row">
+                        <td>
+                            <div style="font-weight: bold; color: #111111;">{{ $orderDetail->product->name }}</div>
+                            @php
+                                $conditionMap = [
+                                    0 => 'New',
+                                    1 => 'Refurbished',
+                                    2 => 'Open Box',
+                                    '0' => 'New',
+                                    '1' => 'Refurbished',
+                                    '2' => 'Open Box',
+                                    'new' => 'New',
+                                    'refurbished' => 'Refurbished',
+                                    'open_box' => 'Open Box',
+                                ];
+                                $productCondition = $orderDetail->product->condition ?? 0;
+                                $conditionName = $conditionMap[$productCondition] ?? 'New';
+                            @endphp
+                            <div style="font-size: 9.5px; color: #555555; margin-top: 2px;">Condition: {{ $conditionName }}</div>
+                            @if($orderDetail->warranty)
+                                <div class="warranty-label">
+                                    Warranty: {{ $orderDetail->warranty->name }}
+                                    @if($orderDetail->warranty->price > 0)
+                                        (+ {{ format_price($orderDetail->warranty->price) }})
+                                    @else
+                                        <span class="badge-free">FREE</span>
+                                    @endif
+                                </div>
+                            @endif
+                            @if ($orderDetail->variation != null)
+                                @php
+                                    $variations = json_decode($orderDetail->variation);
+                                @endphp
+                                <ul class="variation-list">
+                                    @foreach($variations as $var)
+                                        <li>{{ $var->name ?? '' }}: {{ $var->value ?? '' }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </td>
+                        <td>
+                            @php
+                                $itemModel = $orderDetail->product_stock?->model ?? $orderDetail->product?->stocks?->first()?->model ?? '';
+                            @endphp
+                            {{ $itemModel ?: '-' }}
+                        </td>
+                        <td style="text-align: center; white-space: nowrap;">
+                            @if ($orderDetail->og_price != $orderDetail->offer_price)
+                                <del style="color: #999999;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->og_price) }}</del><br>
+                            @endif
+                            {{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->price / $orderDetail->quantity) }}
+                        </td>
+                        <td style="text-align: center;">{{ $orderDetail->quantity }}</td>
+                        <td style="text-align: right; font-weight: bold; white-space: nowrap; color: #111111;">{{ env('DEFAULT_CURRENCY', 'AED') }} {{ single_price($orderDetail->price) }}</td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>

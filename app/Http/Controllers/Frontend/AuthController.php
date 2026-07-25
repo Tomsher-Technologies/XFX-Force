@@ -116,6 +116,11 @@ class AuthController extends Controller
         if (Auth::guard('frontend')->attempt($credentials, $remember)) {
             if (Auth::guard('frontend')->user()->user_type === 'customer') {
                 // Redirect to checkout if coming from checkout
+                $user = Auth::guard('frontend')->user();
+                if( $user->banned == 1 ) {
+                    Auth::guard('frontend')->logout();
+                    return back()->with('error', 'Your account has been banned. Please contact support.');
+                } 
                 if ($request->checkout) {
                     return redirect()->route('checkout')
                         ->with('success', 'Login successful! Continue checkout.');

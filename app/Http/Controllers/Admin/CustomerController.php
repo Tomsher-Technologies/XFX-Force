@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\User;
 use App\Models\Order;
+use Illuminate\Validation\Rule;
 use Hash;
 
 class CustomerController extends Controller
@@ -104,12 +105,9 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $customer = User::where('user_type', 'customer')->with(['addresses', 'addresses.country', 'addresses.state', 'addresses.city'])->withCount(['orders'])->findOrFail($id);
-        // dd($customer);
+        $customer = User::where('user_type', 'customer')->with(['addresses'])->withCount(['orders'])->findOrFail($id);
 
-        $country = Country::all();
-
-        return view('backend.customers.edit', compact('customer', 'country'));
+        return view('backend.customers.edit', compact('customer'));
     }
 
     /**
@@ -122,14 +120,21 @@ class CustomerController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required',
-            // 'password' => 'sometimes|confirmed'
+            'name'  => 'required',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($id)->where(function ($query) {
+                    return $query->where('user_type', 'customer');
+                }),
+            ],
             'password' => 'nullable|min:6|confirmed',
         ]);
 
         $user = User::findOrFail($id);
 
         $user->name = $request->name;
+        $user->email = $request->email;
         $user->phone = $request->phone;
 
         if ($request->password) {

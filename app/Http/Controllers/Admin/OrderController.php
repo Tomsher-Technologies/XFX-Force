@@ -91,21 +91,35 @@ class OrderController extends Controller
         $delivery_status = null;
         $limit = $request->has('limit') ? (int) $request->limit : 15;
 
-        $orders = Order::where('order_success', 1)
-            ->orderBy('id', 'desc');
-        if ($request->has('search')) {
+        $baseQuery = Order::where('order_success', 1);
+
+        if ($request->has('search') && !empty($request->search)) {
             $sort_search = $request->search;
-            $orders = $orders->where('code', 'like', '%' . $sort_search . '%');
+            $baseQuery->where('code', 'like', '%' . $sort_search . '%');
         }
-        if ($request->delivery_status != null) {
-            $orders = $orders->where('delivery_status', $request->delivery_status);
-            $delivery_status = $request->delivery_status;
-        }
+
         if ($date != null) {
-            $orders = $orders->where('created_at', '>=', date('Y-m-d', strtotime(explode(" to ", $date)[0])))->where('created_at', '<=', date('Y-m-d', strtotime(explode(" to ", $date)[1])));
+            $dates = explode(" to ", $date);
+            if (count($dates) == 2) {
+                $baseQuery->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($dates[0])))
+                          ->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime($dates[1])));
+            }
         }
-        $orders = $orders->paginate($limit);
-        return view('backend.sales.all_orders.index', compact('orders', 'sort_search', 'delivery_status', 'date', 'limit'));
+
+        $ordersQuery = (clone $baseQuery)->where('delivery_status', '!=', 'cancelled');
+        if ($request->delivery_status != null && $request->delivery_status != 'cancelled') {
+            $ordersQuery->where('delivery_status', $request->delivery_status);
+            $delivery_status = $request->delivery_status;
+        } elseif ($request->delivery_status == 'cancelled') {
+            $delivery_status = 'cancelled';
+        }
+
+        $orders = $ordersQuery->orderBy('id', 'desc')->paginate($limit, ['*'], 'orders_page');
+
+        $cancelledQuery = (clone $baseQuery)->where('delivery_status', 'cancelled');
+        $cancelled_orders = $cancelledQuery->orderBy('id', 'desc')->paginate($limit, ['*'], 'cancelled_page');
+
+        return view('backend.sales.all_orders.index', compact('orders', 'cancelled_orders', 'sort_search', 'delivery_status', 'date', 'limit'));
     }
 
     public function all_orders_show($id)
