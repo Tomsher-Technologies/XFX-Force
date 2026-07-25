@@ -394,7 +394,7 @@ Log::info($_REQUEST);
 										@case('newest') Newest @break
 										@case('price_low_high') Price: Low to High @break
 										@case('price_high_low') Price: High to Low @break
-										@default Newest
+										@default Price: High to Low
 										@endswitch
 									</span>
 								</span>
@@ -678,6 +678,11 @@ Log::info($_REQUEST);
 		});
 	});
 
+	window.addEventListener('pageshow', function () {
+		setTimeout(function () {
+			filterProducts();
+		}, 100);
+	});
 
 	/* FILTER FUNCTION */
 

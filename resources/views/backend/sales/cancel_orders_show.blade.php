@@ -134,6 +134,24 @@
                                     <td>
                                         @if ($orderDetail->product != null)
                                             <strong class="text-muted">{{ $orderDetail->product->name }}</strong>
+                                            @php
+                                                $conditionMap = [
+                                                    0 => 'New',
+                                                    1 => 'Refurbished',
+                                                    2 => 'Open Box',
+                                                    '0' => 'New',
+                                                    '1' => 'Refurbished',
+                                                    '2' => 'Open Box',
+                                                    'new' => 'New',
+                                                    'refurbished' => 'Refurbished',
+                                                    'open_box' => 'Open Box',
+                                                ];
+                                                $productCondition = $orderDetail->product->condition ?? 0;
+                                                $conditionName = $conditionMap[$productCondition] ?? 'New';
+                                            @endphp
+                                            <div class="mt-1">
+                                                <small class="text-muted">Condition: <span class="badge badge-inline badge-soft-info">{{ $conditionName }}</span></small>
+                                            </div>
                                             {{-- <small> --}}
                                                
                                             {{-- </small> --}}

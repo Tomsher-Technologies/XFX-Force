@@ -94,6 +94,22 @@
                                         </div>
                                         <div class="flex-grow w-full">
                                             <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1  cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">{{ $item->product->name ?? '' }}</h4>
+                                            @php
+                                                $conditionMap = [
+                                                    0 => 'New',
+                                                    1 => 'Refurbished',
+                                                    2 => 'Open Box',
+                                                    '0' => 'New',
+                                                    '1' => 'Refurbished',
+                                                    '2' => 'Open Box',
+                                                    'new' => 'New',
+                                                    'refurbished' => 'Refurbished',
+                                                    'open_box' => 'Open Box',
+                                                ];
+                                                $productCondition = $item->product->condition ?? 0;
+                                                $conditionName = $conditionMap[$productCondition] ?? 'New';
+                                            @endphp
+                                            <p class="text-xs text-blue-400 mt-0.5">Condition: {{ $conditionName }}</p>
 
                                             <p class="text-gray-500 text-xs mt-1">{{ $item->product_stock->stock_title ?? '' }}</p>
                                             
@@ -162,6 +178,22 @@
                                             </div>
                                             <div class="flex-grow w-full">
                                                 <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors line-clamp-1  cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">{{ $item->product->name ?? '' }}</h4>
+                                                @php
+                                                    $conditionMap = [
+                                                        0 => 'New',
+                                                        1 => 'Refurbished',
+                                                        2 => 'Open Box',
+                                                        '0' => 'New',
+                                                        '1' => 'Refurbished',
+                                                        '2' => 'Open Box',
+                                                        'new' => 'New',
+                                                        'refurbished' => 'Refurbished',
+                                                        'open_box' => 'Open Box',
+                                                    ];
+                                                    $productCondition = $item->product->condition ?? 0;
+                                                    $conditionName = $conditionMap[$productCondition] ?? 'New';
+                                                @endphp
+                                                <p class="text-xs text-blue-400 mt-0.5">Condition: {{ $conditionName }}</p>
                                                 
                                                 <p class="text-gray-500 text-xs mt-1">{{ $item->product_stock->stock_title ?? '' }}</p>
 

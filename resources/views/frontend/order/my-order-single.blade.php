@@ -290,6 +290,22 @@
                                                         <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors text-center md:text-left cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                             {{ $item->product->name ?? 'Product Name' }}
                                                         </h4>
+                                                        @php
+                                                            $conditionMap = [
+                                                                0 => 'New',
+                                                                1 => 'Refurbished',
+                                                                2 => 'Open Box',
+                                                                '0' => 'New',
+                                                                '1' => 'Refurbished',
+                                                                '2' => 'Open Box',
+                                                                'new' => 'New',
+                                                                'refurbished' => 'Refurbished',
+                                                                'open_box' => 'Open Box',
+                                                            ];
+                                                            $productCondition = $item->product->condition ?? 0;
+                                                            $conditionName = $conditionMap[$productCondition] ?? 'New';
+                                                        @endphp
+                                                        <p class="text-xs text-blue-400 mt-0.5 text-center md:text-left">Condition: {{ $conditionName }}</p>
                                                         <p class="text-gray-500 text-xs mt-1 text-center md:text-left cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                             {{ $item->product_stock->stock_title  ?? '' }}
                                                         </p>
@@ -384,6 +400,22 @@
                                                         <h4 class="text-white font-medium group-hover:text-[#2A7CFF] transition-colors text-center md:text-left cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                             {{ $item->product->name ?? '' }}
                                                         </h4>
+                                                        @php
+                                                            $conditionMap = [
+                                                                0 => 'New',
+                                                                1 => 'Refurbished',
+                                                                2 => 'Open Box',
+                                                                '0' => 'New',
+                                                                '1' => 'Refurbished',
+                                                                '2' => 'Open Box',
+                                                                'new' => 'New',
+                                                                'refurbished' => 'Refurbished',
+                                                                'open_box' => 'Open Box',
+                                                            ];
+                                                            $productCondition = $item->product->condition ?? 0;
+                                                            $conditionName = $conditionMap[$productCondition] ?? 'New';
+                                                        @endphp
+                                                        <p class="text-xs text-blue-400 mt-0.5 text-center md:text-left">Condition: {{ $conditionName }}</p>
 
                                                         <p class="text-gray-500 text-xs my-2 text-center md:text-left cursor-pointer" onclick="window.location='{{route('product.details', [$item->product->slug,$item->product_stock->sku])}}'">
                                                             {{ $item->product_stock->stock_title  ?? '' }}
@@ -762,7 +794,7 @@
                                             </li>
                                         @endif
                                         
-                                        @if($order->has_warranty)
+                                        @if($order->has_warranty && $order->warranty_amount > 0)
                                         <li class="py-[10px]">
                                             <div class="flex flex-row justify-between">
                                                 <span class="text-[#99a1af] text-[15px]">
@@ -770,15 +802,7 @@
                                                 </span>
 
                                                 <span class="flex items-center gap-[10px] text-[15px]">
-
-                                                    @if($order->warranty_amount > 0)
-                                                        + {{ format_price($order->warranty_amount) }}
-                                                    @else
-                                                        <span class="text-black uppercase font-bold text-[10px] bg-[#29A706] px-2 py-1 rounded">
-                                                            FREE
-                                                        </span>
-                                                    @endif
-
+                                                    + {{ format_price($order->warranty_amount) }}
                                                 </span>
                                             </div>
                                         </li>

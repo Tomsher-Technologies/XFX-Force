@@ -67,6 +67,7 @@ class CategoryController extends Controller
             $category->level = $parent->level + 1;
         }
         $category->is_active    = ($request->status ==2) ? 0 : 1;
+        $category->sort_order = $request->sort_order ?? 0;
         $category->save();
 
         $slug               = $request->slug ? Str::slug($request->slug, '-') : Str::slug($request->name, '-');
@@ -141,6 +142,7 @@ class CategoryController extends Controller
             }
 
             $category->is_active    = ($request->status ==2) ? 0 : 1;
+            $category->sort_order = $request->sort_order ?? 0;
             $category->save();
 
             $category->allChildCategories()->update(['is_active' => $request->status]);
