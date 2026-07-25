@@ -44,7 +44,8 @@ class BuildPcController extends Controller
                     $query->where('published', 1)
                         ->whereIn('category_id', $categoryIds);
                 })
-                ->latest()
+                ->orderBy('product_stocks.offer_price', 'desc')
+                ->where('product_stocks.qty', '>', 0)
                 ->paginate(30);
         }
 
@@ -135,7 +136,7 @@ class BuildPcController extends Controller
         } elseif ($sort == 'price_high_low') {
             $stocks->orderBy('product_stocks.offer_price', 'desc');
         } else {
-            $stocks->latest(); // default
+            $stocks->orderBy('product_stocks.offer_price', 'desc'); // default
         }
 
         // PAGINATION

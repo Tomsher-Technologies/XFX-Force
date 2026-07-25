@@ -305,9 +305,13 @@ class ProductController extends Controller
         })->firstOrFail();
 
         // Related products (same category, excluding this product)
-        $relatedProducts = Product::where('category_id', $product->category_id)
-            ->where('id', '!=', $product->id)
-            ->where('published', 1)
+        $relatedProducts = Product::select('products.*')
+            ->join('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->where('products.category_id', $product->category_id)
+            ->where('products.id', '!=', $product->id)
+            ->where('products.published', 1)
+            ->where('product_stocks.qty', '>', 0)
+            ->orderBy('product_stocks.offer_price', 'desc')
             ->get();
 
         // Determine selected stock by SKU or default first stock

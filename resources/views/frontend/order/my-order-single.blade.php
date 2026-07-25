@@ -794,7 +794,7 @@
                                             </li>
                                         @endif
                                         
-                                        @if($order->has_warranty)
+                                        @if($order->has_warranty && $order->warranty_amount > 0)
                                         <li class="py-[10px]">
                                             <div class="flex flex-row justify-between">
                                                 <span class="text-[#99a1af] text-[15px]">
@@ -802,15 +802,7 @@
                                                 </span>
 
                                                 <span class="flex items-center gap-[10px] text-[15px]">
-
-                                                    @if($order->warranty_amount > 0)
-                                                        + {{ format_price($order->warranty_amount) }}
-                                                    @else
-                                                        <span class="text-black uppercase font-bold text-[10px] bg-[#29A706] px-2 py-1 rounded">
-                                                            FREE
-                                                        </span>
-                                                    @endif
-
+                                                    + {{ format_price($order->warranty_amount) }}
                                                 </span>
                                             </div>
                                         </li>

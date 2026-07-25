@@ -327,14 +327,10 @@
                                 $conditionName = $conditionMap[$productCondition] ?? 'New';
                             @endphp
                             <div style="font-size: 9.5px; color: #555555; margin-top: 2px;">Condition: {{ $conditionName }}</div>
-                            @if($orderDetail->warranty)
+                            @if($orderDetail->warranty && $orderDetail->warranty->price > 0)
                                 <div class="warranty-label">
                                     Warranty: {{ $orderDetail->warranty->name }}
-                                    @if($orderDetail->warranty->price > 0)
                                         (+ {{ format_price($orderDetail->warranty->price) }})
-                                    @else
-                                        <span class="badge-free">FREE</span>
-                                    @endif
                                 </div>
                             @endif
                             @if ($orderDetail->variation != null)
