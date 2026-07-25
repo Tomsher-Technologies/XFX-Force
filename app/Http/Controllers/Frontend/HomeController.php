@@ -117,12 +117,20 @@ class HomeController extends Controller
         $popularUploads = Upload::whereIn('id', $popularImageIds)->get()->keyBy('id');
 
         // Upcoming product details
-        $upcomingNewProducts = Product::whereIn('id', $page_content['upcoming_new_products'] ?? [])
-        ->where('published', 1)
-        ->get();
-        $upcomingPopularProducts = Product::whereIn('id', $page_content['upcoming_popular_products'] ?? [])
-        ->where('published', 1)
-        ->get();
+        $upcomingNewProducts = Product::select('products.*')
+            ->join('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->whereIn('products.id', $page_content['upcoming_new_products'] ?? [])
+            ->where('products.published', 1)
+            ->where('product_stocks.qty', '>', 0)
+            ->orderBy('product_stocks.offer_price', 'desc')
+            ->get();
+        $upcomingPopularProducts = Product::select('products.*')
+            ->join('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->whereIn('products.id', $page_content['upcoming_popular_products'] ?? [])
+            ->where('products.published', 1)
+            ->where('product_stocks.qty', '>', 0)
+            ->orderBy('product_stocks.offer_price', 'desc')
+            ->get();
 
         // --- Middle Banners ---
         $middleBannerIds = $page_content['middle_banners'] ?? [];
@@ -136,12 +144,21 @@ class HomeController extends Controller
         }
 
         // Middle featured product details
-        $middleNewProducts = Product::whereIn('id', $page_content['middle_featured_new_arrivals'] ?? [])
-        ->where('published', 1)
-        ->get();
-        $middlePopularProducts = Product::whereIn('id', $page_content['middle_featured_popular_products'] ?? [])
-        ->where('published', 1)
-        ->get();
+        $middleNewProducts = Product::select('products.*')
+            ->join('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->whereIn('products.id', $page_content['middle_featured_new_arrivals'] ?? [])
+            ->where('products.published', 1)
+            ->where('product_stocks.qty', '>', 0)
+            ->orderBy('product_stocks.offer_price', 'desc')
+            ->get();
+
+        $middlePopularProducts = Product::select('products.*')
+            ->join('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->whereIn('products.id', $page_content['middle_featured_popular_products'] ?? [])
+            ->where('products.published', 1)
+            ->where('product_stocks.qty', '>', 0)
+            ->orderBy('product_stocks.offer_price', 'desc')
+            ->get();
 
         //Middle full banner
         $middleFullBannerIds = $page_content['middle_full_banner'] ?? [];
@@ -155,20 +172,32 @@ class HomeController extends Controller
         }
 
         // best deals product details
-        $bestDealsProducts = Product::whereIn('id', $page_content['best_deals_products'] ?? [])
-        ->where('published', 1)
-        ->get();
+        $bestDealsProducts = Product::select('products.*')
+            ->join('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->whereIn('products.id', $page_content['best_deals_products'] ?? [])
+            ->where('products.published', 1)
+            ->where('product_stocks.qty', '>', 0)
+            ->orderBy('product_stocks.offer_price', 'desc')
+            ->get();
 
         // product gallery images
-        $popularGalleryProducts = Product::whereIn('id', $page_content['product_gallery_products'] ?? [])
-        ->with('stocks')
-        ->where('published', 1)
-        ->get();
+        $popularGalleryProducts = Product::select('products.*')
+            ->join('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->with('stocks')
+            ->whereIn('products.id', $page_content['product_gallery_products'] ?? [])
+            ->where('products.published', 1)
+            ->where('product_stocks.qty', '>', 0)
+            ->orderBy('product_stocks.offer_price', 'desc')
+            ->get();
         
         // Graphic card product details
-        $graphicCardProducts = Product::whereIn('id', $page_content['graphic_cards_products'] ?? [])
-        ->where('published', 1)
-        ->get();
+        $graphicCardProducts = Product::select('products.*')
+            ->join('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+            ->whereIn('products.id', $page_content['graphic_cards_products'] ?? [])
+            ->where('products.published', 1)
+            ->where('product_stocks.qty', '>', 0)
+            ->orderBy('product_stocks.offer_price', 'desc')
+            ->get();
 
         //Testimoanials details
         $testimonialsText = Testimonials::where('type', 'text')
