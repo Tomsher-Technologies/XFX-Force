@@ -678,6 +678,11 @@ Log::info($_REQUEST);
 		});
 	});
 
+	window.addEventListener('pageshow', function () {
+		setTimeout(function () {
+			filterProducts();
+		}, 100);
+	});
 
 	/* FILTER FUNCTION */
 
