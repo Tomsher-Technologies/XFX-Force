@@ -572,11 +572,13 @@ class ProductController extends Controller
             });
         }
 
-
         // Sorting
         switch ($sort) {
             case 'oldest':
                 $products->orderBy('products.created_at', 'asc');
+                break;
+            case 'newest':
+                $products->orderBy('products.created_at', 'desc');
                 break;
             case 'price_low_high':
                 $products->orderBy('product_stocks.offer_price', 'asc');
@@ -585,7 +587,7 @@ class ProductController extends Controller
                 $products->orderBy('product_stocks.offer_price', 'desc');
                 break;
             default:
-                $products->orderBy('products.created_at', 'desc');
+                $products->orderBy('product_stocks.offer_price', 'desc');
                 break;
         }
 
@@ -908,6 +910,10 @@ class ProductController extends Controller
                 $products->orderBy('products.created_at', 'asc');
                 break;
 
+            case 'newest':
+                $products->orderBy('products.created_at', 'desc');
+                break;
+
             case 'price_low_high':
                 $products->orderBy('product_stocks.offer_price', 'asc');
                 break;
@@ -917,7 +923,7 @@ class ProductController extends Controller
                 break;
 
             default:
-                $products->orderBy('products.created_at', 'desc');
+                $products->orderBy('product_stocks.offer_price', 'desc');
                 break;
         }
 
@@ -1063,6 +1069,10 @@ class ProductController extends Controller
                 $productsQuery->orderBy('products.created_at', 'asc');
                 break;
 
+            case 'newest':
+                $productsQuery->orderBy('products.created_at', 'desc');
+                break;
+
             case 'price_low_high':
                 $productsQuery->orderBy('product_stocks.offer_price', 'asc');
                 break;
@@ -1072,7 +1082,7 @@ class ProductController extends Controller
                 break;
 
             default:
-                $productsQuery->orderBy('products.created_at', 'desc');
+                $productsQuery->orderBy('product_stocks.offer_price', 'desc');
                 break;
         }
         // Clone the query before pagination
@@ -1084,6 +1094,8 @@ class ProductController extends Controller
             ->pluck('products.category_id')
             ->toArray();
 
+            // Product count
+        $productCount = $productsQuery->count();
 
         // $products = $productsQuery->with('stocks')->distinct()->paginate(12);
         $products = $productsQuery
@@ -1091,8 +1103,7 @@ class ProductController extends Controller
             ->with('stocks')
             ->paginate(12);
 
-        // Product count
-        $productCount = $products->count();
+        
 
         // Fetch categories for filters: only categories that have products of this brand
         // $categoryIds = $products->pluck('category_id')->unique()->toArray();
