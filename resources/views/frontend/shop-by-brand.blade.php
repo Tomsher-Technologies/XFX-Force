@@ -94,10 +94,13 @@
                                                     $allIds = array_merge([$category->id], $childIds);
 
                                                 
-                                                    $productCount = \App\Models\Product::whereIn('category_id', $allIds)
-                                                        ->where('brand_id', $brand->id)
-                                                        ->where('published', 1)
-                                                        ->count();
+                                                    $productCount = \App\Models\Product::whereIn('products.category_id', $allIds)
+                                                        ->where('products.brand_id', $brand->id)
+                                                        ->where('products.published', 1)
+                                                        ->join('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+                                                        ->where('product_stocks.qty', '>', 0)
+                                                        ->distinct('products.id')
+                                                        ->count('products.id');
 
                                                     $padding = $level * 20; // indentation
                                         @endphp
@@ -423,7 +426,7 @@
 /* ===============================
    GLOBAL STATE VARIABLES
    =============================== */
-let currentSort = "newest";
+let currentSort = "price_high_low";
 let currentView = "gridview";
 
 /* ===============================
@@ -656,7 +659,7 @@ let currentView = "gridview";
             document.querySelectorAll('input[name="categories[]"], input[name="conditions[]"]').forEach(cb => cb.checked = false);
 
             // Sort & view
-            currentSort = "newest";
+            currentSort = "price_high_low";
             currentView = "gridview";
 
             filterProducts();

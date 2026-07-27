@@ -124,7 +124,12 @@
                                             @endphp
                                             @foreach($category->childs as $child)
                                                 @php
-                                                    $productCount = \App\Models\Product::where('category_id', $child->id)->count();
+                                                    $productCount = \App\Models\Product::where('products.category_id', $child->id)
+                                                        ->join('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+                                                        ->where('product_stocks.qty', '>', 0)
+                                                        ->where('products.published', 1)
+                                                        ->distinct('products.id')
+                                                        ->count('products.id');
                                                 @endphp
                                                 <div class="flex gap-[10px] items-center category-item" data-name="{{ $child->category_translations->first()->name ?? $child->name }}" style="padding-left: {{ $padding }}px;">
                                                     <div class="flex h-5 shrink-0 items-center">
@@ -439,7 +444,7 @@
     // FILTER SCRIPT
     /* GLOBAL STATE VARIABLES */
     let selectedBrands = [];
-    let currentSort = "newest";
+    let currentSort = "price_high_low";
     let currentView = "gridview";
 
 
@@ -781,7 +786,7 @@
             selectedBrands = [];
 
             // Reset sort and view if desired
-            currentSort = "newest";
+            currentSort = "price_high_low";
             currentView = "gridview";
 
             filterProducts();
