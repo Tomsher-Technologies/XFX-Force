@@ -118,7 +118,10 @@ Log::info($_REQUEST);
 											$childIds = getAllChildIds($category->id, $groupedCategories);
 											$allIds = array_merge([$category->id], $childIds);
 
-											$productCount = \App\Models\Product::whereIn('category_id', $allIds)->count();
+											$productCount = \App\Models\Product::whereIn('products.category_id', $allIds)
+												->join('product_stocks', 'product_stocks.product_id', '=', 'products.id')
+												->where('product_stocks.qty', '>', 0)
+												->count();
 
 											$padding = $level * 20; // indentation
 											@endphp
@@ -460,13 +463,84 @@ Log::info($_REQUEST);
 <!--//product listing-->
 
 <script>
+
+	const FILTER_STORAGE_KEY = "productFilters";
+
+	function saveFilters() {
+
+		const activeFilterWrapper = document.querySelector(
+			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
+		);
+
+		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
+
+		const filters = {
+			categories: Array.from(document.querySelectorAll('input[name="categories[]"]:checked')).map(x => x.value),
+			brands: Array.from(document.querySelectorAll('input[name="brands[]"]:checked')).map(x => x.value),
+			conditions: Array.from(document.querySelectorAll('input[name="conditions[]"]:checked')).map(x => x.value),
+
+			min_price: visibleFilter?.querySelector('.min-price')?.value || 0,
+			max_price: visibleFilter?.querySelector('.max-price')?.value || 300000,
+
+			sort: currentSort,
+			view: currentView
+		};
+
+		sessionStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(filters));
+	}
+
+	function restoreFilters() {
+
+		const saved = sessionStorage.getItem(FILTER_STORAGE_KEY);
+
+		if (!saved) return false;
+
+		const filters = JSON.parse(saved);
+
+		currentSort = filters.sort || "price_high_low";
+		currentView = filters.view || "gridview";
+
+		document.querySelectorAll('input[name="categories[]"]').forEach(cb => {
+			cb.checked = filters.categories.includes(cb.value);
+		});
+
+		document.querySelectorAll('input[name="brands[]"]').forEach(cb => {
+			cb.checked = filters.brands.includes(cb.value);
+		});
+
+		document.querySelectorAll('input[name="conditions[]"]').forEach(cb => {
+			cb.checked = filters.conditions.includes(cb.value);
+		});
+
+		const activeFilterWrapper = document.querySelector(
+			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
+		);
+
+		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
+
+		if (visibleFilter) {
+
+			visibleFilter.querySelector('.min-price').value = filters.min_price;
+			visibleFilter.querySelector('.max-price').value = filters.max_price;
+
+			visibleFilter.querySelector('.range-min').value = filters.min_price;
+			visibleFilter.querySelector('.range-max').value = filters.max_price;
+
+			updateProgress(
+				parseInt(filters.min_price),
+				parseInt(filters.max_price)
+			);
+		}
+
+		return true;
+	}
 	// FILTER SCRIPT
 	/* ===============================
 	GLOBAL STATE VARIABLES
 	=============================== */
 
 	let selectedBrands = [];
-	let currentSort = "newest";
+	let currentSort = "price_high_low";
 	let currentView = "gridview";
 
 
@@ -679,9 +753,11 @@ Log::info($_REQUEST);
 	});
 
 	window.addEventListener('pageshow', function () {
-		setTimeout(function () {
+
+		if (restoreFilters()) {
 			filterProducts();
-		}, 100);
+		}
+
 	});
 
 	/* FILTER FUNCTION */
@@ -757,6 +833,7 @@ Log::info($_REQUEST);
 			);
 		}
 
+		saveFilters();
 		return fetch(`${url}?${currentFilters.toString()}`, {
 				method: 'GET',
 				headers: {
@@ -828,7 +905,7 @@ Log::info($_REQUEST);
 
 			selectedBrands = [];
 
-			currentSort = "newest";
+			currentSort = "price_high_low";
 			currentView = "gridview";
 
 
@@ -837,6 +914,7 @@ Log::info($_REQUEST);
 
 			filterProducts();
 			updateProductCount();
+			sessionStorage.removeItem(FILTER_STORAGE_KEY);
 		});
 	});
 
@@ -879,6 +957,7 @@ Log::info($_REQUEST);
 	/* INITIAL LOAD */
 
 	document.addEventListener('DOMContentLoaded', () => {
+		restoreFilters();
 		filterProducts();
 		hideLoader();
 	});
