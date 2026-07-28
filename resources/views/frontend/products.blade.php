@@ -134,6 +134,7 @@ Log::info($_REQUEST);
 															type="checkbox"
 															name="categories[]"
 															value="{{ $category->id }}"
+															data-slug="{{ $category->category_translations->first()->slug }}"
 															class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
 															data-child-ids="{{ implode(',', $childIds) }}" />
 													</div>
@@ -253,7 +254,7 @@ Log::info($_REQUEST);
 										<div class="flex gap-[15px] align-center items-center brand-item" data-name="{{$brand->name}}">
 											<div class="flex h-5 shrink-0 items-center">
 												<div class="group grid size-4 grid-cols-1 w-full">
-													<input id="filter-brand-{{ $brand->id }}" type="checkbox" name="brands[]" value="{{$brand->id}}" class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200" />
+													<input id="filter-brand-{{ $brand->id }}" type="checkbox" name="brands[]" value="{{$brand->id}}" data-slug="{{ $brand->slug }}" class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200" />
 													<svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25">
 														<path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:checked]:opacity-100" />
 														<path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-[:indeterminate]:opacity-100" />
@@ -357,6 +358,7 @@ Log::info($_REQUEST);
 				<!--// Desktop Filters -->
 
 				<!--promotion banners-->
+				
 				@if(!empty($banners))
 				<div class="!hidden xl:!block swiper promobnrswiper relative">
                     <div class="swiper-wrapper">
@@ -374,7 +376,7 @@ Log::info($_REQUEST);
 				<!--//promotion banners-->
 			</div>
 
-			<div class="col-span-3" x-data="{ activeTab: '{{ request('view', 'gridview') }}' }">
+			<div class="col-span-3" x-data="{ activeTab: '{{ request()->get('view','gridview') }}' }">
 
 				<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[0px] w-full">
 					<h1 class="text-[30px] 2xl:text-[50px] text-white font-bold text-center xl:text-left uppercase w-full">
@@ -464,16 +466,14 @@ Log::info($_REQUEST);
 
 <script>
 
+	let isInitialLoad = true;
 	const FILTER_STORAGE_KEY = "productFilters";
 
 	function saveFilters() {
-
 		const activeFilterWrapper = document.querySelector(
 			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
 		);
-
 		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
-
 		const filters = {
 			categories: Array.from(document.querySelectorAll('input[name="categories[]"]:checked')).map(x => x.value),
 			brands: Array.from(document.querySelectorAll('input[name="brands[]"]:checked')).map(x => x.value),
@@ -486,54 +486,44 @@ Log::info($_REQUEST);
 			view: currentView
 		};
 
-		sessionStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(filters));
 	}
 
-	function restoreFilters() {
-
-		const saved = sessionStorage.getItem(FILTER_STORAGE_KEY);
-
-		if (!saved) return false;
-
-		const filters = JSON.parse(saved);
-
-		currentSort = filters.sort || "price_high_low";
-		currentView = filters.view || "gridview";
+	function restoreFiltersFromUrl(){
+		const params = new URLSearchParams(window.location.search);
+		let categories = params.getAll('categories[]');
 
 		document.querySelectorAll('input[name="categories[]"]').forEach(cb => {
-			cb.checked = filters.categories.includes(cb.value);
+			cb.checked = categories.includes(cb.dataset.slug);
 		});
+
+		let brands = params.getAll('brands[]');
 
 		document.querySelectorAll('input[name="brands[]"]').forEach(cb => {
-			cb.checked = filters.brands.includes(cb.value);
+			cb.checked = brands.includes(cb.dataset.slug);
 		});
 
-		document.querySelectorAll('input[name="conditions[]"]').forEach(cb => {
-			cb.checked = filters.conditions.includes(cb.value);
-		});
+		let conditions = params.get('conditions');
+		if(conditions){
+			let conditionArray = conditions.split(',');
 
-		const activeFilterWrapper = document.querySelector(
-			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
-		);
-
-		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
-
-		if (visibleFilter) {
-
-			visibleFilter.querySelector('.min-price').value = filters.min_price;
-			visibleFilter.querySelector('.max-price').value = filters.max_price;
-
-			visibleFilter.querySelector('.range-min').value = filters.min_price;
-			visibleFilter.querySelector('.range-max').value = filters.max_price;
-
-			updateProgress(
-				parseInt(filters.min_price),
-				parseInt(filters.max_price)
-			);
+			document.querySelectorAll('input[name="conditions[]"]').forEach(cb=>{
+				cb.checked = conditionArray.includes(cb.value);
+			});
 		}
+		const min = params.get('min_price') || 0;
+		const max = params.get('max_price') || 300000;
 
-		return true;
+		document.querySelectorAll('.min-price')
+			.forEach(el=>el.value=min);
+
+		document.querySelectorAll('.max-price')
+			.forEach(el=>el.value=max);
+
+		currentSort = params.get('sort') || 'price_high_low';
+		currentView = params.get('view') || 'gridview';
+
 	}
+
 	// FILTER SCRIPT
 	/* ===============================
 	GLOBAL STATE VARIABLES
@@ -742,40 +732,48 @@ Log::info($_REQUEST);
 
 	/* VIEW SWITCH */
 
-	document.addEventListener('DOMContentLoaded', () => {
-		const viewButtons = document.querySelectorAll('.view-switch');
-		viewButtons.forEach(btn => {
-			btn.addEventListener('click', function() {
-				currentView = this.dataset.view;
-				filterProducts();
-			});
-		});
-	});
+	// document.addEventListener('DOMContentLoaded', () => {
+	// 	const viewButtons = document.querySelectorAll('.view-switch');
+	// 	viewButtons.forEach(btn => {
+	// 		btn.addEventListener('click', function() {
+	// 			currentView = this.dataset.view;
+	// 			filterProducts();
+	// 		});
+	// 	});
+	// });
 
-	window.addEventListener('pageshow', function () {
+	// window.addEventListener('pageshow', function () {
 
-		if (restoreFilters()) {
-			filterProducts();
-		}
+	// 	if (restoreFilters()) {
+	// 		filterProducts();
+	// 	}
 
-	});
+	// });
 
 	/* FILTER FUNCTION */
 
-	function filterProducts() {
+	// function filterProducts() {
+	function filterProducts(categoriesParam = null, searchParamValue = '', viewParam = null) {
 
 		page = 1;
-		// document.getElementById('load-more-wrapper').style.display = 'block';
-		// document.getElementById('product-loader').classList.remove('hidden');
 		showLoader();
+		if(viewParam){
+			currentView = viewParam;
+		}
 
 		const categories = Array.from(
 			document.querySelectorAll('input[name="categories[]"]:checked')
-		).map(el => el.value);
+		).map(el => ({
+			id: el.value,
+			slug: el.dataset.slug
+		}));
 
 		const selectedBrands = Array.from(
 			document.querySelectorAll('input[name="brands[]"]:checked')
-		).map(el => el.value);
+		).map(el => ({
+			id: el.value,
+			slug: el.dataset.slug
+		}));
 
 
 		const activeFilterWrapper = document.querySelector(
@@ -786,7 +784,17 @@ Log::info($_REQUEST);
 			document.querySelectorAll('input[name="conditions[]"]:checked')
 		).map(el => el.value);
 
-		const browserUrl = new URL(window.location.href);
+		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
+
+		const min_price = parseInt(
+			visibleFilter?.querySelector('.min-price')?.value
+		) || 0;
+
+		const max_price = parseInt(
+			visibleFilter?.querySelector('.max-price')?.value
+		) || 300000;
+
+		/*const browserUrl = new URL(window.location.href);
 
 		if (conditions.length) {
 			browserUrl.searchParams.set(
@@ -801,16 +809,55 @@ Log::info($_REQUEST);
 			{},
 			'',
 			browserUrl.pathname + browserUrl.search
-		);
-		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
+		);*/
 
-		const min_price = parseInt(
-			visibleFilter?.querySelector('.min-price')?.value
-		) || 0;
+		const browserUrl = new URL(window.location.href);
 
-		const max_price = parseInt(
-			visibleFilter?.querySelector('.max-price')?.value
-		) || 300000;
+		// Categories
+		browserUrl.searchParams.delete('categories[]');
+		categories.forEach(cat => {
+			browserUrl.searchParams.append('categories[]', cat.slug);
+		});
+
+		// brands
+		browserUrl.searchParams.delete('brands[]');
+		selectedBrands.forEach(brand => {
+			browserUrl.searchParams.append('brands[]', brand.slug);
+		});
+
+
+		// Conditions
+		if (conditions.length) {
+			browserUrl.searchParams.set(
+				'conditions',
+				conditions.join(',')
+			);
+		} else {
+			browserUrl.searchParams.delete('conditions');
+		}
+
+
+		// Price
+		browserUrl.searchParams.set('min_price', min_price);
+		browserUrl.searchParams.set('max_price', max_price);
+
+
+		// Sort
+		browserUrl.searchParams.set('sort', currentSort);
+
+
+		// View
+		browserUrl.searchParams.set('view', currentView);
+
+
+		if (!isInitialLoad) {
+			window.history.replaceState(
+				{},
+				'',
+				browserUrl.pathname + browserUrl.search
+			);
+		}
+		
 
 		const url = `/products`;
 
@@ -824,8 +871,18 @@ Log::info($_REQUEST);
 			search: searchParam
 		});
 
-		categories.forEach(cat => currentFilters.append('categories[]', cat));
-		selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
+		// categories.forEach(cat => currentFilters.append('categories[]', cat));
+		// selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
+
+
+		categories.forEach(cat => {
+			currentFilters.append('categories[]', cat.slug);
+		});
+
+		selectedBrands.forEach(brand => {
+			currentFilters.append('brands[]', brand.slug);
+		});
+
 		if (conditions.length) {
 			currentFilters.append(
 				'conditions',
@@ -880,42 +937,65 @@ Log::info($_REQUEST);
 		if (!clearBtn) return;
 
 		clearBtn.addEventListener('click', (e) => {
-			e.preventDefault(); // IMPORTANT because button inside form
+			e.preventDefault();
 
 			const minSlider = document.querySelector('.range-min');
 			const maxSlider = document.querySelector('.range-max');
 			const minInput = document.querySelector('.min-price');
 			const maxInput = document.querySelector('.max-price');
-
 			const maxVal = parseInt(maxSlider?.max || 300000);
 
+			// Reset price
 			if (minSlider && maxSlider && minInput && maxInput) {
 				minSlider.value = 0;
 				maxSlider.value = maxVal;
 				minInput.value = 0;
 				maxInput.value = maxVal;
+				updateProgress(0, maxVal);
 			}
 
-			// update slider bar
-			updateProgress(0, maxVal);
 
-			// Reset checkboxes
-			document.querySelectorAll( 'input[name="categories[]"], input[name="brands[]"], input[name="conditions[]"]')
-				.forEach(cb => cb.checked = false);
+			// Reset all checkboxes
+			document.querySelectorAll(
+				'input[name="categories[]"], input[name="brands[]"], input[name="conditions[]"]'
+			)
+			.forEach(cb => {
+				cb.checked = false;
+			});
 
+			// Reset global variables
 			selectedBrands = [];
-
 			currentSort = "price_high_low";
 			currentView = "gridview";
 
+			// Reset page
+			page = 1;
 
-			// reset URL clean
-			window.history.replaceState({}, '', '/products');
-
-			filterProducts();
-			updateProductCount();
+			// Clear stored filters
 			sessionStorage.removeItem(FILTER_STORAGE_KEY);
+			// Remove all URL parameters
+			window.history.replaceState(
+				{},
+				'',
+				'/products'
+			);
+
+			// Clear current filter object
+			currentFilters = new URLSearchParams({
+				min_price: 0,
+				max_price: maxVal,
+				sort: currentSort,
+				view: currentView
+			});
+
+			// Reload products
+			filterProducts();
+
+
+			updateProductCount();
+
 		});
+
 	});
 
 	function updateProgress(minVal, maxVal) {
@@ -957,8 +1037,11 @@ Log::info($_REQUEST);
 	/* INITIAL LOAD */
 
 	document.addEventListener('DOMContentLoaded', () => {
-		restoreFilters();
-		filterProducts();
+		restoreFiltersFromUrl();
+		filterProducts().then(() => {
+			isInitialLoad = false;
+		});
+
 		hideLoader();
 	});
 
