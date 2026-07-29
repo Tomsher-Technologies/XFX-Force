@@ -160,7 +160,9 @@ class Bannercontroller extends Controller
 
     public function get_form(Request $request)
     {
-        $old_data = $request->old_data ?? null;
+       
+        $old_data = html_entity_decode($request->old_data ?? '');
+
         if ($request->link_type == "product") {
             $products = Product::select(['id', 'name'])->where('published',1)->get();
             return view('partials.banners.banner_form_product', compact('products', 'old_data'));

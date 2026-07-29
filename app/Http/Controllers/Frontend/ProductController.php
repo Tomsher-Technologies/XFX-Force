@@ -505,6 +505,7 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
+       
         $sort = $request->get('sort', 'price_high_low');
         $view = $request->get('view', 'gridview');
 
@@ -513,10 +514,71 @@ class ProductController extends Controller
             ->where('published', 1)
             ->where('product_stocks.qty', '>', 0);
 
-        // Filters
+       // Category + Search Combined Filter
+if ($request->filled('categories') || $request->filled('search')) {
+
+    $products->where(function ($query) use ($request) {
+
+
+        // Category Filter
         if ($request->filled('categories')) {
-            $products->whereIn('products.category_id', $request->categories);
+
+            $categoryIds = Category::whereHas('category_translations', function ($q) use ($request) {
+                    $q->whereIn('slug', $request->categories);
+                })
+                ->pluck('id')
+                ->toArray();
+
+
+            $allCategoryIds = [];
+
+            foreach ($categoryIds as $categoryId) {
+
+                $allCategoryIds = array_merge(
+                    $allCategoryIds,
+                    $this->getCategoryAndChildrenIds($categoryId)
+                );
+
+            }
+
+            if (!empty($allCategoryIds)) {
+
+                $query->whereIn(
+                    'products.category_id',
+                    array_unique($allCategoryIds)
+                );
+    
+
+            }
+
         }
+
+
+        // Search Filter
+        if ($request->filled('search')) {
+
+            $search = $request->search;
+
+
+            $query->orWhere(function ($q) use ($search) {
+
+                $q->where('products.name', 'LIKE', "%{$search}%")
+                    ->orWhere('products.slug', 'LIKE', "%{$search}%")
+                    ->orWhere('products.tags', 'LIKE', "%{$search}%")
+                    ->orWhereHas('stocks', function ($stock) use ($search) {
+                        $stock->where('stock_title', 'LIKE', "%{$search}%");
+                    });
+
+            });
+
+        }
+
+    });
+
+}
+        
+
+
 
         if($request->filled('conditions')) {
             $conditionMap = [
@@ -546,8 +608,16 @@ class ProductController extends Controller
             }
         }
 
+        // Brand Filter (using slugs)
         if ($request->filled('brands')) {
-            $products->whereIn('products.brand_id', $request->brands);
+
+            $brandIds = Brand::whereIn('slug', $request->brands)
+                ->pluck('id')
+                ->toArray();
+
+            if (!empty($brandIds)) {
+                $products->whereIn('products.brand_id', $brandIds);
+            }
         }
 
         if ($request->filled('min_price')) {
@@ -559,18 +629,18 @@ class ProductController extends Controller
         }
 
         // Global Search
-        if ($request->filled('search')) {
-            $search = $request->search;
+        // if ($request->filled('search')) {
+        //     $search = $request->search;
 
-            $products->where(function ($query) use ($search) {
-                $query->where('products.name', 'LIKE', "%{$search}%")
-                    ->orWhere('products.slug', 'LIKE', "%{$search}%")
-                    ->orWhere('products.tags', 'LIKE', "%{$search}%")
-                    ->orWhereHas('stocks', function ($q) use ($search) {
-                        $q->where('stock_title', 'LIKE', "%{$search}%");
-                    });
-            });
-        }
+        //     $products->where(function ($query) use ($search) {
+        //         $query->where('products.name', 'LIKE', "%{$search}%")
+        //             ->orWhere('products.slug', 'LIKE', "%{$search}%")
+        //             ->orWhere('products.tags', 'LIKE', "%{$search}%")
+        //             ->orWhereHas('stocks', function ($q) use ($search) {
+        //                 $q->where('stock_title', 'LIKE', "%{$search}%");
+        //             });
+        //     });
+        // }
 
         // Sorting
         switch ($sort) {
@@ -591,7 +661,6 @@ class ProductController extends Controller
                 break;
         }
 
-        // $products = $products->with('stocks')->distinct()->paginate(12);
         $products = $products
             ->groupBy('products.id')
             ->with('stocks')
@@ -608,7 +677,16 @@ class ProductController extends Controller
         });
         $groupedCategories = $categories->groupBy('parent_id');
 
-        $brands = Brand::withCount('products')->where('is_active', 1)->orderBy('name', 'asc')->get();
+        $brands = Brand::where('is_active', 1)
+            ->withCount([
+                'products as products_count' => function ($query) {
+                    $query->whereHas('stocks', function ($q) {
+                        $q->where('qty', '>', 0);
+                    });
+                }
+            ])
+            ->orderBy('name', 'asc')
+            ->get();
 
 
         if ($request->ajax()) {
