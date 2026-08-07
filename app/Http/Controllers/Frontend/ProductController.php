@@ -1012,7 +1012,31 @@ if ($request->filled('categories') || $request->filled('search')) {
             ->paginate(12)
             ->appends($request->query());
 
-        $brands = Brand::withCount('products')->whereIn('id', $products->pluck('brand_id')->filter()->unique())->orderBy('name', 'asc')->get();
+        // $brands = Brand::withCount('products')->whereIn('id', $products->pluck('brand_id')->filter()->unique())->orderBy('name', 'asc')->get();
+        $brands = Brand::whereIn(
+            'id',
+            Product::whereIn('category_id', $categoryIds)
+                ->where('published', 1)
+                ->pluck('brand_id')
+                ->filter()
+                ->unique()
+        )
+        ->withCount([
+            'products as products_count' => function ($query) use ($categoryIds) {
+                $query->join(
+                        'product_stocks',
+                        'product_stocks.product_id',
+                        '=',
+                        'products.id'
+                    )
+                    ->whereIn('products.category_id', $categoryIds)
+                    ->where('products.published', 1)
+                    ->where('product_stocks.qty', '>', 0)
+                    ->distinct('products.id');
+            }
+        ])
+        ->orderBy('name')
+        ->get();
 
         $categories = Category::withCount('products')->orderBy('name', 'asc')->get();
 
