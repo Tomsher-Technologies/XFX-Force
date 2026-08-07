@@ -605,11 +605,20 @@ let currentView = "gridview";
 
     if (sortButton && sortOptions.length) {
         sortOptions.forEach(option => {
-            option.addEventListener('click', e => {
+            option.addEventListener('click', function (e) {
                 e.preventDefault();
-                currentSort = option.dataset.sort;
-                const sortText = option.textContent;
-                sortButton.querySelector('span').textContent = `Sort by: ${sortText}`;
+
+                currentSort = this.dataset.sort;
+
+                const browserUrl = new URL(window.location.href);
+                browserUrl.searchParams.set('sort', currentSort);
+                browserUrl.searchParams.delete('page');
+
+                window.history.replaceState({}, '', browserUrl);
+
+                sortButton.querySelector('span').textContent =
+                    `Sort by: ${this.textContent}`;
+
                 filterProducts();
             });
         });
@@ -617,30 +626,66 @@ let currentView = "gridview";
 
     // ======== VIEW SWITCH ========
     const viewButtons = document.querySelectorAll('.view-switch');
+
     viewButtons.forEach(btn => {
         btn.addEventListener('click', function () {
+
             currentView = this.dataset.view;
+
+            const browserUrl = new URL(window.location.href);
+            browserUrl.searchParams.set('view', currentView);
+            browserUrl.searchParams.delete('page');
+
+            window.history.replaceState({}, '', browserUrl);
+
             filterProducts();
         });
     });
 
     // ======== CATEGORY CHECKBOXES ========
     document.querySelectorAll('.category-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function () {
-            const checkedCount = document.querySelectorAll('.category-checkbox:checked').length;
-            // if (checkedCount === 0) {
-            //     this.checked = true;
-            //     toastr.error("At least one category must be selected.");
-            // }
 
-            const childIds = this.dataset.childIds ? this.dataset.childIds.split(',') : [];
+        checkbox.addEventListener('change', function () {
+
+            // Parent -> Child
+            const childIds = this.dataset.childIds
+                ? this.dataset.childIds.split(',')
+                : [];
+
             childIds.forEach(id => {
-                const childCheckbox = document.getElementById(`filter-category-${id}`);
-                if (childCheckbox) childCheckbox.checked = this.checked;
+                const childCheckbox =
+                    document.getElementById(`filter-category-${id}`);
+
+                if (childCheckbox) {
+                    childCheckbox.checked = this.checked;
+                }
             });
+
+            // Remove duplicate category ids
+            const categories = [
+                ...new Set(
+                    Array.from(
+                        document.querySelectorAll(
+                            'input[name="categories[]"]:checked'
+                        )
+                    ).map(el => el.value)
+                )
+            ];
+
+            const browserUrl = new URL(window.location.href);
+
+            browserUrl.searchParams.delete('categories[]');
+            browserUrl.searchParams.delete('page');
+
+            categories.forEach(id => {
+                browserUrl.searchParams.append('categories[]', id);
+            });
+
+            window.history.replaceState({}, '', browserUrl);
 
             filterProducts();
         });
+
     });
 
     // ======== CLEAR FILTERS ========
@@ -683,122 +728,133 @@ let currentView = "gridview";
 
 let page = 1;
 /* FILTER FUNCTION */
-    function filterProducts() {
-        // page = 1;
+    function filterProducts(categoriesParam = null, searchParamValue = '', viewParam = null) {
+        page = 1;
         showLoader();
-		document.getElementById('load-more-wrapper').style.display = 'block';
+        if(viewParam){
+			currentView = viewParam;
+		}
 
-		const categories = Array.from(
-			document.querySelectorAll('input[name="categories[]"]:checked')
-		).map(el => el.value);
+        const loadMore = document.getElementById('load-more-wrapper');
+        if (loadMore) loadMore.style.display = 'block';
 
-		const selectedBrands = Array.from(
-			document.querySelectorAll('input[name="brands[]"]:checked')
-		).map(el => el.value);
-
-		// const visibleFilter = [...document.querySelectorAll('.price-filter')]
-		// 	.find(el => el.offsetParent !== null);
+        const categories = [
+            ...new Set(
+                Array.from(
+                    document.querySelectorAll('input[name="categories[]"]:checked')
+                ).map(el => el.value)
+            )
+        ];
 
         const activeFilterWrapper = document.querySelector(
-			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
-		);
+            '#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
+        );
 
         const conditions = Array.from(
-			document.querySelectorAll('input[name="conditions[]"]:checked')
-		).map(el => el.value);
+            document.querySelectorAll('input[name="conditions[]"]:checked')
+        ).map(el => el.value);
 
-		const browserUrl = new URL(window.location.href);
+        const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
 
-		if (conditions.length) {
-			browserUrl.searchParams.set(
-				'conditions',
-				conditions.join(',')
-			);
-		} else {
-			browserUrl.searchParams.delete('conditions');
-		}
+        const min_price = parseInt(
+            visibleFilter?.querySelector('.min-price')?.value
+        ) || 0;
 
-		window.history.replaceState(
-			{},
-			'',
-			browserUrl.pathname + browserUrl.search
-		);
+        const max_price = parseInt(
+            visibleFilter?.querySelector('.max-price')?.value
+        ) || 300000;
 
-		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
+        const browserUrl = new URL(window.location.href);
 
-		const min_price = parseInt(
-			visibleFilter?.querySelector('.min-price')?.value
-		) || 0;
+        // Update only values handled inside this function
+        browserUrl.searchParams.set('min_price', min_price);
+        browserUrl.searchParams.set('max_price', max_price);
 
-		const max_price = parseInt(
-			visibleFilter?.querySelector('.max-price')?.value
-		) || 300000;
+        browserUrl.searchParams.set('sort', currentSort);
+        browserUrl.searchParams.set('view', currentView);
 
-		const url = `/products`;
-        const searchParam = new URLSearchParams(window.location.search).get('search') || '';
-		// Store filters globally
-		currentFilters = new URLSearchParams({
-			min_price,
-			max_price,
-			sort: currentSort,
-			view: currentView,
-            search: searchParam,
-		});
-
-		categories.forEach(cat => currentFilters.append('categories[]', cat));
-		selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
+        browserUrl.searchParams.delete('categories[]');
+        categories.forEach(id => {
+            browserUrl.searchParams.append('categories[]', id);
+        });
 
         if (conditions.length) {
-			currentFilters.append(
-				'conditions',
-				conditions.join(',')
-			);
-		}
+            browserUrl.searchParams.set(
+                'conditions',
+                conditions.join(',')
+            );
+        } else {
+            browserUrl.searchParams.delete('conditions');
+        }
 
-		return fetch(`${url}?${currentFilters.toString()}`, {
-				method: 'GET',
-				headers: {
-					'X-Requested-With': 'XMLHttpRequest'
-				}
-			})
-			.then(res => res.json())
-			.then(data => {
+        browserUrl.searchParams.delete('page');
 
-				const wrapper = document.getElementById('product-list-wrapper');
+        window.history.replaceState({}, '', browserUrl);
 
-				// Show / Hide load more
-				const loadMore = document.getElementById('load-more-wrapper');
+        // URL is the source of truth
+        currentFilters = new URLSearchParams(browserUrl.search);
 
-				if (!data.html.trim()) {
-					loadMore.style.display = 'none';
+        return fetch(
+            browserUrl.pathname + '?' + currentFilters.toString(),
+            {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }
+        )
+        .then(res => res.json())
+        .then(data => {
 
-					wrapper.innerHTML = `
-						<div class="text-white text-center py-10">
-							No Products Found!
-						</div>
-					`;
-				} else {
-					wrapper.innerHTML = data.html;
-					loadMore.style.display = data.hasMore ? 'block' : 'none';
-				}
+            const wrapper = document.getElementById('product-list-wrapper');
 
-                const countEl = document.getElementById('product-count');
+            if (!data.html.trim()) {
 
-				console.log(data);
-				// update total from backend response
-				countEl.dataset.total = data.total;
+                if (loadMore) loadMore.style.display = 'none';
 
-                hideLoader();
-				updateProductCount();
+                wrapper.innerHTML = `
+                    <div class="text-white text-center py-10">
+                        No Products Found!
+                    </div>
+                `;
 
-				// Scroll
-				const offsetTop = wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
-				window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+            } else {
 
-				
-			})
-			.catch(err => console.error('Filter products error:', err));
-	}
+                wrapper.innerHTML = data.html;
+
+                if (loadMore) {
+                    loadMore.style.display = data.hasMore ? 'block' : 'none';
+                }
+
+                lastPage = data.last_page;
+            }
+
+            const countEl = document.getElementById('product-count');
+
+            if (countEl) {
+                countEl.dataset.total = data.total;
+            }
+
+            updateProductCount();
+
+            const offsetTop =
+                wrapper.getBoundingClientRect().top +
+                window.pageYOffset -
+                100;
+
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+            });
+
+        })
+        .catch(err => {
+            console.error('Filter products error:', err);
+        })
+        .finally(() => {
+            hideLoader();
+        });
+    }
 
 	// LOAD MORE SCRIPT
 	
@@ -826,11 +882,19 @@ let page = 1;
 
 			currentFilters.set('page', page);
 
-			const res = await fetch(`/products?${currentFilters.toString()}`, {
-				headers: {
-					'X-Requested-With': 'XMLHttpRequest'
-				}
-			});
+			// const res = await fetch(`/products?${currentFilters.toString()}`, {
+			// 	headers: {
+			// 		'X-Requested-With': 'XMLHttpRequest'
+			// 	}
+			// });
+            const res = await fetch(
+                window.location.pathname + '?' + currentFilters.toString(),
+                {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }
+            );
 
 			const data = await res.json();
 
