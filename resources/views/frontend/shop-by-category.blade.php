@@ -112,7 +112,19 @@
                                                     {{ $category->category_translations->first()->name ?? $category->name }}
 
                                                     <span class="text-[15px] text-[#50525C] ml-[10px]">
-                                                        {{ \App\Models\Product::whereIn('category_id', $categoryIds)->count() }}
+                                                        {{
+                                                            \App\Models\Product::join(
+                                                                'product_stocks',
+                                                                'product_stocks.product_id',
+                                                                '=',
+                                                                'products.id'
+                                                            )
+                                                            ->whereIn('products.category_id', $categoryIds)
+                                                            ->where('products.published', 1)
+                                                            ->where('product_stocks.qty', '>', 0)
+                                                            ->distinct('products.id')
+                                                            ->count('products.id')
+                                                        }}
                                                     </span>
                                                 </label>
                                             </div>
@@ -144,18 +156,7 @@
                                                 </div>
                                                 
                                             @endforeach
-                                        @else
-                                            <div class="flex gap-[15px] items-center category-item" data-name="{{ $category->name }}">
-                                                <div class="flex h-5 shrink-0 items-center">
-                                                    <div class="group grid size-4 grid-cols-1 w-full">
-                                                        <input type="checkbox" name="categories[]" value="{{ $category->id }}" class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200" id="filter-category-{{ $category->id }}" checked style="pointer-events: none;">
-                                                    </div>
-                                                </div>
-                                                <label for="filter-category-{{ $category->id }}" class="relative top-[5px] text-[15px] text-white">
-                                                    {{ $category->category_translations->first()->name ?? $category->name }}
-                                                    <span class="text-[15px] text-[#50525C] ml-[10px]" id="category-count">{{ $productCount }}</span>
-                                                </label>
-                                            </div>
+                                        
                                         @endif
                                     </div>
                                 </div>
@@ -630,137 +631,171 @@
     });
 
     /* VIEW SWITCH */
-    document.addEventListener('DOMContentLoaded', () => {
-        const viewButtons = document.querySelectorAll('.view-switch');
-        viewButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                currentView = this.dataset.view;
-                filterProducts();
-            });
-        });
-    });
+    // document.addEventListener('DOMContentLoaded', () => {
+    //     const viewButtons = document.querySelectorAll('.view-switch');
+    //     viewButtons.forEach(btn => {
+    //         btn.addEventListener('click', function() {
+    //             currentView = this.dataset.view;
+    //             filterProducts();
+    //         });
+    //     });
+    // });
 
     /* FILTER FUNCTION */
-    function filterProducts() {
-        page = 1;
-        showLoader();
+    function filterProducts(categoriesParam = null, searchParamValue = '', viewParam = null) {
+
+		page = 1;
+		showLoader();
+		if(viewParam){
+			currentView = viewParam;
+		}
+
         const loadMore = document.getElementById('load-more-wrapper');
-        if(loadMore) loadMore.style.display = 'block';
+        if (loadMore) loadMore.style.display = 'block';
 
-		const categories = Array.from(
-			document.querySelectorAll('input[name="categories[]"]:checked')
-		).map(el => el.value);
-
-		const selectedBrands = Array.from(
-			document.querySelectorAll('input[name="brands[]"]:checked')
-		).map(el => el.value);
-
+        // Active filter wrapper (Desktop / Mobile)
         const activeFilterWrapper = document.querySelector(
-			'#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
-		);
+            '#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
+        );
 
+        // Selected Categories
+        const categories = Array.from(
+            document.querySelectorAll('input[name="categories[]"]:checked')
+        ).map(el => el.value);
+
+        // Selected Brands
+        const brands = Array.from(
+            document.querySelectorAll('input[name="brands[]"]:checked')
+        ).map(el => el.value);
+
+        // Selected Conditions
         const conditions = Array.from(
-			document.querySelectorAll('input[name="conditions[]"]:checked')
-		).map(el => el.value);
+            document.querySelectorAll('input[name="conditions[]"]:checked')
+        ).map(el => el.value);
 
-		const browserUrl = new URL(window.location.href);
+        // Price
+        const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
 
-		if (conditions.length) {
-			browserUrl.searchParams.set(
-				'conditions',
-				conditions.join(',')
-			);
-		} else {
-			browserUrl.searchParams.delete('conditions');
-		}
+        const min_price = parseInt(
+            visibleFilter?.querySelector('.min-price')?.value
+        ) || 0;
 
-		window.history.replaceState(
-			{},
-			'',
-			browserUrl.pathname + browserUrl.search
-		);
+        const max_price = parseInt(
+            visibleFilter?.querySelector('.max-price')?.value
+        ) || 300000;
 
+        // Current URL
+        const browserUrl = new URL(window.location.href);
 
-		const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
+        // Remove previous filter params
+        browserUrl.searchParams.delete('categories[]');
+        browserUrl.searchParams.delete('brands[]');
+        browserUrl.searchParams.delete('conditions');
 
-		const min_price = parseInt(
-			visibleFilter?.querySelector('.min-price')?.value
-		) || 0;
+        // Categories
+        categories.forEach(id => {
+            browserUrl.searchParams.append('categories[]', id);
+        });
 
-		const max_price = parseInt(
-			visibleFilter?.querySelector('.max-price')?.value
-		) || 300000;
+        // Brands
+        brands.forEach(id => {
+            browserUrl.searchParams.append('brands[]', id);
+        });
 
-		const url = `/products`;
-        const searchParam = new URLSearchParams(window.location.search).get('search') || '';
-		// Store filters globally
-		currentFilters = new URLSearchParams({
-			min_price,
-			max_price,
-			sort: currentSort,
-			view: currentView,
-            search: searchParam,
-		});
-        
-        categories.forEach(cat => currentFilters.append('categories[]', cat));
-		selectedBrands.forEach(brand => currentFilters.append('brands[]', brand));
+        // Price
+        browserUrl.searchParams.set('min_price', min_price);
+        browserUrl.searchParams.set('max_price', max_price);
 
+        browserUrl.searchParams.set('sort', currentSort);
+        browserUrl.searchParams.set('view', currentView);
+
+        // Search
+        const search = browserUrl.searchParams.get('search');
+        if (search) {
+            browserUrl.searchParams.set('search', search);
+        }
+
+        // Conditions
         if (conditions.length) {
-			currentFilters.append(
-				'conditions',
-				conditions.join(',')
-			);
-		}
+            browserUrl.searchParams.set(
+                'conditions',
+                conditions.join(',')
+            );
+        } else {
+            browserUrl.searchParams.delete('conditions');
+        }
 
-		return fetch(`${url}?${currentFilters.toString()}`, {
-				method: 'GET',
-				headers: {
-					'X-Requested-With': 'XMLHttpRequest'
-				}
-			})
-			.then(res => res.json())
-			.then(data => {
-				const wrapper = document.getElementById('product-list-wrapper');
+        // Reset page when filtering
+        browserUrl.searchParams.delete('page');
 
-				// Show / Hide load more
-				
+        // Update browser URL
+        window.history.replaceState({}, '', browserUrl);
 
-				if (!data.html.trim()) {
-					if(loadMore) loadMore.style.display = 'none';
+        // Store globally for Load More
+        currentFilters = new URLSearchParams(browserUrl.search);
 
-					if(wrapper)  wrapper.innerHTML = `
-						<div class="text-white text-center py-10">
-							No Products Found!
-						</div>
-					`;
-				} else {
-					if(wrapper) wrapper.innerHTML = data.html;
-					if(loadMore) loadMore.style.display = data.hasMore ? 'block' : 'none';
-				}
+        return fetch(browserUrl.pathname + '?' + currentFilters.toString(), {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
 
-                const countEl = document.getElementById('product-count');
+            const wrapper = document.getElementById('product-list-wrapper');
 
-				// update total from backend response
-				if (countEl) countEl.dataset.total = data.total;
-                
-                // hideLoader();
-				updateProductCount();
+            if (!data.html.trim()) {
 
-				// Scroll
-                if(wrapper) {
-                    const offsetTop =  wrapper.getBoundingClientRect().top + window.pageYOffset - 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                if (loadMore) loadMore.style.display = 'none';
+
+                if (wrapper) {
+                    wrapper.innerHTML = `
+                        <div class="text-white text-center py-10">
+                            No Products Found!
+                        </div>
+                    `;
                 }
 
-				
-			})
-            .catch(err => {
-                console.error('Filter products error:', err);
-            })
-            .finally(() => {
-                hideLoader();
-            });
-	}
+            } else {
+
+                if (wrapper) wrapper.innerHTML = data.html;
+
+                if (loadMore) {
+                    loadMore.style.display = data.hasMore ? 'block' : 'none';
+                }
+
+                lastPage = data.last_page;
+            }
+
+            const countEl = document.getElementById('product-count');
+
+            if (countEl) {
+                countEl.dataset.total = data.total;
+            }
+
+            updateProductCount();
+
+            if (wrapper) {
+                const offsetTop =
+                    wrapper.getBoundingClientRect().top +
+                    window.pageYOffset -
+                    100;
+
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+
+        })
+        .catch(err => {
+            console.error('Filter products error:', err);
+        })
+        .finally(() => {
+            hideLoader();
+        });
+    }
 
     /* CLEAR FILTER */
     document.addEventListener('DOMContentLoaded', () => {
@@ -944,7 +979,7 @@
 		}
 		countEl.innerText = `Items 1-${visible} of ${total}`;
         document.getElementById('total-product-count').innerText = `${total}`;
-    	document.getElementById('category-count').innerText = `${visible}`;
+    	// document.getElementById('category-count').innerText = `${visible}`;
 	}
 
     function showLoader() {
