@@ -1009,7 +1009,8 @@ if ($request->filled('categories') || $request->filled('search')) {
         $products = $products
             ->groupBy('products.id')
             ->with('stocks')
-            ->paginate(12);
+            ->paginate(12)
+            ->appends($request->query());
 
         $brands = Brand::withCount('products')->whereIn('id', $products->pluck('brand_id')->filter()->unique())->orderBy('name', 'asc')->get();
 
@@ -1029,8 +1030,25 @@ if ($request->filled('categories') || $request->filled('search')) {
         $productCount = $products->count();
 
         // If AJAX request, return only product list partial
+        // if ($request->ajax()) {
+        //     return view('frontend.partials.product-list', compact('products', 'view'))->render();
+        // }
+
         if ($request->ajax()) {
-            return view('frontend.partials.product-list', compact('products', 'view'))->render();
+            return response()->json([
+                'html' => view(
+                    'frontend.partials.product-list',
+                    compact('products','view')
+                )->render(),
+
+                'total' => $products->total(),
+
+                'current_page' => $products->currentPage(),
+
+                'last_page' => $products->lastPage(),
+
+                'hasMore' => $products->hasMorePages()
+            ]);
         }
 
         // Load seo 
@@ -1100,10 +1118,10 @@ if ($request->filled('categories') || $request->filled('search')) {
             $productsQuery->whereIn('products.category_id', $request->categories);
         }
 
-        if ($request->filled('brands')) {
-            // Only allow the current brand
-            $productsQuery->whereIn('products.brand_id', [$brand->id]);
-        }
+        // if ($request->filled('brands')) {
+        //     // Only allow the current brand
+        //     $productsQuery->whereIn('products.brand_id', [$brand->id]);
+        // }
 
         if ($request->filled('min_price')) {
             $productsQuery->where('product_stocks.offer_price', '>=', $request->min_price);
@@ -1173,13 +1191,17 @@ if ($request->filled('categories') || $request->filled('search')) {
             ->toArray();
 
             // Product count
-        $productCount = $productsQuery->count();
+        // $productCount = $productsQuery->count();
+        $productCount = (clone $productsQuery)
+            ->distinct('products.id')
+            ->count('products.id');
 
         // $products = $productsQuery->with('stocks')->distinct()->paginate(12);
         $products = $productsQuery
             ->groupBy('products.id')
             ->with('stocks')
-            ->paginate(12);
+            ->paginate(12)
+            ->appends($request->query());
 
         
 
@@ -1217,8 +1239,25 @@ if ($request->filled('categories') || $request->filled('search')) {
         $brands = collect([$brand]);
 
         // AJAX request: return partial
+        // if ($request->ajax()) {
+        //     return view('frontend.partials.product-list', compact('products', 'view'))->render();
+        // }
+
         if ($request->ajax()) {
-            return view('frontend.partials.product-list', compact('products', 'view'))->render();
+            return response()->json([
+                'html' => view(
+                    'frontend.partials.product-list',
+                    compact('products', 'view')
+                )->render(),
+
+                'total' => $products->total(),
+
+                'current_page' => $products->currentPage(),
+
+                'last_page' => $products->lastPage(),
+
+                'hasMore' => $products->hasMorePages(),
+            ]);
         }
 
         // Load seo 
