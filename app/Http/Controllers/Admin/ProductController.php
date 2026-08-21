@@ -39,7 +39,7 @@ class ProductController extends Controller
 
     /**
      * Function to list all products.
-     * 
+     *
      * @param Request $request
      */
     public function all_products(Request $request)
@@ -87,7 +87,7 @@ class ProductController extends Controller
                 $q->whereIn('id', $childIds);
             });
         }
-        
+
 
         if ($request->search != null) {
             $sort_search = $request->search;
@@ -114,7 +114,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Function to load the create form. 
+     * Function to load the create form.
      */
     public function create()
     {
@@ -158,7 +158,7 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
+    {
         // save product
         $skuMain = $request->input('sku') ?? generateUniqueSKU();
         $product = new Product;
@@ -203,7 +203,7 @@ class ProductController extends Controller
         }
         $product->tags = implode(',', $tags);
         $product->save();
-        
+
         // save product image.
         $gallery = [];
         if ($request->hasfile('gallery_images')) {
@@ -301,7 +301,7 @@ class ProductController extends Controller
             $product_stock->model = $request->model;
             $product_stock->stock_title = $request->stock_title;
             $product_stock->image = '';
-            
+
             $stockgallery = [];
             if ($request->hasfile('variant_images')) {
                 if ($product_stock->image == null) {
@@ -440,7 +440,7 @@ class ProductController extends Controller
                 $stock->price = $productOrgPrice;
                 $stock->offer_price = $discountPrice;
                 $stock->offer_tag = $offertag;
-                
+
                 $stock->save();
 
                 // Save Specifications for this Variant
@@ -459,7 +459,7 @@ class ProductController extends Controller
                         ]);
                     }
                 }
-                
+
                 // Set product SKU as the first variant stock SKU
                 if ($index === 0) {
                     $product->sku = cleanSKU($variantData['sku'] ?? generateUniqueSKU());
@@ -506,7 +506,7 @@ class ProductController extends Controller
 
         $productSpecifications = ProductSpecification::where('product_id', $product->id)
         ->get();
-        
+
 
         $specifications = Specification::where('status',1)
             ->orderBy('display_title','asc')
@@ -680,7 +680,7 @@ class ProductController extends Controller
         ProductWarranty::where('product_id', $product->id)->delete();
         // saving warranty
         if ($request->has('extended_warranty')) {
-            
+
             foreach ($request->extended_warranty as $warranty) {
                 if (!empty($warranty['warranty_title']) && !empty($warranty['warranty_months'])) {
                     $product->warranties()->create([
@@ -715,7 +715,7 @@ class ProductController extends Controller
             $product_stock->status = $request->status ?? 1;
             $product_stock->stock_description = $request->stock_description;
             $product_stock->model = $request->model;
-            $product_stock->stock_title = $request->stock_title; 
+            $product_stock->stock_title = $request->stock_title;
 
             // if ($request->hasFile('image')) {
             //     $product_stock->image = ImageHelper::downloadAndResizeImage('sub_product', $request->file('image'), $product->sku, true);
@@ -737,7 +737,7 @@ class ProductController extends Controller
 
                 $product_stock->image = implode(',', array_merge($old_stock_gallery, $stock_gallery));
             }
-            
+
             $offertag = '';
             $productOrgPrice = $request->price;
             $discountPrice = $productOrgPrice;
@@ -772,12 +772,12 @@ class ProductController extends Controller
                 $sortOrders = $request->variant[0]['sort_orders'] ?? [];
                 $specModelIds = $request->variant[0]['product_spec_id'] ?? [];
                 foreach ($specifications as $key => $specId) {
-                    
+
                     if (!$specId) continue;
                     $productSpecificationId = $specModelIds[$key] ?? null;
 
                     $specModel = ProductSpecification::findOrNew($productSpecificationId);
-                    
+
                     $specModel->product_id = $product->id;
                     $specModel->product_stock_id = $product_stock->id;
                     $specModel->specification_id = $specId;
@@ -814,7 +814,7 @@ class ProductController extends Controller
                 $stock->stock_description = $variantData['stock_description'] ?? '';
                 $stock->model = $variantData['model'] ?? '';
                 $stock->stock_title = $variantData['stock_title'] ?? '';
-                
+
                 if ($request->hasFile("variants.$index.variant_images")) {
 
                     // Clean existing images safely
@@ -875,10 +875,10 @@ class ProductController extends Controller
                 $stock->price = $productOrgPrice;
                 $stock->offer_price = $discountPrice;
                 $stock->offer_tag = $offertag;
-                
+
                 $stock->save();
 
-                
+
                 // Save Specifications for this Variant
                 ProductSpecification::where('product_stock_id', $stock->id)->delete();
                 if (!empty($variantData['specifications'])) {
@@ -1001,93 +1001,138 @@ class ProductController extends Controller
     {
         $product = Product::where('id', $request->id)->first();
 
-        $fil_url = str_replace('/storage/', '', $product->thumbnail_img);
-        $fil_url = $path = Storage::disk('public')->path($fil_url);
-
-        if (File::exists($fil_url)) {
-            $info = pathinfo($fil_url);
-            $file_name = basename($fil_url, '.' . $info['extension']);
-            $ext = $info['extension'];
-
-            $sizes = config('app.img_sizes');
-            foreach ($sizes as $size) {
-                $path = $info['dirname'] . '/' . $file_name . '_' . $size . 'px.' . $ext;
-                unlink($path);
-            }
-
-            unlink($fil_url);
-            $product->thumbnail_img = null;
-            $product->save();
-            return 1;
+        if (!$product) {
+            return 0;
         }
+
+        $filePath = $product->thumbnail_img;
+
+        if ($filePath) {
+
+            // Delete original thumbnail
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
+
+                // Delete resized images
+                $info = pathinfo($filePath);
+                $fileName = $info['filename'];
+                $ext = $info['extension'] ?? '';
+                $directory = $info['dirname'];
+
+                $sizes = config('app.img_sizes');
+
+                foreach ($sizes as $size) {
+                    $sizePath = $directory . '/' . $fileName . '_' . $size . 'px.' . $ext;
+
+                    if (Storage::disk('public')->exists($sizePath)) {
+                        Storage::disk('public')->delete($sizePath);
+                    }
+                }
+            }
+        }
+
+        // Remove thumbnail path from database
+        $product->thumbnail_img = null;
+        $product->save();
+
+        return 1;
     }
 
     public function delete_gallery(Request $request)
     {
         $product = Product::where('id', $request->id)->first();
-        $fil_url = str_replace('/storage/', '', $request->url);
-        $fil_url = $path = Storage::disk('public')->path($fil_url);
-        if (File::exists($fil_url)) {
-            $info = pathinfo($fil_url);
-            $file_name = basename($fil_url, '.' . $info['extension']);
-            $ext = $info['extension'];
 
-            $sizes = config('app.img_sizes');
-            foreach ($sizes as $size) {
-                $path = $info['dirname'] . '/' . $file_name . '_' . $size . 'px.' . $ext;
-                unlink($path);
-            }
-
-            unlink($fil_url);
-
-            $thumbnail_img = explode(',', $product->photos);
-            $thumbnail_img =  array_diff($thumbnail_img, [$request->url]);
-            if ($thumbnail_img) {
-                $product->photos = implode(',', $thumbnail_img);
-            } else {
-                $product->photos = null;
-            }
-
-            $product->save();
-            return 1;
-        } else {
+        if (!$product) {
             return 0;
         }
+
+        // $request->url is already a relative storage path
+        $filePath = $request->url;
+
+        // Delete original image
+        if (Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->delete($filePath);
+
+            // Delete resized images
+            $info = pathinfo($filePath);
+            $fileName = $info['filename'];
+            $ext = $info['extension'] ?? '';
+            $directory = $info['dirname'];
+
+            $sizes = config('app.img_sizes');
+
+            foreach ($sizes as $size) {
+                $sizePath = $directory . '/' . $fileName . '_' . $size . 'px.' . $ext;
+
+                if (Storage::disk('public')->exists($sizePath)) {
+                    Storage::disk('public')->delete($sizePath);
+                }
+            }
+        }
+
+        // Remove image from database
+        $thumbnail_img = explode(',', $product->photos);
+
+        $thumbnail_img = array_filter($thumbnail_img, function ($image) use ($request) {
+            return trim($image) !== trim($request->url);
+        });
+
+        $product->photos = !empty($thumbnail_img)
+            ? implode(',', $thumbnail_img)
+            : null;
+
+        $product->save();
+
+        return 1;
     }
 
     public function delete_stock_gallery(Request $request)
     {
         $stock = ProductStock::where('id', $request->id)->first();
-        
-        $fil_url = str_replace('/storage/', '', $request->url);
-        $fil_url = $path = Storage::disk('public')->path($fil_url);
 
-        if (File::exists($fil_url)) {
-            $info = pathinfo($fil_url);
-            $file_name = basename($fil_url, '.' . $info['extension']);
-            $ext = $info['extension'];
-
-            $sizes = config('app.img_sizes');
-            foreach ($sizes as $size) {
-                $path = $info['dirname'] . '/' . $file_name . '_' . $size . 'px.' . $ext;
-                unlink($path);
-            }
-
-            unlink($fil_url);
-
-            $stock_images = explode(',', $stock->image);
-            $stock_images =  array_diff($stock_images, [$request->url]);
-            if ($stock_images) {
-                $stock->image = implode(',', $stock_images);
-            } else {
-                $stock->image = null;
-            }
-
-            $stock->save();
-            return 1;
-        } else {
+        if (!$stock) {
             return 0;
         }
+
+        // $request->url is already a relative storage path
+        $filePath = $request->url;
+
+        // Delete original image
+        if (Storage::disk('public')->exists($filePath)) {
+
+            Storage::disk('public')->delete($filePath);
+
+            // Delete resized images
+            $info = pathinfo($filePath);
+            $fileName = $info['filename'];
+            $ext = $info['extension'] ?? '';
+            $directory = $info['dirname'];
+
+            $sizes = config('app.img_sizes');
+
+            foreach ($sizes as $size) {
+                $sizePath = $directory . '/' . $fileName . '_' . $size . 'px.' . $ext;
+
+                if (Storage::disk('public')->exists($sizePath)) {
+                    Storage::disk('public')->delete($sizePath);
+                }
+            }
+        }
+
+        // Remove image from database
+        $stockImages = explode(',', $stock->image);
+
+        $stockImages = array_filter($stockImages, function ($image) use ($request) {
+            return trim($image) !== trim($request->url);
+        });
+
+        $stock->image = !empty($stockImages)
+            ? implode(',', $stockImages)
+            : null;
+
+        $stock->save();
+
+        return 1;
     }
 
     public function checkSku(Request $request)
@@ -1102,7 +1147,7 @@ class ProductController extends Controller
         }
 
         $exists = $query->exists();
-        
+
         return response()->json([
             'exists' => $exists
         ]);
