@@ -31,7 +31,7 @@ class ProfileController extends Controller
     public function getUserAccountInfo(){
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $user = User::find($user_id);
-       
+
         return view('frontend.user.my-account',compact('user'));
     }
 
@@ -52,7 +52,7 @@ class ProfileController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->save();
-    
+
         return response()->json([
             'success' => 'Profile updated successfully'
         ]);
@@ -76,7 +76,7 @@ class ProfileController extends Controller
         if (!Hash::check($request->current_password, $user->password)) {
             session()->flash('message', trans('messages.current_password_incorrect'));
             session()->flash('alert-type', 'error');
-            return redirect()->back()->withInput(); 
+            return redirect()->back()->withInput();
         }
 
         // Update the password
@@ -107,13 +107,13 @@ class ProfileController extends Controller
                 $orders = $orders->where('delivery_status', $request->delivery_status);
                 $delivery_status = $request->delivery_status;
             }
-           
+
             $total_count = $orders->count();
             $orderList = $orders->get();
         }
         return view('pages.my-orders',compact('orderList','total_count','lang'));
     }
-    
+
     public function orderReturnList(Request $request){
         $user_id = (!empty(auth('frontend')->user())) ? auth('frontend')->user()->id : '';
         $user = User::find($user_id);
@@ -124,7 +124,7 @@ class ProfileController extends Controller
             $delivery_status = null;
 
             $orders = Order::with(['orderDetails'])->select('id','code','delivery_status','payment_type','coupon_code','grand_total','created_at')->orderBy('id', 'desc')->where('user_id',$user_id)->where('return_request',1);
-           
+
             $orderList = $orders->get();
         }
         return view('frontend.order-returns',compact('orderList'));
@@ -140,7 +140,7 @@ class ProfileController extends Controller
             $order = Order::where('code',$order_code)->where('user_id',$user_id)->first();
             if($order){
                 $tracks = OrderTracking::where('order_id', $order->id)->orderBy('id','ASC')->get();
-                
+
                 if ($tracks) {
                     foreach ($tracks as $key=>$value) {
                         $temp = array();
@@ -149,7 +149,7 @@ class ProfileController extends Controller
                         $temp['date'] = date("d-m-Y h:i A", strtotime($value->status_date));
                         $track_list[] = $temp;
                     }
-                }    
+                }
             }
         }
 
@@ -158,7 +158,7 @@ class ProfileController extends Controller
         }else{
             $dataByStatus = [];
         }
-        
+
         // echo '<pre>';
         // print_r($track_list);
         // print_r($dataByStatus);
@@ -179,7 +179,7 @@ class ProfileController extends Controller
             'name' => 'required|regex:/^[a-zA-Z\s]+$/u|max:100',
             'address' => 'required|string|max:255',
             'city' => 'required|string|max:100',
-            'state' => 'required|string|max:100',
+            'state' => 'nullable|string|max:100',
             'country' => 'required|string|max:100',
             'phone' => ['required', 'regex:/^\+?[0-9]{7,15}$/']
         ], [
@@ -222,7 +222,7 @@ class ProfileController extends Controller
             $address->longitude     = $request->longitude ?? null;
 
             $address->save();
-    
+
             return response()->json(['success'=> true ], 200);
         }else{
             return response()->json(['success'=> false ], 200);
