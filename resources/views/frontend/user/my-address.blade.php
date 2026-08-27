@@ -30,7 +30,7 @@
                                 </button>
                             </div>
                         </div>
-                       
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-[30px]">
 
                             @foreach ($addresses as $address)
@@ -42,7 +42,7 @@
                                     data-default="{{ $address->set_default }}" data-lat="{{ $address->latitude }}" data-lng="{{ $address->longitude }}">
                                     <div class="p-6 flex flex-col gap-4">
                                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 w-full">
-                                        
+
                                             <div class="flex items-center gap-3">
                                                 <h4 class="text-white font-medium text-lg">{{ ucfirst($address->type) ?? $address->type }}</h4>
 
@@ -77,7 +77,7 @@
                                         <div class=" text-gray-500 text-sm">
                                             {{ $address->name }}<br>
                                             {!! nl2br($address->address) !!}<br>
-                                            {{ $address->city }}, {{ $address->state_name }},<br> 
+                                            {{ $address->city }}, {{ $address->state_name }},<br>
                                             {{ $address->country_name }} {{ $address->postal_code ? '- '. $address->postal_code : '' }}
                                         </div>
 
@@ -146,7 +146,7 @@
                                     {{-- Phone --}}
                                     <div>
                                         <input type="text" name="phone" id="phone"
-                                            placeholder="971xxxxxxxxx"
+                                            placeholder="Phone *"
                                             value=""
                                             class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
 
@@ -174,12 +174,11 @@
 
                                     {{-- Emirate / State --}}
                                     <div class="relative w-full">
-
-                                       
                                         <select class="w-full bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white outline-none focus:border-[#2A7CFF] appearance-none cursor-pointer transition-all font-medium bg-image-none" name="state" id="state">
+                                            <option value="" selected>Select Emirate</option>
                                             <option value="Abu Dhabi">Abu Dhabi</option>
                                             <option value="Ajman">Ajman</option>
-                                            <option value="Dubai" selected>Dubai</option>
+                                            <option value="Dubai">Dubai</option>
                                             <option value="Fujairah">Fujairah</option>
                                             <option value="Ras Al Khaimah">Ras Al Khaimah</option>
                                             <option value="Sharjah">Sharjah</option>
@@ -202,8 +201,7 @@
 
                                     {{-- Country --}}
                                     <div>
-                                        <input type="text" name="country" id="country" placeholder="Country *"
-                                            value="United Arab Emirates" readonly
+                                        <input type="text" name="country" id="country" placeholder="Eg: United Arab Emirates"
                                             class="bg-[#161B22] border border-gray-800 p-4 rounded-xl text-white w-full outline-none focus:border-[#2A7CFF]">
                                         <p class="text-red-400 text-xs mt-1 error-country"></p>
                                     </div>
@@ -337,7 +335,7 @@
                         window.refreshAddressMapPosition();
                     }
                 }, 320);
-                
+
             } else {
                 // 1. Reverse animations
                 modal.classList.remove('opacity-100');
@@ -371,7 +369,7 @@
                     processData:false,
                     contentType:false,
                     success:function(response){
-                        if(response.status === 'error'){                      
+                        if(response.status === 'error'){
                             $.each(response.errors,function(key,value){
                                 $(".error-"+key).text(value[0]);
                             });

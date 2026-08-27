@@ -99,14 +99,14 @@ class CheckoutController
 
     /**
      * Function to place order
-     * 
+     *
      * @param Request $request
      */
     public function placeOrder(Request $request)
     {
         $cartController = new CartController();
         $cartSummary = $cartController->getCartSummary();
-        
+
         $active_payments = [];
         if (get_setting('payment_method_cod', 1) == 1) {
             $active_payments[] = 'cod';
@@ -130,9 +130,9 @@ class CheckoutController
             'first_name' => 'required|regex:/^[a-zA-Z\s]+$/u|max:100',
             'billing_email' => 'required|email|max:255',
             'billing_city' => 'required|string|max:100',
-            'billing_state' => 'required|string|max:100',
+            'billing_state' => 'nullable|string|max:100',
             'billing_country' => 'required|string|max:100',
-            'billing_phone' => ['required', 'regex:/^\+?[0-9]{7,15}$/'],
+            'billing_phone' => ['required', 'regex:/^\+?[0-9]{8,15}$/'],
             'billing_address' => 'required|string',
             'same_as_billing' => 'nullable',
         ];
@@ -140,18 +140,17 @@ class CheckoutController
         if ($isGuest && !$billing_shipping_same) {
             $rules = array_merge($rules, [
                 'shipping_first_name'    => 'required|string|max:100',
-                'shipping_phone'   => ['required', 'regex:/^\+?[0-9]{7,15}$/'],
+                'shipping_phone' => ['required', 'regex:/^\+?[0-9]{8,15}$/'],
                 'shipping_address' => 'required|string',
                 'shipping_city'    => 'required|string|max:100',
-                'shipping_state'   => 'required|string|max:100',
+                'shipping_state'   => 'nullable|string|max:100',
             ]);
         }
 
         $validator = Validator::make($request->all(), $rules, [
             'first_name.regex' => 'Only alphabets and spaces are allowed in the name field.',
-            'billing_phone.regex' => 'Please enter a valid phone number (numbers only, 7-15 digits).',
-            'billing_state.required' => 'Please select an emirate.',
-            'shipping_phone.regex' => 'Please enter a valid phone number (numbers only, 7-15 digits).',
+            'billing_phone.regex' => 'Please enter a valid phone number (numbers only, 8-15 digits including country code).',
+            'shipping_phone.regex' => 'Please enter a valid phone number (numbers only, 8-15 digits including country code).',
         ]);
 
 
@@ -482,7 +481,7 @@ class CheckoutController
             ]);
         }
 
-        if ($paymentType === 'cod') { // CASE 1: COD 
+        if ($paymentType === 'cod') { // CASE 1: COD
 
             reduceProductQuantity($productQuantities);
 
@@ -630,7 +629,7 @@ class CheckoutController
                     'response' => $response,
                 ]),
             ]);
-        
+
             if (!$response['success']) {
                 return response()->json([
                     'status' => false,
@@ -734,7 +733,7 @@ class CheckoutController
 
     /**
      * Function to send order cancel request
-     * 
+     *
      * @param Request $request
      * @param int $order_id
      */
@@ -856,7 +855,7 @@ class CheckoutController
                 <p><b>Return Reason:</b> {$reason}</p>
                 <p><b>Date:</b> " . now()->format('d M Y h:i A') . "</p>
                 <p>Please review and take the necessary action.</p>
-                
+
                 <p>Best regards,</p>
                 <p>Team " . env('APP_NAME') . "</p>
             ";
