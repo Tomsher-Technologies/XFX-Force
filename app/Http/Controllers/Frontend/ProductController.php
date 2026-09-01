@@ -119,7 +119,7 @@ class ProductController extends Controller
                 if(isset($conditionMap[$request->condition])) {
                     $product_query->where('condition', $conditionMap[$request->condition]);
                 }
-            } 
+            }
             if ($category) {
                 $categoryData = Category::whereHas('category_translations', function ($query) use ($category) {
                     $query->where('slug', $category);
@@ -141,7 +141,7 @@ class ProductController extends Controller
                     $childIds = array_merge(...$childIds);
                     $childIds = array_unique($childIds);
                 }
-                
+
                 $product_query->whereIn('category_id', $childIds);
             }
 
@@ -169,15 +169,15 @@ class ProductController extends Controller
                         break;
                     case 'price_high':
                         $product_query->select('*', DB::raw("
-                                            (CASE 
-                                                WHEN discount > 0 
-                                                    AND (discount_start_date IS NULL OR discount_start_date <= NOW()) 
-                                                    AND (discount_end_date IS NULL OR discount_end_date >= NOW()) 
-                                                THEN 
-                                                    CASE 
-                                                        WHEN discount_type = 'percentage' 
+                                            (CASE
+                                                WHEN discount > 0
+                                                    AND (discount_start_date IS NULL OR discount_start_date <= NOW())
+                                                    AND (discount_end_date IS NULL OR discount_end_date >= NOW())
+                                                THEN
+                                                    CASE
+                                                        WHEN discount_type = 'percentage'
                                                             THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - ((SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) * discount / 100)
-                                                        WHEN discount_type = 'amount' 
+                                                        WHEN discount_type = 'amount'
                                                             THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - discount
                                                         ELSE (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id)
                                                     END
@@ -188,15 +188,15 @@ class ProductController extends Controller
                         break;
                     case 'price_low':
                         $product_query->select('*', DB::raw("
-                                                (CASE 
-                                                    WHEN discount > 0 
-                                                        AND (discount_start_date IS NULL OR discount_start_date <= NOW()) 
-                                                        AND (discount_end_date IS NULL OR discount_end_date >= NOW()) 
-                                                    THEN 
-                                                        CASE 
-                                                            WHEN discount_type = 'percentage' 
+                                                (CASE
+                                                    WHEN discount > 0
+                                                        AND (discount_start_date IS NULL OR discount_start_date <= NOW())
+                                                        AND (discount_end_date IS NULL OR discount_end_date >= NOW())
+                                                    THEN
+                                                        CASE
+                                                            WHEN discount_type = 'percentage'
                                                                 THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - ((SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) * discount / 100)
-                                                            WHEN discount_type = 'amount' 
+                                                            WHEN discount_type = 'amount'
                                                                 THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - discount
                                                             ELSE (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id)
                                                         END
@@ -315,7 +315,7 @@ class ProductController extends Controller
             ->get();
 
         // Determine selected stock by SKU or default first stock
-        $selectedStock = $sku 
+        $selectedStock = $sku
             ? $product->stocks->where('sku', $sku)->first()
             : $product->stocks->first();
 
@@ -361,7 +361,7 @@ class ProductController extends Controller
             $cartQty = $cartQuery->sum('quantity');
 
             $cartId = $cartQuery->value('id');
-            
+
 
             // TOTAL RESERVED QTY
             // includes normal cart + pc builder
@@ -387,29 +387,29 @@ class ProductController extends Controller
             );
         }
 
-        // New changes 
+        // New changes
 
         // Step 1 — Get the selected variant  from SKU
         $selectedVariant = DB::select("
-            SELECT 
+            SELECT
                 p.product_varient_id,
                 p.attribute_value_id,
                 ps.sku
             FROM product_attributes p
-            LEFT JOIN product_stocks ps 
+            LEFT JOIN product_stocks ps
                 ON ps.id = p.product_varient_id
             WHERE ps.sku = ?
             ORDER BY p.attribute_id
         ", [$sku]);
 
-        
+
         // Get first attribute value of the SKU
         $firstAttribute = DB::selectOne("
-            SELECT 
+            SELECT
                 p.product_varient_id,
                 p.attribute_value_id
             FROM product_attributes p
-            LEFT JOIN product_stocks ps 
+            LEFT JOIN product_stocks ps
                 ON ps.id = p.product_varient_id
             WHERE ps.sku = ?
             ORDER BY p.attribute_id
@@ -422,12 +422,12 @@ class ProductController extends Controller
         $selectedLevelValues = [];
 
         if ($firstAttribute) {
-            
+
             $valueId = $firstAttribute->attribute_value_id;
 
             // Step 2 — Get all variants having this first-level value
             $variants = DB::select("
-                SELECT 
+                SELECT
                     p.product_varient_id,
                     ps.sku,
                     p.attribute_id,
@@ -435,35 +435,35 @@ class ProductController extends Controller
                     p.attribute_value_id,
                     av.value
                 FROM product_attributes p
-                LEFT JOIN attributes a 
+                LEFT JOIN attributes a
                     ON p.attribute_id = a.id
-                LEFT JOIN attribute_values av 
+                LEFT JOIN attribute_values av
                     ON p.attribute_value_id = av.id
-                LEFT JOIN product_stocks ps 
+                LEFT JOIN product_stocks ps
                     ON ps.id = p.product_varient_id
                 WHERE p.product_varient_id IN (
-                    SELECT product_varient_id 
-                    FROM product_attributes 
+                    SELECT product_varient_id
+                    FROM product_attributes
                     WHERE attribute_value_id = ?
                 )
                 ORDER BY p.product_varient_id, p.attribute_id
             ", [$valueId]);
 
             // Transform variants into mapping: variant_id => [attribute_id => value_id]
-            
+
             foreach ($variants as $v) {
                 $variantsById[$v->product_varient_id][$v->attribute_id] = $v->attribute_value_id;
             }
 
             // Get selected variant attribute values by SKU
             $selectedVariant = DB::select("
-                SELECT 
+                SELECT
                     p.product_varient_id,
                     p.attribute_value_id,
                     p.attribute_id,
                     ps.sku
                 FROM product_attributes p
-                LEFT JOIN product_stocks ps 
+                LEFT JOIN product_stocks ps
                     ON ps.id = p.product_varient_id
                 WHERE ps.sku = ?
                 ORDER BY p.attribute_id
@@ -490,8 +490,8 @@ class ProductController extends Controller
 
 
         return view('frontend.productDetails', compact(
-            'product', 
-            'relatedProducts', 
+            'product',
+            'relatedProducts',
             'selectedStock',
             'cartQty',
             'stockId',
@@ -505,7 +505,7 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-       
+
         $sort = $request->get('sort', 'price_high_low');
         $view = $request->get('view', 'gridview');
 
@@ -515,68 +515,68 @@ class ProductController extends Controller
             ->where('product_stocks.qty', '>', 0);
 
        // Category + Search Combined Filter
-if ($request->filled('categories') || $request->filled('search')) {
+        if ($request->filled('categories') || $request->filled('search')) {
 
-    $products->where(function ($query) use ($request) {
-
-
-        // Category Filter
-        if ($request->filled('categories')) {
-
-            $categoryIds = Category::whereHas('category_translations', function ($q) use ($request) {
-                    $q->whereIn('slug', $request->categories);
-                })
-                ->pluck('id')
-                ->toArray();
+            $products->where(function ($query) use ($request) {
 
 
-            $allCategoryIds = [];
+                // Category Filter
+                if ($request->filled('categories')) {
 
-            foreach ($categoryIds as $categoryId) {
-
-                $allCategoryIds = array_merge(
-                    $allCategoryIds,
-                    $this->getCategoryAndChildrenIds($categoryId)
-                );
-
-            }
-
-            if (!empty($allCategoryIds)) {
-
-                $query->whereIn(
-                    'products.category_id',
-                    array_unique($allCategoryIds)
-                );
-    
-
-            }
-
-        }
+                    $categoryIds = Category::whereHas('category_translations', function ($q) use ($request) {
+                            $q->whereIn('slug', $request->categories);
+                        })
+                        ->pluck('id')
+                        ->toArray();
 
 
-        // Search Filter
-        if ($request->filled('search')) {
+                    $allCategoryIds = [];
 
-            $search = $request->search;
+                    foreach ($categoryIds as $categoryId) {
+
+                        $allCategoryIds = array_merge(
+                            $allCategoryIds,
+                            $this->getCategoryAndChildrenIds($categoryId)
+                        );
+
+                    }
+
+                    if (!empty($allCategoryIds)) {
+
+                        $query->whereIn(
+                            'products.category_id',
+                            array_unique($allCategoryIds)
+                        );
 
 
-            $query->orWhere(function ($q) use ($search) {
+                    }
 
-                $q->where('products.name', 'LIKE', "%{$search}%")
-                    ->orWhere('products.slug', 'LIKE', "%{$search}%")
-                    ->orWhere('products.tags', 'LIKE', "%{$search}%")
-                    ->orWhereHas('stocks', function ($stock) use ($search) {
-                        $stock->where('stock_title', 'LIKE', "%{$search}%");
+                }
+
+
+                // Search Filter
+                if ($request->filled('search')) {
+
+                    $search = $request->search;
+
+
+                    $query->orWhere(function ($q) use ($search) {
+
+                        $q->where('products.name', 'LIKE', "%{$search}%")
+                            ->orWhere('products.slug', 'LIKE', "%{$search}%")
+                            ->orWhere('products.tags', 'LIKE', "%{$search}%")
+                            ->orWhereHas('stocks', function ($stock) use ($search) {
+                                $stock->where('stock_title', 'LIKE', "%{$search}%");
+                            });
+
                     });
+
+                }
 
             });
 
         }
 
-    });
-
-}
-        
 
 
 
@@ -696,11 +696,11 @@ if ($request->filled('categories') || $request->filled('search')) {
                 'total' => $products->total(),
             ]);
         }
-        
+
 
 
         $page = Page::where('type', 'product_listing')->first();
-        
+
         $page_content = $page ? json_decode($page->data, true) : [];
 
         $seoContents = [
@@ -785,12 +785,11 @@ if ($request->filled('categories') || $request->filled('search')) {
             $guestToken = uniqid('guest_', true);
             cookie()->queue('guest_token', $guestToken, 60*24*14); // 14 days
         }
-        
-        
+
         $productId   = $request->productId;
         $product = Product::where('id', $productId)->first();
         $selectedAttributes = json_decode($request->selectedAttributes, true) ?? [];
-        
+
 
         // For single product
         if (empty($selectedAttributes)) {
@@ -834,7 +833,7 @@ if ($request->filled('categories') || $request->filled('search')) {
                 ]
             ]);
         }
-        
+
         // For product with variants
         $variantIds = ProductAttributes::where('product_id', $productId)
             ->whereIn('attribute_id', array_keys($selectedAttributes))
@@ -1075,7 +1074,7 @@ if ($request->filled('categories') || $request->filled('search')) {
             ]);
         }
 
-        // Load seo 
+        // Load seo
         $seoContents = [
             'title' => $category->category_translations[0]['meta_title'] ?? '',
             'meta_description' => $category->category_translations[0]['meta_description'] ?? '',
@@ -1227,7 +1226,7 @@ if ($request->filled('categories') || $request->filled('search')) {
             ->paginate(12)
             ->appends($request->query());
 
-        
+
 
         // Fetch categories for filters: only categories that have products of this brand
         // $categoryIds = $products->pluck('category_id')->unique()->toArray();
@@ -1246,7 +1245,7 @@ if ($request->filled('categories') || $request->filled('search')) {
             ->where('is_active', 1)
             ->orderBy('name', 'asc')
             ->get();
-        
+
         // Sort children alphabetically
         $categories->each(function ($category) {
             if ($category->childs->count()) {
@@ -1284,7 +1283,7 @@ if ($request->filled('categories') || $request->filled('search')) {
             ]);
         }
 
-        // Load seo 
+        // Load seo
         $seoContents = [
             'title' => $brand->brand_translations[0]['meta_title'] ?? '',
             'meta_description' => $brand->brand_translations[0]['meta_description'] ?? '',

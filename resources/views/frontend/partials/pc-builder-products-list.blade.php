@@ -1,6 +1,6 @@
 @foreach($stocks as $stock)
-    @php 
-        $product = $stock->product; 
+    @php
+        $product = $stock->product;
     @endphp
 
     @if($stock->qty > 0)
@@ -19,7 +19,7 @@
                         $image = Storage::url($firstStockImage);
                     }
                 }
-                
+
                 // If stock has no image, fallback to product thumbnail
                 if (empty($stock->image) && !empty($product->thumbnail_img)) {
                     $image = Storage::url($product->thumbnail_img);
@@ -91,7 +91,7 @@
             <!--//ratings-->
 
             <h5 class="price flex flex-row text-[#2A7CFF] text-[13px] md:text-[15px] leading-[20px] m-[0] font-medium align-center items-center gap-[10px]">
-                <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]" alt="AED" title="Symbol of AED">{{ number_format($stock->offer_price, 2) }} 
+                <img src="{{ asset('assets/images/aed.svg') }}" class="w-[15px] h-[15px]" alt="Symbol of AED" title="Symbol of AED">{{ number_format($stock->offer_price, 2) }}
                 @if(filled($stock->offer_tag))
                 <span class="text-[#898989] font-medium line-through">{{ number_format($stock->price, 2) }}</span>
                 @endif
@@ -105,7 +105,7 @@
                         </svg>
                     </span>
                     <span class="btn-text">Select</span>
-                    
+
                 </button>
 
                 <div class="counter-wrapper hidden items-center gap-2 bg-[#0B0F13] border border-gray-800 rounded-xl p-1 w-full">

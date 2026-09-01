@@ -112,7 +112,7 @@
                             </span>
                         </div>
 
-                        
+
 
                         @php
                         $productSpecifications = \App\Models\ProductSpecification::where('product_stock_id', $firstStock->id)
@@ -127,8 +127,8 @@
                                 @foreach ($productSpecifications as $specification)
                                 @php
                                 $itemClass = "";
-                                if($loop->index >= 2) $itemClass .= " md:flex hidden"; 
-                                if($loop->index >= 3) $itemClass = " hidden"; 
+                                if($loop->index >= 2) $itemClass .= " md:flex hidden";
+                                if($loop->index >= 3) $itemClass = " hidden";
                                 @endphp
 
                                 <li class="flex flex-row py-2 md:py-[15px] border-b border-[#282B34] justify-between items-center {{ $itemClass }}">
@@ -155,7 +155,7 @@
                     <div class="md:col-span-1 p-4 pt-2 md:pt-[30px] md:px-[30px] flex flex-col justify-between items-start md:items-end">
                         <div class="price flex flex-row md:flex-col items-center md:items-end gap-3 w-full justify-start">
                             <h5 class="price flex flex-row text-[#2A7CFF] text-[18px] md:text-[28px] m-0 font-bold items-center gap-1">
-                                <img src="{{ asset('assets/images/aed.svg') }}" class="w-4 h-4 md:w-[22px] md:h-[22px]" alt="AED">
+                                <img src="{{ asset('assets/images/aed.svg') }}" class="w-4 h-4 md:w-[22px] md:h-[22px]" alt="Symbol of AED" title="Symbol of AED">
                                 {{ $firstStock->offer_price ?? $firstStock->price }}
                             </h5>
                             @if (filled($firstStock->offer_tag))

@@ -74,8 +74,8 @@ Log::info($_REQUEST);
 					<form class="hidden xl:block">
 						<!-- <div id="clear-filters" class="text-[#898989] text-[14px] text-right mt-2 cursor-pointer">Clear All</div> -->
 						<button id="clear-filters" type="button"
-							class="inline-block w-full text-[#898989] text-[13px] md:text-[14px] font-medium 
-									px-3 py-1.5 mt-2 rounded-[6px] transition-all duration-200 
+							class="inline-block w-full text-[#898989] text-[13px] md:text-[14px] font-medium
+									px-3 py-1.5 mt-2 rounded-[6px] transition-all duration-200
 									hover:bg-white/10 hover:text-white cursor-pointer flex items-center gap-2 mb-[10px]">
 							<svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -204,7 +204,7 @@ Log::info($_REQUEST);
 												<input type="number" class="min-price w-full bg-transparent font-medium text-[14px] !text-white focus:outline-none border-none" value="0" min="0" max="300000" step="100">
 											</div>
 										</div>
-										
+
 										<div class="w-full">
 											<span class="text-gray-400 text-xs block mb-[10px] text-right">Max</span>
 											<div class="bg-[#282B34] rounded-[10px] text-right w-full price-input-box">
@@ -266,7 +266,7 @@ Log::info($_REQUEST);
 										@endforeach
 										@endif
 										<a href="{{ route('brands.list') }}" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-600 text-white hover:bg-white hover:text-black">view all brands</a>
-											
+
 									</div>
 								</div>
 
@@ -308,7 +308,7 @@ Log::info($_REQUEST);
 											id="condition-new"
 											name="conditions[]"
 											value="new"
-											class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200" 
+											class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
 											{{ in_array('new', $selectedConditions) ? 'checked' : '' }}>
 
 										<label for="condition-new"
@@ -358,7 +358,7 @@ Log::info($_REQUEST);
 				<!--// Desktop Filters -->
 
 				<!--promotion banners-->
-				
+
 				@if(!empty($banners))
 				<div class="!hidden xl:!block swiper promobnrswiper relative">
                     <div class="swiper-wrapper">
@@ -377,10 +377,61 @@ Log::info($_REQUEST);
 			</div>
 
 			<div class="col-span-3" x-data="{ activeTab: '{{ request()->get('view','gridview') }}' }">
+                <!-- breadcrumb -->
+                <nav class="flex text-gray-400 pb-[15px] md:pb-[30px]" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-3 flex-wrap">
+                        {{-- Home --}}
+                        <li class="inline-flex items-center">
+                            <a href="{{ route('home') }}"
+                            class="inline-flex items-center text-sm font-medium hover:text-[#3E81FF] transition-colors">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                                </svg>
+                                Home
+                            </a>
+                        </li>
 
+                        {{-- Shop --}}
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd">
+                                    </path>
+                                </svg>
+                                @if(request()->filled('search'))
+                                    <a href="{{ route('products') }}" class="ml-1 text-sm font-medium hover:text-[#3E81FF] md:ml-2 transition-colors">Shop</a>
+                                @else
+                                    <span class="ml-1 text-sm font-medium text-white md:ml-2">Shop</span>
+                                @endif
+                            </div>
+                        </li>
+
+                        {{-- Search --}}
+                        @if(request()->filled('search'))
+                            <li>
+                                <div class="flex items-center">
+                                    <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 010 1.414z"
+                                            clip-rule="evenodd">
+                                        </path>
+                                    </svg>
+
+                                    <span class="ml-1 text-sm font-medium text-white md:ml-2">
+                                        {{ request('search') }}
+                                    </span>
+                                </div>
+                            </li>
+                        @endif
+
+                    </ol>
+                </nav>
+                <!-- //breadcrumb -->
 				<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[0px] w-full">
 					<h1 class="text-[30px] 2xl:text-[50px] text-white font-bold text-center xl:text-left uppercase w-full">
-						{{ $page_content['listing_title'] ?? 'All Products' }} 
+						{{ $page_content['listing_title'] ?? 'All Products' }}
 					</h1>
 					<div class="flex flex-col xl:flex-row items-center justify-between gap-[15px] xl:gap-[15px] w-full">
 						<span class="text-[#898989] text-[14px] w-full text-center xl:text-right" id="product-count" data-per-page="{{ $products->perPage() }}" data-total="{{ $products->total() }}">
@@ -455,9 +506,9 @@ Log::info($_REQUEST);
 					</div>
 					@endif
 				</div>
-				
+
 			</div>
-			
+
 		</div>
 
 	</main>
@@ -857,7 +908,7 @@ Log::info($_REQUEST);
 				browserUrl.pathname + browserUrl.search
 			);
 		}
-		
+
 
 		const url = `/products`;
 
@@ -899,9 +950,9 @@ Log::info($_REQUEST);
 			})
 			.then(res => res.json())
 			.then(data => {
-				
+
 				const wrapper = document.getElementById('product-list-wrapper');
-				
+
 				// Show / Hide load more
 				const loadMore = document.getElementById('load-more-wrapper');
 
@@ -924,10 +975,10 @@ Log::info($_REQUEST);
 				// update total from backend response
 				countEl.dataset.total = data.total;
 
-				
+
 				hideLoader();
 				updateProductCount();
-				
+
 			})
 			.catch(err => console.error('Filter products error:', err));
 	}
@@ -1049,8 +1100,8 @@ Log::info($_REQUEST);
 	document.addEventListener('change', function(e) {
 		if (e.target.matches('input[id^="filter-category-"]')) {
 			const checkbox = e.target;
-			const childIds = checkbox.dataset.childIds 
-				? checkbox.dataset.childIds.split(',') 
+			const childIds = checkbox.dataset.childIds
+				? checkbox.dataset.childIds.split(',')
 				: [];
 
 			childIds.forEach(id => {
@@ -1061,7 +1112,7 @@ Log::info($_REQUEST);
 
 			filterProducts();
 		}
-	});	
+	});
 	// FILTER SCRIPT
 
 	// LOAD MORE SCRIPT
@@ -1123,7 +1174,7 @@ Log::info($_REQUEST);
 			loader.classList.add('hidden');
 		}
 	}
-	
+
 
 	function updateProductCount() {
 		const countEl = document.getElementById('product-count');
