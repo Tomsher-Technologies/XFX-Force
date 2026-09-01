@@ -8,6 +8,35 @@
                 <main>
                     <div>
                         <div class="section-title mb-10 relative border-t border-[#ffffff30] pt-[50px]">
+                            <!--breadcrumb-->
+                            <div>
+                                <nav class="flex text-gray-400 pb-[15px] md:pb-[30px] w-full"
+                                    aria-label="Breadcrumb">
+                                    <ol class="inline-flex items-center space-x-1 md:space-x-3 flex-wrap">
+                                        <li class="inline-flex items-center">
+                                            <a href="{{ route('home') }}"
+                                                class="inline-flex items-center text-sm font-medium hover:text-[#3E81FF] transition-colors">
+                                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path
+                                                        d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z">
+                                                    </path>
+                                                </svg>Home
+                                            </a>
+                                        </li>
+                                        <li aria-current="page">
+                                            <div class="flex items-center">
+                                                <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span class="ml-1 text-sm font-medium text-white md:ml-2">Contact us</span>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <!--//breadcrumb-->
                             <h1 class="w-full text-[40px] md:text-[50px] text-white font-bold text-center uppercase flex flex-col md:flex-row flex-start justify-center lg:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">
                                 {{ $page_content['title'] ?? '' }}
                             </h1>
@@ -17,9 +46,7 @@
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
-                            
                             <div class="lg:col-span-5 space-y-12">
-                                
                                 <div class="space-y-3 md:space-y-6">
                                     <div class="flex items-start gap-6 1C2228 border border-gray-800 p-8 rounded-3xl group hover:border-[#2A7CFF]/30 transition-all">
                                         <div class="w-12 h-12 rounded-2xl bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)]/10 flex items-center justify-center text-[#2A7CFF] flex-shrink-0">
@@ -74,7 +101,6 @@
                                     <h2 class="text-[20px] font-medium text-white uppercase mb-4 text-center lg:text-left">
                                         {{ $page_content['form_title'] ?? '' }}
                                     </h2>
-                                    
                                     <form id="pc-contact-form" class="space-y-6" action="{{ route('contact.submit') }}" method="POST">
                                         @csrf
                                         <div class="space-y-2">
@@ -85,7 +111,6 @@
                                             @enderror
                                         </div>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            
                                             <div class="space-y-2">
                                                 <label class="text-[10px] font-medium text-gray-400 uppercase mb-2">Email <span class="text-red-500">*</span></label>
                                                 <input type="email"  class="w-full bg-white/5 border border-white/10 rounded-[10px] py-3 px-6 text-white focus:border-[#2A7CFF] outline-none" name="email" value="{{ old('email') }}" placeholder="Email">

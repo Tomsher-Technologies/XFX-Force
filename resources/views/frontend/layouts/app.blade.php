@@ -2,10 +2,37 @@
 <html lang="en" class="!overflow-x-hidden">
 
 <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-T4CVT6Z8');</script>
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    @php
+        $noindexRoutes = [
+            'cart',
+            'login',
+            'wishlist',
+            'my-orders',
+            'account',
+            'notifications',
+            'my-address',
+            'update-password',
+        ];
+
+        $isNoindex = Route::currentRouteNamed($noindexRoutes);
+    @endphp
+
+    @if($isNoindex)
+        <meta name="robots" content="noindex, follow" />
+    @else
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    @endif
+
     <link rel="preconnect" href="{{ url('/') }}" />
     <link rel="dns-prefetch" href="{{ url('/') }}" />
 
@@ -13,11 +40,11 @@
     <?php
     $url = url()->full();
     ?>
-    
+
     <link rel="canonical" href="{{ url()->current() }}"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
-    
+
+
     <!-- fav icon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/favicon.ico') }}">
     <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('assets/images/apple-icon-57x57.png') }}">
@@ -42,7 +69,7 @@
     <meta name="theme-color" content="#000000" />
     <meta name="msapplication-navbutton-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="#000000">
-   
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @yield('style')
@@ -55,12 +82,12 @@
         }
         .swiper-button-next,.swiper-container-rtl .swiper-button-prev {
             left: auto;
-            background-image: url("{{ asset('assets/images/arrow-right.svg') }}"); 
+            background-image: url("{{ asset('assets/images/arrow-right.svg') }}");
         }
         .swiper-button-prev,
         .swiper-container-rtl .swiper-button-next {
             right: auto;
-            background-image: url("{{ asset('assets/images/arrow-left.svg') }}"); 
+            background-image: url("{{ asset('assets/images/arrow-left.svg') }}");
         }
 
         button.variant-btn.active {
@@ -70,17 +97,22 @@
 </head>
 
 <body class="m-[0] !overflow-x-hidden bg-[#0F161B] relative">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4CVT6Z8"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <!-- Header -->
      @if(!isset($hideHeader) || !$hideHeader)
         @include('frontend.layouts.header')
-    @endif  
+    @endif
 
     <!-- Main Content -->
     <main>
         @yield('content')
 
 
-    
+
 
 
     </main>
@@ -89,7 +121,7 @@
      @if(!isset($hideFooter) || !$hideFooter)
         @include('frontend.layouts.footer')
     @endif
-    
+
     <!--script-->
     <script src="//unpkg.com/alpinejs" defer></script>
     <script src="{{ asset('assets/js/elements@1.js') }}" type="module"></script>
@@ -146,7 +178,7 @@
                 const stockId = button.dataset.stockId;
                 const page = button.dataset.page;
                 const icon = button.querySelector('svg');
-                
+
                 fetch("/wishlist/toggle", {
                     method: "POST",
                     headers: {
@@ -181,7 +213,7 @@
 
 
                     if (data.status === 'added') {
-                        toastr.success('Product added to wishlist.');      
+                        toastr.success('Product added to wishlist.');
                     } else {
                         toastr.info('Product removed from wishlist.');
                         if(page === 'wishlist') {
@@ -192,7 +224,7 @@
                     }
                 });
             });
-            
+
         });
 
         (function() {
@@ -243,13 +275,13 @@
             cursor: pointer;
             animation: whatsapp-pulse 2s infinite;
         }
-        
+
         .whatsapp-float:hover {
             transform: scale(1.1) rotate(5deg);
             box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4), 0 12px 32px rgba(0, 0, 0, 0.25);
             background-color: #20ba5a;
         }
-        
+
         @keyframes whatsapp-pulse {
             0% {
                 box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
@@ -261,7 +293,7 @@
                 box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
             }
         }
-        
+
         @media (min-width: 768px) {
             .whatsapp-float {
                 bottom: 20px;

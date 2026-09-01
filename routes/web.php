@@ -15,11 +15,11 @@ use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\ReviewController;
 use App\Http\Controllers\Frontend\SearchController;
+use App\Http\Controllers\Frontend\SitemapController;
+use App\Http\Controllers\Frontend\TabbyWebhookController;
 use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Frontend\WishlistController;
-use App\Http\Controllers\Frontend\TabbyWebhookController;
 use Illuminate\Support\Facades\Route;
-
 
 
 /*
@@ -111,7 +111,7 @@ Route::get('/builder/models', [BuildPcController::class, 'getModels']);
 Route::group(['middleware' => ['auth:frontend','nocache']], function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('account', [ProfileController::class, 'getUserAccountInfo'])->name('account');
-    Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update'); 
+    Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update');
 
     Route::get('update-password', [ProfileController::class, 'updatePassword'])->name('update-password');
     Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('account.changePassword');
@@ -127,7 +127,7 @@ Route::group(['middleware' => ['auth:frontend','nocache']], function () {
 
     Route::get('/notifications', [NotificationController::class, 'customerNotifications'])
         ->name('customer.notifications');
-    
+
     Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.index');
     Route::get('/my-orders/{id}', [OrderController::class, 'myOrderSingle'])->name('orders.show');
     Route::post('/my-orders/{order_id}/cancel', [CheckoutController::class, 'cancelOrderRequest'])
@@ -158,6 +158,8 @@ Route::post(
     [TabbyWebhookController::class, 'handle']
 )->name('tabby.webhook');
 
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])
+    ->name('sitemap');
 
 Route::fallback(function () {
     return response()->view('frontend.errors.404', [], 404);
