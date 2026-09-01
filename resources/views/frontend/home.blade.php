@@ -34,7 +34,15 @@
                         <div class="meta absolute bottom-[15%] md:bottom-[25%] text-center w-full px-[16px]">
                             <div data-swiper-parallax="-400" class="slide-title flex flex-col items-center gap-[20px] justify-center">
 
-                                <h1 class="banner-caption text-center text-[35px] md:text-[55px] lg:text-[65px] xl:text-[75px] 2xl:text-[85px] uppercase w-[80%] md:w-[50%] leading-[1]">{{ $slider->title ?? '' }}</h1>
+                                @if($loop->first)
+                                    <h1 class="banner-caption text-center text-[35px] md:text-[55px] lg:text-[65px] xl:text-[75px] 2xl:text-[85px] uppercase w-[80%] md:w-[50%] leading-[1]">
+                                        {{ $slider->title ?? '' }}
+                                    </h1>
+                                @else
+                                    <h3 class="banner-caption text-center text-[35px] md:text-[55px] lg:text-[65px] xl:text-[75px] 2xl:text-[85px] uppercase w-[80%] md:w-[50%] leading-[1]">
+                                        {{ $slider->title ?? '' }}
+                                    </h3>
+                                @endif
 
                                 @php
                                     switch ($slider->link_type) {
@@ -65,13 +73,13 @@
                                                 $url = route(
                                                     'shop.category',
                                                     ['slug' => $category->category_translations->first()->slug ]
-                                                    
+
                                                 );
                                             } else {
                                                 $url = '#';
                                             }
                                             break;
-                                        
+
                                         case 'brand':
                                             $brand = \App\Models\Brand::find($slider->link_ref_id);
 
@@ -83,7 +91,7 @@
                                                 $url = '#';
                                             }
                                             break;
-                                            
+
                                         default:
                                             $url = '#';
                                     }
@@ -165,7 +173,7 @@
                 @endforeach
             </div>
         </div>
-        
+
     </div>
 </section>
 @endif
@@ -184,8 +192,8 @@
     }
 @endphp
 
-<section 
-    x-data="{ 
+<section
+    x-data="{
         activeTab: '{{ $defaultTab }}',
         // Function to force Swiper to recalculate width/height
         refreshSwiper() {
@@ -199,7 +207,7 @@
                 }
             });
         }
-    }" 
+    }"
     class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[50px] pb-[50px] md:pb-[50px] lg:pb-[50px] xl:pb-[100px] relative border-b border-[#ffffff10] xl:border-hidden">
 
     <div class="section-title mb-[30px] relative flex flex-col xl:flex-row items-center xl:items-end justify-between">
@@ -210,8 +218,8 @@
         <div class="w-full action-group flex flex-row items-center gap-[30px] justify-center xl:justify-end">
             <div class="flex p-1 bg-white/5 rounded-full border border-white/10 relative z-[1]">
                 @if(!empty($newArrivals))
-                <button 
-                    @click="activeTab='newFeatured'; refreshSwiper()" 
+                <button
+                    @click="activeTab='newFeatured'; refreshSwiper()"
                     :class="activeTab === 'newFeatured' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
                     class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
                     New Arrivals
@@ -219,8 +227,8 @@
                 @endif
 
                 @if(!empty($popularItems))
-                <button 
-                    @click="activeTab='popularFeatured'; refreshSwiper()" 
+                <button
+                    @click="activeTab='popularFeatured'; refreshSwiper()"
                     :class="activeTab === 'popularFeatured' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
                     class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
                     Popular Items
@@ -355,7 +363,7 @@
 
                                 </div>
 
-                               
+
 
                                 @php
 
@@ -448,8 +456,8 @@
     }
 @endphp
 
-<section 
-    x-data="{ 
+<section
+    x-data="{
         activeTab: '{{ $defaultTab }}',
         // Function to force Swiper to recalculate width/height
         refreshSwiper() {
@@ -463,7 +471,7 @@
                 }
             });
         }
-    }"  
+    }"
     class="bg-[#0F161B] px-[16px] md:px-[30px] lg:px-[50px] xl:px-[100px] 2xl:px-[140px] pt-[50px] xl:pt-0 relative">
 
     <div class="section-title mb-[30px] relative flex flex-col xl:flex-row items-center xl:items-end justify-between">
@@ -475,8 +483,8 @@
         <div class="w-full action-group flex flex-row items-center gap-[30px] justify-center xl:justify-end">
             <div class="flex gap-[15px] p-1 bg-white/5 rounded-full border border-white/10 relative z-[20]">
                 @if(!empty($upcomingNewProducts))
-                <button 
-                    @click="activeTab='newUpcoming'; refreshSwiper()" 
+                <button
+                    @click="activeTab='newUpcoming'; refreshSwiper()"
                     :class="activeTab === 'newUpcoming' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
                     class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
                     New Arrivals
@@ -484,8 +492,8 @@
                 @endif
 
                 @if(!empty($upcomingPopularProducts))
-                <button 
-                    @click="activeTab='popularUpcoming'; refreshSwiper()" 
+                <button
+                    @click="activeTab='popularUpcoming'; refreshSwiper()"
                     :class="activeTab === 'popularUpcoming' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
                     class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
                     Popular Items
@@ -493,7 +501,7 @@
                 @endif
             </div>
         </div>
-        
+
     </div>
 
     <!-- New Arrivals Panel -->
@@ -600,7 +608,7 @@
         $defaultTab = null; // no tab to show
     }
 @endphp
-<section x-data="{ 
+<section x-data="{
         activeTab: '{{ $defaultTab }}',
         // Function to force Swiper to recalculate width/height
         refreshSwiper() {
@@ -618,15 +626,15 @@
 
     <div class="section-title mb-[30px] relative flex flex-col xl:flex-row items-center xl:items-end justify-between">
         <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center uppercase text-center xl:text-left leading-[40px] xl:leading-[50px] m-[0] mb-[30px] xl:mb-[0px]">{{ $page_content['middle_featured_products_title'] ?? ''}}</h3>
-        
+
 
 
         <!-- Styled Tab Pill Buttons -->
         <div class="w-full action-group flex flex-row items-center gap-[30px] justify-center xl:justify-end">
             <div class="flex gap-[15px] p-1 bg-white/5 rounded-full border border-white/10 relative z-[20]">
                 @if(!empty($middleNewProducts))
-                <button 
-                    @click="activeTab='newMiddleProducts'; refreshSwiper()" 
+                <button
+                    @click="activeTab='newMiddleProducts'; refreshSwiper()"
                     :class="activeTab === 'newMiddleProducts' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
                     class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
                     New Arrivals
@@ -634,8 +642,8 @@
                 @endif
 
                 @if(!empty($middlePopularProducts))
-                <button 
-                    @click="activeTab='popularMiddleProducts'; refreshSwiper()" 
+                <button
+                    @click="activeTab='popularMiddleProducts'; refreshSwiper()"
                     :class="activeTab === 'popularMiddleProducts' ? 'bg-white text-black' : 'text-white/40 hover:text-white'"
                     class="rounded-full transition-all duration-300 text-[13px] uppercase px-[30px] py-[10px] font-bold cursor-pointer whitespace-nowrap">
                     Popular Items
@@ -846,7 +854,7 @@
         </div>
     </div>
 
-    
+
 
 </section>
 @endif
@@ -893,7 +901,7 @@
                                     </div>
                                 </a>
                             </div>
-                            @endforeach           
+                            @endforeach
                         </div>
                         @endif
                         <div class="swiper-pagination absolute flex flex-start mt-[50px] !bottom-[30px] hidden md:block"></div>
@@ -920,7 +928,7 @@
                             <div class="swiper g-testimonials relative h-full">
                                 @if(!empty($testimonialsText))
                                 <div class="swiper-wrapper h-full">
-                                    @foreach ($testimonialsText as $testimonialsText)    
+                                    @foreach ($testimonialsText as $testimonialsText)
                                     <div class="swiper-slide">
                                         <div class="flex flex-col gap-[30px] xl:gap-[50px] justify-between h-full">
                                             <p class="text-white text-center xl:text-left text-[15px] font-normal leading-[30px]">{{$testimonialsText->comment}}</p>
@@ -963,7 +971,7 @@
                         // Get the image file from uploads
                         $footerImage = $footerUploads[$footer['footer_image']] ?? null;
                         $footerImageUrl = $footerImage ? Storage::url($footerImage->file_name) : asset('assets/images/about-img.webp');
-                    @endphp    
+                    @endphp
                     <div class="swiper-slide">
                         <div class="flex flex-col xl:grid md:grid-cols-2 gap-0 xl:gap-[100px] items-start xl:items-end">
                             <div class="section-title mb-0 flex flex-col gap-10">
@@ -972,7 +980,7 @@
                                     <img src="{{$footerImageUrl}}" alt="About PC Garage" title="About PC Garage" class="w-full h-full relative xl:absolute object-cover object-top m-auto z-[0]">
                                 </div>
                             </div>
-                            
+
                             <div class="flex flex-col gap-10">
                                 <div style="color:rgb(255 255 255) !important;" class="text-white text-[15px] xl:text-[18px] font-normal leading-[30px] xl:leading-[35px] text-center xl:text-left">{!! $footer['footer_content'] !!}</div>
                                 <a href="{{$footer['footer_button_link']}}" class="w-full md:w-fit m-auto xl:m-0 h-fit text-center text-black uppercase text-[13px] md:text-[14px] font-medium px-[30px] py-[10px] bg-white rounded-full transition-all duration-[600ms] hover:bg-[linear-gradient(52deg,_#0844ff_11.5%,_#64b8fb_129.52%)] hover:text-white">{{$footer['footer_button_text']}}</a>
@@ -982,7 +990,7 @@
                 @endforeach
             </div>
         </div>
-        
+
     </div>
 </section>
 @endif

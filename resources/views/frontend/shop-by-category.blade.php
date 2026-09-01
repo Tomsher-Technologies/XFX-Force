@@ -3,11 +3,45 @@
 @section('title', 'Shop - Category')
 @section('content')
 
+
+
 <input type="hidden" id="category-last-page" value="{{ $products->lastPage() }}">
 <input type="hidden" id="category-current-page" value="{{ $products->currentPage() }}">
     <!--inner banner-->
     <section class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[140px] pt-[80px] xl:pt-[150px] pb-[0px] relative">
         <div class="section-title mb-[0px] relative border-t border-[#ffffff30] pt-[30px] xl:pt-[50px]">
+            <!--breadcrumb-->
+            <nav class="flex text-gray-400 pb-[15px] md:pb-[30px]" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3 flex-wrap">
+                    <li class="inline-flex items-center">
+                        <a href="{{ route('home') }}" class="inline-flex items-center text-sm font-medium hover:text-[#3E81FF] transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                            </svg>
+                            Home
+                        </a>
+                    </li>
+
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <a href="{{ route('products') }}" class="ml-1 text-sm font-medium hover:text-[#3E81FF] md:ml-2 transition-colors">Shop</a>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="ml-1 text-sm font-medium text-white md:ml-2">{{$category->name}}</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+            <!--//breadcrumb-->
             <h3 class="w-full text-[30px] md:text-[50px] text-white font-bold text-center xl:text-left uppercase flex flex-col md:flex-row flex-start justify-center xl:justify-start items-center md:items-start gap-[0px] md:gap-[10px] m-0 leading-[30px] md:leading-[60px]">shop: {{ $category->name }}<span class="text-[18px] text-[#2A7CFF] top-[6px] tracking-[0px] relative font-sans h-[0px]" id="total-product-count">{{ $products->count() }}</span></h3>
         </div>
         <input type="hidden" id="current-category-id" value="{{ $category->category_translations->first()->slug }}">
@@ -49,9 +83,9 @@
 
                 <div id="filter-wrapper">
                     <form class="hidden xl:block">
-                        <button id="clear-filters" 
-                                class="inline-block w-full text-[#898989] text-[13px] md:text-[14px] font-medium 
-                                    px-3 py-1.5 mt-2 rounded-[6px] transition-all duration-200 
+                        <button id="clear-filters"
+                                class="inline-block w-full text-[#898989] text-[13px] md:text-[14px] font-medium
+                                    px-3 py-1.5 mt-2 rounded-[6px] transition-all duration-200
                                     hover:bg-white/10 hover:text-white cursor-pointer flex items-center gap-2 mb-[10px]">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -82,23 +116,23 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                                 </svg>
                                             </span>
-                                            
+
                                             <input type="text" id="category-search" placeholder="Search Category" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[10px] outline-none transition-all border-none">
                                         </div>
                                         @endif
 
                                         @if($category)
                                             {{-- Parent Category --}}
-                                            <div class="flex gap-[15px] items-center category-item" 
+                                            <div class="flex gap-[15px] items-center category-item"
                                                 data-name="{{ $category->category_translations->first()->name ?? $category->name }}">
-                                                
+
                                                 <div class="flex h-5 shrink-0 items-center">
                                                     <div class="group grid size-4 grid-cols-1 w-full">
-                                                        <input 
-                                                            type="checkbox" 
-                                                            name="categories[]" 
-                                                            value="{{ $category->id }}" 
-                                                            class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200" 
+                                                        <input
+                                                            type="checkbox"
+                                                            name="categories[]"
+                                                            value="{{ $category->id }}"
+                                                            class="category-checkbox h-[20px] w-[20px] col-start-1 row-start-1 appearance-none rounded bg-[#282B34] checked:bg-[#2161C7] border-none cursor-pointer !outline-none !ring-0 !ring-offset-0 transition-all duration-200"
                                                             id="filter-category-{{ $category->id }}"
                                                             checked
                                                             data-child-ids="{{ $category->childs->pluck('id')->implode(',') }}"
@@ -106,9 +140,9 @@
                                                     </div>
                                                 </div>
 
-                                                <label for="filter-category-{{ $category->id }}" 
+                                                <label for="filter-category-{{ $category->id }}"
                                                     class="relative top-[5px] text-[15px] text-white">
-                                                    
+
                                                     {{ $category->category_translations->first()->name ?? $category->name }}
 
                                                     <span class="text-[15px] text-[#50525C] ml-[10px]">
@@ -129,7 +163,7 @@
                                                 </label>
                                             </div>
                                         @endif
-                                        
+
                                         @if($category->childs->count())
                                             @php
                                                 $padding = 20;
@@ -154,9 +188,9 @@
                                                         <span class="text-[15px] text-[#50525C] ml-[10px]">{{ $productCount }}</span>
                                                     </label>
                                                 </div>
-                                                
+
                                             @endforeach
-                                        
+
                                         @endif
                                     </div>
                                 </div>
@@ -187,7 +221,7 @@
                                                 <input type="number" class="min-price w-full !text-white bg-transparent font-medium text-[14px] focus:outline-none border-0" value="0" min="0" max="300000" step="100">
                                             </div>
                                         </div>
-                                        
+
                                         <div class="w-full">
                                             <span class="text-gray-400 text-xs block mb-[10px] text-right">Max</span>
                                             <div class="bg-[#282B34] rounded-[10px] w-full price-input-box">
@@ -231,7 +265,7 @@
                                             </span>
                                             <input type="text" id="brand-search" placeholder="Search brands (e.g. Nvidia)" class="w-full bg-[#282B34] text-white text-sm rounded-[10px] focus:ring-[#3E81FF] focus:border-[#3E81FF] block pl-10 p-[10px] outline-none transition-all border-none">
                                         </div>
-                                    
+
                                         @if(!empty($brands))
                                         @foreach ($brands as $brand)
                                         <div class="flex gap-[15px] align-center items-center brand-item" data-name="{{$brand->name}}">
@@ -248,7 +282,7 @@
                                         </div>
                                         @endforeach
                                         @endif
-                                    
+
                                     <a href="{{ route('brands.list') }}" class="block mt-[30px] w-full text-center text-black uppercase text-[14px] font-medium px-[30px] py-[15px] rounded-[15px] border border-[#282B34] transition-all duration-[600ms] text-white hover:bg-white hover:text-black">view all brands</a>
                                 </div>
                                 </div>
@@ -433,7 +467,7 @@
                     </div>
                     @endif
                 </div>
-                
+
             </div>
         </div>
 
@@ -838,7 +872,7 @@
 		if (e.target.matches('input[name="brands[]"]') ||
 			e.target.matches('input[name="conditions[]"]')) {
 			filterProducts();
-		}     
+		}
 	});
 
     /* INITIAL LOAD */
@@ -945,7 +979,7 @@
 			loader.classList.add('hidden');
 		}
 	}
-	
+
 
 	function updateProductCount() {
 		const countEl = document.getElementById('product-count');
@@ -961,7 +995,7 @@
             visible = document.querySelectorAll('#product-list .product-card-list').length;
         }
 
-		
+
 		// if (document.querySelector('[x-show="activeTab === \'gridview\'"]').offsetParent !== null) {
 		// 	visible = document.querySelectorAll('#product-list .product-card').length;
 		// } else {

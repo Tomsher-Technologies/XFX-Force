@@ -293,7 +293,7 @@
                                                 <span>Tabby</span>
                                             </div>
                                             <div class="hidden md:flex gap-2">
-                                                <img src="{{ asset('assets/images/tabby.svg') }}" class="w-12">
+                                                <img src="{{ asset('assets/images/tabby.svg') }}" class="w-12" alt="Tabby Payment">
                                             </div>
                                         </div>
                                         {{-- @if(filled(get_setting('payment_method_tabby_refund_note')))
