@@ -3,18 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Blog;
-use Illuminate\Support\Str;
+use App\Services\SeoService;
 use DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
-    function __construct()
+    protected SeoService $seoService;
+
+    public function __construct(SeoService $seoService)
     {
         $this->middleware('auth');
-       
         $this->middleware('permission:manage_blogs', ['only' => ['index','create','store','edit','update','destroy']]);
+        $this->seoService = $seoService;
     }
 
     /**
@@ -52,14 +55,12 @@ class BlogController extends Controller
      */
     public function store(Request $request)
     {
-        
         $request->validate([
             'name' => 'required',
             'image' => 'required',
             'description' => 'required',
             'slug' => 'required',
         ]);
-       
         $slug               = $request->slug ? Str::slug($request->slug, '-') : Str::slug($request->name, '-');
         $slug               = Str::lower($slug);
         $same_slug_count    = Blog::where('slug', 'LIKE', $slug . '%')->count();
@@ -73,13 +74,29 @@ class BlogController extends Controller
         $blog->description          = $request->description ?? NULL;
         $blog->blog_date            = $request->blog_date ?? date('Y-m-d');
         $blog->status               = $request->status;
-        $blog->meta_title           = $request->meta_title;
-        $blog->meta_description     = $request->meta_description;
-        $blog->og_title             = $request->og_title;
-        $blog->og_description       = $request->og_description;
-        $blog->twitter_title        = $request->twitter_title;
-        $blog->twitter_description  = $request->twitter_description;
-        $blog->keywords             = $request->meta_keywords;
+
+        // SEO
+        $seoData = $this->seoService->prepareCreate([
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+
+            'og_title' => $request->og_title,
+            'og_description' => $request->og_description,
+
+            'twitter_title' => $request->twitter_title,
+            'twitter_description' => $request->twitter_description,
+        ]);
+
+        $blog->meta_title = $seoData['meta_title'];
+        $blog->meta_description = $seoData['meta_description'];
+
+        $blog->og_title = $seoData['og_title'];
+        $blog->og_description = $seoData['og_description'];
+
+        $blog->twitter_title = $seoData['twitter_title'];
+        $blog->twitter_description = $seoData['twitter_description'];
+
+        $blog->keywords = $request->meta_keywords;
         $blog->save();
 
         flash('Blog created successfully')->success();
@@ -131,15 +148,55 @@ class BlogController extends Controller
         $blog->image                = $request->image;
         $blog->blog_date            = $request->blog_date ?? date('Y-m-d');
         $blog->description          = $request->description;
-        $blog->meta_title           = $request->meta_title;
-        $blog->meta_description     = $request->meta_description;
-        $blog->og_title             = $request->og_title;
-        $blog->og_description       = $request->og_description;
-        $blog->twitter_title        = $request->twitter_title;
-        $blog->twitter_description  = $request->twitter_description;
-        $blog->keywords             = $request->meta_keywords;
+
+        // Store old SEO values before updating
+        $oldMetaTitle = $blog->meta_title;
+        $oldOgTitle = $blog->og_title;
+
+        $oldMetaDescription = $blog->meta_description;
+        $oldOgDescription = $blog->og_description;
+
+        $oldTwitterTitle = $blog->twitter_title;
+        $oldTwitterDescription = $blog->twitter_description;
+
+
+        // Update Meta
+        $blog->meta_title = $request->meta_title;
+        $blog->meta_description = $request->meta_description;
+
+
+        // Prepare OG + Twitter
+        $seoData = $this->seoService->prepareUpdate(
+            // Meta Title / OG Title
+            $oldMetaTitle,
+            $oldOgTitle,
+            $blog->meta_title,
+            $request->og_title,
+
+            // Meta Description / OG Description
+            $oldMetaDescription,
+            $oldOgDescription,
+            $blog->meta_description,
+            $request->og_description,
+
+            // Twitter Title / Twitter Description
+            $oldTwitterTitle,
+            $oldTwitterDescription,
+            $request->twitter_title,
+            $request->twitter_description
+        );
+
+
+        $blog->og_title = $seoData['og_title'];
+        $blog->og_description = $seoData['og_description'];
+
+        $blog->twitter_title = $seoData['twitter_title'];
+        $blog->twitter_description = $seoData['twitter_description'];
+
+        $blog->keywords = $request->meta_keywords;
+
         $blog->save();
-        
+
         flash('Blog '.trans('messages.updated_msg'))->success();
         return back();
     }
@@ -161,10 +218,10 @@ class BlogController extends Controller
     public function updateStatus(Request $request)
     {
         $blog = Blog::findOrFail($request->id);
-        
+
         $blog->status = $request->status;
         $blog->save();
-       
+
         return 1;
     }
 }

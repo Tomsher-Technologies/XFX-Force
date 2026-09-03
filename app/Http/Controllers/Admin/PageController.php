@@ -19,9 +19,18 @@ use App\Models\Subscriber;
 use File;
 use Illuminate\Http\Request;
 use Storage;
+use App\Services\SeoService;
 
 class PageController extends Controller
 {
+
+    protected SeoService $seoService;
+
+    public function __construct(SeoService $seoService)
+    {
+        $this->seoService = $seoService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -30,7 +39,7 @@ class PageController extends Controller
     public function index(Request $request)
 	{
 		$pages = \App\Models\Page::where('status',1)->orderBy('slug', 'asc')->get();
-       
+
         return view('backend.website_settings.pages.index', compact('pages'));
 	}
 
@@ -52,29 +61,66 @@ class PageController extends Controller
      */
     public function store(Request $request)
     {
-        
         $page = new Page;
         $page->title = $request->title;
-        if (Page::where('slug', preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug)))->first() == null) {
-            $page->slug             = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug));
-            $page->type             = "custom_page";
-            $page->content          = $request->content;
-            $page->meta_title       = $request->meta_title;
-            $page->meta_description = $request->meta_description;
-            $page->keywords         = $request->keywords;
-            $page->meta_image       = $request->meta_image;
+
+        if (
+            Page::where(
+                'slug',
+                preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug))
+            )->first() == null
+        ) {
+            $page->slug = preg_replace(
+                '/[^A-Za-z0-9\-]/',
+                '',
+                str_replace(' ', '-', $request->slug)
+            );
+
+            $page->type = "custom_page";
+            $page->content = $request->content;
+
+            // Prepare SEO
+            $seoData = $this->seoService->prepareCreate([
+                'meta_title' => $request->meta_title,
+                'meta_description' => $request->meta_description,
+                'og_title' => $request->og_title,
+                'og_description' => $request->og_description,
+                'twitter_title' => $request->twitter_title,
+                'twitter_description' => $request->twitter_description,
+            ]);
+
+            $page->meta_title = $seoData['meta_title'];
+            $page->meta_description = $seoData['meta_description'];
+            $page->keywords = $request->keywords;
+            $page->meta_image = $request->meta_image;
+
             $page->save();
 
-            $page_translation           = PageTranslation::firstOrNew(['lang' => env('DEFAULT_LANGUAGE'), 'page_id' => $page->id]);
-            $page_translation->title    = $request->title;
-            $page_translation->content  = $request->content;
+            $page_translation = PageTranslation::firstOrNew([
+                'lang' => env('DEFAULT_LANGUAGE'),
+                'page_id' => $page->id
+            ]);
+
+            $page_translation->title = $request->title;
+            $page_translation->content = $request->content;
+
+            $page_translation->meta_title = $seoData['meta_title'];
+            $page_translation->meta_description = $seoData['meta_description'];
+            $page_translation->og_title = $seoData['og_title'];
+            $page_translation->og_description = $seoData['og_description'];
+            $page_translation->twitter_title = $seoData['twitter_title'];
+            $page_translation->twitter_description = $seoData['twitter_description'];
+            $page_translation->keywords = $request->keywords;
+
             $page_translation->save();
 
             flash(translate('New page has been created successfully'))->success();
+
             return redirect()->route('website.pages');
         }
 
         flash(translate('Slug has been used already'))->warning();
+
         return back();
     }
 
@@ -103,16 +149,16 @@ class PageController extends Controller
         if($page != null){
             $page_id = $page->id;
           if ($id == 'home') {
-            
+
             $categories = Category::where('parent_id', 0)->where('is_active',1)->with('childrenCategories')->get();
 
             $products = Product::select('id', 'name')->where('published',1)->get();
             $brands = Brand::where('is_active',1)->orderBy('name', 'asc')->get();
             $sliders = HomeSlider::where('status',1)->orderBy('sort_order', 'asc')->get();
             $banners = Banner::where('status',1)->orderBy('name', 'asc')->get();
-            
+
             return view('backend.website_settings.pages.home_page_edit', compact('page', 'categories', 'brands', 'products', 'lang','page_id', 'sliders', 'banners'));
-            
+
           }
           else if ($id == 'product_listing') {
             $categories = Category::where('parent_id', 0)->where('is_active',1)->with('childrenCategories')->get();
@@ -144,56 +190,176 @@ class PageController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $page = Page::findOrFail($id);
+
         if ($page) {
+
             if ($request->hasfile('image')) {
                 $photo = uploadImage('page', $request->image, 'image_1');
                 $page->image = $photo;
                 $page->save();
             }
 
-            $page->image1               = $request->has('image1') ? $request->image1 : NULL;
-            $page->image2               = $request->has('image2') ? $request->image2 : NULL;
-            $page->image3               = $request->has('image3') ? $request->image3 : NULL;
+            $page->image1 = $request->has('image1')
+                ? $request->image1
+                : NULL;
+
+            $page->image2 = $request->has('image2')
+                ? $request->image2
+                : NULL;
+
+            $page->image3 = $request->has('image3')
+                ? $request->image3
+                : NULL;
+
             $page->save();
-            
-            $page_translation                       = PageTranslation::firstOrNew(['lang' => $request->lang, 'page_id' => $page->id]);
-            $page_translation->title                = $request->title;
-            $page_translation->content              = $request->has('content') ? $request->content : NULL;
-            $page_translation->sub_title            = $request->has('sub_title') ? $request->sub_title : NULL;
-            $page_translation->title1               = $request->has('title1') ? $request->title1 : NULL;
-            $page_translation->title2               = $request->has('title2') ? $request->title2 : NULL;
-            $page_translation->title3               = $request->has('title3') ? $request->title3 : NULL;
-            $page_translation->heading1             = $request->has('heading1') ? $request->heading1 : NULL;
-            $page_translation->content1             = $request->has('content1') ? $request->content1 : NULL;
-            $page_translation->heading2             = $request->has('heading2') ? $request->heading2 : NULL;
-            $page_translation->content2             = $request->has('content2') ? $request->content2 : NULL;
-            $page_translation->heading3             = $request->has('heading3') ? $request->heading3 : NULL;
-            $page_translation->content3             = $request->has('content3') ? $request->content3 : NULL;
-            $page_translation->content4             = $request->has('content4') ? $request->content4 : NULL;
-            $page_translation->content5             = $request->has('content5') ? $request->content5 : NULL;
-            $page_translation->heading4             = $request->has('heading4') ? $request->heading4 : NULL;
-            $page_translation->heading5             = $request->has('heading5') ? $request->heading5 : NULL;
-            $page_translation->heading6             = $request->has('heading6') ? $request->heading6 : NULL;
-            $page_translation->heading7             = $request->has('heading7') ? $request->heading7 : NULL;
-            $page_translation->heading8             = $request->has('heading8') ? $request->heading8 : NULL;
-            $page_translation->heading9             = $request->has('heading9') ? $request->heading9 : NULL;
-            $page_translation->meta_title           = $request->meta_title;
-            $page_translation->meta_description     = $request->meta_description;
-            $page_translation->og_title             = $request->og_title;
-            $page_translation->og_description       = $request->og_description;
-            $page_translation->twitter_title        = $request->twitter_title;
-            $page_translation->twitter_description  = $request->twitter_description;
-            $page_translation->keywords             = $request->keywords;
-            
+
+            $page_translation = PageTranslation::firstOrNew([
+                'lang' => $request->lang,
+                'page_id' => $page->id
+            ]);
+
+            /*
+            * Store old SEO values before updating.
+            */
+            $oldMetaTitle = $page_translation->meta_title;
+            $oldOgTitle = $page_translation->og_title;
+
+            $oldMetaDescription = $page_translation->meta_description;
+            $oldOgDescription = $page_translation->og_description;
+
+            $oldTwitterTitle = $page_translation->twitter_title;
+            $oldTwitterDescription = $page_translation->twitter_description;
+
+            /*
+            * Update normal page translation fields.
+            */
+            $page_translation->title = $request->title;
+            $page_translation->content = $request->has('content')
+                ? $request->content
+                : NULL;
+
+            $page_translation->sub_title = $request->has('sub_title')
+                ? $request->sub_title
+                : NULL;
+
+            $page_translation->title1 = $request->has('title1')
+                ? $request->title1
+                : NULL;
+
+            $page_translation->title2 = $request->has('title2')
+                ? $request->title2
+                : NULL;
+
+            $page_translation->title3 = $request->has('title3')
+                ? $request->title3
+                : NULL;
+
+            $page_translation->heading1 = $request->has('heading1')
+                ? $request->heading1
+                : NULL;
+
+            $page_translation->content1 = $request->has('content1')
+                ? $request->content1
+                : NULL;
+
+            $page_translation->heading2 = $request->has('heading2')
+                ? $request->heading2
+                : NULL;
+
+            $page_translation->content2 = $request->has('content2')
+                ? $request->content2
+                : NULL;
+
+            $page_translation->heading3 = $request->has('heading3')
+                ? $request->heading3
+                : NULL;
+
+            $page_translation->content3 = $request->has('content3')
+                ? $request->content3
+                : NULL;
+
+            $page_translation->content4 = $request->has('content4')
+                ? $request->content4
+                : NULL;
+
+            $page_translation->content5 = $request->has('content5')
+                ? $request->content5
+                : NULL;
+
+            $page_translation->heading4 = $request->has('heading4')
+                ? $request->heading4
+                : NULL;
+
+            $page_translation->heading5 = $request->has('heading5')
+                ? $request->heading5
+                : NULL;
+
+            $page_translation->heading6 = $request->has('heading6')
+                ? $request->heading6
+                : NULL;
+
+            $page_translation->heading7 = $request->has('heading7')
+                ? $request->heading7
+                : NULL;
+
+            $page_translation->heading8 = $request->has('heading8')
+                ? $request->heading8
+                : NULL;
+
+            $page_translation->heading9 = $request->has('heading9')
+                ? $request->heading9
+                : NULL;
+
+            /*
+            * Update Meta SEO fields.
+            */
+            $page_translation->meta_title = $request->meta_title;
+            $page_translation->meta_description = $request->meta_description;
+            $page_translation->keywords = $request->keywords;
+
+            /*
+            * Prepare OG + Twitter SEO.
+            *
+            * If OG/Twitter still have their old values,
+            * they will follow the new Meta values.
+            *
+            * If the user manually changed OG/Twitter,
+            * the manually entered values will be preserved.
+            */
+            $seoData = $this->seoService->prepareUpdate(
+                $oldMetaTitle,
+                $oldOgTitle,
+                $page_translation->meta_title,
+                $request->og_title,
+
+                $oldMetaDescription,
+                $oldOgDescription,
+                $page_translation->meta_description,
+                $request->og_description,
+
+                $oldTwitterTitle,
+                $oldTwitterDescription,
+                $request->twitter_title,
+                $request->twitter_description
+            );
+
+            $page_translation->og_title = $seoData['og_title'];
+            $page_translation->og_description = $seoData['og_description'];
+            $page_translation->twitter_title = $seoData['twitter_title'];
+            $page_translation->twitter_description = $seoData['twitter_description'];
+
             $page_translation->save();
 
-            flash(trans('messages.page').' '.trans('messages.updated_msg'))->success();
+            flash(
+                trans('messages.page') . ' ' . trans('messages.updated_msg')
+            )->success();
+
             return redirect()->route('website.pages');
         }
 
         flash(trans('messages.not_found'))->warning();
+
         return back();
     }
 
@@ -270,7 +436,7 @@ class PageController extends Controller
         return view('backend.subscribers', compact('subscribers'));
     }
 
-    
+
     public function subscribersDestroy($id)
     {
         Subscriber::destroy($id);

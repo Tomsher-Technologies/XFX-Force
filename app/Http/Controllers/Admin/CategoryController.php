@@ -3,26 +3,30 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Category;
-use App\Models\Product;
 use App\Models\CategoryTranslation;
+use App\Models\Product;
+use App\Services\SeoService;
 use App\Utility\CategoryUtility;
-use Illuminate\Support\Str;
 use Cache;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
 
-     function __construct()
+    protected SeoService $seoService;
+
+    public function __construct(SeoService $seoService)
     {
         $this->middleware('auth');
-       
+
         $this->middleware('permission:manage_categories',  ['only' => ['index','destroy']]);
         $this->middleware('permission:add_category',  ['only' => ['create','store']]);
         $this->middleware('permission:edit_category',  ['only' => ['edit','update']]);
+        $this->seoService = $seoService;
     }
-  
+
     public function index(Request $request)
     {
         $catgeory = null;
@@ -62,33 +66,64 @@ class CategoryController extends Controller
         $category->name         = $request->name ?? NULL;
         $category->parent_id    = $request->parent_id;
         $category->icon         = $request->icon;
+
         if ($request->parent_id != "0") {
             $parent = Category::find($request->parent_id);
             $category->level = $parent->level + 1;
         }
-        $category->is_active    = ($request->status ==2) ? 0 : 1;
+
+        $category->is_active = ($request->status == 2) ? 0 : 1;
         $category->sort_order = $request->sort_order ?? 0;
         $category->save();
 
-        $slug               = $request->slug ? Str::slug($request->slug, '-') : Str::slug($request->name, '-');
-        $slug               = Str::lower($slug);
-        $same_slug_count    = CategoryTranslation::where('slug', 'LIKE', $slug . '%')->count();
-        $slug_suffix        = $same_slug_count ? '-' . $same_slug_count + 1 : '';
-        $slug              .= $slug_suffix;
+        $slug = $request->slug
+            ? Str::slug($request->slug, '-')
+            : Str::slug($request->name, '-');
 
-        $category_translation                       = CategoryTranslation::firstOrNew(['lang' => env('DEFAULT_LANGUAGE'), 'category_id' => $category->id]);
-        $category_translation->name                 = $request->name;
-        $category_translation->slug                 = $slug;
-        $category_translation->meta_title           = $request->meta_title;
-        $category_translation->meta_description     = $request->meta_description;
-        $category_translation->meta_keyword         = $request->meta_keywords;
-        $category_translation->og_title             = $request->og_title;
-        $category_translation->og_description       = $request->og_description;
-        $category_translation->twitter_title        = $request->twitter_title;
-        $category_translation->twitter_description  = $request->twitter_description;
+        $slug = Str::lower($slug);
+
+        $same_slug_count = CategoryTranslation::where(
+            'slug',
+            'LIKE',
+            $slug . '%'
+        )->count();
+
+        $slug_suffix = $same_slug_count ? '-' . $same_slug_count + 1 : '';
+        $slug .= $slug_suffix;
+
+        // Save category SEO
+        $category_translation = CategoryTranslation::firstOrNew([
+            'lang' => env('DEFAULT_LANGUAGE'),
+            'category_id' => $category->id
+        ]);
+
+        $seoData = $this->seoService->prepareCreate([
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+            'og_title' => $request->og_title,
+            'og_description' => $request->og_description,
+            'twitter_title' => $request->twitter_title,
+            'twitter_description' => $request->twitter_description,
+        ]);
+
+        $category_translation->name = $request->name;
+        $category_translation->slug = $slug;
+
+        $category_translation->meta_title = $seoData['meta_title'];
+        $category_translation->meta_description = $seoData['meta_description'];
+        $category_translation->meta_keyword = $request->meta_keywords;
+
+        $category_translation->og_title = $seoData['og_title'];
+        $category_translation->og_description = $seoData['og_description'];
+        $category_translation->twitter_title = $seoData['twitter_title'];
+        $category_translation->twitter_description = $seoData['twitter_description'];
+
         $category_translation->save();
 
-        flash(trans('messages.category').' '.trans('messages.created_msg'))->success();
+        flash(
+            trans('messages.category') . ' ' . trans('messages.created_msg')
+        )->success();
+
         return redirect()->route('categories.index');
     }
 
@@ -120,13 +155,15 @@ class CategoryController extends Controller
         ]);
 
         if ($request->lang == env("DEFAULT_LANGUAGE")) {
-            
-            $category->name         = $request->name;
-            $category->icon         = $request->icon;
+
+            $category->name = $request->name;
+            $category->icon = $request->icon;
+
             $previous_level = $category->level;
+
             if ($request->parent_id != "0") {
                 $category->parent_id = $request->parent_id;
-    
+
                 $parent = Category::find($request->parent_id);
                 $category->level = $parent->level + 1;
             } else {
@@ -134,42 +171,94 @@ class CategoryController extends Controller
                 $category->level = 0;
             }
 
-
             if ($category->level > $previous_level) {
                 CategoryUtility::move_level_down($category->id);
             } elseif ($category->level < $previous_level) {
                 CategoryUtility::move_level_up($category->id);
             }
 
-            $category->is_active    = ($request->status ==2) ? 0 : 1;
+            $category->is_active = ($request->status == 2) ? 0 : 1;
             $category->sort_order = $request->sort_order ?? 0;
             $category->save();
 
-            $category->allChildCategories()->update(['is_active' => $request->status]);
+            $category->allChildCategories()->update([
+                'is_active' => $request->status
+            ]);
         }
 
         $slug = '';
+
         if ($request->slug != null) {
             $slug = strtolower(Str::slug($request->slug, '-'));
-            $same_slug_count = CategoryTranslation::where('slug', 'LIKE', $slug . '%')->where('category_id', '!=', $category->id)->count();
-            $slug_suffix = $same_slug_count > 0 ? '-' . $same_slug_count + 1 : '';
+
+            $same_slug_count = CategoryTranslation::where(
+                'slug',
+                'LIKE',
+                $slug . '%'
+            )
+            ->where('category_id', '!=', $category->id)
+            ->count();
+
+            $slug_suffix = $same_slug_count > 0
+                ? '-' . $same_slug_count + 1
+                : '';
+
             $slug .= $slug_suffix;
         }
 
-        $category_translation                       = CategoryTranslation::firstOrNew(['lang' => $request->lang, 'category_id' => $category->id]);
-        $category_translation->name                 = $request->name;
-        $category_translation->slug                 = $slug;
-        $category_translation->meta_title           = $request->meta_title;
-        $category_translation->meta_description     = $request->meta_description;
-        $category_translation->meta_keyword         = $request->meta_keywords;
-        $category_translation->og_title             = $request->og_title;
-        $category_translation->og_description       = $request->og_description;
-        $category_translation->twitter_title        = $request->twitter_title;
-        $category_translation->twitter_description  = $request->twitter_description;
+        // Get existing category translation
+        $category_translation = CategoryTranslation::firstOrNew([
+            'lang' => $request->lang,
+            'category_id' => $category->id
+        ]);
+
+        // Store old SEO values before updating
+        $oldMetaTitle = $category_translation->meta_title;
+        $oldOgTitle = $category_translation->og_title;
+
+        $oldMetaDescription = $category_translation->meta_description;
+        $oldOgDescription = $category_translation->og_description;
+
+        $oldTwitterTitle = $category_translation->twitter_title;
+        $oldTwitterDescription = $category_translation->twitter_description;
+
+        // Update Meta
+        $category_translation->name = $request->name;
+        $category_translation->slug = $slug;
+
+        $category_translation->meta_title = $request->meta_title;
+        $category_translation->meta_description = $request->meta_description;
+        $category_translation->meta_keyword = $request->meta_keywords;
+
+        // Prepare OG + Twitter SEO
+        $seoData = $this->seoService->prepareUpdate(
+            $oldMetaTitle,
+            $oldOgTitle,
+            $category_translation->meta_title,
+            $request->og_title,
+
+            $oldMetaDescription,
+            $oldOgDescription,
+            $category_translation->meta_description,
+            $request->og_description,
+
+            $oldTwitterTitle,
+            $oldTwitterDescription,
+            $request->twitter_title,
+            $request->twitter_description
+        );
+
+        $category_translation->og_title = $seoData['og_title'];
+        $category_translation->og_description = $seoData['og_description'];
+        $category_translation->twitter_title = $seoData['twitter_title'];
+        $category_translation->twitter_description = $seoData['twitter_description'];
+
         $category_translation->save();
 
         Cache::forget('featured_categories');
-        flash(trans('messages.category').' '.trans('messages.updated_msg'))->success();
+
+        flash(trans('messages.category') . ' ' . trans('messages.updated_msg'))->success();
+
         return back();
     }
 
@@ -207,7 +296,7 @@ class CategoryController extends Controller
     public function updateStatus(Request $request)
     {
         $category = Category::findOrFail($request->id);
-    
+
         $category->is_active = $request->status;
         $category->save();
         // $category->allChildCategories()->update(['is_active' => $request->status]);
