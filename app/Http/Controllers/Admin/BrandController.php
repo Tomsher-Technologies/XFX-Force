@@ -8,19 +8,22 @@ use App\Models\BrandSection;
 use App\Models\BrandTab;
 use App\Models\BrandTranslation;
 use App\Models\Product;
+use App\Services\SeoService;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {
-    function __construct()
+    protected SeoService $seoService;
+
+    public function __construct(SeoService $seoService)
     {
         $this->middleware('auth');
-       
         $this->middleware('permission:manage_brands',  ['only' => ['index','destroy']]);
         $this->middleware('permission:add_brand',  ['only' => ['create','store']]);
         $this->middleware('permission:edit_brand',  ['only' => ['edit','update']]);
+        $this->seoService = $seoService;
     }
 
     /**
@@ -81,39 +84,31 @@ class BrandController extends Controller
         }
         $brand->save();
 
-        // save brand seo
-        $brand_translation                       = BrandTranslation::firstOrNew(['brand_id' => $brand->id]);
-        $brand_translation->meta_title           = $request->meta_title;
-        $brand_translation->meta_description     = $request->meta_description;
-        $brand_translation->meta_keywords        = $request->meta_keywords;
-        $brand_translation->og_title             = $request->og_title;
-        $brand_translation->og_description       = $request->og_description;
-        $brand_translation->twitter_title        = $request->twitter_title;
-        $brand_translation->twitter_description  = $request->twitter_description;
+
+        // Save brand SEO
+        $brand_translation = BrandTranslation::firstOrNew([
+            'brand_id' => $brand->id
+        ]);
+
+        $seoData = $this->seoService->prepareCreate([
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+
+            'og_title' => $request->og_title,
+            'og_description' => $request->og_description,
+
+            'twitter_title' => $request->twitter_title,
+            'twitter_description' => $request->twitter_description,
+        ]);
+
+        $brand_translation->meta_title = $seoData['meta_title'];
+        $brand_translation->meta_description = $seoData['meta_description'];
+        $brand_translation->meta_keywords = $request->meta_keywords;
+        $brand_translation->og_title = $seoData['og_title'];
+        $brand_translation->og_description = $seoData['og_description'];
+        $brand_translation->twitter_title = $seoData['twitter_title'];
+        $brand_translation->twitter_description = $seoData['twitter_description'];
         $brand_translation->save();
-
-        // saving sections
-        // if ($request->has('sections')) {
-            
-        //     foreach ($request->sections as $section) {
-
-        //         // Skip completely empty section
-        //         if (!empty($section['section_title'])) {
-        //             $imagePath = "";
-        //             if (isset($section['section_image']) && 
-        //                 $section['section_image'] instanceof \Illuminate\Http\UploadedFile) {
-        //                 $imagePath = $section['section_image']->store('brand_sections/images', 'public');
-        //             }
-
-        //             $brand->sections()->create([
-        //                 'title' => $section['section_title'] ?? "",
-        //                 'description' => $section['section_description'],
-        //                 'status' => $section['section_status'] ?? 0,
-        //                 'image' => $imagePath,
-        //             ]);
-        //         }
-        //     }
-        // }
 
         // saving Tabs
         if ($request->has('tabs')) {
@@ -122,7 +117,7 @@ class BrandController extends Controller
                 // Skip empty tab
                 if (!empty($tab['tab_name'])) {
                     $tabImage = "";
-                    if (isset($tab['tab_image']) && 
+                    if (isset($tab['tab_image']) &&
                         $tab['tab_image'] instanceof \Illuminate\Http\UploadedFile) {
                         $tabImage = $tab['tab_image']->store('brand_tabs/images', 'public');
                     }
@@ -216,15 +211,60 @@ class BrandController extends Controller
         }
         $brand->save();
 
-        // saving seo details
-        $brand_translation                       = BrandTranslation::firstOrNew(['brand_id' => $brand->id]);
-        $brand_translation->meta_title           = $request->meta_title;
-        $brand_translation->meta_description     = $request->meta_description;
-        $brand_translation->meta_keywords        = $request->meta_keywords;
-        $brand_translation->og_title             = $request->og_title;
-        $brand_translation->og_description       = $request->og_description;
-        $brand_translation->twitter_title        = $request->twitter_title;
-        $brand_translation->twitter_description  = $request->twitter_description;
+        // Saving SEO details
+        $brand_translation = BrandTranslation::firstOrNew([
+            'brand_id' => $brand->id
+        ]);
+
+        // Store old SEO values before updating
+        $oldMetaTitle = $brand_translation->meta_title;
+        $oldOgTitle = $brand_translation->og_title;
+
+        $oldMetaDescription = $brand_translation->meta_description;
+        $oldOgDescription = $brand_translation->og_description;
+
+        $oldTwitterTitle = $brand_translation->twitter_title;
+        $oldTwitterDescription = $brand_translation->twitter_description;
+
+
+        // Update Meta
+        $brand_translation->meta_title = $request->meta_title;
+        $brand_translation->meta_description = $request->meta_description;
+        $brand_translation->meta_keywords = $request->meta_keywords;
+
+
+        // Prepare OG + Twitter
+        $seoData = $this->seoService->prepareUpdate(
+
+            // Meta Title / OG Title
+            $oldMetaTitle,
+            $oldOgTitle,
+            $brand_translation->meta_title,
+            $request->og_title,
+
+            // Meta Description / OG Description
+            $oldMetaDescription,
+            $oldOgDescription,
+            $brand_translation->meta_description,
+            $request->og_description,
+
+            // Twitter Title / Twitter Description
+            $oldTwitterTitle,
+            $oldTwitterDescription,
+            $request->twitter_title,
+            $request->twitter_description
+        );
+
+
+        // Save OG
+        $brand_translation->og_title = $seoData['og_title'];
+        $brand_translation->og_description = $seoData['og_description'];
+
+
+        // Save Twitter
+        $brand_translation->twitter_title = $seoData['twitter_title'];
+        $brand_translation->twitter_description = $seoData['twitter_description'];
+
         $brand_translation->save();
 
         // saving sections
@@ -345,10 +385,10 @@ class BrandController extends Controller
     public function updateStatus(Request $request)
     {
         $brand = Brand::findOrFail($request->id);
-        
+
         $brand->is_active = $request->status;
         $brand->save();
-       
+
         return 1;
     }
 }
