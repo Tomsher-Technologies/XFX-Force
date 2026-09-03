@@ -16,6 +16,7 @@ use App\Models\ProductTabs;
 use App\Models\ProductWarranty;
 use App\Models\Specification;
 use App\Models\SpecificationItem;
+use App\Services\SeoService;
 use Artisan;
 use Auth;
 use Carbon\Carbon;
@@ -28,13 +29,16 @@ use Str;
 class ProductController extends Controller
 {
 
-    function __construct()
+    protected SeoService $seoService;
+
+    function __construct(SeoService $seoService)
     {
         $this->middleware('auth');
         $this->middleware('permission:manage_products',  ['only' => ['all_products','destroy']]);
         $this->middleware('permission:view_product',  ['only' => ['all_products']]);
         $this->middleware('permission:add_product',  ['only' => ['create','store']]);
         $this->middleware('permission:edit_product',  ['only' => ['admin_product_edit','update']]);
+        $this->seoService = $seoService;
     }
 
     /**
@@ -245,20 +249,44 @@ class ProductController extends Controller
         $product->save();
 
         // SEO
-        $seo = ProductSeo::firstOrNew(['lang' => env('DEFAULT_LANGUAGE', 'en'), 'product_id' => $product->id]);
-        $seo->meta_title        = $request->meta_title ?? $product->name;
-        $seo->meta_description  = $request->meta_description;
-        $keywords = array();
+        $seo = ProductSeo::firstOrNew([
+            'lang' => env('DEFAULT_LANGUAGE', 'en'),
+            'product_id' => $product->id
+        ]);
+
+        $seo->meta_title = $request->meta_title ?? $product->name;
+        $seo->meta_description = $request->meta_description;
+
+        // Meta Keywords
+        $keywords = [];
+
         if (isset($request->meta_keywords[0]) && $request->meta_keywords[0] != null) {
-            foreach (json_decode($request->meta_keywords[0]) as $key => $keyword) {
-                array_push($keywords, $keyword->value);
+            foreach (json_decode($request->meta_keywords[0]) as $keyword) {
+                $keywords[] = $keyword->value;
             }
         }
-        $seo->meta_keywords         = implode(',', $keywords);
-        $seo->og_title              = $request->og_title ?? $product->name;
-        $seo->og_description        = $request->og_description;
-        $seo->twitter_title         = $request->twitter_title ?? $product->name;
-        $seo->twitter_description   = $request->twitter_description;
+
+        $seo->meta_keywords = implode(',', $keywords);
+
+
+        // Prepare OG and Twitter data
+        $seoData = $this->seoService->prepareCreate([
+            'meta_title' => $seo->meta_title,
+            'meta_description' => $seo->meta_description,
+
+            'og_title' => $request->og_title,
+            'og_description' => $request->og_description,
+
+            'twitter_title' => $request->twitter_title,
+            'twitter_description' => $request->twitter_description,
+        ]);
+
+        $seo->og_title = $seoData['og_title'];
+        $seo->og_description = $seoData['og_description'];
+
+        $seo->twitter_title = $seoData['twitter_title'];
+        $seo->twitter_description = $seoData['twitter_description'];
+
         $seo->save();
 
         // saving tabs
@@ -542,21 +570,11 @@ class ProductController extends Controller
         $product->discount_type     = $request->discount_type;
         $product->unit_price        = $request->has('price') ? $request->price : 0;
 
-        // $tags = array();
-        // if (isset($request->tags[0]) && $request->tags[0] != null) {
-        //     foreach (json_decode($request->tags[0]) as $key => $tag) {
-        //         array_push($tags, $tag->value);
-        //     }
-        // }
-
         $tags = [];
 
         if ($request->filled('tags') && isset($request->tags[0])) {
-
             $decodedTags = json_decode($request->tags[0]);
-
             if (is_array($decodedTags) || is_object($decodedTags)) {
-
                 foreach ($decodedTags as $tag) {
                     if (isset($tag->value)) {
                         $tags[] = $tag->value;
@@ -631,17 +649,29 @@ class ProductController extends Controller
         }
         $product->save();
 
-        //save product seo
-        $seo                        = ProductSeo::firstOrNew(['lang' => $request->lang, 'product_id' => $product->id]);
-        $seo->meta_title            = $request->meta_title ?? $product->name;
-        $seo->meta_description      = $request->meta_description;
-        // $keywords = array();
-        // if (isset($request->meta_keywords[0]) && $request->meta_keywords[0] != null) {
-        //     foreach (json_decode($request->meta_keywords[0]) as $key => $keyword) {
-        //         array_push($keywords, $keyword->value);
-        //     }
-        // }
+        // Save product SEO
+        $seo = ProductSeo::firstOrNew([
+            'lang' => $request->lang,
+            'product_id' => $product->id
+        ]);
 
+        // Store existing SEO values before updating
+        $oldMetaTitle = $seo->meta_title;
+        $oldOgTitle = $seo->og_title;
+
+        $oldMetaDescription = $seo->meta_description;
+        $oldOgDescription = $seo->og_description;
+
+        $oldTwitterTitle = $seo->twitter_title;
+        $oldTwitterDescription = $seo->twitter_description;
+
+
+        // Update Meta
+        $seo->meta_title = $request->meta_title ?? $product->name;
+        $seo->meta_description = $request->meta_description;
+
+
+        // Meta Keywords
         $keywords = [];
 
         $metaInput = $request->meta_keywords[0] ?? null;
@@ -656,11 +686,40 @@ class ProductController extends Controller
             }
         }
 
-        $seo->meta_keywords         = implode(',', $keywords);
-        $seo->og_title              = $request->og_title ?? $product->name;
-        $seo->og_description        = $request->og_description;
-        $seo->twitter_title         = $request->twitter_title ?? $product->name;
-        $seo->twitter_description   = $request->twitter_description;
+        $seo->meta_keywords = implode(',', $keywords);
+
+        // Prepare OG + Twitter data
+        $seoData = $this->seoService->prepareUpdate(
+
+            // Meta Title / OG Title
+            $oldMetaTitle,
+            $oldOgTitle,
+            $seo->meta_title,
+            $request->og_title,
+
+            // Meta Description / OG Description
+            $oldMetaDescription,
+            $oldOgDescription,
+            $seo->meta_description,
+            $request->og_description,
+
+            // Twitter Title / Twitter Description
+            $oldTwitterTitle,
+            $oldTwitterDescription,
+            $request->twitter_title,
+            $request->twitter_description
+        );
+
+
+        // Save OG
+        $seo->og_title = $seoData['og_title'];
+        $seo->og_description = $seoData['og_description'];
+
+
+        // Save Twitter
+        $seo->twitter_title = $seoData['twitter_title'];
+        $seo->twitter_description = $seoData['twitter_description'];
+
         $seo->save();
 
         ProductTabs::where('product_id', $product->id)->delete();
