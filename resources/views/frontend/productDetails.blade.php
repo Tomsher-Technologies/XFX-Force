@@ -57,40 +57,17 @@
                 $slides = [];
             @endphp
 
-
             @include('frontend.partials.wishlist-icon', [
                 'product' => $product->id,
                 'stock' => $stockId,
                 'page' => 'product-details' ?? null,
             ])
-            <div class="swiper singleprdswiper relative overflow-hidden h-full w-full">
-                <input type="hidden" value="{{$product->id}}" id="main_product_id">
-                <input type="hidden" value="{{$stockId}}" id="selected_stock_id">
 
+            <div class="swiper singleprdswiper relative overflow-hidden h-full w-full">
+                <input type="hidden" value="{{ $product->id }}" id="main_product_id">
+                <input type="hidden" value="{{ $stockId }}" id="selected_stock_id">
 
                 <div class="swiper-wrapper">
-                    <!-- Product video -->
-                    @if(!empty($product->video_link))
-                    <!-- <div class="swiper-slide" data-swiper-autoplay="8000">
-                        <a href="{{ $product->video_link }}" class="glightbox" data-gallery="product-gallery">
-                            <div class="w-full h-full flex items-center justify-center bg-black relative">
-
-                                {{-- Video Thumbnail (Optional placeholder image) --}}
-                                <img src="{{ $product->thumbnail_img ? Storage::url($product->thumbnail_img) : '' }}"
-                                    alt="{{ $product->name }}"
-                                    class="w-full h-full object-cover">
-
-                                {{-- Play Icon --}}
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <svg width="60" height="60" viewBox="0 0 24 24" fill="white">
-                                        <circle cx="12" cy="12" r="12" fill="rgba(0,0,0,0.6)"/>
-                                        <polygon points="10,8 16,12 10,16" fill="white"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </a>
-                    </div> -->
-                    @endif
 
                     {{-- Variant/stock images --}}
                     @if($firstStock && $firstStock->image)
@@ -110,24 +87,105 @@
 
                     {{-- If still empty, fallback to thumbnail --}}
                     @if(empty($slides) && $product->thumbnail_img)
-                        @php $slides = [$product->thumbnail_img]; @endphp
+                        @php
+                            $slides = [$product->thumbnail_img];
+                        @endphp
                     @endif
 
-                    {{-- Render slides --}}
+                    {{-- Render product image slides --}}
                     @foreach($slides as $img)
                         <div class="swiper-slide" data-swiper-autoplay="8000">
+
                             <a href="{{ Storage::url($img) }}" class="glightbox">
-                                <img src="{{ Storage::url($img) }}"
+
+                                <img
+                                    src="{{ Storage::url($img) }}"
                                     alt="{{ $product->name }}"
                                     title="{{ $product->name }}"
-                                    class="w-full h-full object-contain object-center">
+                                    class="w-full h-full object-contain object-center"
+                                >
+
                             </a>
+
                         </div>
                     @endforeach
+
+
+                    {{-- ================================================= --}}
+                    {{-- Product Video - ALWAYS LAST SLIDE --}}
+                    {{-- ================================================= --}}
+
+                    @if(!empty($product->video_link))
+
+                        @php
+                            $videoUrl = $product->video_link;
+                            $embedUrl = null;
+
+                            if ($product->video_provider === 'youtube') {
+
+                                preg_match(
+                                    '/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\/]+)/',
+                                    $videoUrl,
+                                    $matches
+                                );
+
+                                $videoId = $matches[1] ?? null;
+
+                                if ($videoId) {
+                                    $embedUrl = 'https://www.youtube-nocookie.com/embed/' . $videoId
+                                        . '?autoplay=1&mute=1&loop=1&playlist=' . $videoId . '&rel=0';
+                                }
+
+                            } elseif ($product->video_provider === 'vimeo') {
+
+                                preg_match(
+                                    '/vimeo\.com\/(?:video\/)?([0-9]+)/',
+                                    $videoUrl,
+                                    $matches
+                                );
+
+                                $videoId = $matches[1] ?? null;
+
+                                if ($videoId) {
+                                    $embedUrl = 'https://player.vimeo.com/video/' . $videoId
+                                        . '?autoplay=1&muted=1&loop=1';
+                                }
+                            }
+                        @endphp
+
+                        @if($embedUrl)
+
+                            <div class="swiper-slide product-video-slide">
+
+                                <div class="relative w-full h-full bg-black overflow-hidden">
+
+                                    <iframe
+                                        class="absolute inset-0 w-full h-full"
+                                        src="{{ $embedUrl }}"
+                                        title="Product Video"
+                                        frameborder="0"
+                                        allow="autoplay; fullscreen; picture-in-picture"
+                                        allowfullscreen>
+                                    </iframe>
+
+                                </div>
+
+                            </div>
+
+                        @endif
+
+                    @endif
+
                 </div>
-                <div class="swiper-button-next !absolute right-[0%] !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer bg-black/20 backdrop-blur-md border border-white/10 rounded-full !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
-                <div class="swiper-button-prev !absolute left-[0%] !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer bg-black/20 backdrop-blur-md border border-white/10 rounded-full !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover:bg-white/20 !mt-[0px]"></div>
+
+                <div class="swiper-button-next !absolute right-[0%] !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer bg-black/20 backdrop-blur-md border border-white/10 rounded-full !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover\:bg-white/20 !mt-[0px]">
+                </div>
+
+                <div class="swiper-button-prev !absolute left-[0%] !flex !items-center !justify-center !w-[50px] !h-[50px] !z-10 !cursor-pointer bg-black/20 backdrop-blur-md border border-white/10 rounded-full !bg-center !bg-no-repeat !bg-[length:15%] !transition-all !duration-300 !hover\:bg-white/20 !mt-[0px]">
+                </div>
+
             </div>
+
         </div>
         <div class="product-info flex flex-col gap-[20px] xl:gap-[50px] xl:col-span-6 w-full">
             @php
@@ -727,6 +785,57 @@
         loadTabbyPromo(price);
         window.updateTabbyPromo = loadTabbyPromo;
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.product-video-slide').forEach(function (slide) {
+
+        const video = slide.querySelector('.product-slider-video');
+        const playButton = slide.querySelector('.product-video-play');
+
+        if (!video || !playButton) {
+            return;
+        }
+
+        playButton.addEventListener('click', function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            video.controls = true;
+
+            video.play().then(function () {
+
+                playButton.classList.add('hidden');
+
+            }).catch(function (error) {
+
+                console.log('Video could not be played:', error);
+
+            });
+        });
+
+        // Show play button again when video is paused
+        video.addEventListener('pause', function () {
+            playButton.classList.remove('hidden');
+        });
+
+        // Hide play button while video is playing
+        video.addEventListener('play', function () {
+            playButton.classList.add('hidden');
+        });
+
+        // When video finishes
+        video.addEventListener('ended', function () {
+            playButton.classList.remove('hidden');
+            video.controls = false;
+            video.currentTime = 0;
+        });
+
+    });
+
+});
+
 </script>
 
 <style>
