@@ -1,0 +1,78 @@
+# PC Garage
+
+> PC Garage is a premier gaming hardware retailer based in Dubai, UAE, specializing in custom gaming PCs, AMD-powered builds, and high-end computer components. Serving competitive gamers, 4K enthusiasts, and content creators across the UAE.
+
+## About
+
+PC Garage operates from a physical retail location at M25, Computer Plaza, Al Ain Center, Al Mankhool, Dubai, UAE. The company partners exclusively with AMD technology and positions itself around the philosophy: "Tuned for Glory, Powered by AMD." With over 30,000 satisfied customers, they offer both new and refurbished hardware with same-day service availability.
+
+- Phone: +971 58 578 3085
+- Email: info@pcgarage.me
+- WhatsApp: Available
+- Social: Instagram, Facebook, Twitter (@pcgarage)
+
+## Products & Services
+
+### Graphics Cards
+- New: AMD Radeon RX 9000 Series, RX 7000 Series, RX 6000 Series, AI Pro Series
+- Refurbished: RX 9000, 7000, 6000, 500 Series
+- Featured brand: XFX AMD
+- Price range: AED 3,079 to AED 6,599
+
+### PC Components
+- Gaming Processors (AMD)
+- Motherboards
+- Desktop Memory / RAM
+- SSDs
+- Power Supplies
+- PC Cases
+- Liquid Coolers
+
+### Gaming Peripherals & Furniture
+- Gaming Monitors
+- Gaming Chairs
+
+### Build Services
+- Custom PC builder (Build Your PC tool): https://www.pcgarage.me/buildyourpc
+- Pre-built gaming rigs
+- Component upgrades
+- New and refurbished options
+
+## Key Pages
+
+- Homepage: https://www.pcgarage.me/
+- Shop all products: https://www.pcgarage.me/products
+- Build Your PC: https://www.pcgarage.me/buildyourpc
+- About: https://www.pcgarage.me/about
+- Contact: https://www.pcgarage.me/contact
+
+## Product URL Patterns
+
+- Category pages: https://www.pcgarage.me/shop/category/[category-name]
+- Brand pages: https://www.pcgarage.me/shop/brand/[brand-name]
+- Individual products: https://www.pcgarage.me/product/[product-name]/[sku]
+
+## Who PC Garage Serves
+
+- Competitive eSports athletes
+- 4K gaming enthusiasts
+- Content creators and streamers
+- UAE and GCC-based PC builders
+
+## Unique Selling Points
+
+- AMD specialization: Zen processors and RDNA graphics
+- Smart Access Memory (SAM) optimized builds
+- 30,000+ satisfied customers
+- Same-day service
+- Full packaging on refurbished units
+- Physical retail with direct support
+
+## Policies
+
+- Terms & Conditions: https://www.pcgarage.me/terms-and-conditions
+- Privacy Policy: https://www.pcgarage.me/privacy-policy
+- Return & Refund Policy: https://www.pcgarage.me/return-refund-policy
+- Shipping Policy: https://www.pcgarage.me/shipping-policy
+- Warranty Policy: https://www.pcgarage.me/warranty-policy
+- Cookie Policy: https://www.pcgarage.me/cookie-policy

@@ -122,4 +122,13 @@
         @endforeach
     @endforeach
 
+    {{-- AI / LLM Files --}}
+    <url>
+        <loc>{{ $baseUrl }}/agents.md</loc>
+    </url>
+
+    <url>
+        <loc>{{ $baseUrl }}/llms.txt</loc>
+    </url>
+
 </urlset>
