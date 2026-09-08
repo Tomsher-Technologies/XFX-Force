@@ -1,4 +1,36 @@
-User-agent: *
-Allow: /
+# robots.txt for https://www.pcgarage.me/
+# Generated: September 2026
 
+User-agent: *
+
+# Block user account and private pages
+Disallow: /login
+Disallow: /logout
+Disallow: /account
+Disallow: /my-orders
+Disallow: /my-address
+Disallow: /update-password
+Disallow: /notifications
+Disallow: /wishlist
+
+# Block cart and checkout
+Disallow: /cart
+Disallow: /checkout
+
+# Block search result pages with query parameters
+Disallow: /*?search=
+Disallow: /*?filter=
+Disallow: /*?sort=
+Disallow: /*?page=
+
+# Allow all public-facing pages
+Allow: /
+Allow: /products
+Allow: /product/
+Allow: /shop/
+Allow: /about
+Allow: /contact
+Allow: /buildyourpc
+
+# Sitemap
 Sitemap: https://www.pcgarage.me/sitemap.xml
