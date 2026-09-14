@@ -665,7 +665,17 @@ class ProductController extends Controller
             ->groupBy('products.id')
             ->with('stocks')
             ->paginate(12);
-        $categories = Category::withCount('products')->where('is_active', 1)->orderBy('sort_order', 'asc')->get();
+        $categories = Category::withCount([
+            'products as products_count' => function ($query) {
+                $query->where('published', 1)
+                    ->whereHas('stocks', function ($q) {
+                        $q->where('qty', '>', 0);
+                    });
+            }
+        ])
+            ->where('is_active', 1)
+            ->orderBy('sort_order', 'asc')
+            ->get();
 
         // Sort children alphabetically
         $categories->each(function ($category) {
@@ -680,9 +690,10 @@ class ProductController extends Controller
         $brands = Brand::where('is_active', 1)
             ->withCount([
                 'products as products_count' => function ($query) {
-                    $query->whereHas('stocks', function ($q) {
-                        $q->where('qty', '>', 0);
-                    });
+                    $query->where('published', 1)
+                        ->whereHas('stocks', function ($q) {
+                            $q->where('qty', '>', 0);
+                        });
                 }
             ])
             ->orderBy('name', 'asc')

@@ -455,394 +455,1235 @@
 
 
 <script>
-/* ===============================
-   GLOBAL STATE VARIABLES
-   =============================== */
-let currentSort = "price_high_low";
-let currentView = "gridview";
+    /* ============================================================
+       GLOBAL STATE VARIABLES
+       ============================================================ */
+    let currentSort = "price_high_low";
+    let currentView = "gridview";
 
-/* ===============================
-   INITIAL SETUP
-   =============================== */
-// document.addEventListener('DOMContentLoaded', () => {
+    let page = 1;
+    let lastPage = {{ $products->lastPage() }};
+    let loading = false;
 
-    // ======== FORCE CURRENT BRAND CHECKED ========
+    /*
+     * IMPORTANT:
+     * During the first page load we DO NOT modify the browser URL.
+     *
+     * This means:
+     *
+     * /shop/brand/xfx
+     *
+     * stays clean instead of becoming:
+     *
+     * /shop/brand/xfx?min_price=0&max_price=300000&sort=price_high_low&view=gridview
+     *
+     * AJAX requests can still contain all filter parameters internally.
+     */
+    let isInitialLoad = true;
+
+    /*
+     * Stores the filters used for AJAX requests.
+     */
+    let currentFilters = new URLSearchParams();
+
+
+    /* ============================================================
+       INITIAL BRAND STATE
+       ============================================================ */
+
+    /*
+     * Force current brand checked.
+     * User cannot uncheck the current brand.
+     */
     document.querySelectorAll('input[name="brands[]"]').forEach(cb => {
         cb.checked = true;
-        cb.disabled = true; // prevent unchecking
+        cb.disabled = true;
     });
 
-    // ======== INITIALIZE PRICE SLIDER ========
-    const minSlider = document.getElementById('range-min');
-    const maxSlider = document.getElementById('range-max');
-    const minInput = document.getElementById('min-price');
-    const maxInput = document.getElementById('max-price');
-    const progress = document.getElementById('slider-progress');
 
+    /* ============================================================
+       PRICE FILTER
+       ============================================================ */
 
     function initPriceFilter(container) {
-		const minSlider = container.querySelector('.range-min');
-		const maxSlider = container.querySelector('.range-max');
-		const minInput = container.querySelector('.min-price');
-		const maxInput = container.querySelector('.max-price');
-		const progress = container.querySelector('.slider-progress');
 
-		if (!minSlider || !maxSlider || !minInput || !maxInput || !progress) return;
+        const minSlider = container.querySelector('.range-min');
+        const maxSlider = container.querySelector('.range-max');
+
+        const minInput = container.querySelector('.min-price');
+        const maxInput = container.querySelector('.max-price');
+
+        const progress = container.querySelector('.slider-progress');
+
+        if (
+            !minSlider ||
+            !maxSlider ||
+            !minInput ||
+            !maxInput ||
+            !progress
+        ) {
+            return;
+        }
+
+
+        /* --------------------------------------------------------
+           ENTER KEY
+           -------------------------------------------------------- */
 
         minInput.addEventListener('keydown', function (e) {
-			if (e.key === 'Enter') {
-				e.preventDefault();
-				this.blur(); // triggers input update safely
-			}
-		});
 
-		maxInput.addEventListener('keydown', function (e) {
-			if (e.key === 'Enter') {
-				e.preventDefault();
-				this.blur();
-			}
-		});
-
-		const maxPrice = parseInt(maxSlider.max);
-
-		function updateProgress(minVal, maxVal) {
-			const minPercent = (minVal / maxPrice) * 100;
-			const maxPercent = 100 - (maxVal / maxPrice) * 100;
-			progress.style.left = minPercent + "%";
-			progress.style.right = maxPercent + "%";
-		}
-
-		function inputChanged(e) {
-
-			const isMin = e.target.classList.contains('min-price');
-			const isMax = e.target.classList.contains('max-price');
-
-			let minVal = minInput.value.trim();
-			let maxVal = maxInput.value.trim();
-
-			// allow empty typing state
-			if (minVal === '' || maxVal === '') {
-				return;
-			}
-
-			minVal = parseInt(minVal);
-			maxVal = parseInt(maxVal);
-
-			if (isNaN(minVal)) minVal = 0;
-			if (isNaN(maxVal)) maxVal = maxPrice;
-
-			minVal = Math.max(0, Math.min(minVal, maxPrice));
-			maxVal = Math.max(0, Math.min(maxVal, maxPrice));
-
-			minInput.value = minVal;
-			maxInput.value = maxVal;
-
-			// optional: prevent crossing
-			if (minVal > maxVal) {
-				if (isMin) {
-					maxVal = minVal;
-				} else {
-					minVal = maxVal;
-				}
-			}
-
-			minSlider.value = minVal;
-			maxSlider.value = maxVal;
-
-			updateProgress(minVal, maxVal);
-
-			filterProducts();
-		}
-
-		function normalizeInputs() {
-
-			let minVal = parseInt(minInput.value);
-			let maxVal = parseInt(maxInput.value);
-
-			if (isNaN(minVal)) minVal = 0;
-			if (isNaN(maxVal)) maxVal = maxPrice;
-
-			minVal = Math.max(0, Math.min(minVal, maxPrice));
-			maxVal = Math.max(0, Math.min(maxVal, maxPrice));
-
-			minInput.value = minVal;
-			maxInput.value = maxVal;
-
-			minSlider.value = minVal;
-			maxSlider.value = maxVal;
-
-			updateProgress(minVal, maxVal);
-
-			filterProducts();
-		}
-
-		function sliderChanged() {
-			let minVal = parseInt(minSlider.value);
-			let maxVal = parseInt(maxSlider.value);
-
-			minInput.value = minVal;
-			maxInput.value = maxVal;
-
-			updateProgress(minVal, maxVal);
-			filterProducts();
-		}
-
-		minSlider.addEventListener('input', sliderChanged);
-		maxSlider.addEventListener('input', sliderChanged);
-
-		minInput.addEventListener('input', inputChanged);
-		maxInput.addEventListener('input', inputChanged);
-
-        minInput.addEventListener('blur', normalizeInputs);
-		maxInput.addEventListener('blur', normalizeInputs);
-
-		updateProgress(parseInt(minSlider.value), parseInt(maxSlider.value));
-	}
-
-    document.addEventListener('DOMContentLoaded', () => {
-		document.querySelectorAll('.price-filter').forEach(initPriceFilter);
-	});
-
-    // ======== BRAND SEARCH ========
-    const brandSearch = document.getElementById('brand-search');
-    const brandItems = document.querySelectorAll('.brand-item');
-
-    if (brandSearch && brandItems.length) {
-        brandSearch.addEventListener('input', e => {
-            const query = e.target.value.toLowerCase();
-            brandItems.forEach(item => {
-                const name = item.getAttribute('data-name').toLowerCase();
-                item.style.display = name.includes(query) ? 'flex' : 'none';
-            });
-        });
-    }
-
-    // ======== CATEGORY SEARCH ========
-    const categorySearch = document.getElementById('category-search');
-    const categoryItems = document.querySelectorAll('.category-item');
-
-    if (categorySearch && categoryItems.length) {
-        categorySearch.addEventListener('input', e => {
-            const query = e.target.value.toLowerCase();
-            categoryItems.forEach(item => {
-                const name = item.getAttribute('data-name').toLowerCase();
-                item.style.display = name.includes(query) ? 'flex' : 'none';
-            });
-        });
-    }
-
-    // ======== SORTING ========
-    const sortButton = document.querySelector('el-dropdown button');
-    const sortOptions = document.querySelectorAll('.sort-option');
-
-    if (sortButton && sortOptions.length) {
-        sortOptions.forEach(option => {
-            option.addEventListener('click', function (e) {
+            if (e.key === 'Enter') {
                 e.preventDefault();
+                this.blur();
+            }
 
-                currentSort = this.dataset.sort;
-
-                const browserUrl = new URL(window.location.href);
-                browserUrl.searchParams.set('sort', currentSort);
-                browserUrl.searchParams.delete('page');
-
-                window.history.replaceState({}, '', browserUrl);
-
-                sortButton.querySelector('span').textContent =
-                    `Sort by: ${this.textContent}`;
-
-                filterProducts();
-            });
         });
-    }
 
-    // ======== VIEW SWITCH ========
-    const viewButtons = document.querySelectorAll('.view-switch');
 
-    viewButtons.forEach(btn => {
-        btn.addEventListener('click', function () {
+        maxInput.addEventListener('keydown', function (e) {
 
-            currentView = this.dataset.view;
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.blur();
+            }
 
-            const browserUrl = new URL(window.location.href);
-            browserUrl.searchParams.set('view', currentView);
-            browserUrl.searchParams.delete('page');
+        });
 
-            window.history.replaceState({}, '', browserUrl);
+
+        const maxPrice = parseInt(maxSlider.max) || 300000;
+
+
+        /* --------------------------------------------------------
+           UPDATE SLIDER PROGRESS
+           -------------------------------------------------------- */
+
+        function updateProgress(minVal, maxVal) {
+
+            const minPercent =
+                (minVal / maxPrice) * 100;
+
+            const maxPercent =
+                100 - ((maxVal / maxPrice) * 100);
+
+            progress.style.left =
+                minPercent + "%";
+
+            progress.style.right =
+                maxPercent + "%";
+        }
+
+
+        /* --------------------------------------------------------
+           INPUT CHANGE
+           -------------------------------------------------------- */
+
+        function inputChanged(e) {
+
+            const isMin =
+                e.target.classList.contains('min-price');
+
+            const isMax =
+                e.target.classList.contains('max-price');
+
+
+            let minVal =
+                minInput.value.trim();
+
+            let maxVal =
+                maxInput.value.trim();
+
+
+            /*
+             * Allow user to temporarily leave
+             * the field empty while typing.
+             */
+            if (
+                minVal === '' ||
+                maxVal === ''
+            ) {
+                return;
+            }
+
+
+            minVal = parseInt(minVal);
+            maxVal = parseInt(maxVal);
+
+
+            if (isNaN(minVal)) {
+                minVal = 0;
+            }
+
+            if (isNaN(maxVal)) {
+                maxVal = maxPrice;
+            }
+
+
+            minVal =
+                Math.max(
+                    0,
+                    Math.min(minVal, maxPrice)
+                );
+
+            maxVal =
+                Math.max(
+                    0,
+                    Math.min(maxVal, maxPrice)
+                );
+
+
+            /*
+             * Prevent min/max crossing.
+             */
+            if (minVal > maxVal) {
+
+                if (isMin) {
+                    maxVal = minVal;
+                } else {
+                    minVal = maxVal;
+                }
+
+            }
+
+
+            minInput.value = minVal;
+            maxInput.value = maxVal;
+
+            minSlider.value = minVal;
+            maxSlider.value = maxVal;
+
+
+            updateProgress(
+                minVal,
+                maxVal
+            );
+
 
             filterProducts();
+        }
+
+
+        /* --------------------------------------------------------
+           NORMALIZE INPUTS
+           -------------------------------------------------------- */
+
+        function normalizeInputs() {
+
+            let minVal =
+                parseInt(minInput.value);
+
+            let maxVal =
+                parseInt(maxInput.value);
+
+
+            if (isNaN(minVal)) {
+                minVal = 0;
+            }
+
+            if (isNaN(maxVal)) {
+                maxVal = maxPrice;
+            }
+
+
+            minVal =
+                Math.max(
+                    0,
+                    Math.min(minVal, maxPrice)
+                );
+
+            maxVal =
+                Math.max(
+                    0,
+                    Math.min(maxVal, maxPrice)
+                );
+
+
+            if (minVal > maxVal) {
+                minVal = maxVal;
+            }
+
+
+            minInput.value = minVal;
+            maxInput.value = maxVal;
+
+            minSlider.value = minVal;
+            maxSlider.value = maxVal;
+
+
+            updateProgress(
+                minVal,
+                maxVal
+            );
+
+
+            filterProducts();
+        }
+
+
+        /* --------------------------------------------------------
+           SLIDER CHANGE
+           -------------------------------------------------------- */
+
+        function sliderChanged() {
+
+            let minVal =
+                parseInt(minSlider.value);
+
+            let maxVal =
+                parseInt(maxSlider.value);
+
+
+            minInput.value = minVal;
+            maxInput.value = maxVal;
+
+
+            updateProgress(
+                minVal,
+                maxVal
+            );
+
+
+            filterProducts();
+        }
+
+
+        /* --------------------------------------------------------
+           EVENTS
+           -------------------------------------------------------- */
+
+        minSlider.addEventListener(
+            'input',
+            sliderChanged
+        );
+
+        maxSlider.addEventListener(
+            'input',
+            sliderChanged
+        );
+
+        minInput.addEventListener(
+            'input',
+            inputChanged
+        );
+
+        maxInput.addEventListener(
+            'input',
+            inputChanged
+        );
+
+        minInput.addEventListener(
+            'blur',
+            normalizeInputs
+        );
+
+        maxInput.addEventListener(
+            'blur',
+            normalizeInputs
+        );
+
+
+        /* --------------------------------------------------------
+           INITIAL PROGRESS
+           -------------------------------------------------------- */
+
+        updateProgress(
+            parseInt(minSlider.value) || 0,
+            parseInt(maxSlider.value) || maxPrice
+        );
+    }
+
+
+    /* ============================================================
+       BRAND SEARCH
+       ============================================================ */
+
+    const brandSearch =
+        document.getElementById('brand-search');
+
+    const brandItems =
+        document.querySelectorAll('.brand-item');
+
+
+    if (
+        brandSearch &&
+        brandItems.length
+    ) {
+
+        brandSearch.addEventListener(
+            'input',
+            e => {
+
+                const query =
+                    e.target.value.toLowerCase();
+
+
+                brandItems.forEach(item => {
+
+                    const name =
+                        (
+                            item.getAttribute('data-name') || ''
+                        ).toLowerCase();
+
+
+                    item.style.display =
+                        name.includes(query)
+                            ? 'flex'
+                            : 'none';
+
+                });
+
+            }
+        );
+
+    }
+
+
+    /* ============================================================
+       CATEGORY SEARCH
+       ============================================================ */
+
+    const categorySearch =
+        document.getElementById('category-search');
+
+    const categoryItems =
+        document.querySelectorAll('.category-item');
+
+
+    if (
+        categorySearch &&
+        categoryItems.length
+    ) {
+
+        categorySearch.addEventListener(
+            'input',
+            e => {
+
+                const query =
+                    e.target.value.toLowerCase();
+
+
+                categoryItems.forEach(item => {
+
+                    const name =
+                        (
+                            item.getAttribute('data-name') || ''
+                        ).toLowerCase();
+
+
+                    item.style.display =
+                        name.includes(query)
+                            ? 'flex'
+                            : 'none';
+
+                });
+
+            }
+        );
+
+    }
+
+
+    /* ============================================================
+       SORTING
+       ============================================================ */
+
+    const sortButton =
+        document.querySelector(
+            'el-dropdown button'
+        );
+
+    const sortOptions =
+        document.querySelectorAll(
+            '.sort-option'
+        );
+
+
+    if (
+        sortButton &&
+        sortOptions.length
+    ) {
+
+        sortOptions.forEach(option => {
+
+            option.addEventListener(
+                'click',
+                function (e) {
+
+                    e.preventDefault();
+
+
+                    currentSort =
+                        this.dataset.sort;
+
+
+                    /*
+                     * User explicitly changed sorting.
+                     * Therefore it is OK to update the browser URL.
+                     */
+                    updateBrowserUrl();
+
+
+                    /*
+                     * Remove pagination when sorting changes.
+                     */
+                    const browserUrl =
+                        new URL(
+                            window.location.href
+                        );
+
+                    browserUrl.searchParams.delete(
+                        'page'
+                    );
+
+                    window.history.replaceState(
+                        {},
+                        '',
+                        browserUrl
+                    );
+
+
+                    const span =
+                        sortButton.querySelector(
+                            'span'
+                        );
+
+                    if (span) {
+
+                        span.textContent =
+                            `Sort by: ${this.textContent}`;
+                    }
+
+
+                    filterProducts();
+                }
+            );
+
         });
+
+    }
+
+
+    /* ============================================================
+       VIEW SWITCH
+       ============================================================ */
+
+    const viewButtons =
+        document.querySelectorAll(
+            '.view-switch'
+        );
+
+
+    viewButtons.forEach(btn => {
+
+        btn.addEventListener(
+            'click',
+            function () {
+
+                currentView =
+                    this.dataset.view;
+
+
+                /*
+                 * User explicitly changed view.
+                 * Update browser URL.
+                 */
+                updateBrowserUrl();
+
+
+                const browserUrl =
+                    new URL(
+                        window.location.href
+                    );
+
+                browserUrl.searchParams.delete(
+                    'page'
+                );
+
+                window.history.replaceState(
+                    {},
+                    '',
+                    browserUrl
+                );
+
+
+                filterProducts();
+            }
+        );
+
     });
 
-    // ======== CATEGORY CHECKBOXES ========
-    document.querySelectorAll('.category-checkbox').forEach(checkbox => {
 
-        checkbox.addEventListener('change', function () {
+    /* ============================================================
+       CATEGORY CHECKBOXES
+       ============================================================ */
 
-            // Parent -> Child
-            const childIds = this.dataset.childIds
-                ? this.dataset.childIds.split(',')
-                : [];
+    document.querySelectorAll(
+        '.category-checkbox'
+    ).forEach(checkbox => {
 
-            childIds.forEach(id => {
-                const childCheckbox =
-                    document.getElementById(`filter-category-${id}`);
+        checkbox.addEventListener(
+            'change',
+            function () {
 
-                if (childCheckbox) {
-                    childCheckbox.checked = this.checked;
+                /*
+                 * Parent -> Child
+                 */
+                const childIds =
+                    this.dataset.childIds
+                        ? this.dataset.childIds.split(',')
+                        : [];
+
+
+                childIds.forEach(id => {
+
+                    const childCheckbox =
+                        document.getElementById(
+                            `filter-category-${id}`
+                        );
+
+
+                    if (childCheckbox) {
+                        childCheckbox.checked =
+                            this.checked;
+                    }
+
+                });
+
+
+                /*
+                 * Remove duplicate category IDs.
+                 */
+                const categories = [
+                    ...new Set(
+                        Array.from(
+                            document.querySelectorAll(
+                                'input[name="categories[]"]:checked'
+                            )
+                        ).map(
+                            el => el.value
+                        )
+                    )
+                ];
+
+
+                /*
+                 * Explicit user filter action.
+                 * Browser URL can now contain parameters.
+                 */
+                updateBrowserUrl(
+                    categories
+                );
+
+
+                filterProducts();
+            }
+        );
+
+    });
+
+
+    /* ============================================================
+       CATEGORY CHECKBOX CHANGE
+       ============================================================ */
+
+    document.querySelectorAll(
+        'input[name="categories[]"]'
+    ).forEach(input => {
+
+        input.addEventListener(
+            'change',
+            function () {
+
+                /*
+                 * Avoid duplicate filtering when
+                 * the element is already handled above.
+                 */
+                if (
+                    this.classList.contains(
+                        'category-checkbox'
+                    )
+                ) {
+                    return;
                 }
-            });
 
-            // Remove duplicate category ids
-            const categories = [
+
+                updateBrowserUrl();
+
+                filterProducts();
+            }
+        );
+
+    });
+
+
+    /* ============================================================
+       CLEAR FILTERS
+       ============================================================ */
+
+    const clearBtn =
+        document.getElementById(
+            'clear-filters'
+        );
+
+
+    if (clearBtn) {
+
+        clearBtn.addEventListener(
+            'click',
+            () => {
+
+                /* ------------------------------------------------
+                   RESET PRICE
+                   ------------------------------------------------ */
+
+                const activeFilterWrapper =
+                    document.querySelector(
+                        '#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
+                    );
+
+
+                const visibleFilter =
+                    activeFilterWrapper?.querySelector(
+                        '.price-filter'
+                    );
+
+
+                if (visibleFilter) {
+
+                    const minSlider =
+                        visibleFilter.querySelector(
+                            '.range-min'
+                        );
+
+                    const maxSlider =
+                        visibleFilter.querySelector(
+                            '.range-max'
+                        );
+
+                    const minInput =
+                        visibleFilter.querySelector(
+                            '.min-price'
+                        );
+
+                    const maxInput =
+                        visibleFilter.querySelector(
+                            '.max-price'
+                        );
+
+
+                    if (
+                        minSlider &&
+                        maxSlider &&
+                        minInput &&
+                        maxInput
+                    ) {
+
+                        minSlider.value = 0;
+
+                        maxSlider.value =
+                            maxSlider.max;
+
+                        minInput.value = 0;
+
+                        maxInput.value =
+                            maxSlider.max;
+                    }
+
+                }
+
+
+                /* ------------------------------------------------
+                   RESET CHECKBOXES
+                   ------------------------------------------------ */
+
+                document.querySelectorAll(
+                    'input[name="categories[]"], input[name="conditions[]"]'
+                ).forEach(cb => {
+
+                    cb.checked = false;
+
+                });
+
+
+                /*
+                 * Current brand must remain checked.
+                 */
+                document.querySelectorAll(
+                    'input[name="brands[]"]'
+                ).forEach(cb => {
+
+                    cb.checked = true;
+                    cb.disabled = true;
+
+                });
+
+
+                /* ------------------------------------------------
+                   RESET SORT & VIEW
+                   ------------------------------------------------ */
+
+                currentSort =
+                    "price_high_low";
+
+                currentView =
+                    "gridview";
+
+
+                /*
+                 * Since user explicitly clicked
+                 * Clear Filters, update the URL.
+                 *
+                 * This will result in the clean URL:
+                 *
+                 * /shop/brand/xfx
+                 */
+                const cleanUrl =
+                    new URL(
+                        window.location.href
+                    );
+
+                cleanUrl.search = '';
+
+                window.history.replaceState(
+                    {},
+                    '',
+                    cleanUrl
+                );
+
+
+                filterProducts();
+
+                updateProductCount();
+            }
+        );
+
+    }
+
+
+    /* ============================================================
+       UPDATE BROWSER URL
+       ============================================================ */
+
+    function updateBrowserUrl(
+        categoriesParam = null
+    ) {
+
+        const browserUrl =
+            new URL(
+                window.location.href
+            );
+
+
+        /*
+         * Price
+         */
+        const activeFilterWrapper =
+            document.querySelector(
+                '#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
+            );
+
+
+        const visibleFilter =
+            activeFilterWrapper?.querySelector(
+                '.price-filter'
+            );
+
+
+        const min_price =
+            parseInt(
+                visibleFilter?.querySelector(
+                    '.min-price'
+                )?.value
+            ) || 0;
+
+
+        const max_price =
+            parseInt(
+                visibleFilter?.querySelector(
+                    '.max-price'
+                )?.value
+            ) || 300000;
+
+
+        browserUrl.searchParams.set(
+            'min_price',
+            min_price
+        );
+
+        browserUrl.searchParams.set(
+            'max_price',
+            max_price
+        );
+
+
+        /*
+         * Sort
+         */
+        browserUrl.searchParams.set(
+            'sort',
+            currentSort
+        );
+
+
+        /*
+         * View
+         */
+        browserUrl.searchParams.set(
+            'view',
+            currentView
+        );
+
+
+        /*
+         * Categories
+         */
+        let categories;
+
+
+        if (categoriesParam !== null) {
+
+            categories =
+                categoriesParam;
+
+        } else {
+
+            categories = [
                 ...new Set(
                     Array.from(
                         document.querySelectorAll(
                             'input[name="categories[]"]:checked'
                         )
-                    ).map(el => el.value)
+                    ).map(
+                        el => el.value
+                    )
                 )
             ];
 
-            const browserUrl = new URL(window.location.href);
-
-            browserUrl.searchParams.delete('categories[]');
-            browserUrl.searchParams.delete('page');
-
-            categories.forEach(id => {
-                browserUrl.searchParams.append('categories[]', id);
-            });
-
-            window.history.replaceState({}, '', browserUrl);
-
-            filterProducts();
-        });
-
-    });
-
-    // ======== CLEAR FILTERS ========
-    const clearBtn = document.getElementById('clear-filters');
-    if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
-            // Reset price
-            if (minSlider && maxSlider && minInput && maxInput) {
-                minSlider.value = 0;
-                maxSlider.value = maxSlider.max;
-                minInput.value = 0;
-                maxInput.value = maxSlider.max;
-            }
-
-            // Uncheck conditions and categories
-            document.querySelectorAll('input[name="categories[]"], input[name="conditions[]"]').forEach(cb => cb.checked = false);
-
-            // Sort & view
-            currentSort = "price_high_low";
-            currentView = "gridview";
-
-            filterProducts();
-            updateProductCount();
-        });
-    }
-
-    // ======== CATEGORY + BRAND CHECKBOX CHANGE ========
-    document.querySelectorAll('input[name="categories[]"]').forEach(input => {
-        input.addEventListener('change', filterProducts);
-    });
+        }
 
 
-    /* INITIAL LOAD */
-    document.addEventListener('DOMContentLoaded', () => {
-        filterProducts();
-        hideLoader();
-    });
-
-// });
-
-let page = 1;
-/* FILTER FUNCTION */
-    function filterProducts(categoriesParam = null, searchParamValue = '', viewParam = null) {
-        page = 1;
-        showLoader();
-        if(viewParam){
-			currentView = viewParam;
-		}
-
-        const loadMore = document.getElementById('load-more-wrapper');
-        if (loadMore) loadMore.style.display = 'block';
-
-        const categories = [
-            ...new Set(
-                Array.from(
-                    document.querySelectorAll('input[name="categories[]"]:checked')
-                ).map(el => el.value)
-            )
-        ];
-
-        const activeFilterWrapper = document.querySelector(
-            '#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
+        browserUrl.searchParams.delete(
+            'categories[]'
         );
 
-        const conditions = Array.from(
-            document.querySelectorAll('input[name="conditions[]"]:checked')
-        ).map(el => el.value);
 
-        const visibleFilter = activeFilterWrapper?.querySelector('.price-filter');
-
-        const min_price = parseInt(
-            visibleFilter?.querySelector('.min-price')?.value
-        ) || 0;
-
-        const max_price = parseInt(
-            visibleFilter?.querySelector('.max-price')?.value
-        ) || 300000;
-
-        const browserUrl = new URL(window.location.href);
-
-        // Update only values handled inside this function
-        browserUrl.searchParams.set('min_price', min_price);
-        browserUrl.searchParams.set('max_price', max_price);
-
-        browserUrl.searchParams.set('sort', currentSort);
-        browserUrl.searchParams.set('view', currentView);
-
-        browserUrl.searchParams.delete('categories[]');
         categories.forEach(id => {
-            browserUrl.searchParams.append('categories[]', id);
+
+            browserUrl.searchParams.append(
+                'categories[]',
+                id
+            );
+
         });
 
+
+        /*
+         * Conditions
+         */
+        const conditions =
+            Array.from(
+                document.querySelectorAll(
+                    'input[name="conditions[]"]:checked'
+                )
+            ).map(
+                el => el.value
+            );
+
+
         if (conditions.length) {
+
             browserUrl.searchParams.set(
                 'conditions',
                 conditions.join(',')
             );
+
         } else {
-            browserUrl.searchParams.delete('conditions');
+
+            browserUrl.searchParams.delete(
+                'conditions'
+            );
+
         }
 
-        browserUrl.searchParams.delete('page');
 
-        window.history.replaceState({}, '', browserUrl);
+        /*
+         * Pagination should not remain
+         * after a filter/sort/view change.
+         */
+        browserUrl.searchParams.delete(
+            'page'
+        );
 
-        // URL is the source of truth
-        currentFilters = new URLSearchParams(browserUrl.search);
+
+        window.history.replaceState(
+            {},
+            '',
+            browserUrl
+        );
+    }
+
+
+    /* ============================================================
+       BUILD FILTER PARAMETERS FOR AJAX
+       ============================================================ */
+
+    function buildFilterParams() {
+
+        const params =
+            new URLSearchParams();
+
+
+        /* --------------------------------------------------------
+           CATEGORIES
+           -------------------------------------------------------- */
+
+        const categories = [
+            ...new Set(
+                Array.from(
+                    document.querySelectorAll(
+                        'input[name="categories[]"]:checked'
+                    )
+                ).map(
+                    el => el.value
+                )
+            )
+        ];
+
+
+        categories.forEach(id => {
+
+            params.append(
+                'categories[]',
+                id
+            );
+
+        });
+
+
+        /* --------------------------------------------------------
+           CONDITIONS
+           -------------------------------------------------------- */
+
+        const conditions =
+            Array.from(
+                document.querySelectorAll(
+                    'input[name="conditions[]"]:checked'
+                )
+            ).map(
+                el => el.value
+            );
+
+
+        if (conditions.length) {
+
+            params.set(
+                'conditions',
+                conditions.join(',')
+            );
+
+        }
+
+
+        /* --------------------------------------------------------
+           PRICE
+           -------------------------------------------------------- */
+
+        const activeFilterWrapper =
+            document.querySelector(
+                '#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
+            );
+
+
+        const visibleFilter =
+            activeFilterWrapper?.querySelector(
+                '.price-filter'
+            );
+
+
+        const min_price =
+            parseInt(
+                visibleFilter?.querySelector(
+                    '.min-price'
+                )?.value
+            ) || 0;
+
+
+        const max_price =
+            parseInt(
+                visibleFilter?.querySelector(
+                    '.max-price'
+                )?.value
+            ) || 300000;
+
+
+        params.set(
+            'min_price',
+            min_price
+        );
+
+
+        params.set(
+            'max_price',
+            max_price
+        );
+
+
+        /* --------------------------------------------------------
+           SORT
+           -------------------------------------------------------- */
+
+        params.set(
+            'sort',
+            currentSort
+        );
+
+
+        /* --------------------------------------------------------
+           VIEW
+           -------------------------------------------------------- */
+
+        params.set(
+            'view',
+            currentView
+        );
+
+
+        return params;
+    }
+
+
+    /* ============================================================
+       FILTER FUNCTION
+       ============================================================ */
+
+    function filterProducts(
+        categoriesParam = null,
+        searchParamValue = '',
+        viewParam = null
+    ) {
+
+        page = 1;
+
+        showLoader();
+
+
+        if (viewParam) {
+            currentView = viewParam;
+        }
+
+
+        const loadMore =
+            document.getElementById(
+                'load-more-wrapper'
+            );
+
+
+        if (loadMore) {
+            loadMore.style.display = 'block';
+        }
+
+
+        /*
+         * Build parameters ONLY for the AJAX request.
+         *
+         * This is the important SEO change.
+         *
+         * The browser URL does NOT automatically get
+         * these parameters during initial page load.
+         */
+        currentFilters =
+            buildFilterParams();
+
+
+        /*
+         * --------------------------------------------------------
+         * IMPORTANT SEO LOGIC
+         * --------------------------------------------------------
+         *
+         * On initial page load:
+         *
+         * Browser:
+         * /shop/brand/xfx
+         *
+         * AJAX:
+         * /shop/brand/xfx?min_price=0&max_price=300000&sort=price_high_low&view=gridview
+         *
+         * Therefore Google can see/crawl the clean URL.
+         *
+         * Once the user actively changes a filter,
+         * isInitialLoad becomes false and the URL can be updated.
+         */
+        if (!isInitialLoad) {
+
+            updateBrowserUrl();
+
+            /*
+             * Rebuild currentFilters because
+             * updateBrowserUrl() may have changed the URL.
+             */
+            currentFilters =
+                buildFilterParams();
+        }
+
+
+        /*
+         * The first load is now complete.
+         */
+        isInitialLoad = false;
+
+
+        /* --------------------------------------------------------
+           AJAX REQUEST
+           -------------------------------------------------------- */
 
         return fetch(
-            browserUrl.pathname + '?' + currentFilters.toString(),
+            window.location.pathname +
+            '?' +
+            currentFilters.toString(),
             {
                 method: 'GET',
+
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With':
+                        'XMLHttpRequest'
                 }
             }
         )
-        .then(res => res.json())
+
+        .then(res => {
+
+            if (!res.ok) {
+                throw new Error(
+                    `HTTP error ${res.status}`
+                );
+            }
+
+            return res.json();
+        })
+
         .then(data => {
 
-            const wrapper = document.getElementById('product-list-wrapper');
+            const wrapper =
+                document.getElementById(
+                    'product-list-wrapper'
+                );
 
-            if (!data.html.trim()) {
 
-                if (loadMore) loadMore.style.display = 'none';
+            if (!wrapper) {
+                return;
+            }
+
+
+            /* ----------------------------------------------------
+               NO PRODUCTS
+               ---------------------------------------------------- */
+
+            if (!data.html || !data.html.trim()) {
+
+                if (loadMore) {
+                    loadMore.style.display =
+                        'none';
+                }
+
 
                 wrapper.innerHTML = `
                     <div class="text-white text-center py-10">
@@ -850,29 +1691,64 @@ let page = 1;
                     </div>
                 `;
 
-            } else {
+            }
 
-                wrapper.innerHTML = data.html;
+            /* ----------------------------------------------------
+               PRODUCTS FOUND
+               ---------------------------------------------------- */
+
+            else {
+
+                wrapper.innerHTML =
+                    data.html;
+
 
                 if (loadMore) {
-                    loadMore.style.display = data.hasMore ? 'block' : 'none';
+
+                    loadMore.style.display =
+                        data.hasMore
+                            ? 'block'
+                            : 'none';
+
                 }
 
-                lastPage = data.last_page;
+
+                lastPage =
+                    data.last_page;
+
             }
 
-            const countEl = document.getElementById('product-count');
+
+            /* ----------------------------------------------------
+               PRODUCT COUNT
+               ---------------------------------------------------- */
+
+            const countEl =
+                document.getElementById(
+                    'product-count'
+                );
+
 
             if (countEl) {
-                countEl.dataset.total = data.total;
+
+                countEl.dataset.total =
+                    data.total;
+
             }
 
+
             updateProductCount();
+
+
+            /* ----------------------------------------------------
+               SCROLL
+               ---------------------------------------------------- */
 
             const offsetTop =
                 wrapper.getBoundingClientRect().top +
                 window.pageYOffset -
                 100;
+
 
             window.scrollTo({
                 top: offsetTop,
@@ -880,112 +1756,424 @@ let page = 1;
             });
 
         })
+
         .catch(err => {
-            console.error('Filter products error:', err);
+
+            console.error(
+                'Filter products error:',
+                err
+            );
+
         })
+
         .finally(() => {
+
             hideLoader();
+
         });
     }
 
-	// LOAD MORE SCRIPT
 
-	let lastPage = {{ $products->lastPage() }};
-	let loading = false;
+    /* ============================================================
+       LOAD MORE
+       ============================================================ */
 
-	document.getElementById('load-more-btn').addEventListener('click', async function() {
-		if (loading || page >= lastPage) return;
-		loading = true;
-		page++;
+    const loadMoreBtn =
+        document.getElementById(
+            'load-more-btn'
+        );
 
-		await loadMoreProducts(page);
-		loading = false;
 
-		if (page >= lastPage) {
-			document.getElementById('load-more-wrapper').style.display = 'none';
-		}
-	});
+    if (loadMoreBtn) {
 
-	async function loadMoreProducts(page) {
-		const loader = document.getElementById('product-loader');
-		loader.classList.remove('hidden');
+        loadMoreBtn.addEventListener(
+            'click',
+            async function () {
 
-		try {
-
-			currentFilters.set('page', page);
-
-			// const res = await fetch(`/products?${currentFilters.toString()}`, {
-			// 	headers: {
-			// 		'X-Requested-With': 'XMLHttpRequest'
-			// 	}
-			// });
-            const res = await fetch(
-                window.location.pathname + '?' + currentFilters.toString(),
-                {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
+                if (
+                    loading ||
+                    page >= lastPage
+                ) {
+                    return;
                 }
+
+
+                loading = true;
+
+                page++;
+
+
+                await loadMoreProducts(page);
+
+
+                loading = false;
+
+
+                if (page >= lastPage) {
+
+                    const wrapper =
+                        document.getElementById(
+                            'load-more-wrapper'
+                        );
+
+
+                    if (wrapper) {
+                        wrapper.style.display =
+                            'none';
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* ============================================================
+       LOAD MORE PRODUCTS
+       ============================================================ */
+
+    async function loadMoreProducts(
+        pageNumber
+    ) {
+
+        const loader =
+            document.getElementById(
+                'product-loader'
             );
 
-			const data = await res.json();
 
-			if (!data.html.trim()) {
-				document.getElementById('load-more-wrapper').style.display = 'none';
-				return;
-			}
+        if (loader) {
+            loader.classList.remove(
+                'hidden'
+            );
+        }
 
-			document.getElementById('product-list-wrapper')
-				.insertAdjacentHTML('beforeend', data.html);
 
-			if (!data.hasMore) {
-				document.getElementById('load-more-wrapper').style.display = 'none';
-			}
+        try {
 
-            const countEl = document.getElementById('product-count');
+            /*
+             * Use the existing filter parameters.
+             */
+            currentFilters.set(
+                'page',
+                pageNumber
+            );
 
-			// update total from backend response
-			countEl.dataset.total = data.total;
 
-			updateProductCount();
+            const res =
+                await fetch(
+                    window.location.pathname +
+                    '?' +
+                    currentFilters.toString(),
+                    {
+                        headers: {
+                            'X-Requested-With':
+                                'XMLHttpRequest'
+                        }
+                    }
+                );
 
-		} catch (err) {
-			console.error(err);
-		} finally {
-			loader.classList.add('hidden');
-		}
-	}
 
-	function updateProductCount() {
-		const countEl = document.getElementById('product-count');
-		const total = parseInt(countEl.dataset.total);
-		let visible = 0;
+            if (!res.ok) {
+                throw new Error(
+                    `HTTP error ${res.status}`
+                );
+            }
 
-		// Check active view
-		if (document.querySelector('[x-show="activeTab === \'gridview\'"]').offsetParent !== null) {
-			visible = document.querySelectorAll('#product-list .product-card').length;
-		} else {
-			visible = document.querySelectorAll('#product-list .product-card-list').length;
-		}
 
-		if (visible === 0) {
-			countEl.innerText = `Items 0 of 0`;
-            document.getElementById('product-list-wrapper').innerHTML = `
-						<div class="text-white text-center py-10">
-							No Products Found!
-						</div>`;
-			return;
-		}
-		countEl.innerText = `Items 1-${visible} of ${total}`;
-        document.getElementById('total-product-count').innerText = `${total}`;
-	}
+            const data =
+                await res.json();
+
+
+            if (
+                !data.html ||
+                !data.html.trim()
+            ) {
+
+                const loadMoreWrapper =
+                    document.getElementById(
+                        'load-more-wrapper'
+                    );
+
+
+                if (loadMoreWrapper) {
+
+                    loadMoreWrapper.style.display =
+                        'none';
+
+                }
+
+
+                return;
+            }
+
+
+            const productWrapper =
+                document.getElementById(
+                    'product-list-wrapper'
+                );
+
+
+            if (productWrapper) {
+
+                productWrapper.insertAdjacentHTML(
+                    'beforeend',
+                    data.html
+                );
+
+            }
+
+
+            if (!data.hasMore) {
+
+                const loadMoreWrapper =
+                    document.getElementById(
+                        'load-more-wrapper'
+                    );
+
+
+                if (loadMoreWrapper) {
+
+                    loadMoreWrapper.style.display =
+                        'none';
+
+                }
+
+            }
+
+
+            const countEl =
+                document.getElementById(
+                    'product-count'
+                );
+
+
+            if (countEl) {
+
+                countEl.dataset.total =
+                    data.total;
+
+            }
+
+
+            updateProductCount();
+
+        }
+
+        catch (err) {
+
+            console.error(
+                'Load more error:',
+                err
+            );
+
+        }
+
+        finally {
+
+            if (loader) {
+
+                loader.classList.add(
+                    'hidden'
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /* ============================================================
+       UPDATE PRODUCT COUNT
+       ============================================================ */
+
+    function updateProductCount() {
+
+        const countEl =
+            document.getElementById(
+                'product-count'
+            );
+
+
+        if (!countEl) {
+            return;
+        }
+
+
+        const total =
+            parseInt(
+                countEl.dataset.total
+            ) || 0;
+
+
+        let visible = 0;
+
+
+        /*
+         * Check active view.
+         */
+        const gridView =
+            document.querySelector(
+                '[x-show="activeTab === \'gridview\'"]'
+            );
+
+
+        if (
+            gridView &&
+            gridView.offsetParent !== null
+        ) {
+
+            visible =
+                document.querySelectorAll(
+                    '#product-list .product-card'
+                ).length;
+
+        }
+
+        else {
+
+            visible =
+                document.querySelectorAll(
+                    '#product-list .product-card-list'
+                ).length;
+
+        }
+
+
+        /* --------------------------------------------------------
+           NO PRODUCTS
+           -------------------------------------------------------- */
+
+        if (visible === 0) {
+
+            countEl.innerText =
+                'Items 0 of 0';
+
+
+            const wrapper =
+                document.getElementById(
+                    'product-list-wrapper'
+                );
+
+
+            if (wrapper) {
+
+                wrapper.innerHTML = `
+                    <div class="text-white text-center py-10">
+                        No Products Found!
+                    </div>
+                `;
+
+            }
+
+
+            return;
+        }
+
+
+        /* --------------------------------------------------------
+           PRODUCT COUNT
+           -------------------------------------------------------- */
+
+        countEl.innerText =
+            `Items 1-${visible} of ${total}`;
+
+
+        const totalCount =
+            document.getElementById(
+                'total-product-count'
+            );
+
+
+        if (totalCount) {
+
+            totalCount.innerText =
+                `${total}`;
+
+        }
+
+    }
+
+
+    /* ============================================================
+       LOADER
+       ============================================================ */
 
     function showLoader() {
-        document.getElementById('global-loader').classList.remove('hidden');
+
+        const loader =
+            document.getElementById(
+                'global-loader'
+            );
+
+
+        if (loader) {
+
+            loader.classList.remove(
+                'hidden'
+            );
+
+        }
+
     }
 
+
     function hideLoader() {
-        document.getElementById('global-loader').classList.add('hidden');
+
+        const loader =
+            document.getElementById(
+                'global-loader'
+            );
+
+
+        if (loader) {
+
+            loader.classList.add(
+                'hidden'
+            );
+
+        }
+
     }
+
+
+    /* ============================================================
+       INITIALIZATION
+       ============================================================ */
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        () => {
+
+            /*
+             * Initialize all price filters.
+             */
+            document.querySelectorAll(
+                '.price-filter'
+            ).forEach(
+                initPriceFilter
+            );
+
+
+            /*
+             * Initial AJAX load.
+             *
+             * IMPORTANT:
+             * isInitialLoad = true here.
+             *
+             * Therefore filterProducts() will NOT
+             * modify the browser URL.
+             */
+            filterProducts();
+
+
+            hideLoader();
+
+        }
+    );
+
 </script>
 @endsection
