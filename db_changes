@@ -79,16 +79,16 @@
 -- ALTER TABLE `product_specification` CHANGE `specification_id` `specification_id` BIGINT(20) UNSIGNED NOT NULL;
 -- ALTER TABLE `product_specification` CHANGE `specification_item_id` `specification_item_id` BIGINT(20) UNSIGNED NOT NULL;
 
--- ALTER TABLE product_specification 
--- ADD CONSTRAINT fk_product_specification_product 
+-- ALTER TABLE product_specification
+-- ADD CONSTRAINT fk_product_specification_product
 -- FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE;
 
--- ALTER TABLE product_specification 
--- ADD CONSTRAINT fk_product_specification_specification 
+-- ALTER TABLE product_specification
+-- ADD CONSTRAINT fk_product_specification_specification
 -- FOREIGN KEY (specification_id) REFERENCES specifications(id) ON DELETE CASCADE;
 
--- ALTER TABLE product_specification 
--- ADD CONSTRAINT fk_product_specification_item 
+-- ALTER TABLE product_specification
+-- ADD CONSTRAINT fk_product_specification_item
 -- FOREIGN KEY (specification_item_id) REFERENCES specification_items(id) ON DELETE CASCADE;
 
 
@@ -107,27 +107,27 @@
 -- (17, 'add_staff', 'Add Staff', 'web', 1, NULL, NULL),
 -- (17, 'edit_staff', 'Edit Staff', 'web', 1, NULL, NULL);
 
--- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
--- (NULL, '4', 'view_product', 'View Products', 'web', '1', NULL, NULL), 
--- (NULL, '4', 'add_product', 'Add Product', 'web', '1', NULL, NULL), 
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES
+-- (NULL, '4', 'view_product', 'View Products', 'web', '1', NULL, NULL),
+-- (NULL, '4', 'add_product', 'Add Product', 'web', '1', NULL, NULL),
 -- (NULL, '4', 'edit_product', 'Edit Product', 'web', '1', NULL, NULL);
 
--- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
--- (NULL, '5', 'view_category', 'View Categories', 'web', '1', NULL, NULL), 
--- (NULL, '5', 'add_category', 'Add Category', 'web', '1', NULL, NULL), 
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES
+-- (NULL, '5', 'view_category', 'View Categories', 'web', '1', NULL, NULL),
+-- (NULL, '5', 'add_category', 'Add Category', 'web', '1', NULL, NULL),
 -- (NULL, '5', 'edit_category', 'Edit Category', 'web', '1', NULL, NULL);
 
--- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
--- (NULL, '6', 'view_brand', 'View Brands', 'web', '1', NULL, NULL), 
--- (NULL, '6', 'add_brand', 'Add Brand', 'web', '1', NULL, NULL), 
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES
+-- (NULL, '6', 'view_brand', 'View Brands', 'web', '1', NULL, NULL),
+-- (NULL, '6', 'add_brand', 'Add Brand', 'web', '1', NULL, NULL),
 -- (NULL, '6', 'edit_brand', 'Edit Brand', 'web', '1', NULL, NULL);
 
--- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
--- (NULL, '24', 'view_blog', 'View Blogs', 'web', '1', NULL, NULL), 
--- (NULL, '24', 'add_blog', 'Add Blog', 'web', '1', NULL, NULL), 
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES
+-- (NULL, '24', 'view_blog', 'View Blogs', 'web', '1', NULL, NULL),
+-- (NULL, '24', 'add_blog', 'Add Blog', 'web', '1', NULL, NULL),
 -- (NULL, '24', 'edit_blog', 'Edit Blog', 'web', '1', NULL, NULL);
 
--- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES 
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `created_at`, `updated_at`) VALUES
 -- (NULL, '4', 'import_product', 'Import Products', 'web', '1', NULL, NULL);
 
 -- ALTER TABLE `permissions` ADD `sort_order` TINYINT(1) NOT NULL DEFAULT '0' AFTER `is_active`;
@@ -141,7 +141,7 @@
 -- UPDATE `permissions` SET `sort_order` = '7' WHERE `permissions`.`id` = 4;
 -- UPDATE `permissions` SET `sort_order` = '8' WHERE `permissions`.`id` = 9;
 
--- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) 
+-- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`)
 -- VALUES (NULL, NULL, 'manage_specifications', 'Manage Specifications', 'web', '1', '5', NULL, NULL);
 -- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'view_specification', 'View Specification', 'web', '1', '50', NULL, NULL);
 -- INSERT INTO `permissions` (`id`, `parent_id`, `name`, `title`, `guard_name`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES (NULL, '45', 'add_specification', 'Add Specification', 'web', '1', '50', NULL, NULL);
@@ -158,15 +158,15 @@
 
 /*-----------------------09/02/2026----------------------*/
 -- CREATE TABLE `pc_builder_category_settings` (
---     `id` INT NOT NULL AUTO_INCREMENT , 
---     `category_id` INT NULL DEFAULT NULL , 
---     `min_select` INT NOT NULL DEFAULT '1' , 
---     `max_select` INT NULL DEFAULT NULL , 
---     `has_subcategories` TINYINT(1) NOT NULL DEFAULT '0' , 
---     `sort_order` INT NOT NULL DEFAULT '0' , 
---     `status` TINYINT(1) NOT NULL DEFAULT '1' , 
---     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
---     `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+--     `id` INT NOT NULL AUTO_INCREMENT ,
+--     `category_id` INT NULL DEFAULT NULL ,
+--     `min_select` INT NOT NULL DEFAULT '1' ,
+--     `max_select` INT NULL DEFAULT NULL ,
+--     `has_subcategories` TINYINT(1) NOT NULL DEFAULT '0' ,
+--     `sort_order` INT NOT NULL DEFAULT '0' ,
+--     `status` TINYINT(1) NOT NULL DEFAULT '1' ,
+--     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+--     `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
 --     PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
 -- ALTER TABLE `pc_builder_category_settings` ADD FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -309,7 +309,7 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 
 -- Added on 12-03-2026
 
--- ALTER TABLE carts 
+-- ALTER TABLE carts
 -- ADD COLUMN pc_builder_id BIGINT NULL AFTER user_id,
 -- ADD COLUMN is_pc_builder TINYINT(1) DEFAULT 0 AFTER pc_builder_id;
 
@@ -319,11 +319,11 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 
 -- ALTER TABLE `product_stocks` CHANGE `qty` `qty` INT UNSIGNED NOT NULL DEFAULT '0';
 
--- ALTER TABLE order_details 
+-- ALTER TABLE order_details
 -- ADD COLUMN pc_builder_id BIGINT NULL AFTER product_stock_id,
 -- ADD COLUMN is_pc_builder TINYINT(1) DEFAULT 0 AFTER pc_builder_id;
 
--- ALTER TABLE pc_builder_setups 
+-- ALTER TABLE pc_builder_setups
 -- ADD COLUMN is_ordered TINYINT(1) NOT NULL DEFAULT 0 COMMENT '0=>false, 1=>true' AFTER build_data;
 
 
@@ -415,7 +415,7 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 
 -- INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'return_policy', 'Return Policy', NULL, '', '1', NULL, '2026-03-07 14:06:06');
 
--- ALTER TABLE pc_builder_setups 
+-- ALTER TABLE pc_builder_setups
 -- ADD COLUMN is_ordered TINYINT(1) NOT NULL DEFAULT 0 COMMENT '0=>false, 1=>true' AFTER build_data;
 
 -- ALTER TABLE `orders` ADD `warranty_amount` DOUBLE(20,2) NOT NULL DEFAULT '0.00' AFTER `offer_discount`;
@@ -442,14 +442,14 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 -- ADD `is_returnable` TINYINT(1) NOT NULL DEFAULT 0
 -- AFTER `return_expiry_date`;
 
--- ALTER TABLE orders 
+-- ALTER TABLE orders
 -- ADD COLUMN has_warranty TINYINT(1) NOT NULL DEFAULT 0 AFTER warranty_amount;
--- ALTER TABLE order_details 
+-- ALTER TABLE order_details
 -- ADD COLUMN warranty_id BIGINT UNSIGNED NULL AFTER product_stock_id;
 
--- ALTER TABLE order_details 
--- ADD CONSTRAINT fk_order_details_warranty 
--- FOREIGN KEY (warranty_id) REFERENCES product_warranties(id) 
+-- ALTER TABLE order_details
+-- ADD CONSTRAINT fk_order_details_warranty
+-- FOREIGN KEY (warranty_id) REFERENCES product_warranties(id)
 -- ON DELETE SET NULL;
 
 -- ALTER TABLE orders ADD order_success TINYINT(1) DEFAULT 0 AFTER delivery_status;
@@ -458,4 +458,6 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 -- ALTER TABLE `orders` CHANGE `payment_type` `payment_type` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'cod, card, tabby';
 
 -- ALTER TABLE `orders` ADD `cod_charge` DOUBLE(20,2) NULL DEFAULT NULL AFTER `shipping_cost`;
-ALTER TABLE `categories` ADD `sort_order` INT NULL DEFAULT '0' AFTER `is_active`;
+-- ALTER TABLE `categories` ADD `sort_order` INT NULL DEFAULT '0' AFTER `is_active`;
+
+INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'pc_builder', 'PC Builder', NULL, NULL, '1', NULL, NULL);
