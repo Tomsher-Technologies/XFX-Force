@@ -174,6 +174,9 @@ class PageController extends Controller
           else if ($id == 'brands_list' || $id == 'faq') {
             return view('backend.website_settings.pages.plist', compact('page','lang','page_id'));
           }
+          else if ($id == 'pc_builder') {
+            return view('backend.website_settings.pages.pc_builder', compact('page','lang','page_id'));
+          }
           else{
             return view('backend.website_settings.pages.edit', compact('page','lang','page_id'));
           }

@@ -466,23 +466,20 @@
     let loading = false;
 
     /*
-     * IMPORTANT:
-     * During the first page load we DO NOT modify the browser URL.
+     * Keep the initial brand URL clean.
      *
-     * This means:
+     * Example:
      *
      * /shop/brand/xfx
      *
-     * stays clean instead of becoming:
+     * instead of:
      *
      * /shop/brand/xfx?min_price=0&max_price=300000&sort=price_high_low&view=gridview
-     *
-     * AJAX requests can still contain all filter parameters internally.
      */
     let isInitialLoad = true;
 
     /*
-     * Stores the filters used for AJAX requests.
+     * Current filters used for AJAX requests.
      */
     let currentFilters = new URLSearchParams();
 
@@ -492,8 +489,7 @@
        ============================================================ */
 
     /*
-     * Force current brand checked.
-     * User cannot uncheck the current brand.
+     * Current brand must remain checked.
      */
     document.querySelectorAll('input[name="brands[]"]').forEach(cb => {
         cb.checked = true;
@@ -502,18 +498,130 @@
 
 
     /* ============================================================
+       GET ACTIVE / VISIBLE PRICE FILTER
+       ============================================================ */
+
+    /*
+     * IMPORTANT:
+     *
+     * The page may contain both desktop and mobile filter
+     * containers at the same time.
+     *
+     * querySelector() can return the hidden/first container.
+     *
+     * Therefore we check which .price-filter is actually visible.
+     */
+    function getActivePriceFilter() {
+
+        const priceFilters =
+            document.querySelectorAll(
+                '#filter-wrapper .price-filter'
+            );
+
+        if (!priceFilters.length) {
+            return null;
+        }
+
+        /*
+         * First try to find a visibly rendered filter.
+         */
+        for (const filter of priceFilters) {
+
+            if (
+                filter.offsetParent !== null &&
+                filter.getClientRects().length > 0
+            ) {
+                return filter;
+            }
+        }
+
+        /*
+         * Fallback.
+         */
+        return priceFilters[0];
+    }
+
+
+    /* ============================================================
+       GET CURRENT PRICE VALUES
+       ============================================================ */
+
+    function getCurrentPriceValues() {
+
+        const priceFilter =
+            getActivePriceFilter();
+
+        if (!priceFilter) {
+
+            return {
+                min_price: 0,
+                max_price: 300000
+            };
+        }
+
+
+        let min_price =
+            parseInt(
+                priceFilter.querySelector(
+                    '.min-price'
+                )?.value
+            );
+
+        let max_price =
+            parseInt(
+                priceFilter.querySelector(
+                    '.max-price'
+                )?.value
+            );
+
+
+        if (isNaN(min_price)) {
+            min_price = 0;
+        }
+
+        if (isNaN(max_price)) {
+            max_price = 300000;
+        }
+
+
+        return {
+            min_price,
+            max_price
+        };
+    }
+
+
+    /* ============================================================
        PRICE FILTER
        ============================================================ */
 
     function initPriceFilter(container) {
 
-        const minSlider = container.querySelector('.range-min');
-        const maxSlider = container.querySelector('.range-max');
+        const minSlider =
+            container.querySelector(
+                '.range-min'
+            );
 
-        const minInput = container.querySelector('.min-price');
-        const maxInput = container.querySelector('.max-price');
+        const maxSlider =
+            container.querySelector(
+                '.range-max'
+            );
 
-        const progress = container.querySelector('.slider-progress');
+        const minInput =
+            container.querySelector(
+                '.min-price'
+            );
+
+        const maxInput =
+            container.querySelector(
+                '.max-price'
+            );
+
+        const progress =
+            container.querySelector(
+                '.slider-progress'
+            );
+
 
         if (
             !minSlider ||
@@ -526,44 +634,26 @@
         }
 
 
-        /* --------------------------------------------------------
-           ENTER KEY
-           -------------------------------------------------------- */
-
-        minInput.addEventListener('keydown', function (e) {
-
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                this.blur();
-            }
-
-        });
+        const maxPrice =
+            parseInt(maxSlider.max) || 300000;
 
 
-        maxInput.addEventListener('keydown', function (e) {
+        /* ========================================================
+           UPDATE PROGRESS
+           ======================================================== */
 
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                this.blur();
-            }
-
-        });
-
-
-        const maxPrice = parseInt(maxSlider.max) || 300000;
-
-
-        /* --------------------------------------------------------
-           UPDATE SLIDER PROGRESS
-           -------------------------------------------------------- */
-
-        function updateProgress(minVal, maxVal) {
+        function updateProgress(
+            minVal,
+            maxVal
+        ) {
 
             const minPercent =
                 (minVal / maxPrice) * 100;
 
             const maxPercent =
-                100 - ((maxVal / maxPrice) * 100);
+                100 -
+                ((maxVal / maxPrice) * 100);
+
 
             progress.style.left =
                 minPercent + "%";
@@ -573,17 +663,21 @@
         }
 
 
-        /* --------------------------------------------------------
+        /* ========================================================
            INPUT CHANGE
-           -------------------------------------------------------- */
+           ======================================================== */
 
         function inputChanged(e) {
 
             const isMin =
-                e.target.classList.contains('min-price');
+                e.target.classList.contains(
+                    'min-price'
+                );
 
             const isMax =
-                e.target.classList.contains('max-price');
+                e.target.classList.contains(
+                    'max-price'
+                );
 
 
             let minVal =
@@ -594,8 +688,7 @@
 
 
             /*
-             * Allow user to temporarily leave
-             * the field empty while typing.
+             * Allow empty typing state.
              */
             if (
                 minVal === '' ||
@@ -605,8 +698,11 @@
             }
 
 
-            minVal = parseInt(minVal);
-            maxVal = parseInt(maxVal);
+            minVal =
+                parseInt(minVal);
+
+            maxVal =
+                parseInt(maxVal);
 
 
             if (isNaN(minVal)) {
@@ -621,35 +717,48 @@
             minVal =
                 Math.max(
                     0,
-                    Math.min(minVal, maxPrice)
+                    Math.min(
+                        minVal,
+                        maxPrice
+                    )
                 );
 
             maxVal =
                 Math.max(
                     0,
-                    Math.min(maxVal, maxPrice)
+                    Math.min(
+                        maxVal,
+                        maxPrice
+                    )
                 );
 
 
             /*
-             * Prevent min/max crossing.
+             * Prevent crossing.
              */
             if (minVal > maxVal) {
 
                 if (isMin) {
                     maxVal = minVal;
-                } else {
-                    minVal = maxVal;
                 }
 
+                if (isMax) {
+                    minVal = maxVal;
+                }
             }
 
 
-            minInput.value = minVal;
-            maxInput.value = maxVal;
+            minInput.value =
+                minVal;
 
-            minSlider.value = minVal;
-            maxSlider.value = maxVal;
+            maxInput.value =
+                maxVal;
+
+            minSlider.value =
+                minVal;
+
+            maxSlider.value =
+                maxVal;
 
 
             updateProgress(
@@ -662,17 +771,21 @@
         }
 
 
-        /* --------------------------------------------------------
+        /* ========================================================
            NORMALIZE INPUTS
-           -------------------------------------------------------- */
+           ======================================================== */
 
         function normalizeInputs() {
 
             let minVal =
-                parseInt(minInput.value);
+                parseInt(
+                    minInput.value
+                );
 
             let maxVal =
-                parseInt(maxInput.value);
+                parseInt(
+                    maxInput.value
+                );
 
 
             if (isNaN(minVal)) {
@@ -687,13 +800,19 @@
             minVal =
                 Math.max(
                     0,
-                    Math.min(minVal, maxPrice)
+                    Math.min(
+                        minVal,
+                        maxPrice
+                    )
                 );
 
             maxVal =
                 Math.max(
                     0,
-                    Math.min(maxVal, maxPrice)
+                    Math.min(
+                        maxVal,
+                        maxPrice
+                    )
                 );
 
 
@@ -702,11 +821,17 @@
             }
 
 
-            minInput.value = minVal;
-            maxInput.value = maxVal;
+            minInput.value =
+                minVal;
 
-            minSlider.value = minVal;
-            maxSlider.value = maxVal;
+            maxInput.value =
+                maxVal;
+
+            minSlider.value =
+                minVal;
+
+            maxSlider.value =
+                maxVal;
 
 
             updateProgress(
@@ -719,21 +844,28 @@
         }
 
 
-        /* --------------------------------------------------------
+        /* ========================================================
            SLIDER CHANGE
-           -------------------------------------------------------- */
+           ======================================================== */
 
         function sliderChanged() {
 
             let minVal =
-                parseInt(minSlider.value);
+                parseInt(
+                    minSlider.value
+                );
 
             let maxVal =
-                parseInt(maxSlider.value);
+                parseInt(
+                    maxSlider.value
+                );
 
 
-            minInput.value = minVal;
-            maxInput.value = maxVal;
+            minInput.value =
+                minVal;
+
+            maxInput.value =
+                maxVal;
 
 
             updateProgress(
@@ -742,13 +874,51 @@
             );
 
 
+            /*
+             * Immediately use the values from THIS filter.
+             *
+             * This is important when desktop and mobile
+             * price filters both exist.
+             */
             filterProducts();
         }
 
 
-        /* --------------------------------------------------------
+        /* ========================================================
+           ENTER KEY
+           ======================================================== */
+
+        minInput.addEventListener(
+            'keydown',
+            function(e) {
+
+                if (e.key === 'Enter') {
+
+                    e.preventDefault();
+
+                    this.blur();
+                }
+            }
+        );
+
+
+        maxInput.addEventListener(
+            'keydown',
+            function(e) {
+
+                if (e.key === 'Enter') {
+
+                    e.preventDefault();
+
+                    this.blur();
+                }
+            }
+        );
+
+
+        /* ========================================================
            EVENTS
-           -------------------------------------------------------- */
+           ======================================================== */
 
         minSlider.addEventListener(
             'input',
@@ -781,9 +951,9 @@
         );
 
 
-        /* --------------------------------------------------------
+        /* ========================================================
            INITIAL PROGRESS
-           -------------------------------------------------------- */
+           ======================================================== */
 
         updateProgress(
             parseInt(minSlider.value) || 0,
@@ -797,10 +967,14 @@
        ============================================================ */
 
     const brandSearch =
-        document.getElementById('brand-search');
+        document.getElementById(
+            'brand-search'
+        );
 
     const brandItems =
-        document.querySelectorAll('.brand-item');
+        document.querySelectorAll(
+            '.brand-item'
+        );
 
 
     if (
@@ -820,7 +994,9 @@
 
                     const name =
                         (
-                            item.getAttribute('data-name') || ''
+                            item.getAttribute(
+                                'data-name'
+                            ) || ''
                         ).toLowerCase();
 
 
@@ -828,12 +1004,9 @@
                         name.includes(query)
                             ? 'flex'
                             : 'none';
-
                 });
-
             }
         );
-
     }
 
 
@@ -842,10 +1015,14 @@
        ============================================================ */
 
     const categorySearch =
-        document.getElementById('category-search');
+        document.getElementById(
+            'category-search'
+        );
 
     const categoryItems =
-        document.querySelectorAll('.category-item');
+        document.querySelectorAll(
+            '.category-item'
+        );
 
 
     if (
@@ -865,7 +1042,9 @@
 
                     const name =
                         (
-                            item.getAttribute('data-name') || ''
+                            item.getAttribute(
+                                'data-name'
+                            ) || ''
                         ).toLowerCase();
 
 
@@ -873,12 +1052,9 @@
                         name.includes(query)
                             ? 'flex'
                             : 'none';
-
                 });
-
             }
         );
-
     }
 
 
@@ -906,7 +1082,7 @@
 
             option.addEventListener(
                 'click',
-                function (e) {
+                function(e) {
 
                     e.preventDefault();
 
@@ -917,22 +1093,20 @@
 
                     /*
                      * User explicitly changed sorting.
-                     * Therefore it is OK to update the browser URL.
                      */
                     updateBrowserUrl();
 
 
-                    /*
-                     * Remove pagination when sorting changes.
-                     */
                     const browserUrl =
                         new URL(
                             window.location.href
                         );
 
+
                     browserUrl.searchParams.delete(
                         'page'
                     );
+
 
                     window.history.replaceState(
                         {},
@@ -946,6 +1120,7 @@
                             'span'
                         );
 
+
                     if (span) {
 
                         span.textContent =
@@ -956,9 +1131,7 @@
                     filterProducts();
                 }
             );
-
         });
-
     }
 
 
@@ -976,16 +1149,12 @@
 
         btn.addEventListener(
             'click',
-            function () {
+            function() {
 
                 currentView =
                     this.dataset.view;
 
 
-                /*
-                 * User explicitly changed view.
-                 * Update browser URL.
-                 */
                 updateBrowserUrl();
 
 
@@ -994,9 +1163,11 @@
                         window.location.href
                     );
 
+
                 browserUrl.searchParams.delete(
                     'page'
                 );
+
 
                 window.history.replaceState(
                     {},
@@ -1008,7 +1179,6 @@
                 filterProducts();
             }
         );
-
     });
 
 
@@ -1022,10 +1192,10 @@
 
         checkbox.addEventListener(
             'change',
-            function () {
+            function() {
 
                 /*
-                 * Parent -> Child
+                 * Parent -> Child.
                  */
                 const childIds =
                     this.dataset.childIds
@@ -1042,16 +1212,13 @@
 
 
                     if (childCheckbox) {
+
                         childCheckbox.checked =
                             this.checked;
                     }
-
                 });
 
 
-                /*
-                 * Remove duplicate category IDs.
-                 */
                 const categories = [
                     ...new Set(
                         Array.from(
@@ -1065,10 +1232,6 @@
                 ];
 
 
-                /*
-                 * Explicit user filter action.
-                 * Browser URL can now contain parameters.
-                 */
                 updateBrowserUrl(
                     categories
                 );
@@ -1077,12 +1240,11 @@
                 filterProducts();
             }
         );
-
     });
 
 
     /* ============================================================
-       CATEGORY CHECKBOX CHANGE
+       OTHER CATEGORY CHECKBOXES
        ============================================================ */
 
     document.querySelectorAll(
@@ -1091,12 +1253,8 @@
 
         input.addEventListener(
             'change',
-            function () {
+            function() {
 
-                /*
-                 * Avoid duplicate filtering when
-                 * the element is already handled above.
-                 */
                 if (
                     this.classList.contains(
                         'category-checkbox'
@@ -1111,7 +1269,6 @@
                 filterProducts();
             }
         );
-
     });
 
 
@@ -1131,41 +1288,33 @@
             'click',
             () => {
 
-                /* ------------------------------------------------
-                   RESET PRICE
-                   ------------------------------------------------ */
-
-                const activeFilterWrapper =
-                    document.querySelector(
-                        '#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
-                    );
-
-
-                const visibleFilter =
-                    activeFilterWrapper?.querySelector(
-                        '.price-filter'
-                    );
-
-
-                if (visibleFilter) {
+                /*
+                 * Reset ALL price filter instances.
+                 *
+                 * This keeps desktop and mobile filters
+                 * synchronized.
+                 */
+                document.querySelectorAll(
+                    '#filter-wrapper .price-filter'
+                ).forEach(priceFilter => {
 
                     const minSlider =
-                        visibleFilter.querySelector(
+                        priceFilter.querySelector(
                             '.range-min'
                         );
 
                     const maxSlider =
-                        visibleFilter.querySelector(
+                        priceFilter.querySelector(
                             '.range-max'
                         );
 
                     const minInput =
-                        visibleFilter.querySelector(
+                        priceFilter.querySelector(
                             '.min-price'
                         );
 
                     const maxInput =
-                        visibleFilter.querySelector(
+                        priceFilter.querySelector(
                             '.max-price'
                         );
 
@@ -1177,35 +1326,34 @@
                         maxInput
                     ) {
 
-                        minSlider.value = 0;
+                        minSlider.value =
+                            0;
 
                         maxSlider.value =
                             maxSlider.max;
 
-                        minInput.value = 0;
+                        minInput.value =
+                            0;
 
                         maxInput.value =
                             maxSlider.max;
                     }
+                });
 
-                }
 
-
-                /* ------------------------------------------------
-                   RESET CHECKBOXES
-                   ------------------------------------------------ */
-
+                /*
+                 * Reset categories and conditions.
+                 */
                 document.querySelectorAll(
                     'input[name="categories[]"], input[name="conditions[]"]'
                 ).forEach(cb => {
 
                     cb.checked = false;
-
                 });
 
 
                 /*
-                 * Current brand must remain checked.
+                 * Current brand remains checked.
                  */
                 document.querySelectorAll(
                     'input[name="brands[]"]'
@@ -1213,14 +1361,12 @@
 
                     cb.checked = true;
                     cb.disabled = true;
-
                 });
 
 
-                /* ------------------------------------------------
-                   RESET SORT & VIEW
-                   ------------------------------------------------ */
-
+                /*
+                 * Reset sort and view.
+                 */
                 currentSort =
                     "price_high_low";
 
@@ -1229,19 +1375,16 @@
 
 
                 /*
-                 * Since user explicitly clicked
-                 * Clear Filters, update the URL.
-                 *
-                 * This will result in the clean URL:
-                 *
-                 * /shop/brand/xfx
+                 * Clean URL.
                  */
                 const cleanUrl =
                     new URL(
                         window.location.href
                     );
 
+
                 cleanUrl.search = '';
+
 
                 window.history.replaceState(
                     {},
@@ -1255,7 +1398,6 @@
                 updateProductCount();
             }
         );
-
     }
 
 
@@ -1274,40 +1416,19 @@
 
 
         /*
-         * Price
+         * Get price from the ACTUALLY VISIBLE filter.
          */
-        const activeFilterWrapper =
-            document.querySelector(
-                '#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
-            );
-
-
-        const visibleFilter =
-            activeFilterWrapper?.querySelector(
-                '.price-filter'
-            );
-
-
-        const min_price =
-            parseInt(
-                visibleFilter?.querySelector(
-                    '.min-price'
-                )?.value
-            ) || 0;
-
-
-        const max_price =
-            parseInt(
-                visibleFilter?.querySelector(
-                    '.max-price'
-                )?.value
-            ) || 300000;
+        const {
+            min_price,
+            max_price
+        } = getCurrentPriceValues();
 
 
         browserUrl.searchParams.set(
             'min_price',
             min_price
         );
+
 
         browserUrl.searchParams.set(
             'max_price',
@@ -1316,7 +1437,7 @@
 
 
         /*
-         * Sort
+         * Sort.
          */
         browserUrl.searchParams.set(
             'sort',
@@ -1325,7 +1446,7 @@
 
 
         /*
-         * View
+         * View.
          */
         browserUrl.searchParams.set(
             'view',
@@ -1334,7 +1455,7 @@
 
 
         /*
-         * Categories
+         * Categories.
          */
         let categories;
 
@@ -1357,7 +1478,6 @@
                     )
                 )
             ];
-
         }
 
 
@@ -1372,12 +1492,11 @@
                 'categories[]',
                 id
             );
-
         });
 
 
         /*
-         * Conditions
+         * Conditions.
          */
         const conditions =
             Array.from(
@@ -1401,13 +1520,11 @@
             browserUrl.searchParams.delete(
                 'conditions'
             );
-
         }
 
 
         /*
-         * Pagination should not remain
-         * after a filter/sort/view change.
+         * Remove pagination.
          */
         browserUrl.searchParams.delete(
             'page'
@@ -1423,7 +1540,7 @@
 
 
     /* ============================================================
-       BUILD FILTER PARAMETERS FOR AJAX
+       BUILD AJAX FILTER PARAMETERS
        ============================================================ */
 
     function buildFilterParams() {
@@ -1455,7 +1572,6 @@
                 'categories[]',
                 id
             );
-
         });
 
 
@@ -1479,7 +1595,6 @@
                 'conditions',
                 conditions.join(',')
             );
-
         }
 
 
@@ -1487,32 +1602,10 @@
            PRICE
            -------------------------------------------------------- */
 
-        const activeFilterWrapper =
-            document.querySelector(
-                '#filter-wrapper.is-mobile, #filter-wrapper.is-desktop'
-            );
-
-
-        const visibleFilter =
-            activeFilterWrapper?.querySelector(
-                '.price-filter'
-            );
-
-
-        const min_price =
-            parseInt(
-                visibleFilter?.querySelector(
-                    '.min-price'
-                )?.value
-            ) || 0;
-
-
-        const max_price =
-            parseInt(
-                visibleFilter?.querySelector(
-                    '.max-price'
-                )?.value
-            ) || 300000;
+        const {
+            min_price,
+            max_price
+        } = getCurrentPriceValues();
 
 
         params.set(
@@ -1552,7 +1645,7 @@
 
 
     /* ============================================================
-       FILTER FUNCTION
+       FILTER PRODUCTS
        ============================================================ */
 
     function filterProducts(
@@ -1567,7 +1660,8 @@
 
 
         if (viewParam) {
-            currentView = viewParam;
+            currentView =
+                viewParam;
         }
 
 
@@ -1578,62 +1672,49 @@
 
 
         if (loadMore) {
-            loadMore.style.display = 'block';
+            loadMore.style.display =
+                'block';
         }
 
 
         /*
-         * Build parameters ONLY for the AJAX request.
-         *
-         * This is the important SEO change.
-         *
-         * The browser URL does NOT automatically get
-         * these parameters during initial page load.
+         * Build AJAX parameters from the current
+         * visible controls.
          */
         currentFilters =
             buildFilterParams();
 
 
         /*
-         * --------------------------------------------------------
-         * IMPORTANT SEO LOGIC
-         * --------------------------------------------------------
+         * IMPORTANT:
          *
-         * On initial page load:
+         * Do not update browser URL during initial load.
          *
-         * Browser:
+         * This keeps:
+         *
          * /shop/brand/xfx
          *
-         * AJAX:
-         * /shop/brand/xfx?min_price=0&max_price=300000&sort=price_high_low&view=gridview
-         *
-         * Therefore Google can see/crawl the clean URL.
-         *
-         * Once the user actively changes a filter,
-         * isInitialLoad becomes false and the URL can be updated.
+         * clean.
          */
         if (!isInitialLoad) {
 
             updateBrowserUrl();
 
+
             /*
-             * Rebuild currentFilters because
-             * updateBrowserUrl() may have changed the URL.
+             * Rebuild after URL update.
              */
             currentFilters =
                 buildFilterParams();
         }
 
 
-        /*
-         * The first load is now complete.
-         */
         isInitialLoad = false;
 
 
-        /* --------------------------------------------------------
+        /* ========================================================
            AJAX REQUEST
-           -------------------------------------------------------- */
+           ======================================================== */
 
         return fetch(
             window.location.pathname +
@@ -1652,10 +1733,12 @@
         .then(res => {
 
             if (!res.ok) {
+
                 throw new Error(
                     `HTTP error ${res.status}`
                 );
             }
+
 
             return res.json();
         })
@@ -1677,9 +1760,13 @@
                NO PRODUCTS
                ---------------------------------------------------- */
 
-            if (!data.html || !data.html.trim()) {
+            if (
+                !data.html ||
+                !data.html.trim()
+            ) {
 
                 if (loadMore) {
+
                     loadMore.style.display =
                         'none';
                 }
@@ -1690,11 +1777,10 @@
                         No Products Found!
                     </div>
                 `;
-
             }
 
             /* ----------------------------------------------------
-               PRODUCTS FOUND
+               PRODUCTS
                ---------------------------------------------------- */
 
             else {
@@ -1709,18 +1795,17 @@
                         data.hasMore
                             ? 'block'
                             : 'none';
-
                 }
 
 
                 lastPage =
-                    data.last_page;
-
+                    data.last_page ??
+                    lastPage;
             }
 
 
             /* ----------------------------------------------------
-               PRODUCT COUNT
+               COUNT
                ---------------------------------------------------- */
 
             const countEl =
@@ -1733,7 +1818,6 @@
 
                 countEl.dataset.total =
                     data.total;
-
             }
 
 
@@ -1754,7 +1838,6 @@
                 top: offsetTop,
                 behavior: 'smooth'
             });
-
         })
 
         .catch(err => {
@@ -1763,13 +1846,11 @@
                 'Filter products error:',
                 err
             );
-
         })
 
         .finally(() => {
 
             hideLoader();
-
         });
     }
 
@@ -1788,7 +1869,7 @@
 
         loadMoreBtn.addEventListener(
             'click',
-            async function () {
+            async function() {
 
                 if (
                     loading ||
@@ -1803,13 +1884,17 @@
                 page++;
 
 
-                await loadMoreProducts(page);
+                await loadMoreProducts(
+                    page
+                );
 
 
                 loading = false;
 
 
-                if (page >= lastPage) {
+                if (
+                    page >= lastPage
+                ) {
 
                     const wrapper =
                         document.getElementById(
@@ -1818,15 +1903,13 @@
 
 
                     if (wrapper) {
+
                         wrapper.style.display =
                             'none';
                     }
-
                 }
-
             }
         );
-
     }
 
 
@@ -1845,6 +1928,7 @@
 
 
         if (loader) {
+
             loader.classList.remove(
                 'hidden'
             );
@@ -1853,9 +1937,6 @@
 
         try {
 
-            /*
-             * Use the existing filter parameters.
-             */
             currentFilters.set(
                 'page',
                 pageNumber
@@ -1877,6 +1958,7 @@
 
 
             if (!res.ok) {
+
                 throw new Error(
                     `HTTP error ${res.status}`
                 );
@@ -1902,7 +1984,6 @@
 
                     loadMoreWrapper.style.display =
                         'none';
-
                 }
 
 
@@ -1922,7 +2003,6 @@
                     'beforeend',
                     data.html
                 );
-
             }
 
 
@@ -1938,9 +2018,7 @@
 
                     loadMoreWrapper.style.display =
                         'none';
-
                 }
-
             }
 
 
@@ -1954,7 +2032,6 @@
 
                 countEl.dataset.total =
                     data.total;
-
             }
 
 
@@ -1968,7 +2045,6 @@
                 'Load more error:',
                 err
             );
-
         }
 
         finally {
@@ -1978,11 +2054,8 @@
                 loader.classList.add(
                     'hidden'
                 );
-
             }
-
         }
-
     }
 
 
@@ -2012,9 +2085,6 @@
         let visible = 0;
 
 
-        /*
-         * Check active view.
-         */
         const gridView =
             document.querySelector(
                 '[x-show="activeTab === \'gridview\'"]'
@@ -2031,21 +2101,14 @@
                     '#product-list .product-card'
                 ).length;
 
-        }
-
-        else {
+        } else {
 
             visible =
                 document.querySelectorAll(
                     '#product-list .product-card-list'
                 ).length;
-
         }
 
-
-        /* --------------------------------------------------------
-           NO PRODUCTS
-           -------------------------------------------------------- */
 
         if (visible === 0) {
 
@@ -2066,17 +2129,12 @@
                         No Products Found!
                     </div>
                 `;
-
             }
 
 
             return;
         }
 
-
-        /* --------------------------------------------------------
-           PRODUCT COUNT
-           -------------------------------------------------------- */
 
         countEl.innerText =
             `Items 1-${visible} of ${total}`;
@@ -2092,9 +2150,7 @@
 
             totalCount.innerText =
                 `${total}`;
-
         }
-
     }
 
 
@@ -2115,9 +2171,7 @@
             loader.classList.remove(
                 'hidden'
             );
-
         }
-
     }
 
 
@@ -2134,9 +2188,7 @@
             loader.classList.add(
                 'hidden'
             );
-
         }
-
     }
 
 
@@ -2149,7 +2201,7 @@
         () => {
 
             /*
-             * Initialize all price filters.
+             * Initialize every price filter.
              */
             document.querySelectorAll(
                 '.price-filter'
@@ -2161,19 +2213,15 @@
             /*
              * Initial AJAX load.
              *
-             * IMPORTANT:
-             * isInitialLoad = true here.
-             *
-             * Therefore filterProducts() will NOT
-             * modify the browser URL.
+             * Browser URL remains clean.
              */
             filterProducts();
 
 
             hideLoader();
-
         }
     );
 
 </script>
+
 @endsection
