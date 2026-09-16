@@ -6,16 +6,52 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\Page;
 use App\Models\PcBuilderCategorySetting;
 use App\Models\PcBuilderSetup;
 use App\Models\Product;
 use App\Models\ProductStock;
+use Artesaos\SEOTools\Facades\JsonLd;
+use Artesaos\SEOTools\Facades\OpenGraph;
+use Artesaos\SEOTools\Facades\SEOMeta;
+use Artesaos\SEOTools\Facades\SEOTools;
+use Artesaos\SEOTools\Facades\TwitterCard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 
 class BuildPcController extends Controller
 {
+
+    public function loadSEO($model)
+    {
+        SEOTools::setTitle($model['title']);
+        OpenGraph::setTitle($model['title']);
+        TwitterCard::setTitle($model['title']);
+
+        SEOMeta::setTitle($model['title']);
+        SEOMeta::setDescription($model['meta_description']);
+        SEOMeta::addKeyword($model['keywords']);
+
+        OpenGraph::setTitle($model['og_title']);
+        OpenGraph::setDescription($model['og_description']);
+        OpenGraph::setUrl(URL::full());
+        OpenGraph::addProperty('locale', 'en_US');
+        OpenGraph::addProperty('type', $model['og_type'] ?? 'website');
+        OpenGraph::addImage(uploaded_asset(get_setting('default_seo_og_image')) ?? URL::to(asset('assets/img/logo.png')));
+
+        JsonLd::setTitle($model['title']);
+        JsonLd::setDescription($model['meta_description']);
+        JsonLd::setType('Page');
+
+        TwitterCard::setTitle($model['twitter_title']);
+        TwitterCard::setSite('@pcgarage');
+        TwitterCard::setDescription($model['twitter_description']);
+
+        SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.ico')));
+    }
+
     public function index()
     {
         // Left box categories
@@ -72,6 +108,21 @@ class BuildPcController extends Controller
         }
 
         $brands = Brand::where('is_active', 1)->get();
+
+        $page = Page::where('type', 'pc_builder')->first();
+        $page_content = $page ? json_decode($page->data, true) : [];
+
+        $seoContents = [
+            'title' => $page_content['meta_title'] ?? '',
+            'meta_description' => $page_content['meta_description'] ?? '',
+            'keywords' => $page_content['keywords'] ?? '',
+            'og_title' => $page_content['og_title'] ?? '',
+            'og_description' => $page_content['og_description'] ?? '',
+            'twitter_title' => $page_content['twitter_title'] ?? '',
+            'twitter_description' => $page_content['twitter_description'] ?? '',
+        ];
+
+        $this->loadSEO($seoContents);
 
         return view('frontend.buildyourpc', compact(
             'builderCategories',
@@ -264,7 +315,7 @@ class BuildPcController extends Controller
         $settings = PcBuilderCategorySetting::with('category')
             ->orderBy('sort_order', 'asc')
             ->get();
-            
+
         foreach ($settings as $setting) {
 
             $category = $setting->category;
@@ -341,14 +392,14 @@ class BuildPcController extends Controller
     {
         $user_id = auth('frontend')->check() ? auth('frontend')->user()->id : null;
         $guestToken = request()->cookie('guest_token');
-        
+
         $builder = PcBuilderSetup::when($user_id, function ($query) use ($user_id) {
             $query->where('user_id', $user_id);
         }, function ($query) use ($guestToken) {
             $query->where('temp_user_id', $guestToken);
         })
         ->first();
-        
+
         $buildData = $builder ? $builder->build_data : [];
 
         $reviewData = [
@@ -360,7 +411,7 @@ class BuildPcController extends Controller
             'total_with_tax' => 0,
         ];
 
-        
+
         if ($buildData) {
             $reviewData = $this->getReviewProducts($buildData);
         }
@@ -530,7 +581,7 @@ class BuildPcController extends Controller
             $builder->save();
         }
 
-        
+
         return response()->json([
             'status' => true,
             'message' => 'Configuration reset successfully'
