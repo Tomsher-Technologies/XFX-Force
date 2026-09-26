@@ -1,4 +1,3 @@
-```blade
 @extends('frontend.layouts.app')
 
 @section('title', $blog->title)
@@ -74,57 +73,145 @@
 
 
     <!-- Blog Content -->
-    <article class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[140px] pb-[100px]">
 
-        <div class="max-w-[1000px] mx-auto">
+<article class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[140px] pb-[100px]">
 
-            <!-- Date -->
-            @if($blog->created_at)
-                <div class="mb-[12px] text-center">
+    <div>
 
-                    <span class="text-[#2A7CFF] text-[12px] md:text-[14px] font-medium uppercase tracking-[1px]">
-                        {{ $blog->created_at->format('d M Y') }}
-                    </span>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-[40px] xl:gap-[150px]">
+
+            <!-- Blog Content -->
+            <div class="lg:col-span-8">
+
+
+
+
+                <!-- Blog Image -->
+                @if(!empty($blog->image))
+
+                    <div class="w-full aspect-[16/8] rounded-[12px] overflow-hidden bg-[#0f161b] mb-[40px]">
+
+                        <img
+                            src="{{ uploaded_asset($blog->image) }}"
+                            alt="{{ $blog->title }}"
+                            title="{{ $blog->title }}"
+                            class="w-full h-full object-cover object-center"
+                        >
+
+                    </div>
+
+                @endif
+
+                <!-- Date -->
+                @if($blog->created_at)
+
+                    <div class="mb-[12px]">
+
+                        <span class="text-[#2A7CFF] text-[12px] md:text-[14px] font-medium uppercase tracking-[1px]">
+                            {{ $blog->created_at->format('d M Y') }}
+                        </span>
+
+                    </div>
+
+                @endif
+
+
+                <!-- Title -->
+                <h1 class="about-title text-[28px] md:text-[36px] xl:text-[48px] leading-[38px] md:leading-[48px] xl:leading-[60px] text-left text-[#ffffff80] mb-[30px]">
+                    {{ $blog->name }}
+                </h1>
+
+                <!-- Blog Description -->
+                @if(!empty($blog->description))
+
+                    <div class="blog-content">
+                        {!! $blog->description !!}
+                    </div>
+
+                @endif
+
+            </div>
+
+
+            <!-- Recent Blogs Sidebar -->
+            <aside class="lg:col-span-4">
+
+                <div class="lg:sticky lg:top-[120px]">
+
+                    <!-- Sidebar Title -->
+                    <div class="border-b border-[#ffffff30] pb-[20px] mb-[25px]">
+
+                        <h2 class="text-[20px] uppercase leading-[35px] font-semibold text-[#ffffff]">
+                            Recent Blogs
+                        </h2>
+
+                    </div>
+
+
+                    <!-- Recent Blog List -->
+                    <div class="space-y-[25px]">
+
+                        @forelse($recentBlogs as $recentBlog)
+
+                            <a
+                                href="{{ route('blogs.details', ['slug' => $recentBlog->slug]) }}"
+                                class="group flex gap-[15px] pb-[25px] border-b border-[#ffffff20]"
+                            >
+
+                                <!-- Thumbnail -->
+                                <div class="w-[110px] h-[80px] flex-shrink-0 rounded-[8px] overflow-hidden bg-[#0f161b]">
+
+                                    <img
+                                        src="{{ uploaded_asset($recentBlog->image) }}"
+                                        alt="{{ $recentBlog->name }}"
+                                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                        loading="lazy"
+                                        onerror="this.onerror=null;this.src='{{ asset('images/blogs/default-blog.jpg') }}';"
+                                    >
+
+                                </div>
+
+
+                                <!-- Blog Info -->
+                                <div class="min-w-0">
+
+                                    @if($recentBlog->created_at)
+
+                                        <span class="block text-white/50 text-[11px] uppercase tracking-[0.5px] mb-[5px]">
+                                            {{ $recentBlog->created_at->format('d M Y') }}
+                                        </span>
+
+                                    @endif
+
+                                    <h3 class="text-[15px] xl:text-[17px] leading-[23px] text-[#ffffffcc] font-medium line-clamp-2 transition-colors group-hover:text-[#3E81FF]">
+                                        {{ $recentBlog->name }}
+                                    </h3>
+
+                                </div>
+
+                            </a>
+
+                        @empty
+
+                            <p class="text-[#ffffff80] text-[14px]">
+                                No recent blogs found.
+                            </p>
+
+                        @endforelse
+
+                    </div>
 
                 </div>
-            @endif
 
-
-            <!-- Title -->
-            <h1 class="about-title text-[28px] md:text-[36px] xl:text-[48px] leading-[38px] md:leading-[48px] xl:leading-[60px] text-center text-[#ffffff80] mb-[30px]">
-                {{ $blog->name }}
-            </h1>
-
-
-            <!-- Blog Image -->
-            @if(!empty($blog->image))
-
-                <div class="w-full aspect-[16/8] rounded-[12px] overflow-hidden bg-[#0f161b] mb-[40px]">
-
-                    <img
-                        src="{{ uploaded_asset($blog->image) }}"
-                        alt="{{ $blog->title }}"
-                        title="{{ $blog->title }}"
-                        class="w-full h-full object-cover object-center"
-                    >
-
-                </div>
-
-            @endif
-
-
-            <!-- Blog Description -->
-            @if(!empty($blog->description))
-
-                <div class="blog-content">
-                    {!! $blog->description !!}
-                </div>
-
-            @endif
+            </aside>
 
         </div>
 
-    </article>
+    </div>
+
+</article>
+
+
 
 @endsection
 

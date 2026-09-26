@@ -102,7 +102,11 @@ class BlogController extends Controller
         ];
 
         $this->loadSEO($seoContents);
+        $recentBlogs = Blog::where('id', '!=', $blog->id)
+            ->latest('created_at')
+            ->take(5)
+            ->get();
 
-        return view('frontend.blog-details', compact('blog'));
+        return view('frontend.blog-details', compact('blog', 'recentBlogs'));
     }
 }
