@@ -59,7 +59,11 @@
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-md-3 col-form-label" for="signinSrEmail">{{ trans('messages.image') }}</label>
+                        <label class="col-md-3 col-form-label" for="signinSrEmail">
+                            {{ trans('messages.image') }}
+                            <span class="text-danger">*</span>
+                            <small class="d-block text-gray-600">(Recommended: 1050 × 525 px)</small>
+                        </label>
                         <div class="col-md-9">
                             <div class="input-group" data-toggle="aizuploader" data-type="image">
                                 <div class="input-group-prepend">

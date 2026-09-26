@@ -38,58 +38,6 @@
 
 
     <!-- Blog Listing -->
-    <section class="px-[16px] md:px-[30px] lg:px-[50px] xl:px-[140px] py-[50px] xl:py-[80px]">
-
-        @if ($blogs->count())
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] md:gap-[25px]">
-
-                @foreach ($blogs as $blog)
-                    <div class="blog-card w-full relative border-hidden rounded-[10px] overflow-hidden bg-[#1E2225] flex flex-col items-start justify-start transition-all duration-[600ms]">
-
-                        {{-- Blog Image --}}
-                        <a href="#" class="blog-img h-[220px] md:h-[240px] w-full relative z-[1] bg-[#ffffff] block">
-
-                            <img src="{{ uploaded_asset($blog->image ?? '') }}" class="absolute object-cover object-center w-full h-full" alt="{{ $blog->title ?? '' }}" title="{{ $blog->title ?? '' }}">
-
-                        </a>
-
-                        {{-- Blog Content --}}
-                        <div class="blog-content w-full p-[20px] flex flex-col gap-[12px]">
-
-                            {{-- Date --}}
-                            @if ($blog->created_at)
-                                <span class="text-[#2A7CFF] text-[12px] md:text-[13px] font-medium uppercase">
-                                    {{ $blog->created_at->format('d M Y') }}
-                                </span>
-                            @endif
-
-                            {{-- Title --}}
-                            <h4 class="text-white text-[18px] md:text-[21px] leading-[25px] md:leading-[28px] font-semibold line-clamp-2">
-                                {{ $blog->name ?? '' }}
-                            </h4>
-
-                            {{-- Read More --}}
-                            <a href="{{ route('blogs.details', ['slug' => $blog->slug]) }}"
-                            class="text-white text-[13px] md:text-[14px] font-medium uppercase mt-[5px] inline-flex items-center gap-[8px] hover:text-[#2A7CFF] transition-all duration-300">
-                                Read More
-                                <span>→</span>
-                            </a>
-
-                        </div>
-
-                    </div>
-                @endforeach
-
-            </div>
-        @else
-            <div class="w-full text-center py-[60px]">
-                <p class="text-gray-400 text-[16px]">
-                    No blogs available.
-                </p>
-            </div>
-
-        @endif
-
-    </section>
+    <x-blogList :blogs="$blogs" />
     <!-- //Blog Listing -->
 @endsection
