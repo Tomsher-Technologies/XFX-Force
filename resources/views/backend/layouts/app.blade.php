@@ -34,6 +34,9 @@
         body {
             font-size: 12px;
         }
+        .ck-editor__editable {
+            min-height: 200px;
+        }
     </style>
 
     @yield('style')
@@ -87,6 +90,7 @@
     @yield('modal')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
     <script src="{{ asset('assets/js/vendors.js') }}"></script>
     <script src="{{ asset('assets/js/aiz-core.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>

@@ -72,10 +72,19 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-md-2 col-from-label">{{trans('messages.description') }}<span
-                                class="text-danger">*</span></label>
+                            <label class="col-md-2 col-from-label">
+                                {{ trans('messages.description') }}
+                                <span class="text-danger">*</span>
+                            </label>
+
                             <div class="col-md-10">
-                                <textarea class="aiz-text-editor" data-min-height="300" name="description">{{ old('description') }}</textarea>
+                                <textarea
+                                    class="form-control"
+                                    id="description"
+                                    name="description"
+                                    data-min-height="100"
+                                    rows="100"
+                                >{{ old('description') }}</textarea>
                             </div>
                         </div>
 
@@ -189,5 +198,13 @@
                 title = title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '')
                 $('#slug').val(title)
             }
+
+             document.addEventListener('DOMContentLoaded', function () {
+                ClassicEditor
+                    .create(document.querySelector('#description'))
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
         </script>
     @endsection
