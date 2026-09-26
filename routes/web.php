@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OrderController;
@@ -52,6 +53,13 @@ Route::get('shipping-policy', [HomeController::class, 'shippingPolicy'])->name('
 Route::get('contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact-submit', [HomeController::class, 'submitContactForm'])->name('contact.submit');
 Route::get('about', [HomeController::class, 'about'])->name('about');
+    
+Route::get('/blogs', [BlogController::class, 'blogs'])
+    ->name('blogs');
+
+Route::get('/blogs/{slug}', [BlogController::class, 'blogDetails'])
+    ->name('blogs.details');
+
 
 Route::get('forgot-password/', [ForgotPasswordController::class, 'showForgotForm'])->name('forgot-password');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.sendResetLink');
@@ -141,6 +149,7 @@ Route::group(['middleware' => ['auth:frontend','nocache']], function () {
     ->name('notification.read');
 
     Route::post('/review/store', [ReviewController::class, 'store'])->name('reviews.save');
+
 });
 
 Route::get(

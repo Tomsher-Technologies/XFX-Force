@@ -461,3 +461,5 @@ ALTER TABLE `addresses` DROP `country_id`, DROP `state_id`, DROP `city_id`;
 -- ALTER TABLE `categories` ADD `sort_order` INT NULL DEFAULT '0' AFTER `is_active`;
 
 INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'pc_builder', 'PC Builder', NULL, NULL, '1', NULL, NULL);
+
+INSERT INTO `pages` (`id`, `type`, `slug`, `page_key`, `data`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'blog_listing', 'Blog Listing Page', NULL, '', '1', NULL, '2026-09-24 15:05:25');
