@@ -77,7 +77,13 @@
                     <div class="form-group row">
                         <label class="col-md-3 col-from-label">{{trans('messages.description') }}</label>
                         <div class="col-md-9">
-                            <textarea class="aiz-text-editor" data-min-height="300" name="description">{{ old('description', $blog->description) }}</textarea>
+
+                            <textarea
+                                class="form-control"
+                                id="description"
+                                name="description"
+                                rows="10"
+                            >{{ old('description', $blog->description ?? '') }}</textarea>
                         </div>
                     </div>
 
@@ -189,6 +195,14 @@
             }
         });
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+                ClassicEditor
+                    .create(document.querySelector('#description'))
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
     </script>
 @endsection
 
